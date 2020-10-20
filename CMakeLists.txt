@@ -43,10 +43,10 @@ set (IMGUI_SOURCE_FILES
     lib/imgui/imgui.h
     lib/imgui/imgui_draw.cpp
     lib/imgui/imgui_widgets.cpp
-    lib/imgui/examples/imgui_impl_glfw.cpp
-    lib/imgui/examples/imgui_impl_glfw.h
-    lib/imgui/examples/imgui_impl_opengl3.cpp
-    lib/imgui/examples/imgui_impl_opengl3.h
+    lib/imgui/backends/imgui_impl_glfw.cpp
+    lib/imgui/backends/imgui_impl_glfw.h
+    lib/imgui/backends/imgui_impl_opengl3.cpp
+    lib/imgui/backends/imgui_impl_opengl3.h
 )
 
 set (STB_IMAGE_HEADERS
