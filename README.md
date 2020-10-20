@@ -1,12 +1,11 @@
-# gambit
-Game/Game Engine
+# Lucid
 
 ### Build
 ```
-git clone https://github.com/lczm/gambit
-cd gambit
+git clone https://github.com/lczm/lucid
+cd lucid
 git submodule update --init --recursive
 cd build
-cmake ..
-make
+cmake -GNinja ..
+ninja lucid
 ```
