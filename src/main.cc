@@ -1,0 +1,150 @@
+#define GLFW_INCLUDE_NONE
+#define STB_IMAGE_IMPLEMENTATION
+#define GLAD_DEBUG
+
+#include <chrono>
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string>
+#include <typeinfo>
+#include <vector>
+
+#include <glad/gl.h>
+
+#include "constants.h"
+#include "errors.h"
+#include "ecs.h"
+#include "glm.hpp"
+#include "gtc/matrix_transform.hpp"
+#include "input.h"
+#include "utils.h"
+#include <GLFW/glfw3.h>
+
+static void ErrorCallback(int error, const char* description) {
+  fprintf(stderr, "Error: %s\n", description);
+}
+
+static void KeyCallback(GLFWwindow* window, int key, int scancode, int action,
+                        int mods) {
+  if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+    glfwSetWindowShouldClose(window, GLFW_TRUE);
+  }
+}
+
+void GLAPIENTRY MessageCallback(GLenum source, GLenum type, GLuint id,
+                                GLenum severity, GLsizei length,
+                                const GLchar* message, const void* userParam) {
+  // 0x826B is just a notification, which is what is printing out most of the
+  // time. To keep the output verbose, only print out when there is a explicitly
+  // defined severity error.
+  if (severity == 0x9146 ||  // Severity_High
+      severity == 0x9147 ||  // Severity_Medium
+      severity == 0x9148) {  // Severity_Low
+    fprintf(stderr,
+            "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
+            (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""), type,
+            severity, message);
+  }
+}
+
+int main(void) {
+  GLFWwindow* window;
+
+  glfwSetErrorCallback(ErrorCallback);
+
+  if (!glfwInit()) {
+    exit(EXIT_FAILURE);
+  }
+
+  window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Lucid", NULL, NULL);
+  if (!window) {
+    glfwTerminate();
+    exit(EXIT_FAILURE);
+  }
+
+  // A context can only be made current on a single thread at any one time.
+  // You can move contexts around windows, but for now we can just leave
+  // this here, this sets the current window as the context current
+  glfwMakeContextCurrent(window);
+
+  // Load gl with glad
+  gladLoadGL(glfwGetProcAddress);
+
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+  glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+
+  // glEnable(GL_DEBUG_OUTPUT);
+  // glDebugMessageCallback(messageCallback, 0);
+
+  std::cout << "OpenGL Version : " << glGetString(GL_VERSION) << std::endl;
+
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glEnable(GL_BLEND);
+
+  // Tell OpenGL to depth test
+  glEnable(GL_DEPTH_TEST);
+
+  Registry* registry = new Registry();
+  Input* input = new Input(window);
+
+  // Gambit* gambit;
+  // Sandbox* sandbox;
+
+  // if (SANDBOX_TEST)
+  //   sandbox = new Sandbox(registry, input, window);
+  // else
+  //   gambit = new Gambit(registry, input, window);
+
+  // glfwSetKeyCallback(window, keyCallback);
+
+  auto timer = std::chrono::high_resolution_clock::now();
+  double dt = 0;
+  double secondDt = 0;
+  int frameCount = 0;
+  while (!glfwWindowShouldClose(window)) {
+    // Handle events -> inputs, resize, etc.
+    glfwPollEvents();
+
+    // Clear all errors, so that when we check for errors, the
+    // errors are not checking the previous iteration
+    glClearError();
+
+    // if (SANDBOX_TEST)
+    //   sandbox->update(dt);
+    // else
+    //   gambit->update(dt);
+
+    auto now = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = now - timer;
+    dt = elapsed.count();
+    timer = now;
+
+    secondDt += dt;
+    frameCount++;
+
+    // If it has been a second
+    if (secondDt >= 1.0f) {
+      std::cout << "Frames per second (FPS) : " << frameCount << std::endl;
+      secondDt -= 1.0f;
+      frameCount = 0;
+    }
+
+    if (glCheckError()) {
+      // break out of the loop
+      std::cout << "Breaking out of the loop, OpenGL Error" << std::endl;
+      break;
+    }
+
+    // Flip buffers
+    glfwSwapBuffers(window);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  }
+
+  glfwDestroyWindow(window);
+  glfwTerminate();
+  exit(EXIT_SUCCESS);
+}
