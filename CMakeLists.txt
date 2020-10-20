@@ -59,6 +59,7 @@ include_directories(src/constants)
 include_directories(src/input)
 include_directories(src/graphics)
 include_directories(src/entity)
+include_directories(src/sandbox)
 
 # Setup stb_image
 include_directories(lib/stb_image)

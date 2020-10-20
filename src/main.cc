@@ -12,6 +12,7 @@
 
 #include <glad/gl.h>
 
+#include "sandbox.h"
 #include "constants.h"
 #include "errors.h"
 #include "ecs.h"
@@ -90,13 +91,7 @@ int main(void) {
   Registry* registry = new Registry();
   Input* input = new Input(window);
 
-  // Gambit* gambit;
-  // Sandbox* sandbox;
-
-  // if (SANDBOX_TEST)
-  //   sandbox = new Sandbox(registry, input, window);
-  // else
-  //   gambit = new Gambit(registry, input, window);
+  Sandbox* sandbox = new Sandbox(registry, input, window);
 
   // glfwSetKeyCallback(window, keyCallback);
 
@@ -111,6 +106,8 @@ int main(void) {
     // Clear all errors, so that when we check for errors, the
     // errors are not checking the previous iteration
     GlClearError();
+
+    sandbox->Update(dt);
 
     // if (SANDBOX_TEST)
     //   sandbox->update(dt);
