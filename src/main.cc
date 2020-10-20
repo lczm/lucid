@@ -77,8 +77,8 @@ int main(void) {
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 
-  // glEnable(GL_DEBUG_OUTPUT);
-  // glDebugMessageCallback(messageCallback, 0);
+  glEnable(GL_DEBUG_OUTPUT);
+  glDebugMessageCallback(MessageCallback, 0);
 
   std::cout << "OpenGL Version : " << glGetString(GL_VERSION) << std::endl;
 

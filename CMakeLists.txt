@@ -60,6 +60,7 @@ include_directories(src/input)
 include_directories(src/graphics)
 include_directories(src/entity)
 include_directories(src/sandbox)
+include_directories(src/shaders)
 
 # Setup stb_image
 include_directories(lib/stb_image)
