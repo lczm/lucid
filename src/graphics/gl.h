@@ -33,34 +33,34 @@ class Shader {
   unsigned int vertexShader;
   unsigned int fragmentShader;
 
-  void readFile(std::string& path, std::string& output);
+  void ReadFile(std::string& path, std::string& output);
 
  public:
   Shader();
   ~Shader();
 
-  void bind();
-  void unbind();
-  void createShader(std::string vertexPath, std::string fragmentPath);
-  unsigned int getId() {
+  void Bind();
+  void Unbind();
+  void CreateShader(std::string vertexPath, std::string fragmentPath);
+  unsigned int GetId() {
     return id;
   };
 
  public:  // Uniform methods // TODO : Cache/Memoize uniform names
-  void setUniformInt1(const std::string& name, int v);
-  void setUniformFloat1(const std::string& name, float v);
+  void SetUniformInt1(const std::string& name, int v);
+  void SetUniformFloat1(const std::string& name, float v);
 
-  void setUniformInt2(const std::string& name, int v1, int v2);
-  void setUniformFloat2(const std::string& name, float v1, float v2);
+  void SetUniformInt2(const std::string& name, int v1, int v2);
+  void SetUniformFloat2(const std::string& name, float v1, float v2);
 
-  void setUniformInt3(const std::string& name, int v1, int v2, int v3);
-  void setUniformFloat3(const std::string& name, float v1, float v2, float v3);
+  void SetUniformInt3(const std::string& name, int v1, int v2, int v3);
+  void SetUniformFloat3(const std::string& name, float v1, float v2, float v3);
 
-  void setUniformInt4(const std::string& name, int v1, int v2, int v3, int v4);
-  void setUniformFloat4(const std::string& name, float v1, float v2, float v3,
+  void SetUniformInt4(const std::string& name, int v1, int v2, int v3, int v4);
+  void SetUniformFloat4(const std::string& name, float v1, float v2, float v3,
                         float v4);
 
-  void setUniformMatFloat4(const std::string& name, glm::mat4 mat);
+  void SetUniformMatFloat4(const std::string& name, glm::mat4 mat);
 };
 
 // VertexBufferObjects (VBOs)
@@ -72,14 +72,14 @@ class VertexBuffer {
   VertexBuffer();
   ~VertexBuffer();
 
-  void bind();
-  void unbind();
-  void bindData(const void* data, unsigned int size);
+  void Bind();
+  void Unbind();
+  void BindData(const void* data, unsigned int size);
 
-  unsigned int getId() {
+  unsigned int GetId() {
     return id;
   };
-  void generate() {
+  void Generate() {
     glGenBuffers(1, &id);
   };
 };
@@ -94,12 +94,12 @@ class IndexBuffer {
   IndexBuffer();
   ~IndexBuffer();
 
-  void bind();
-  void unbind();
-  void bindData(const unsigned int* data, unsigned int count);
-  unsigned int getCount();
-  unsigned int getId();
-  void generate() {
+  void Bind();
+  void Unbind();
+  void BindData(const unsigned int* data, unsigned int count);
+  unsigned int GetCount();
+  unsigned int GetId();
+  void Generate() {
     glGenBuffers(1, &id);
   };
 };
@@ -110,7 +110,7 @@ struct VertexBufferElement {
   unsigned int count;
   unsigned char normalized;
 
-  static unsigned int getSizeOfType(unsigned int type) {
+  static unsigned int GetSizeOfType(unsigned int type) {
     switch (type) {
       case GL_FLOAT:
         return 4;
@@ -134,12 +134,12 @@ class VertexBufferLayout {
 
   // TODO : Support other types other than floats
   // Note : This push function assumes all incoming is float
-  void push(unsigned int count);
+  void Push(unsigned int count);
 
-  std::vector<VertexBufferElement>& getElements() {
+  std::vector<VertexBufferElement>& GetElements() {
     return elements;
   }
-  unsigned int getStride() {
+  unsigned int GetStride() {
     return stride;
   }
 };
@@ -152,14 +152,14 @@ class VertexArray {
   VertexArray();
   ~VertexArray();
 
-  void bind();
-  void unbind();
-  void addBuffer(VertexBuffer& vb, VertexBufferLayout& layout);
+  void Bind();
+  void Unbind();
+  void AddBuffer(VertexBuffer& vb, VertexBufferLayout& layout);
 
-  unsigned int getId() {
+  unsigned int GetId() {
     return id;
   };
-  void generate() {
+  void Generate() {
     glGenVertexArrays(1, &id);
   }
 };
@@ -187,41 +187,41 @@ class Texture {
   Texture(const char imagePath[], int slot = 0);
   ~Texture();
 
-  void initialize(const char imagePath[], int slot = 0);
+  void Initialize(const char imagePath[], int slot = 0);
 
-  void bind();
-  void unbind();
+  void Bind();
+  void Unbind();
 
-  int getWidth() {
+  int GetWidth() {
     return width;
   };
-  int getHeight() {
+  int GetHeight() {
     return height;
   };
 
-  int getSsTotal() {
+  int GetSsTotal() {
     return ssTotal;
   };
-  int getSsRow() {
+  int GetSsRow() {
     return ssRow;
   };
-  int getSsCol() {
+  int GetSsCol() {
     return ssCol;
   };
-  int getSsIter() {
+  int GetSsIter() {
     return ssIter;
   };
-  int getSsWidth() {
+  int GetSsWidth() {
     return ssWidth;
   };
-  int getSsHeight() {
+  int GetSsHeight() {
     return ssHeight;
   };
 
-  unsigned int getId() {
+  unsigned int GetId() {
     return id;
   };
-  void generate() {
+  void Generate() {
     glGenTextures(1, &id);
   };
 };

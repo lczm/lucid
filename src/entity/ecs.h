@@ -57,13 +57,13 @@ class ComponentVector {
 
  public:
   ComponentVector(){};
-  void addVector(std::vector<Component>*& vectorPtr) {
+  void AddVector(std::vector<Component>*& vectorPtr) {
     store.push_back(vectorPtr);
-    storeSizeIndex.push_back(vectorPtr->size());
+    storeSizeIndex.push_back(vectorPtr->Size());
   };
 
   // Usage: somethingComponentVector->at(i).{structFields};
-  Component* at(unsigned int index) {
+  Component* At(unsigned int index) {
     unsigned int primaryIndex = 0;
     for (size_t i = 0; i < storeSizeIndex.size(); i++) {
       if (index < storeSizeIndex[i]) {
@@ -80,7 +80,7 @@ class ComponentVector {
   // This is mostly used to know the total size of the ComponentVector so that
   // it is iterable with a for loop
   // Generally : for (int i = 0; i < somethingComponentVector.size(); i++) {.
-  unsigned int size() {
+  unsigned int Size() {
     int size = 0;
     for (int i : storeSizeIndex) {
       size += i;
@@ -99,7 +99,7 @@ class Registry;
 */
 class System {
  public:
-  virtual void update(double dt, Registry* registry, Input* input) = 0;
+  virtual void Update(double dt, Registry* registry, Input* input) = 0;
 };
 
 /*
@@ -149,7 +149,7 @@ class Registry {
   };
   ~Registry();
 
-  Entity getAvailableEntityId() {
+  Entity GetAvailableEntityId() {
     if (availablePool.size() == 0) {
       std::cout << "Not enough ids" << std::endl;
       return 0;
@@ -163,11 +163,11 @@ class Registry {
 
     return id;
   };
-  void deleteEntity(Entity entity);
+  void DeleteEntity(Entity entity);
 
   template <typename Component>
-  bool entityHasComponent(Entity id) {
-    unsigned int paramHashCode = getHashCode<Component>();
+  bool EntityHasComponent(Entity id) {
+    unsigned int paramHashCode = GetHashCode<Component>();
 
     // Get entity archetype
     if (entityComponentMap.find(id) == entityComponentMap.end()) {
@@ -186,8 +186,8 @@ class Registry {
   }
 
   template <typename... Components>
-  bool entityHasComponents(Entity id) {
-    Archetype paramArchetype = {(getHashCode<Components>())...};
+  bool EntityHasComponents(Entity id) {
+    Archetype paramArchetype = {(GetHashCode<Components>())...};
 
     // Get entity archetype
     if (entityComponentMap.find(id) == entityComponentMap.end()) {
@@ -213,12 +213,12 @@ class Registry {
   }
 
   template <typename Component>
-  void createDefaultComponentValue(Entity id, Archetype archetype) {
+  void CreateDefaultComponentValue(Entity id, Archetype archetype) {
     // Get the archetype that is assigned to the id
     // Archetype archetype = entityComponentMap[id];
 
     // Specific hashcode for this component
-    unsigned int hashCode = getHashCode<Component>();
+    unsigned int hashCode = GetHashCode<Component>();
 
     std::unordered_map<unsigned int, void*>& keyPtr =
         *(static_cast<std::unordered_map<unsigned int, void*>*>(
@@ -236,8 +236,8 @@ class Registry {
   }
 
   template <typename... Components>
-  void createEntity(Entity id) {
-    Archetype archetype = {(getHashCode<Components>())...};
+  void CreateEntity(Entity id) {
+    Archetype archetype = {(GetHashCode<Components>())...};
 
     // Check if the archetype actually exists before first
     // If the archetype is not found
@@ -251,37 +251,37 @@ class Registry {
     entityComponentMap[id] = archetype;
 
     // Create empty default values for the entity
-    auto p = {(createDefaultComponentValue<Components>(id, archetype), 0)...};
+    auto p = {(CreateDefaultComponentValue<Components>(id, archetype), 0)...};
     (void)p;  // To silence the compiler warning about unused vars
   }
 
   // General method to convert (Component) to an unsigned int
   template <typename Component>
-  unsigned int getHashCode(Component component) {
+  unsigned int GetHashCode(Component component) {
     return typeid(component).hash_code();
   }
 
   // General method to convert <Component> to an unsigned int
   template <typename Component>
-  unsigned int getHashCode() {
+  unsigned int GetHashCode() {
     return typeid(Component).hash_code();
   }
 
   template <typename Component>
-  void initializeArchetypeVector(Archetype archetype) {
+  void InitializeArchetypeVector(Archetype archetype) {
     std::unordered_map<unsigned int, void*>& keyPtr =
         *(static_cast<std::unordered_map<unsigned int, void*>*>(
             archetypeComponentMap[archetype]));
-    keyPtr[getHashCode<Component>()] = new std::vector<Component>();
+    keyPtr[GetHashCode<Component>()] = new std::vector<Component>();
   }
 
   template <typename... Components>
-  void registerArchetype() {
+  void RegisterArchetype() {
     // Get the hashes through an initializer list, the output type
     // can also be a std::initializer_list<unsigned int> but in this
     // case where getHashCode returns unsigned ints, this will work
     // fine.
-    Archetype archetype = {(getHashCode<Components>())...};
+    Archetype archetype = {(GetHashCode<Components>())...};
 
     // This archetype will then be a pointer to a dictionary of vectors
     // where the vectors are each component of the archetype.
@@ -291,14 +291,14 @@ class Registry {
     // Initialization list has to be assigned, default value of 0 to avoid
     // dealing with initializer list void returns from
     // initializeArchetypeVector
-    auto p = {(initializeArchetypeVector<Components>(archetype), 0)...};
+    auto p = {(InitializeArchetypeVector<Components>(archetype), 0)...};
     (void)p;  // To silence the compiler warning about unused vars
 
     return;
   }
 
   // Print out all the archetypes through their hashcodes
-  void printRegisteredArchetypes() {
+  void PrintRegisteredArchetypes() {
     for (auto& keyPair : archetypeComponentMap) {
       for (auto& hashCode : keyPair.first) {
         std::cout << hashCode << " ";
@@ -313,30 +313,30 @@ class Registry {
   // does is to replace the data that is created by the default value of the
   // component with the one that is passed in.
   template <typename Component>
-  void addComponentData(Entity entity, Component component) {
+  void AddComponentData(Entity entity, Component component) {
     std::unordered_map<unsigned int, void*>& keyPtr =
         *(static_cast<std::unordered_map<unsigned int, void*>*>(
             archetypeComponentMap[entityComponentMap[entity]]));
 
     // Get a pointer to the vector of this type.
-    unsigned int hashCode = getHashCode(component);
+    unsigned int hashCode = GetHashCode(component);
     std::vector<Component>& vectorPtr =
         *(static_cast<std::vector<Component>*>(keyPtr[hashCode]));
     vectorPtr.at(entityIndexMap[entity]) = component;
   }
 
   template <typename Component>
-  ComponentVector<Component>* makeComponentVector() {
+  ComponentVector<Component>* MakeComponentVector() {
     return new ComponentVector<Component>();
   }
 
   template <typename Component>
-  void fillComponentVector(Archetype archetype,
+  void FillComponentVector(Archetype archetype,
                            std::vector<void*>& componentVectors,
                            int& componentIndex) {
     // Find out which index Component belongs in, through hashCodes so that
     // it can Cast to the right type at the right index in componentVectors
-    unsigned int hashCode = getHashCode<Component>();
+    unsigned int hashCode = GetHashCode<Component>();
 
     // This is a componentVector where all the data is stored.
     ComponentVector<Component>& componentVectorPtr =
@@ -353,7 +353,7 @@ class Registry {
     // Add to componentvector if only the size is more than 0;
     // i.e. if there are entities.
     if (vectorPtr->size() > 0) {
-      componentVectorPtr.addVector(vectorPtr);
+      componentVectorPtr.AddVector(vectorPtr);
     }
 
     // Increment the index for the next component index when this function
@@ -366,10 +366,10 @@ class Registry {
   // of the <T> that is passed into the function.
   // Usage : getComponents<ComponentA, ComponentB>();
   template <typename... Components>
-  std::vector<void*> getComponents() {
-    Archetype hashCodes = {(getHashCode<Components>())...};
+  std::vector<void*> GetComponents() {
+    Archetype hashCodes = {(GetHashCode<Components>())...};
     std::vector<void*> componentVectors = {
-        (makeComponentVector<Components>())...};
+        (MakeComponentVector<Components>())...};
 
     for (auto& archetypePair : archetypeComponentMap) {
       Archetype archetype = archetypePair.first;
@@ -393,7 +393,7 @@ class Registry {
         // Auto fills in the 0 so that the compiler can deal with void
         // returns from fillComponentVector
         int componentIndex = 0;
-        auto p = {(fillComponentVector<Components>(archetype, componentVectors,
+        auto p = {(FillComponentVector<Components>(archetype, componentVectors,
                                                    componentIndex),
                    0)...};
         (void)p;  // To silence the compiler warning about unused vars
@@ -405,16 +405,16 @@ class Registry {
   // This is to get exact components rather than 'inclusive of <Components>'
   // Usage : getComponentsExact<ComponentA, ComponentB>();
   template <typename... Components>
-  std::vector<void*> getComponentsExact() {
-    Archetype hashCodes = {(getHashCode<Components>())...};
+  std::vector<void*> GetComponentsExact() {
+    Archetype hashCodes = {(GetHashCode<Components>())...};
     std::vector<void*> componentVectors = {
-        (makeComponentVector<Components>())...};
+        (MakeComponentVector<Components>())...};
 
     for (auto& archetypePair : archetypeComponentMap) {
       Archetype archetype = archetypePair.first;
       if (archetype == hashCodes) {
         int componentIndex = 0;
-        auto p = {(fillComponentVector<Components>(archetype, componentVectors,
+        auto p = {(FillComponentVector<Components>(archetype, componentVectors,
                                                    componentIndex),
                    0)...};
         (void)p;
@@ -427,8 +427,8 @@ class Registry {
   // as a way to batch collect all the components of a certain pattern.
   // This exists as a way to get a component given the id.
   template <typename Component>
-  Component* getComponent(Entity id) {
-    unsigned int hashCode = getHashCode<Component>();
+  Component* GetComponent(Entity id) {
+    unsigned int hashCode = GetHashCode<Component>();
 
     // Check that the entity has the said component in the first place.
     if (!entityHasComponent<Component>(id)) {
@@ -456,12 +456,13 @@ class Registry {
   // void removeComponent(Entity entity, Component component) {
   // }
 
-  void registerSystem(System* system) {
+  void RegisterSystem(System* system) {
     systems.push_back(system);
   };
-  void updateSystems(double dt, Input* input) {
+
+  void UpdateSystems(double dt, Input* input) {
     for (System* system : systems) {
-      system->update(dt, this, input);
+      system->Update(dt, this, input);
     }
   }
 };

@@ -7,7 +7,7 @@
 #include <iostream>
 #include <sstream>
 
-std::string readFile(std::string path) {
+std::string ReadFile(std::string path) {
   std::ifstream inFile;
   inFile.open(path);
 
@@ -18,7 +18,7 @@ std::string readFile(std::string path) {
   return str;
 }
 
-unsigned int compileShader(unsigned int type, std::string& source) {
+unsigned int CompileShader(unsigned int type, std::string& source) {
   // Create a char pointer to the first index of the string
   char* src = &source[0];
   unsigned int shaderId = glCreateShader(type);

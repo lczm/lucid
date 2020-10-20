@@ -4,7 +4,7 @@ Input::Input(GLFWwindow* window) {
   Input::window = window;
 
   glfwSetWindowUserPointer(window, this);
-  glfwSetKeyCallback(window, keyCallback);
+  glfwSetKeyCallback(window, KeyCallback);
 
   for (size_t i = 0; i < 350; i++) {
     keys[i] = false;
@@ -14,18 +14,18 @@ Input::Input(GLFWwindow* window) {
 Input::~Input() {
 }
 
-double Input::getMouseX() {
+double Input::GetMouseX() {
   glfwGetCursorPos(window, &x, &y);
   return x;
 }
 
-double Input::getMouseY() {
+double Input::GetMouseY() {
   glfwGetCursorPos(window, &x, &y);
   // OpenGL uses inverse y values compared to glfw window values
   return std::abs(SCREEN_HEIGHT - y);
 }
 
-bool Input::isKeyDown(int key) {
+bool Input::IsKeyDown(int key) {
   // This sets everything to capitalised ascii numbers
   // lets us use something like
   // input->isKeyDown('l')
@@ -38,42 +38,42 @@ bool Input::isKeyDown(int key) {
   return keys[key];
 }
 
-void Input::setKeyOn(int key) {
+void Input::SetKeyOn(int key) {
   if (key >= 97) {
     key -= 32;
   }
   keys[key] = true;
 }
 
-void Input::setKeyOff(int key) {
+void Input::SetKeyOff(int key) {
   if (key >= 97) {
     key -= 32;
   }
   keys[key] = false;
 }
 
-bool Input::isMouseLDown() {
+bool Input::IsMouseLDown() {
   if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT)) {
     return true;
   }
   return false;
 }
 
-bool Input::isMouseRDown() {
+bool Input::IsMouseRDown() {
   if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT)) {
     return true;
   }
   return false;
 }
 
-bool Input::isMouseMDown() {
+bool Input::IsMouseMDown() {
   if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE)) {
     return true;
   }
   return false;
 }
 
-void Input::handleKeyCallback(GLFWwindow* window, int key, int scancode,
+void Input::HandleKeyCallback(GLFWwindow* window, int key, int scancode,
                               int action, int mods) {
   // Dont handle unknown keys
   if (key == GLFW_KEY_UNKNOWN) return;

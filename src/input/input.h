@@ -17,23 +17,23 @@ class Input {
   ~Input();
 
  public:
-  double getMouseX();
-  double getMouseY();
+  double GetMouseX();
+  double GetMouseY();
 
  public:
-  bool isKeyDown(int key);
-  void setKeyOn(int key);
-  void setKeyOff(int key);
+  bool IsKeyDown(int key);
+  void SetKeyOn(int key);
+  void SetKeyOff(int key);
 
-  bool isMouseLDown();
-  bool isMouseRDown();
-  bool isMouseMDown();
+  bool IsMouseLDown();
+  bool IsMouseRDown();
+  bool IsMouseMDown();
 
-  void handleKeyCallback(GLFWwindow* window, int key, int scancode, int action,
+  void HandleKeyCallback(GLFWwindow* window, int key, int scancode, int action,
                          int mods);
 
  private:
-  static void keyCallback(GLFWwindow* window, int key, int scancode, int action,
+  static void KeyCallback(GLFWwindow* window, int key, int scancode, int action,
                           int mods) {
     // Quit the program
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
@@ -41,6 +41,6 @@ class Input {
     }
 
     Input* input = (Input*)glfwGetWindowUserPointer(window);
-    input->handleKeyCallback(window, key, scancode, action, mods);
+    input->HandleKeyCallback(window, key, scancode, action, mods);
   }
 };

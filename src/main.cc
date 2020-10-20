@@ -110,7 +110,7 @@ int main(void) {
 
     // Clear all errors, so that when we check for errors, the
     // errors are not checking the previous iteration
-    glClearError();
+    GlClearError();
 
     // if (SANDBOX_TEST)
     //   sandbox->update(dt);
@@ -132,7 +132,7 @@ int main(void) {
       frameCount = 0;
     }
 
-    if (glCheckError()) {
+    if (GlCheckError()) {
       // break out of the loop
       std::cout << "Breaking out of the loop, OpenGL Error" << std::endl;
       break;
