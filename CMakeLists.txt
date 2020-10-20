@@ -79,7 +79,7 @@ include_directories(lib/glad/include)
 
 # Setup imgui
 include_directories(lib/imgui)
-include_directories(lib/imgui/examples)
+include_directories(lib/imgui/backends)
 
 # Setup glfw
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)

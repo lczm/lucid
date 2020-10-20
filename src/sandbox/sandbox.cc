@@ -5,6 +5,15 @@ Sandbox::Sandbox(Registry* registry, Input* input, GLFWwindow* window) {
   Sandbox::input = input;
   Sandbox::window = window;
 
+  IMGUI_CHECKVERSION();
+  ImGui::CreateContext();
+  ImGuiIO& io = ImGui::GetIO();
+  (void)io;
+
+  ImGui::StyleColorsDark();
+  ImGui_ImplGlfw_InitForOpenGL(window, true);
+  ImGui_ImplOpenGL3_Init(GLSL_VERSION);
+
   float vertices[] = {
       -0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f,  //
       0.5f,  -0.5f, -0.5f, 1.0f, 1.0f, 1.0f,  //
@@ -79,7 +88,11 @@ Sandbox::Sandbox(Registry* registry, Input* input, GLFWwindow* window) {
   cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 }
 
-Sandbox::~Sandbox() = default;
+Sandbox::~Sandbox() {
+  ImGui_ImplOpenGL3_Shutdown();
+  ImGui_ImplGlfw_Shutdown();
+  ImGui::DestroyContext();
+};
 
 void Sandbox::Update(double dt) {
   glm::vec3 cubePositions[] = {glm::vec3(0.0f, 0.0f, 0.0f),      //
@@ -116,4 +129,17 @@ void Sandbox::Update(double dt) {
     shader.SetUniformMatFloat4("model", model);
     glDrawArrays(GL_TRIANGLES, 0, 36);
   }
+
+  ImGui_ImplOpenGL3_NewFrame();
+  ImGui_ImplGlfw_NewFrame();
+  ImGui::NewFrame();
+
+  ImGui::Begin("Sandbox");
+  ImGui::BeginTabBar("Sandbox Tab Bar");
+
+  ImGui::EndTabBar();
+  ImGui::End();
+
+  ImGui::Render();
+  ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
