@@ -34,4 +34,5 @@ class Sandbox {
   ~Sandbox();
 
   void Update(double dt);
+  void InitializeGUI();
 };

@@ -8,6 +8,7 @@ Sandbox::Sandbox(Registry* registry, Input* input, GLFWwindow* window) {
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
   ImGuiIO& io = ImGui::GetIO();
+  io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;  // Enable Docking
   (void)io;
 
   ImGui::StyleColorsDark();
@@ -130,16 +131,41 @@ void Sandbox::Update(double dt) {
     glDrawArrays(GL_TRIANGLES, 0, 36);
   }
 
+  InitializeGUI();
+}
+
+void Sandbox::InitializeGUI() {
   ImGui_ImplOpenGL3_NewFrame();
   ImGui_ImplGlfw_NewFrame();
   ImGui::NewFrame();
 
+  ImGuiIO& io = ImGui::GetIO();
+  if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
+  {
+    ImGui::DockSpaceOverViewport();
+    if (ImGui::BeginMainMenuBar()) {
+      if (ImGui::BeginMenu("File")) {
+        ImGui::EndMenu();
+      }
+      if (ImGui::BeginMenu("Edit")) {
+        ImGui::EndMenu();
+      }
+      ImGui::EndMainMenuBar();
+    }
+  }
+  ImGui::ShowDemoWindow();
+
   ImGui::Begin("Sandbox");
   ImGui::BeginTabBar("Sandbox Tab Bar");
+
+  //  ImGui::BeginTabItem("Hello");
+  //  ImGui::Text("something");
+  //  ImGui::EndTabItem();
 
   ImGui::EndTabBar();
   ImGui::End();
 
   ImGui::Render();
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
 }
