@@ -1,9 +1,9 @@
-#include "sandbox.h"
+#include "lucid.h"
 
-Sandbox::Sandbox(Registry* registry, Input* input, GLFWwindow* window) {
-  Sandbox::registry = registry;
-  Sandbox::input = input;
-  Sandbox::window = window;
+Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window) {
+  Lucid::registry = registry;
+  Lucid::input = input;
+  Lucid::window = window;
 
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
@@ -88,13 +88,13 @@ Sandbox::Sandbox(Registry* registry, Input* input, GLFWwindow* window) {
   cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 }
 
-Sandbox::~Sandbox() {
+Lucid::~Lucid() {
   ImGui_ImplOpenGL3_Shutdown();
   ImGui_ImplGlfw_Shutdown();
   ImGui::DestroyContext();
 };
 
-void Sandbox::Update(double dt) {
+void Lucid::Update(double dt) {
   glm::vec3 cubePositions[] = {glm::vec3(0.0f, 0.0f, 0.0f),      //
                                glm::vec3(2.0f, 5.0f, -15.0f),    //
                                glm::vec3(-1.5f, -2.2f, -2.5f),   //

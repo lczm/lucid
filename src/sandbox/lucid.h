@@ -12,7 +12,7 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
-class Sandbox {
+class Lucid {
  private:
   Registry* registry;
   Input* input;
@@ -30,8 +30,8 @@ class Sandbox {
   glm::mat4 view;
 
  public:
-  Sandbox(Registry* registry, Input* input, GLFWwindow* window);
-  ~Sandbox();
+  Lucid(Registry* registry, Input* input, GLFWwindow* window);
+  ~Lucid();
 
   void Update(double dt);
 };

@@ -12,7 +12,7 @@
 
 #include <glad/gl.h>
 
-#include "sandbox.h"
+#include "lucid.h"
 #include "constants.h"
 #include "errors.h"
 #include "ecs.h"
@@ -91,7 +91,7 @@ int main(void) {
   Registry* registry = new Registry();
   Input* input = new Input(window);
 
-  Sandbox* sandbox = new Sandbox(registry, input, window);
+  Lucid* lucid = new Lucid(registry, input, window);
 
   // glfwSetKeyCallback(window, keyCallback);
 
@@ -107,7 +107,7 @@ int main(void) {
     // errors are not checking the previous iteration
     GlClearError();
 
-    sandbox->Update(dt);
+    lucid->Update(dt);
 
     // if (SANDBOX_TEST)
     //   sandbox->update(dt);
