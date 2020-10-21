@@ -9,6 +9,7 @@ Sandbox::Sandbox(Registry* registry, Input* input, GLFWwindow* window) {
   ImGui::CreateContext();
   ImGuiIO& io = ImGui::GetIO();
   io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;  // Enable Docking
+  io.ConfigWindowsMoveFromTitleBarOnly |= ImGuiWindowFlags_NoMove;
   (void)io;
 
   ImGui::StyleColorsDark();
@@ -142,7 +143,7 @@ void Sandbox::InitializeGUI() {
   ImGuiIO& io = ImGui::GetIO();
   if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
   {
-    ImGui::DockSpaceOverViewport();
+    ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
     if (ImGui::BeginMainMenuBar()) {
       if (ImGui::BeginMenu("File")) {
         ImGui::EndMenu();
@@ -153,17 +154,36 @@ void Sandbox::InitializeGUI() {
       ImGui::EndMainMenuBar();
     }
   }
-  ImGui::ShowDemoWindow();
 
-  ImGui::Begin("Sandbox");
-  ImGui::BeginTabBar("Sandbox Tab Bar");
+  ImGuiID dockspace_id = ImGui::GetID("DockSpace");
+  ImGuiViewport* viewport = ImGui::GetMainViewport();
+  ImVec2 dockspace_size = viewport->GetWorkSize();
+
+  ImGui::DockBuilderRemoveNode(dockspace_id); // Clear out existing layout
+  ImGui::DockBuilderAddNode(dockspace_id, ImGuiDockNodeFlags_DockSpace); // Add empty node
+  ImGui::DockBuilderSetNodeSize(dockspace_id, dockspace_size);
+
+  ImGuiID dock_main_id = dockspace_id; // This variable will track the document node, however we are not using it here as we aren't docking anything into it.
+  ImGuiID dock_id_prop = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Left, 0.20f, NULL, &dock_main_id);
+  ImGuiID dock_id_bottom = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Down, 0.20f, NULL, &dock_main_id);
+  
+  ImGui::DockBuilderDockWindow("Log", dock_id_bottom);
+  ImGui::DockBuilderDockWindow("Properties", dock_id_prop);
+  ImGui::DockBuilderDockWindow("Mesh", dock_id_prop);
+  ImGui::DockBuilderDockWindow("Extra", dock_id_prop);
+  ImGui::DockBuilderFinish(dockspace_id);
+
+  //ImGui::ShowDemoWindow();
+
+  //ImGui::Begin("Sandbox");
+  //ImGui::BeginTabBar("Sandbox Tab Bar");
 
   //  ImGui::BeginTabItem("Hello");
   //  ImGui::Text("something");
   //  ImGui::EndTabItem();
 
-  ImGui::EndTabBar();
-  ImGui::End();
+  //ImGui::EndTabBar();
+  //ImGui::End();
 
   ImGui::Render();
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
