@@ -109,11 +109,6 @@ int main(void) {
 
     lucid->Update(dt);
 
-    // if (SANDBOX_TEST)
-    //   sandbox->update(dt);
-    // else
-    //   gambit->update(dt);
-
     auto now = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsed = now - timer;
     dt = elapsed.count();

@@ -95,6 +95,22 @@ Lucid::~Lucid() {
 };
 
 void Lucid::Update(double dt) {
+  const float cameraSpeed = 5.0f;
+  if (input->IsKeyDown('w')) {
+    cameraPos += static_cast<float>(cameraSpeed * dt) * cameraFront;
+  }
+  if (input->IsKeyDown('s')) {
+    cameraPos -= static_cast<float>(cameraSpeed * dt) *  cameraFront;
+  }
+  if (input->IsKeyDown('a')) {
+    cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) *
+                 static_cast<float>(cameraSpeed * dt);
+  }
+  if (input->IsKeyDown('d')) {
+    cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) *
+                 static_cast<float>(cameraSpeed * dt);
+  }
+
   glm::vec3 cubePositions[] = {glm::vec3(0.0f, 0.0f, 0.0f),      //
                                glm::vec3(2.0f, 5.0f, -15.0f),    //
                                glm::vec3(-1.5f, -2.2f, -2.5f),   //
