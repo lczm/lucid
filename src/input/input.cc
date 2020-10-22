@@ -3,8 +3,9 @@
 Input::Input(GLFWwindow* window) {
   Input::window = window;
 
-  glfwSetWindowUserPointer(window, this);
-  glfwSetKeyCallback(window, KeyCallback);
+  // glfwSetWindowUserPointer(window, this);
+  // glfwSetKeyCallback(window, KeyCallback);
+  // glfwSetCursorPosCallback(window, MouseCallback);
 
   for (size_t i = 0; i < 350; i++) {
     keys[i] = false;
@@ -84,3 +85,32 @@ void Input::HandleKeyCallback(GLFWwindow* window, int key, int scancode,
     keys[key] = false;
   }
 }
+
+// void Input::HandleMouseCallback(GLFWwindow* window, double xpos, double ypos) {
+//   if (firstMouse) {
+//     lastX = xpos;
+//     lastY = ypos;
+//     firstMouse = false;
+//   }
+//
+//   float xOffset = xpos - lastX;
+//   float yOffset = ypos - lastY;
+//
+//   lastX = xpos;
+//   lastY = ypos;
+//
+//   const float sensitivity = 0.01f;
+//   xOffset *= sensitivity;
+//   yOffset *= sensitivity;
+//
+//   yaw += xOffset;
+//   pitch += yOffset;
+//
+//   if (pitch > 89.0f) pitch = 89.0f;
+//   if (pitch < -89.0f) pitch = -89.0f;
+//
+//   direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+//   direction.y = sin(glm::radians(pitch));
+//   direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+//   // cameraFront = glm::normalize(direction);
+// }

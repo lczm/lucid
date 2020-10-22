@@ -5,6 +5,21 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window) {
   Lucid::input = input;
   Lucid::window = window;
 
+  Lucid::firstMouse = true;
+  for (size_t i = 0; i < 350; i++) {
+    keys[i] = false;
+  }
+
+  Lucid::yaw = 0;
+  Lucid::pitch = 0;
+
+  // glfwSetCursorPosCallback(window, Lucid::MouseCallback);
+
+  glfwSetWindowUserPointer(window, this);
+  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+  glfwSetKeyCallback(window, KeyCallback);
+  glfwSetCursorPosCallback(window, MouseCallback);
+
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
   ImGuiIO& io = ImGui::GetIO();
@@ -95,18 +110,22 @@ Lucid::~Lucid() {
 };
 
 void Lucid::Update(double dt) {
+  // cameraFront = input->direction;
+  // std::cout << glm::to_string(input->direction) << std::endl;
+  // std::cout << glm::to_string(cameraFront) << std::endl;
+
   const float cameraSpeed = 5.0f;
-  if (input->IsKeyDown('w')) {
+  if (IsKeyDown('w')) {
     cameraPos += static_cast<float>(cameraSpeed * dt) * cameraFront;
   }
-  if (input->IsKeyDown('s')) {
+  if (IsKeyDown('s')) {
     cameraPos -= static_cast<float>(cameraSpeed * dt) *  cameraFront;
   }
-  if (input->IsKeyDown('a')) {
+  if (IsKeyDown('a')) {
     cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) *
                  static_cast<float>(cameraSpeed * dt);
   }
-  if (input->IsKeyDown('d')) {
+  if (IsKeyDown('d')) {
     cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) *
                  static_cast<float>(cameraSpeed * dt);
   }
@@ -150,8 +169,8 @@ void Lucid::Update(double dt) {
   ImGui_ImplGlfw_NewFrame();
   ImGui::NewFrame();
 
-  ImGui::Begin("Sandbox");
-  ImGui::BeginTabBar("Sandbox Tab Bar");
+  ImGui::Begin("Lucid");
+  ImGui::BeginTabBar("Lucid Tab Bar");
 
   ImGui::EndTabBar();
   ImGui::End();
@@ -159,3 +178,58 @@ void Lucid::Update(double dt) {
   ImGui::Render();
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
+
+bool Lucid::IsKeyDown(int key) {
+  // This sets everything to capitalised ascii numbers
+  // lets us use something like
+  // input->isKeyDown('l')
+  // input->isKeyDown('L')
+  // I guess in the future if we need to do mod keys, this will have to be
+  // changed
+  if (key >= 97) {
+    key -= 32;
+  }
+  return keys[key];
+}
+
+void Lucid::HandleKeyCallback(GLFWwindow* window, int key, int scancode,
+                              int action, int mods) {
+  // Dont handle unknown keys
+  if (key == GLFW_KEY_UNKNOWN) return;
+
+  if (action == GLFW_PRESS || action == GLFW_REPEAT) {
+    keys[key] = true;
+  } else if (action == GLFW_RELEASE) {
+    keys[key] = false;
+  }
+}
+
+
+void Lucid::UpdateCameraVector(float xOffset, float yOffset) {
+  const float sensitivity = 0.1f;
+
+  xOffset *= sensitivity;
+  yOffset *= sensitivity;
+
+  std::cout << "xOffset : " << xOffset << std::endl;
+  std::cout << "yOffset : " << yOffset << std::endl;
+
+  yaw += xOffset;
+  pitch += yOffset;
+
+  std::cout << "yaw : " << yaw << std::endl;
+  std::cout << "pitch : " << pitch << std::endl;
+
+  if (pitch > 89.0f) pitch = 89.0f;
+  if (pitch < -89.0f) pitch = -89.0f;
+
+  glm::vec3 front;
+  front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+  front.y = sin(glm::radians(pitch));
+  front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+
+  cameraPos = glm::normalize(glm::cross(cameraFront, cameraUp));
+  cameraUp = glm::normalize(glm::cross(cameraPos, cameraFront));
+  cameraFront = glm::normalize(front);
+}
+

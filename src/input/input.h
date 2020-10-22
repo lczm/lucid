@@ -2,6 +2,8 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include "constants.h"
+#include "glm.hpp"
+#include "gtc/matrix_transform.hpp"
 
 class Input {
  private:
@@ -32,7 +34,7 @@ class Input {
   void HandleKeyCallback(GLFWwindow* window, int key, int scancode, int action,
                          int mods);
 
- private:
+ public:
   static void KeyCallback(GLFWwindow* window, int key, int scancode, int action,
                           int mods) {
     // Quit the program
