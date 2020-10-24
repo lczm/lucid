@@ -18,7 +18,11 @@ class Lucid {
   Input* input;
   GLFWwindow* window;
 
+  // There are ~350 keys defined by GLFW
   bool keys[350];
+
+  // Left/Right/Middle
+  MOUSE_STATE mouseKeys[3];
 
   uint32_t VAO, VBO, EBO;
   uint32_t vertexShader, fragmentShader;
@@ -52,25 +56,33 @@ class Lucid {
 
   void HandleKeyCallback(GLFWwindow* window, int key, int scancode, int action,
                          int mods);
+  void HandleMouseCallback(GLFWwindow* window, int button, int action,
+                           int mods);
   void UpdateCameraVector(float xOffset, float yOffset);
 
  public:
-  static void MouseCallback(GLFWwindow* window, double xpos, double ypos) {
+  // static void MouseCallback(GLFWwindow* window, double xpos, double ypos) {
+  //   Lucid* lucid = (Lucid*)glfwGetWindowUserPointer(window);
+
+  //   if (lucid->firstMouse) {
+  //     lucid->lastX = xpos;
+  //     lucid->lastY = ypos;
+  //     lucid->firstMouse = false;
+  //   }
+
+  //   float xOffset = xpos - lucid->lastX;
+  //   float yOffset = lucid->lastY - ypos;
+
+  //   lucid->lastX = xpos;
+  //   lucid->lastY = ypos;
+
+  //   lucid->UpdateCameraVector(xOffset, yOffset);
+  // }
+
+  static void MouseCallback(GLFWwindow* window, int button, int action,
+                            int mods) {
     Lucid* lucid = (Lucid*)glfwGetWindowUserPointer(window);
-
-    if (lucid->firstMouse) {
-      lucid->lastX = xpos;
-      lucid->lastY = ypos;
-      lucid->firstMouse = false;
-    }
-
-    float xOffset = xpos - lucid->lastX;
-    float yOffset = lucid->lastY - ypos;
-
-    lucid->lastX = xpos;
-    lucid->lastY = ypos;
-
-    lucid->UpdateCameraVector(xOffset, yOffset);
+    lucid->HandleMouseCallback(window, button, action, mods);
   }
 
   static void KeyCallback(GLFWwindow* window, int key, int scancode, int action,

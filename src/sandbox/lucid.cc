@@ -6,19 +6,26 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window) {
   Lucid::window = window;
 
   Lucid::firstMouse = true;
-  for (size_t i = 0; i < 350; i++) {
-    keys[i] = false;
-  }
+  for (bool& key : keys) { key = false; }
+  for (MOUSE_STATE& mouseKey : mouseKeys) { mouseKey = MOUSE_STATE::NONE; }
 
   Lucid::yaw = 0;
   Lucid::pitch = 0;
+  Lucid::lastX = 0;
+  Lucid::lastY = 0;
 
   // glfwSetCursorPosCallback(window, Lucid::MouseCallback);
 
+  // Target this window for user pointer for GLFW, this is so that
+  // in callbacks, we can retrieve back the class
   glfwSetWindowUserPointer(window, this);
-  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+  // Set callbacks
+  // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+  // glfwSetCursorPosCallback(window, MouseCallback);
+
   glfwSetKeyCallback(window, KeyCallback);
-  glfwSetCursorPosCallback(window, MouseCallback);
+  glfwSetMouseButtonCallback(window, MouseCallback);
 
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
@@ -98,9 +105,17 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window) {
 
   shader.CreateShader(TRIANGLE_VERTEX_SHADER, TRIANGLE_FRAGMENT_SHADER);
 
-  cameraPos = glm::vec3(0.0f, 0.0f, 5.0f);
-  cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+  // cameraPos = glm::vec3(0.0f, 0.0f, 5.0f);
+  // cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
   cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
+  glm::vec3 front;
+  front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+  front.y = sin(glm::radians(pitch));
+  front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+  cameraFront = front;
+  cameraPos = glm::normalize(glm::cross(cameraFront, cameraUp));
+  cameraUp = glm::normalize(glm::cross(cameraPos, cameraFront));
 }
 
 Lucid::~Lucid() {
@@ -110,16 +125,25 @@ Lucid::~Lucid() {
 };
 
 void Lucid::Update(double dt) {
-  // cameraFront = input->direction;
-  // std::cout << glm::to_string(input->direction) << std::endl;
-  // std::cout << glm::to_string(cameraFront) << std::endl;
+  if (mouseKeys[0] == MOUSE_STATE::CLICK && (lastX != input->GetMouseX() ||
+                                            lastY != input->GetMouseY())) {
+    float offsetX = input->GetMouseX() - lastX;
+    float offsetY = input->GetMouseY() - lastY;
+
+    UpdateCameraVector(offsetX, offsetY);
+  }
+
+  // if (mouseKeys[0] == MOUSE_STATE::NONE) {
+  //   Lucid::yaw = 0;
+  //   Lucid::pitch = 0;
+  // }
 
   const float cameraSpeed = 5.0f;
   if (IsKeyDown('w')) {
     cameraPos += static_cast<float>(cameraSpeed * dt) * cameraFront;
   }
   if (IsKeyDown('s')) {
-    cameraPos -= static_cast<float>(cameraSpeed * dt) *  cameraFront;
+    cameraPos -= static_cast<float>(cameraSpeed * dt) * cameraFront;
   }
   if (IsKeyDown('a')) {
     cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) *
@@ -204,21 +228,33 @@ void Lucid::HandleKeyCallback(GLFWwindow* window, int key, int scancode,
   }
 }
 
+void Lucid::HandleMouseCallback(GLFWwindow* window, int button, int action,
+                                int mods) {
+  if (action == GLFW_PRESS) {
+    if (mouseKeys[button] == MOUSE_STATE::NONE) {
+      mouseKeys[button] = MOUSE_STATE::CLICK;
+      lastX = input->GetMouseX();
+      lastY = input->GetMouseY();
+    }
+  } else if (action == GLFW_RELEASE) {
+    mouseKeys[button] = MOUSE_STATE::NONE;
+  }
+}
 
 void Lucid::UpdateCameraVector(float xOffset, float yOffset) {
-  const float sensitivity = 0.1f;
+  const float sensitivity = 0.005f;
 
   xOffset *= sensitivity;
   yOffset *= sensitivity;
 
-  std::cout << "xOffset : " << xOffset << std::endl;
-  std::cout << "yOffset : " << yOffset << std::endl;
+  // std::cout << "xOffset : " << xOffset << std::endl;
+  // std::cout << "yOffset : " << yOffset << std::endl;
 
   yaw += xOffset;
   pitch += yOffset;
 
-  std::cout << "yaw : " << yaw << std::endl;
-  std::cout << "pitch : " << pitch << std::endl;
+  // std::cout << "yaw : " << yaw << std::endl;
+  // std::cout << "pitch : " << pitch << std::endl;
 
   if (pitch > 89.0f) pitch = 89.0f;
   if (pitch < -89.0f) pitch = -89.0f;
@@ -228,8 +264,7 @@ void Lucid::UpdateCameraVector(float xOffset, float yOffset) {
   front.y = sin(glm::radians(pitch));
   front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 
-  cameraPos = glm::normalize(glm::cross(cameraFront, cameraUp));
-  cameraUp = glm::normalize(glm::cross(cameraPos, cameraFront));
+  // cameraPos = glm::normalize(glm::cross(cameraFront, cameraUp));
+  // cameraUp = glm::normalize(glm::cross(cameraPos, cameraFront));
   cameraFront = glm::normalize(front);
 }
-
