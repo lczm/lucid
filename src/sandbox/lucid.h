@@ -22,7 +22,7 @@ class Lucid {
   bool keys[350];
 
   // Left/Right/Middle
-  MOUSE_STATE mouseKeys[3];
+  bool mouseKeys[3];
 
   uint32_t VAO, VBO, EBO;
   uint32_t vertexShader, fragmentShader;
