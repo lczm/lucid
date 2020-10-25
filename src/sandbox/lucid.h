@@ -3,6 +3,7 @@
 #include "gl.h"
 #include "ecs.h"
 #include "input.h"
+#include "model.h"
 #include "constants.h"
 #include "glm.hpp"
 #include "gtx/string_cast.hpp"
@@ -29,6 +30,7 @@ class Lucid {
   uint32_t shaderProgram;
 
   Shader shader;
+  Shader modelShader;
 
   glm::vec3 cameraPos;
   glm::vec3 cameraFront;
@@ -37,6 +39,8 @@ class Lucid {
   glm::mat4 view;
 
   glm::vec3 direction;
+
+  Model* model;
 
   float lastX;
   float lastY;

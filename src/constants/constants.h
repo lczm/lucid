@@ -11,3 +11,5 @@ const int SCREEN_HEIGHT = 720;
 const char TRIANGLE_VERTEX_SHADER[] = "../src/shaders/triangle.vert";
 const char TRIANGLE_FRAGMENT_SHADER[] = "../src/shaders/triangle.frag";
 
+const char MODEL_VERTEX_SHADER[] = "../src/shaders/model.vert";
+const char MODEL_FRAGMENT_SHADER[] = "../src/shaders/model.frag";
