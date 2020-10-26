@@ -20,8 +20,8 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window) {
 
   modelShader.CreateShader(MODEL_VERTEX_SHADER, MODEL_FRAGMENT_SHADER);
 
-  Lucid::microphone = new Model("assets/microphone/scene.gltf");
-  Lucid::helmet = new Model("assets/helmet/ScifiHelmet.gltf");
+  Lucid::microphone = new Model(MICROPHONE_MODEL);
+  Lucid::helmet = new Model(SCIFIHELMET_MODEL);
 
   // Target this window for user pointer for GLFW, this is so that
   // in callbacks, we can retrieve back the class
@@ -117,6 +117,7 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window) {
   front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
   front.y = sin(glm::radians(pitch));
   front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+
   cameraFront = front;
   cameraPos = glm::normalize(glm::cross(cameraFront, cameraUp));
   cameraUp = glm::normalize(glm::cross(cameraPos, cameraFront));
@@ -129,10 +130,13 @@ Lucid::~Lucid() {
 };
 
 void Lucid::Update(double dt) {
-  if (mouseKeys[0] &&
+  if (mouseKeys[MOUSE_LEFT] &&
       (lastX != input->GetMouseX() || lastY != input->GetMouseY())) {
     float offsetX = input->GetMouseX() - lastX;
     float offsetY = input->GetMouseY() - lastY;
+
+    lastX = input->GetMouseX();
+    lastY = input->GetMouseY();
 
     UpdateCameraVector(offsetX, offsetY);
   }
@@ -255,7 +259,7 @@ void Lucid::HandleMouseCallback(GLFWwindow* window, int button, int action,
 }
 
 void Lucid::UpdateCameraVector(float xOffset, float yOffset) {
-  const float sensitivity = 0.005f;
+  const float sensitivity = 0.1f;
 
   xOffset *= sensitivity;
   yOffset *= sensitivity;
