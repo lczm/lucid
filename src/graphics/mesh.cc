@@ -63,8 +63,8 @@ void Mesh::Draw(Shader& shader) {
     if (name == "texture_diffuse") number = std::to_string(diffuseNr++);
     else if (name == "texture_specular") number = std::to_string(specularNr++);
 
-    shader.SetUniformInt1(("material." + name + number).c_str(), i);
     glBindTexture(GL_TEXTURE_2D, textures[i].id);
+    shader.SetUniformInt1(("material." + name + number).c_str(), i);
   }
 
   // Draw the mesh

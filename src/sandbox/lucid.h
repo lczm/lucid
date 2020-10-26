@@ -40,7 +40,8 @@ class Lucid {
 
   glm::vec3 direction;
 
-  Model* model;
+  Model* microphone;
+  Model* helmet;
 
   float lastX;
   float lastY;

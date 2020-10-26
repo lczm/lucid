@@ -88,7 +88,7 @@ int main(void) {
   // Tell OpenGL to depth test
   glEnable(GL_DEPTH_TEST);
 
-  stbi_set_flip_vertically_on_load(true);
+  // stbi_set_flip_vertically_on_load(true);
 
   Registry* registry = new Registry();
   Input* input = new Input(window);

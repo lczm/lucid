@@ -90,15 +90,23 @@ std::vector<MeshTexture> Model::LoadMaterialTextures(aiMaterial* material,
                                                      aiTextureType type,
                                                      std::string typeName) {
   std::vector<MeshTexture> textures;
+
+  auto diffuseCount = material->GetTextureCount(aiTextureType_DIFFUSE);
+  auto specularCount = material->GetTextureCount(aiTextureType_SPECULAR);
+  auto unknownCount = material->GetTextureCount(aiTextureType_UNKNOWN);
+  auto somethingCount = material->GetTextureCount(aiTextureType_REFLECTION);
+  auto ambientCount = material->GetTextureCount(aiTextureType_AMBIENT);
+
   for (size_t i = 0; i < material->GetTextureCount(type); i++) {
     aiString str;
     material->GetTexture(type, i, &str);
 
     bool skip = false;
     for (size_t j = 0; j < loadedTextures.size(); j++) {
-      if(std::strcmp(loadedTextures[j].path.data(), str.C_Str()) == 0) {
+      if (std::strcmp(loadedTextures[j].path.data(), str.C_Str()) == 0) {
         textures.push_back(loadedTextures[j]);
-        skip = true; // a texture with the same filepath has already been loaded, continue to next one. (optimization)
+        skip = true;  // a texture with the same filepath has already been
+                      // loaded, continue to next one. (optimization)
         break;
       }
     }
@@ -149,7 +157,8 @@ uint32_t Model::TextureFromFile(const char* path, const std::string& directory,
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                    GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     stbi_image_free(data);

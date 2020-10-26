@@ -6,8 +6,12 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window) {
   Lucid::window = window;
 
   Lucid::firstMouse = true;
-  for (bool& key : keys) { key = false; }
-  for (bool& mouseKey : mouseKeys) { mouseKey = false; }
+  for (bool& key : keys) {
+    key = false;
+  }
+  for (bool& mouseKey : mouseKeys) {
+    mouseKey = false;
+  }
 
   Lucid::yaw = 0;
   Lucid::pitch = 0;
@@ -15,7 +19,9 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window) {
   Lucid::lastY = 0;
 
   modelShader.CreateShader(MODEL_VERTEX_SHADER, MODEL_FRAGMENT_SHADER);
-  Lucid::model = new Model("assets/backpack.obj");
+
+  Lucid::microphone = new Model("assets/microphone/scene.gltf");
+  Lucid::helmet = new Model("assets/helmet/ScifiHelmet.gltf");
 
   // Target this window for user pointer for GLFW, this is so that
   // in callbacks, we can retrieve back the class
@@ -90,8 +96,8 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window) {
   // glBindBuffer(GL_ARRAY_BUFFER, VBO);
   // glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-  // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-  // glEnableVertexAttribArray(0);
+  // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float),
+  // (void*)0); glEnableVertexAttribArray(0);
 
   // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float),
   //                       (void*)(3 * sizeof(float)));
@@ -123,8 +129,8 @@ Lucid::~Lucid() {
 };
 
 void Lucid::Update(double dt) {
-  if (mouseKeys[0] && (lastX != input->GetMouseX() ||
-                                            lastY != input->GetMouseY())) {
+  if (mouseKeys[0] &&
+      (lastX != input->GetMouseX() || lastY != input->GetMouseY())) {
     float offsetX = input->GetMouseX() - lastX;
     float offsetY = input->GetMouseY() - lastY;
 
@@ -156,10 +162,10 @@ void Lucid::Update(double dt) {
 
   view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
-  glm::mat4 projection =
-      glm::perspective(glm::radians(45.0f),
-                       static_cast<float>(SCREEN_WIDTH) /
-                           static_cast<float>(SCREEN_HEIGHT), 0.1f, 100.0f);
+  glm::mat4 projection = glm::perspective(
+      glm::radians(45.0f),
+      static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT),
+      0.1f, 100.0f);
 
   modelShader.Bind();
 
@@ -167,11 +173,15 @@ void Lucid::Update(double dt) {
   modelShader.SetUniformMatFloat4("view", view);
 
   glm::mat4 model = glm::mat4(1.0f);
-  model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
-  model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down-
-  modelShader.SetUniformMatFloat4("model", model);
+  model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));  // translate it down so it's at the center of the scene
+  model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));  // it's a bit too big for our scene, so scale it down-
 
-  Lucid::model->Draw(modelShader);
+  modelShader.SetUniformMatFloat4("model", model);
+  Lucid::microphone->Draw(modelShader);
+
+  model = glm::translate(model, glm::vec3(5.0f, 0.0f, 0.0f));  // translate it down so it's at the center of the scene
+  modelShader.SetUniformMatFloat4("model", model);
+  Lucid::helmet->Draw(modelShader);
 
   // shader.Bind();
   // shader.SetUniformMatFloat4("view", view);
