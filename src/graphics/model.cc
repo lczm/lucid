@@ -91,12 +91,6 @@ std::vector<MeshTexture> Model::LoadMaterialTextures(aiMaterial* material,
                                                      std::string typeName) {
   std::vector<MeshTexture> textures;
 
-  auto diffuseCount = material->GetTextureCount(aiTextureType_DIFFUSE);
-  auto specularCount = material->GetTextureCount(aiTextureType_SPECULAR);
-  auto unknownCount = material->GetTextureCount(aiTextureType_UNKNOWN);
-  auto somethingCount = material->GetTextureCount(aiTextureType_REFLECTION);
-  auto ambientCount = material->GetTextureCount(aiTextureType_AMBIENT);
-
   for (size_t i = 0; i < material->GetTextureCount(type); i++) {
     aiString str;
     material->GetTexture(type, i, &str);
