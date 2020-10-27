@@ -49,8 +49,11 @@ class Lucid {
   float yaw;
   float pitch;
 
+  int scroll;
+
   std::function<void(GLFWwindow* window, int button, int action, int mods)> mouseCallback;
   std::function<void(GLFWwindow* window, int key, int scancode, int action, int mods)> keyCallback;
+  std::function<void(GLFWwindow* window, double xoffset, double yoffset)> scrollCallback;
 
  public:
   Lucid(Registry* registry, Input* input, GLFWwindow* window);
@@ -62,14 +65,18 @@ class Lucid {
 
   void UpdateCameraVector(float xOffset, float yOffset);
 
-  static void HandleKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-  static void HandleMouseCallback(GLFWwindow* window, int button, int action, int mods);
-
   void SetMouseCallback(
       std::function<void(GLFWwindow* window, int button, int action, int mods)> fn);
   void SetKeyCallback(
       std::function<void(GLFWwindow* window, int key, int scancode, int action, int mods)> fn);
+  void SetScrollCallback(
+      std::function<void(GLFWwindow* window, double xOffset, double yOffset)> fn);
+
+  static void HandleKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+  static void HandleMouseCallback(GLFWwindow* window, int button, int action, int mods);
+  static void HandleScrollCallback(GLFWwindow* window, double xOffset, double yOffset);
 
   static void MouseCallback(GLFWwindow* window, int button, int action, int mods);
   static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+  static void ScrollCallback(GLFWwindow* window, double xOffset, double yOffset);
 };

@@ -10,9 +10,6 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window) {
   Lucid::lastX = 0;
   Lucid::lastY = 0;
 
-  SetMouseCallback(HandleMouseCallback);
-  SetKeyCallback(HandleKeyCallback);
-
   for (bool& key : keys) {
     key = false;
   }
@@ -24,9 +21,15 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window) {
   // in callbacks, we can retrieve back the class
   glfwSetWindowUserPointer(window, this);
 
-  // Set callbacks
+  // Set GLFW callback handlers
   glfwSetKeyCallback(window, KeyCallback);
   glfwSetMouseButtonCallback(window, MouseCallback);
+  glfwSetScrollCallback(window, ScrollCallback);
+
+  // Set Lucid callbacks
+  SetMouseCallback(HandleMouseCallback);
+  SetKeyCallback(HandleKeyCallback);
+  SetScrollCallback(HandleScrollCallback);
 
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
@@ -162,15 +165,15 @@ void Lucid::Update(double dt) {
 
     // Mouse moving to the left side, pan camera to the upper right
     if (offsetY > 0) {
-      cameraPos.y -= offsetY *  dt;
+      cameraPos.y -= offsetY * dt;
     } else if (offsetY < 0) {
-      cameraPos.y -= offsetY *  dt;
+      cameraPos.y -= offsetY * dt;
     }
 
     if (offsetX > 0) {
-      cameraPos.z -= offsetX *  dt;
+      cameraPos.z -= offsetX * dt;
     } else if (offsetX < 0) {
-      cameraPos.z -= offsetX *  dt;
+      cameraPos.z -= offsetX * dt;
     }
 
     lastX = input->GetMouseX();
@@ -194,6 +197,13 @@ void Lucid::Update(double dt) {
   if (IsKeyDown('d'))
     cameraPos +=
         glm::normalize(glm::cross(cameraFront, cameraUp)) * static_cast<float>(CAMERA_SPEED * dt);
+
+  if (scroll == 1)
+    cameraPos += static_cast<float>(SCROLL_SPEED * dt) * cameraFront;
+  if (scroll == -1)
+    cameraPos -= static_cast<float>(SCROLL_SPEED * dt) * cameraFront;
+
+  scroll = 0;
 
   // glm::vec3 cubePositions[] = {glm::vec3(0.0f, 0.0f, 0.0f),      //
   //                              glm::vec3(2.0f, 5.0f, -15.0f),    //
@@ -288,6 +298,35 @@ bool Lucid::IsKeyDown(int key) {
   return keys[key];
 }
 
+void Lucid::UpdateCameraVector(float xOffset, float yOffset) {
+  xOffset *= CAMERA_SENSITIVITY;
+  yOffset *= CAMERA_SENSITIVITY;
+
+  yaw += xOffset;
+  pitch += yOffset;
+
+  if (pitch > 89.0f) pitch = 89.0f;
+  if (pitch < -89.0f) pitch = -89.0f;
+
+  glm::vec3 front;
+  front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+  front.y = sin(glm::radians(pitch));
+  front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+  cameraFront = glm::normalize(front);
+}
+
+void Lucid::SetMouseCallback(std::function<void(GLFWwindow*, int, int, int)> fn) {
+  mouseCallback = fn;
+}
+
+void Lucid::SetKeyCallback(std::function<void(GLFWwindow*, int, int, int, int)> fn) {
+  keyCallback = fn;
+}
+
+void Lucid::SetScrollCallback(std::function<void(GLFWwindow*, double, double)> fn) {
+  scrollCallback = fn;
+}
+
 void Lucid::HandleKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
   Lucid* lucid = (Lucid*)glfwGetWindowUserPointer(window);
 
@@ -315,29 +354,14 @@ void Lucid::HandleMouseCallback(GLFWwindow* window, int button, int action, int 
   }
 }
 
-void Lucid::UpdateCameraVector(float xOffset, float yOffset) {
-  xOffset *= CAMERA_SENSITIVITY;
-  yOffset *= CAMERA_SENSITIVITY;
-
-  yaw += xOffset;
-  pitch += yOffset;
-
-  if (pitch > 89.0f) pitch = 89.0f;
-  if (pitch < -89.0f) pitch = -89.0f;
-
-  glm::vec3 front;
-  front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-  front.y = sin(glm::radians(pitch));
-  front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-  cameraFront = glm::normalize(front);
-}
-
-void Lucid::SetMouseCallback(std::function<void(GLFWwindow*, int, int, int)> fn) {
-  mouseCallback = fn;
-}
-
-void Lucid::SetKeyCallback(std::function<void(GLFWwindow*, int, int, int, int)> fn) {
-  keyCallback = fn;
+void Lucid::HandleScrollCallback(GLFWwindow* window, double xOffset, double yOffset) {
+  /*
+   * Only have to care about the yOffset
+   *  1 : scrolled up
+   * -1 : scrolled down
+   */
+  Lucid* lucid = (Lucid*)glfwGetWindowUserPointer(window);
+  lucid->scroll = yOffset;
 }
 
 void Lucid::MouseCallback(GLFWwindow* window, int button, int action, int mods) {
@@ -353,4 +377,9 @@ void Lucid::KeyCallback(GLFWwindow* window, int key, int scancode, int action, i
 
   Lucid* lucid = (Lucid*)glfwGetWindowUserPointer(window);
   lucid->keyCallback(window, key, scancode, action, mods);
+}
+
+void Lucid::ScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
+  Lucid* lucid = (Lucid*)glfwGetWindowUserPointer(window);
+  lucid->HandleScrollCallback(window, xoffset, yoffset);
 }
