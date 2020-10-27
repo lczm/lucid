@@ -13,6 +13,9 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
+#include "renderSystem.h"
+#include "lucidSystem.h"
+
 class Lucid {
  public:
   Registry* registry;
@@ -22,7 +25,7 @@ class Lucid {
   // There are ~350 keys defined by GLFW
   bool keys[350];
 
-  // Left/Right/Middle
+  // Left / Right / Middle
   bool mouseKeys[3];
 
   uint32_t VAO, VBO, EBO;
@@ -43,6 +46,8 @@ class Lucid {
   Model* microphone;
   Model* helmet;
   Model* avocado;
+
+  uint32_t modelShaderID;
 
   float lastX;
   float lastY;

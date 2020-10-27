@@ -59,7 +59,7 @@ class ComponentVector {
   ComponentVector(){};
   void AddVector(std::vector<Component>*& vectorPtr) {
     store.push_back(vectorPtr);
-    storeSizeIndex.push_back(vectorPtr->Size());
+    storeSizeIndex.push_back(vectorPtr->size());
   };
 
   // Usage: somethingComponentVector->at(i).{structFields};
@@ -431,7 +431,7 @@ class Registry {
     unsigned int hashCode = GetHashCode<Component>();
 
     // Check that the entity has the said component in the first place.
-    if (!entityHasComponent<Component>(id)) {
+    if (!EntityHasComponent<Component>(id)) {
       std::cout << "Entity id : " << id << " does not have component!!"
                 << std::endl;
       return nullptr;

@@ -16,6 +16,7 @@ class Model {
   std::string directory;
 
  public:
+  Model();
   Model(std::string path);
 
   void LoadModel(std::string path);

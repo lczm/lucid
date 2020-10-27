@@ -95,8 +95,6 @@ int main(void) {
 
   Lucid* lucid = new Lucid(registry, input, window);
 
-  // glfwSetKeyCallback(window, keyCallback);
-
   auto timer = std::chrono::high_resolution_clock::now();
   double dt = 0;
   double secondDt = 0;

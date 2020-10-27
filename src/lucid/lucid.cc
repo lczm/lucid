@@ -20,9 +20,9 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window) {
 
   modelShader.CreateShader(MODEL_VERTEX_SHADER, MODEL_FRAGMENT_SHADER);
 
-  Lucid::microphone = new Model(MICROPHONE_MODEL);
-  Lucid::helmet = new Model(SCIFIHELMET_MODEL);
-  Lucid::avocado = new Model(AVOCADO_MODEL);
+  // Lucid::microphone = new Model(MICROPHONE_MODEL);
+  // Lucid::helmet = new Model(SCIFIHELMET_MODEL);
+  // Lucid::avocado = new Model(AVOCADO_MODEL);
 
   // Target this window for user pointer for GLFW, this is so that
   // in callbacks, we can retrieve back the class
@@ -122,6 +122,32 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window) {
   cameraFront = front;
   cameraPos = glm::normalize(glm::cross(cameraFront, cameraUp));
   cameraUp = glm::normalize(glm::cross(cameraPos, cameraFront));
+
+  registry->RegisterSystem(new RenderSystem());
+  registry->RegisterSystem(new LucidSystem());
+
+  registry->RegisterArchetype<Model>();
+  registry->RegisterArchetype<Shader>();
+
+  uint32_t modelID = registry->GetAvailableEntityId();
+  uint32_t modelID2 = registry->GetAvailableEntityId();
+  uint32_t modelID3 = registry->GetAvailableEntityId();
+
+  registry->CreateEntity<Model>(modelID);
+  registry->CreateEntity<Model>(modelID2);
+  registry->CreateEntity<Model>(modelID3);
+
+  registry->AddComponentData<Model>(modelID, Model(MICROPHONE_MODEL));
+  registry->AddComponentData<Model>(modelID2, Model(SCIFIHELMET_MODEL));
+  registry->AddComponentData<Model>(modelID3, Model(AVOCADO_MODEL));
+
+  uint32_t shaderID = registry->GetAvailableEntityId();
+  registry->CreateEntity<Shader>(shaderID);
+
+  modelShaderID = shaderID;
+
+  Shader* shader = registry->GetComponent<Shader>(shaderID);
+  shader->CreateShader(MODEL_VERTEX_SHADER, MODEL_FRAGMENT_SHADER);
 }
 
 Lucid::~Lucid() {
@@ -172,27 +198,32 @@ void Lucid::Update(double dt) {
       static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT),
       0.1f, 100.0f);
 
-  modelShader.Bind();
+  Shader* shader = registry->GetComponent<Shader>(modelShaderID);
+  shader->Bind();
+  shader->SetUniformMatFloat4("projection", projection);
+  shader->SetUniformMatFloat4("view", view);
 
-  modelShader.SetUniformMatFloat4("projection", projection);
-  modelShader.SetUniformMatFloat4("view", view);
+  // modelShader.Bind();
 
-  glm::mat4 model = glm::mat4(1.0f);
-  model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));  // translate it down so it's at the center of the scene
-  model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));  // it's a bit too big for our scene, so scale it down-
+  // modelShader.SetUniformMatFloat4("projection", projection);
+  // modelShader.SetUniformMatFloat4("view", view);
 
-  modelShader.SetUniformMatFloat4("model", model);
-  Lucid::microphone->Draw(modelShader);
+  // glm::mat4 model = glm::mat4(1.0f);
+  // model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));  // translate it down so it's at the center of the scene
+  // model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));  // it's a bit too big for our scene, so scale it down-
 
-  model = glm::translate(model, glm::vec3(5.0f, 0.0f, 0.0f));  // translate it down so it's at the center of the scene
-  modelShader.SetUniformMatFloat4("model", model);
-  Lucid::helmet->Draw(modelShader);
+  // modelShader.SetUniformMatFloat4("model", model);
+  // Lucid::microphone->Draw(modelShader);
+
+  // model = glm::translate(model, glm::vec3(5.0f, 0.0f, 0.0f));  // translate it down so it's at the center of the scene
+  // modelShader.SetUniformMatFloat4("model", model);
+  // Lucid::helmet->Draw(modelShader);
 
   // Translate & Scale the avocado as the base model itself is very small.
-  model = glm::translate(model, glm::vec3(5.0f, 0.0f, 0.0f));
-  model = glm::scale(model, glm::vec3(50.0f, 50.0f, 50.0f));
-  modelShader.SetUniformMatFloat4("model", model);
-  Lucid::avocado->Draw(modelShader);
+  // model = glm::translate(model, glm::vec3(5.0f, 0.0f, 0.0f));
+  // model = glm::scale(model, glm::vec3(50.0f, 50.0f, 50.0f));
+  // modelShader.SetUniformMatFloat4("model", model);
+  // Lucid::avocado->Draw(modelShader);
 
   // shader.Bind();
   // shader.SetUniformMatFloat4("view", view);
@@ -212,6 +243,8 @@ void Lucid::Update(double dt) {
   //   shader.SetUniformMatFloat4("model", model);
   //   glDrawArrays(GL_TRIANGLES, 0, 36);
   // }
+
+  registry->UpdateSystems(dt, input);
 
   ImGui_ImplOpenGL3_NewFrame();
   ImGui_ImplGlfw_NewFrame();

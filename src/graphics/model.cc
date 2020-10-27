@@ -1,5 +1,7 @@
 #include "model.h"
 
+Model::Model() = default;
+
 Model::Model(std::string path) {
   LoadModel(path);
 }
