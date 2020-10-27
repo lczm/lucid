@@ -339,3 +339,18 @@ void Lucid::SetMouseCallback(std::function<void(GLFWwindow*, int, int, int)> fn)
 void Lucid::SetKeyCallback(std::function<void(GLFWwindow*, int, int, int, int)> fn) {
   keyCallback = fn;
 }
+
+void Lucid::MouseCallback(GLFWwindow* window, int button, int action, int mods) {
+  Lucid* lucid = (Lucid*)glfwGetWindowUserPointer(window);
+  lucid->mouseCallback(window, button, action, mods);
+}
+
+void Lucid::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+  // Note that this is basically just a debugging function
+  if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+    glfwSetWindowShouldClose(window, GLFW_TRUE);
+  }
+
+  Lucid* lucid = (Lucid*)glfwGetWindowUserPointer(window);
+  lucid->keyCallback(window, key, scancode, action, mods);
+}
