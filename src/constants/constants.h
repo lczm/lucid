@@ -21,3 +21,5 @@ const char MODEL_FRAGMENT_SHADER[] = "../src/shaders/model.frag";
 // Models
 const char MICROPHONE_MODEL[] = "../assets/microphone/scene.gltf";
 const char SCIFIHELMET_MODEL[] = "../assets/helmet/ScifiHelmet.gltf";
+const char FOX_MODEL[] = "../assets/fox/Fox.gltf";
+const char AVOCADO_MODEL[] = "../assets/avocado/Avocado.gltf";

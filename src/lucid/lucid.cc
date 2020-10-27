@@ -13,8 +13,8 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window) {
     mouseKey = false;
   }
 
-  Lucid::yaw = 0;
-  Lucid::pitch = 0;
+  Lucid::yaw = 0.0f;
+  Lucid::pitch = 0.0f;
   Lucid::lastX = 0;
   Lucid::lastY = 0;
 
@@ -22,6 +22,7 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window) {
 
   Lucid::microphone = new Model(MICROPHONE_MODEL);
   Lucid::helmet = new Model(SCIFIHELMET_MODEL);
+  Lucid::avocado = new Model(AVOCADO_MODEL);
 
   // Target this window for user pointer for GLFW, this is so that
   // in callbacks, we can retrieve back the class
@@ -186,6 +187,12 @@ void Lucid::Update(double dt) {
   model = glm::translate(model, glm::vec3(5.0f, 0.0f, 0.0f));  // translate it down so it's at the center of the scene
   modelShader.SetUniformMatFloat4("model", model);
   Lucid::helmet->Draw(modelShader);
+
+  // Translate & Scale the avocado as the base model itself is very small.
+  model = glm::translate(model, glm::vec3(5.0f, 0.0f, 0.0f));
+  model = glm::scale(model, glm::vec3(50.0f, 50.0f, 50.0f));
+  modelShader.SetUniformMatFloat4("model", model);
+  Lucid::avocado->Draw(modelShader);
 
   // shader.Bind();
   // shader.SetUniformMatFloat4("view", view);

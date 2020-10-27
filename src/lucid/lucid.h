@@ -42,6 +42,7 @@ class Lucid {
 
   Model* microphone;
   Model* helmet;
+  Model* avocado;
 
   float lastX;
   float lastY;
