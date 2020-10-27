@@ -158,20 +158,17 @@ void Lucid::Update(double dt) {
     float offsetX = input->GetMouseX() - lastX;
     float offsetY = input->GetMouseY() - lastY;
 
-    std::cout << "Offset X : " << offsetX << std::endl;
-    std::cout << "Offset Y : " << offsetY << std::endl;
-
     // Mouse moving to the left side, pan camera to the upper right
     if (offsetY > 0) {
-      cameraPos.y += offsetY * 0.5 * dt;
+      cameraPos.y -= offsetY *  dt;
     } else if (offsetY < 0) {
-      cameraPos.y += offsetY * 0.5 * dt;
+      cameraPos.y -= offsetY *  dt;
     }
 
     if (offsetX > 0) {
-      cameraPos.z += offsetX * 0.5 * dt;
+      cameraPos.z -= offsetX *  dt;
     } else if (offsetX < 0) {
-      cameraPos.z += offsetX * 0.5 * dt;
+      cameraPos.z -= offsetX *  dt;
     }
 
     lastX = input->GetMouseX();
