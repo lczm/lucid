@@ -154,8 +154,30 @@ Lucid::~Lucid() {
 };
 
 void Lucid::Update(double dt) {
-  if (mouseKeys[MOUSE_LEFT] &&
-      (lastX != input->GetMouseX() || lastY != input->GetMouseY())) {
+  if (mouseKeys[MOUSE_LEFT] && (lastX != input->GetMouseX() || lastY != input->GetMouseY())) {
+    float offsetX = input->GetMouseX() - lastX;
+    float offsetY = input->GetMouseY() - lastY;
+
+    std::cout << "Offset X : " << offsetX << std::endl;
+    std::cout << "Offset Y : " << offsetY << std::endl;
+
+    // Mouse moving to the left side, pan camera to the upper right
+    if (offsetY > 0) {
+      cameraPos.y += offsetY * 0.5 * dt;
+    } else if (offsetY < 0) {
+      cameraPos.y += offsetY * 0.5 * dt;
+    }
+
+    if (offsetX > 0) {
+      cameraPos.z += offsetX * 0.5 * dt;
+    } else if (offsetX < 0) {
+      cameraPos.z += offsetX * 0.5 * dt;
+    }
+
+    lastX = input->GetMouseX();
+    lastY = input->GetMouseY();
+  } else if (mouseKeys[MOUSE_RIGHT] &&
+             (lastX != input->GetMouseX() || lastY != input->GetMouseY())) {
     float offsetX = input->GetMouseX() - lastX;
     float offsetY = input->GetMouseY() - lastY;
 
@@ -165,17 +187,14 @@ void Lucid::Update(double dt) {
     UpdateCameraVector(offsetX, offsetY);
   }
 
-  const float cameraSpeed = 5.0f;
-  if (IsKeyDown('w'))
-    cameraPos += static_cast<float>(cameraSpeed * dt) * cameraFront;
-  if (IsKeyDown('s'))
-    cameraPos -= static_cast<float>(cameraSpeed * dt) * cameraFront;
+  if (IsKeyDown('w')) cameraPos += static_cast<float>(CAMERA_SPEED * dt) * cameraFront;
+  if (IsKeyDown('s')) cameraPos -= static_cast<float>(CAMERA_SPEED * dt) * cameraFront;
   if (IsKeyDown('a'))
-    cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) *
-                 static_cast<float>(cameraSpeed * dt);
+    cameraPos -=
+        glm::normalize(glm::cross(cameraFront, cameraUp)) * static_cast<float>(CAMERA_SPEED * dt);
   if (IsKeyDown('d'))
-    cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) *
-                 static_cast<float>(cameraSpeed * dt);
+    cameraPos +=
+        glm::normalize(glm::cross(cameraFront, cameraUp)) * static_cast<float>(CAMERA_SPEED * dt);
 
   // glm::vec3 cubePositions[] = {glm::vec3(0.0f, 0.0f, 0.0f),      //
   //                              glm::vec3(2.0f, 5.0f, -15.0f),    //
@@ -191,8 +210,7 @@ void Lucid::Update(double dt) {
   view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
   glm::mat4 projection = glm::perspective(
-      glm::radians(45.0f),
-      static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT),
+      glm::radians(45.0f), static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT),
       0.1f, 100.0f);
 
   Shader* shader = registry->GetComponent<Shader>(modelShaderID);
@@ -206,14 +224,15 @@ void Lucid::Update(double dt) {
   // modelShader.SetUniformMatFloat4("view", view);
 
   // glm::mat4 model = glm::mat4(1.0f);
-  // model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));  // translate it down so it's at the center of the scene
-  // model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));  // it's a bit too big for our scene, so scale it down-
+  // model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));  // translate it down so it's at
+  // the center of the scene model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));  // it's a bit
+  // too big for our scene, so scale it down-
 
   // modelShader.SetUniformMatFloat4("model", model);
   // Lucid::microphone->Draw(modelShader);
 
-  // model = glm::translate(model, glm::vec3(5.0f, 0.0f, 0.0f));  // translate it down so it's at the center of the scene
-  // modelShader.SetUniformMatFloat4("model", model);
+  // model = glm::translate(model, glm::vec3(5.0f, 0.0f, 0.0f));  // translate it down so it's at
+  // the center of the scene modelShader.SetUniformMatFloat4("model", model);
   // Lucid::helmet->Draw(modelShader);
 
   // Translate & Scale the avocado as the base model itself is very small.
@@ -270,8 +289,7 @@ bool Lucid::IsKeyDown(int key) {
   return keys[key];
 }
 
-void Lucid::HandleKeyCallback(GLFWwindow* window, int key, int scancode,
-                              int action, int mods) {
+void Lucid::HandleKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
   // Dont handle unknown keys
   if (key == GLFW_KEY_UNKNOWN) return;
 
@@ -282,8 +300,7 @@ void Lucid::HandleKeyCallback(GLFWwindow* window, int key, int scancode,
   }
 }
 
-void Lucid::HandleMouseCallback(GLFWwindow* window, int button, int action,
-                                int mods) {
+void Lucid::HandleMouseCallback(GLFWwindow* window, int button, int action, int mods) {
   if (action == GLFW_PRESS) {
     if (mouseKeys[button] == false) {
       mouseKeys[button] = true;
@@ -296,10 +313,8 @@ void Lucid::HandleMouseCallback(GLFWwindow* window, int button, int action,
 }
 
 void Lucid::UpdateCameraVector(float xOffset, float yOffset) {
-  const float sensitivity = 0.1f;
-
-  xOffset *= sensitivity;
-  yOffset *= sensitivity;
+  xOffset *= CAMERA_SENSITIVITY;
+  yOffset *= CAMERA_SENSITIVITY;
 
   yaw += xOffset;
   pitch += yOffset;

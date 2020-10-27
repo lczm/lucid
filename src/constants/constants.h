@@ -8,6 +8,9 @@ const int MOUSE_LEFT = 0;
 const int MOUSE_RIGHT = 1;
 const int MOUSE_MIDDLE = 2;
 
+const float CAMERA_SPEED = 5.0f;
+const float CAMERA_SENSITIVITY = 0.05f;
+
 // Screen values, can deal with resizing some other day
 const int SCREEN_WIDTH = 1280;
 const int SCREEN_HEIGHT = 720;
