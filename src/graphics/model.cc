@@ -21,6 +21,14 @@ void Model::LoadModel(std::string path) {
   ProcessNode(scene->mRootNode, scene);
 }
 
+void Model::SetTag(std::string tag) {
+  Model::tag = tag;
+}
+
+std::string Model::GetTag() {
+  return Model::tag;
+}
+
 void Model::ProcessNode(aiNode* node, const aiScene* scene) {
   // Process all node meshes
   for (size_t i = 0; i < node->mNumMeshes; i++) {

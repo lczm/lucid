@@ -141,6 +141,9 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window) {
   registry->AddComponentData<Model>(modelID2, Model(SCIFIHELMET_MODEL));
   registry->AddComponentData<Model>(modelID3, Model(AVOCADO_MODEL));
 
+  Model* model = registry->GetComponent<Model>(modelID3);
+  model->SetTag("avocado");
+
   uint32_t shaderID = registry->GetAvailableEntityId();
   registry->CreateEntity<Shader>(shaderID);
 

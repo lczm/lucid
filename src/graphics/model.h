@@ -11,6 +11,7 @@
 
 class Model {
  private:
+  std::string tag;
   std::vector<MeshTexture> loadedTextures;
   std::vector<Mesh> meshes;
   std::string directory;
@@ -18,6 +19,14 @@ class Model {
  public:
   Model();
   Model(std::string path);
+
+  /*
+   * TODO : Temporary or find a solution around this.
+   * Needs a way to find a certain model in space through 'tags' mostly
+   * debugging purposes.
+   */
+  void SetTag(std::string tag);
+  std::string GetTag();
 
   void LoadModel(std::string path);
   void ProcessNode(aiNode* node, const aiScene* scene);
@@ -27,7 +36,6 @@ class Model {
                                                 std::string typeName);
 
   void Draw(Shader& shader);
-
   uint32_t TextureFromFile(const char* path, const std::string& directory,
                            bool gamma);
 };
