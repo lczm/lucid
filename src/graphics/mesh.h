@@ -19,18 +19,15 @@ struct MeshTexture {
 };
 
 class Mesh {
- private:
-  uint32_t VAO, VBO, EBO;
-
  public:
+  uint32_t VAO, VBO, EBO;
   std::vector<MeshVertex> vertices;
   std::vector<uint32_t> indices;
   std::vector<MeshTexture> textures;
 
-  Mesh(std::vector<MeshVertex> vertices,
-       std::vector<uint32_t> indices,
+ public:
+  Mesh(std::vector<MeshVertex> vertices, std::vector<uint32_t> indices,
        std::vector<MeshTexture> textures);
 
   void SetupMesh();
-  void Draw(Shader &shader);
 };

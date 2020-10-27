@@ -29,6 +29,10 @@ std::string Model::GetTag() {
   return Model::tag;
 }
 
+std::vector<Mesh> Model::GetMeshes() {
+  return Model::meshes;
+}
+
 void Model::ProcessNode(aiNode* node, const aiScene* scene) {
   // Process all node meshes
   for (size_t i = 0; i < node->mNumMeshes; i++) {
@@ -125,12 +129,6 @@ std::vector<MeshTexture> Model::LoadMaterialTextures(aiMaterial* material,
     }
   }
   return textures;
-}
-
-void Model::Draw(Shader& shader) {
-  for (Mesh& mesh : meshes) {
-    mesh.Draw(shader);
-  }
 }
 
 uint32_t Model::TextureFromFile(const char* path, const std::string& directory,

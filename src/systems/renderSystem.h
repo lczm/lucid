@@ -10,6 +10,7 @@
 class RenderSystem : public System {
  private:
   Renderer* renderer;
+  Shader modelShader;
 
  public:
   RenderSystem();

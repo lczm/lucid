@@ -28,6 +28,8 @@ class Model {
   void SetTag(std::string tag);
   std::string GetTag();
 
+  std::vector<Mesh> GetMeshes();
+
   void LoadModel(std::string path);
   void ProcessNode(aiNode* node, const aiScene* scene);
   Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene);
@@ -35,7 +37,6 @@ class Model {
                                                 aiTextureType type,
                                                 std::string typeName);
 
-  void Draw(Shader& shader);
   uint32_t TextureFromFile(const char* path, const std::string& directory,
                            bool gamma);
 };

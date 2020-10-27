@@ -13,7 +13,8 @@ class Renderer {
 
   // Public draw methods
   // The draw method for 3d models
-  void DrawModel(Model& model);
+  void DrawMesh(Mesh& mesh, Shader& shader);
+  void DrawModel(Model& model, Shader& shader);
 
   // Potential skeleton methods that needs to be implemented.
   void DrawQuad();
