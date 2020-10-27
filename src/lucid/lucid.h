@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+
 #include "gl.h"
 #include "ecs.h"
 #include "input.h"
@@ -47,7 +49,8 @@ class Lucid {
   float yaw;
   float pitch;
 
-  bool firstMouse;
+  std::function<void(GLFWwindow* window, int button, int action, int mods)> mouseCallback;
+  std::function<void(GLFWwindow* window, int key, int scancode, int action, int mods)> keyCallback;
 
  public:
   Lucid(Registry* registry, Input* input, GLFWwindow* window);
@@ -57,44 +60,29 @@ class Lucid {
 
   bool IsKeyDown(int key);
 
-  void HandleKeyCallback(GLFWwindow* window, int key, int scancode, int action,
-                         int mods);
-  void HandleMouseCallback(GLFWwindow* window, int button, int action,
-                           int mods);
   void UpdateCameraVector(float xOffset, float yOffset);
 
+  static void HandleKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+  static void HandleMouseCallback(GLFWwindow* window, int button, int action, int mods);
+
+  void SetMouseCallback(
+      std::function<void(GLFWwindow* window, int button, int action, int mods)> fn);
+  void SetKeyCallback(
+      std::function<void(GLFWwindow* window, int key, int scancode, int action, int mods)> fn);
+
  public:
-  // static void MouseCallback(GLFWwindow* window, double xpos, double ypos) {
-  //   Lucid* lucid = (Lucid*)glfwGetWindowUserPointer(window);
-
-  //   if (lucid->firstMouse) {
-  //     lucid->lastX = xpos;
-  //     lucid->lastY = ypos;
-  //     lucid->firstMouse = false;
-  //   }
-
-  //   float xOffset = xpos - lucid->lastX;
-  //   float yOffset = lucid->lastY - ypos;
-
-  //   lucid->lastX = xpos;
-  //   lucid->lastY = ypos;
-
-  //   lucid->UpdateCameraVector(xOffset, yOffset);
-  // }
-
-  static void MouseCallback(GLFWwindow* window, int button, int action,
-                            int mods) {
+  static void MouseCallback(GLFWwindow* window, int button, int action, int mods) {
     Lucid* lucid = (Lucid*)glfwGetWindowUserPointer(window);
-    lucid->HandleMouseCallback(window, button, action, mods);
+    lucid->mouseCallback(window, button, action, mods);
   }
 
-  static void KeyCallback(GLFWwindow* window, int key, int scancode, int action,
-                          int mods) {
+  static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    // Note that this is basically just a debugging function
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
       glfwSetWindowShouldClose(window, GLFW_TRUE);
     }
 
     Lucid* lucid = (Lucid*)glfwGetWindowUserPointer(window);
-    lucid->HandleKeyCallback(window, key, scancode, action, mods);
+    lucid->keyCallback(window, key, scancode, action, mods);
   }
 };

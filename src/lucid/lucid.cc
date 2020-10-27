@@ -9,7 +9,9 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window) {
   Lucid::pitch = 0.0f;
   Lucid::lastX = 0;
   Lucid::lastY = 0;
-  Lucid::firstMouse = true;
+
+  SetMouseCallback(HandleMouseCallback);
+  SetKeyCallback(HandleKeyCallback);
 
   for (bool& key : keys) {
     key = false;
@@ -287,25 +289,29 @@ bool Lucid::IsKeyDown(int key) {
 }
 
 void Lucid::HandleKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+  Lucid* lucid = (Lucid*)glfwGetWindowUserPointer(window);
+
   // Dont handle unknown keys
   if (key == GLFW_KEY_UNKNOWN) return;
 
   if (action == GLFW_PRESS || action == GLFW_REPEAT) {
-    keys[key] = true;
+    lucid->keys[key] = true;
   } else if (action == GLFW_RELEASE) {
-    keys[key] = false;
+    lucid->keys[key] = false;
   }
 }
 
 void Lucid::HandleMouseCallback(GLFWwindow* window, int button, int action, int mods) {
+  Lucid* lucid = (Lucid*)glfwGetWindowUserPointer(window);
+
   if (action == GLFW_PRESS) {
-    if (mouseKeys[button] == false) {
-      mouseKeys[button] = true;
-      lastX = input->GetMouseX();
-      lastY = input->GetMouseY();
+    if (lucid->mouseKeys[button] == false) {
+      lucid->mouseKeys[button] = true;
+      lucid->lastX = lucid->input->GetMouseX();
+      lucid->lastY = lucid->input->GetMouseY();
     }
   } else if (action == GLFW_RELEASE) {
-    mouseKeys[button] = false;
+    lucid->mouseKeys[button] = false;
   }
 }
 
@@ -324,4 +330,12 @@ void Lucid::UpdateCameraVector(float xOffset, float yOffset) {
   front.y = sin(glm::radians(pitch));
   front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
   cameraFront = glm::normalize(front);
+}
+
+void Lucid::SetMouseCallback(std::function<void(GLFWwindow*, int, int, int)> fn) {
+  mouseCallback = fn;
+}
+
+void Lucid::SetKeyCallback(std::function<void(GLFWwindow*, int, int, int, int)> fn) {
+  keyCallback = fn;
 }
