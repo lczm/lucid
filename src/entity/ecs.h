@@ -20,7 +20,7 @@
    TODOs:
 
     - Systems priority queue
-        Allow systems to register with a number so that we can control system
+        Allow systems to register with a number so that we can control systems
         run order
 */
 
@@ -89,8 +89,8 @@ class ComponentVector {
   };
 };
 
-// Forward declare registry so that system can take in a registry, Registry
-// itself will need to take in a system, so one way or the other there needs to
+// Forward declare registry so that systems can take in a registry, Registry
+// itself will need to take in a systems, so one way or the other there needs to
 // be a forward declaration here
 class Registry;
 /*
@@ -103,7 +103,7 @@ class System {
 };
 
 /*
-   The registry is the center of all the pieces in this system.
+   The registry is the center of all the pieces in this systems.
    It will be used to get entity ids, store component data, register systems...
    etc.
 
