@@ -30,22 +30,14 @@ class Lucid {
 
   uint32_t VAO, VBO, EBO;
   uint32_t vertexShader, fragmentShader;
-  uint32_t shaderProgram;
 
   Shader shader;
-  Shader modelShader;
 
   glm::vec3 cameraPos;
   glm::vec3 cameraFront;
   glm::vec3 cameraUp;
   glm::vec3 cameraRight;
   glm::mat4 view;
-
-  glm::vec3 direction;
-
-  Model* microphone;
-  Model* helmet;
-  Model* avocado;
 
   uint32_t modelShaderID;
 

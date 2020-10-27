@@ -5,24 +5,18 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window) {
   Lucid::input = input;
   Lucid::window = window;
 
+  Lucid::yaw = 0.0f;
+  Lucid::pitch = 0.0f;
+  Lucid::lastX = 0;
+  Lucid::lastY = 0;
   Lucid::firstMouse = true;
+
   for (bool& key : keys) {
     key = false;
   }
   for (bool& mouseKey : mouseKeys) {
     mouseKey = false;
   }
-
-  Lucid::yaw = 0.0f;
-  Lucid::pitch = 0.0f;
-  Lucid::lastX = 0;
-  Lucid::lastY = 0;
-
-  modelShader.CreateShader(MODEL_VERTEX_SHADER, MODEL_FRAGMENT_SHADER);
-
-  // Lucid::microphone = new Model(MICROPHONE_MODEL);
-  // Lucid::helmet = new Model(SCIFIHELMET_MODEL);
-  // Lucid::avocado = new Model(AVOCADO_MODEL);
 
   // Target this window for user pointer for GLFW, this is so that
   // in callbacks, we can retrieve back the class
