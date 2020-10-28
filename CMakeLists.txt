@@ -83,7 +83,7 @@ include_directories(lib/imgui)
 include_directories(lib/imgui/backends)
 
 # Setup assimp
-include_directories(lib/assimp-5.0.1/include)
+include_directories(lib/assimp/include)
 
 # Setup glfw
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
@@ -109,7 +109,7 @@ add_executable(lucid
     ${GLM_HEADERS})
 
 # Link the executable to glfw
-target_link_libraries(lucid glfw assimp-vc142-mtd)
+target_link_libraries(lucid glfw assimp*)
 
 # Tests
 # Add the all the source files to the executable as well
