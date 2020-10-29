@@ -131,14 +131,17 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window) {
   uint32_t modelID = registry->GetAvailableEntityId();
   uint32_t modelID2 = registry->GetAvailableEntityId();
   uint32_t modelID3 = registry->GetAvailableEntityId();
+  uint32_t modelID4 = registry->GetAvailableEntityId();
 
   registry->CreateEntity<Model>(modelID);
   registry->CreateEntity<Model>(modelID2);
   registry->CreateEntity<Model>(modelID3);
+  registry->CreateEntity<Model>(modelID4);
 
   registry->AddComponentData<Model>(modelID, Model(MICROPHONE_MODEL));
   registry->AddComponentData<Model>(modelID2, Model(SCIFIHELMET_MODEL));
   registry->AddComponentData<Model>(modelID3, Model(AVOCADO_MODEL));
+  registry->AddComponentData<Model>(modelID4, Model(MICROPHONE_MODEL));
 
   Model* model = registry->GetComponent<Model>(modelID3);
   model->SetTag("avocado");
@@ -198,10 +201,8 @@ void Lucid::Update(double dt) {
     cameraPos +=
         glm::normalize(glm::cross(cameraFront, cameraUp)) * static_cast<float>(CAMERA_SPEED * dt);
 
-  if (scroll == 1)
-    cameraPos += static_cast<float>(SCROLL_SPEED * dt) * cameraFront;
-  if (scroll == -1)
-    cameraPos -= static_cast<float>(SCROLL_SPEED * dt) * cameraFront;
+  if (scroll == 1) cameraPos += static_cast<float>(SCROLL_SPEED * dt) * cameraFront;
+  if (scroll == -1) cameraPos -= static_cast<float>(SCROLL_SPEED * dt) * cameraFront;
 
   scroll = 0;
 
