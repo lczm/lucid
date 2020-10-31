@@ -104,7 +104,7 @@ void Renderer::DrawBoundingBox(BoundingBox& boundingBox) {
       1, 2, 3   // second triangle
   };
 
-  bbShader.Bind();
+  // bbShader.Bind();
   glBindVertexArray(bbVAO);
   glBindBuffer(GL_ARRAY_BUFFER, bbVBO);
 
@@ -118,7 +118,7 @@ void Renderer::DrawBoundingBox(BoundingBox& boundingBox) {
 
   glLineWidth(1.0f);
   glDrawArrays(GL_LINE_LOOP, 0, 24);
-  bbShader.Unbind();
+  // bbShader.Unbind();
 }
 
 BoundingBox Renderer::CalculateModelBoundingBox(Model& model) {

@@ -30,34 +30,35 @@ struct Animation {
 
 // TODO : This can be refactored into something easier to use
 // for opengl
-struct Image {
-  int spriteX = 0;
-  int spriteY = 0;
-
-  // These values are passed into the model matrix for transformation
-  int imageSlot = 1;
-  // These are used to get which sprite in the sheet is being used
-  float sheetWidth = 1;
-  float sheetHeight = 1;
-  float spriteWidth = 1;
-  float spriteHeight = 1;
-
-  float scaledWidth = 1;
-  float scaledHeight = 1;
-
-  int totalSpriteRow = 1;
-  int totalSpriteCol = 1;
-
-  // These will hold position, color, texcoords
-  std::vector<Vertex> vertices;
-
-  glm::mat4 projection;
-  glm::mat4 view;
-
-  Texture* texture = new Texture();
-  VertexArray* vertexArray = new VertexArray();
-  VertexBuffer* vertexBuffer = new VertexBuffer();
-  VertexBufferLayout* vertexBufferLayout = new VertexBufferLayout();
-  IndexBuffer* indexBuffer = new IndexBuffer();
-  Shader* shader = new Shader();
-};
+// struct Image {
+//   int spriteX = 0;
+//   int spriteY = 0;
+//
+//   // These values are passed into the model matrix for transformation
+//   int imageSlot = 1;
+//   // These are used to get which sprite in the sheet is being used
+//   float sheetWidth = 1;
+//   float sheetHeight = 1;
+//   float spriteWidth = 1;
+//   float spriteHeight = 1;
+//
+//   float scaledWidth = 1;
+//   float scaledHeight = 1;
+//
+//   int totalSpriteRow = 1;
+//   int totalSpriteCol = 1;
+//
+//   // These will hold position, color, texcoords
+//   std::vector<Vertex> vertices;
+//
+//   glm::mat4 projection;
+//   glm::mat4 view;
+//
+//   Texture* texture = new Texture();
+//   VertexArray* vertexArray = new VertexArray();
+//   VertexBuffer* vertexBuffer = new VertexBuffer();
+//   VertexBufferLayout* vertexBufferLayout = new VertexBufferLayout();
+//   IndexBuffer* indexBuffer = new IndexBuffer();
+//   Shader* shader = new Shader();
+// };
+//
