@@ -122,6 +122,9 @@ class Registry {
   // EntityId to the index of the archetype it is currently holding
   std::unordered_map<unsigned int, unsigned int> entityIndexMap;
 
+  // Simple map to keep track of how big each component is
+  std::unordered_map<unsigned int, size_t> componentSizeMap;
+
   // ComponentType/ArcheType -> unordered_map<unsigned int,
   // vector<Component>> Archetypes are the key, as a vector of unsigned
   // ints. Values is an unordered_map with keys being the hashcodes of the
@@ -282,6 +285,14 @@ class Registry {
     // where the vectors are each component of the archetype.
     archetypeComponentMap[archetype] = new std::unordered_map<unsigned int, void*>();
 
+    std::vector<int> sizes = {(GetComponentSize<Components>(), 0)...};
+    // sizes.size() is the same as archetype.size()
+    for (size_t i = 0; i < sizes.size(); i++) {
+      if (componentSizeMap.find(archetype[i]) == componentSizeMap.end()) {
+        componentSizeMap[archetype[i]] = sizes[i];
+      }
+    }
+
     // Initialization list has to be assigned, default value of 0 to avoid
     // dealing with initializer list void returns from
     // initializeArchetypeVector
@@ -289,6 +300,11 @@ class Registry {
     (void)p;  // To silence the compiler warning about unused vars
 
     return;
+  }
+
+  template <typename Component>
+  int GetComponentSize() {
+    return sizeof(Component);
   }
 
   // Print out all the archetypes through their hashcodes
@@ -309,6 +325,12 @@ class Registry {
   void AddComponent(Entity entity) {
     // Convert the component
     uint32_t componentHashCode = GetHashCode<Component>();
+    size_t componentSize = GetComponentSize<Component>();
+
+    // Add the component size to componentSizeMap if it is not already inside.
+    if (componentSizeMap.find(componentHashCode) == componentSizeMap.end()) {
+      componentSizeMap[componentHashCode] = componentSize;
+    }
 
     // Get the entity's current archetype
     Archetype& archetype = entityComponentMap[entity];
