@@ -1,18 +1,19 @@
 #include "renderer.h"
 
 Renderer::Renderer() {
-  glGenVertexArrays(1, &VAO);
-  glBindVertexArray(VAO);
+  glGenVertexArrays(1, &bbVAO);
+  glBindVertexArray(bbVAO);
 
-  glGenBuffers(1, &VBO);
-  glBindBuffer(GL_ARRAY_BUFFER, VBO);
+  glGenBuffers(1, &bbVBO);
+  glBindBuffer(GL_ARRAY_BUFFER, bbVBO);
 
-  shader.CreateShader(TRIANGLE_VERTEX_SHADER, TRIANGLE_FRAGMENT_SHADER);
+  bbShader.CreateShader(TRIANGLE_VERTEX_SHADER, TRIANGLE_FRAGMENT_SHADER);
 };
 
 Renderer::~Renderer() = default;
 
 void Renderer::DrawMesh(Mesh& mesh, Shader& shader) {
+  shader.Bind();
   uint32_t diffuseNr = 1;
   uint32_t specularNr = 1;
 
@@ -103,8 +104,9 @@ void Renderer::DrawBoundingBox(BoundingBox& boundingBox) {
       1, 2, 3   // second triangle
   };
 
-  glBindVertexArray(VAO);
-  glBindBuffer(GL_ARRAY_BUFFER, VBO);
+  bbShader.Bind();
+  glBindVertexArray(bbVAO);
+  glBindBuffer(GL_ARRAY_BUFFER, bbVBO);
 
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
@@ -116,6 +118,7 @@ void Renderer::DrawBoundingBox(BoundingBox& boundingBox) {
 
   glLineWidth(1.0f);
   glDrawArrays(GL_LINE_LOOP, 0, 24);
+  bbShader.Unbind();
 }
 
 BoundingBox Renderer::CalculateModelBoundingBox(Model& model) {

@@ -227,6 +227,7 @@ void Lucid::Update(double dt) {
   shader->Bind();
   shader->SetUniformMatFloat4("projection", projection);
   shader->SetUniformMatFloat4("view", view);
+  shader->Unbind();
 
   // modelShader.Bind();
 

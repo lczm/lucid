@@ -21,9 +21,9 @@ struct BoundingBox {
 
 class Renderer {
  private:
-  uint32_t VAO;
-  uint32_t VBO;
-  Shader shader;
+  uint32_t bbVAO;
+  uint32_t bbVBO;
+  Shader bbShader;
 
  public:
   Renderer();

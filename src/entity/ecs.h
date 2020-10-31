@@ -171,8 +171,7 @@ class Registry {
 
     // Get entity archetype
     if (entityComponentMap.find(id) == entityComponentMap.end()) {
-      std::cout << "Entity id : " << id << "  has not been created"
-                << std::endl;
+      std::cout << "Entity id : " << id << "  has not been created" << std::endl;
       return false;
     }
     Archetype archetype = entityComponentMap[id];
@@ -191,8 +190,7 @@ class Registry {
 
     // Get entity archetype
     if (entityComponentMap.find(id) == entityComponentMap.end()) {
-      std::cout << "Entity id : " << id << "  has not been created"
-                << std::endl;
+      std::cout << "Entity id : " << id << "  has not been created" << std::endl;
       return false;
     }
     Archetype archetype = entityComponentMap[id];
@@ -221,11 +219,9 @@ class Registry {
     unsigned int hashCode = GetHashCode<Component>();
 
     std::unordered_map<unsigned int, void*>& keyPtr =
-        *(static_cast<std::unordered_map<unsigned int, void*>*>(
-            archetypeComponentMap[archetype]));
+        *(static_cast<std::unordered_map<unsigned int, void*>*>(archetypeComponentMap[archetype]));
 
-    std::vector<Component>& vectorPtr =
-        *(static_cast<std::vector<Component>*>(keyPtr[hashCode]));
+    std::vector<Component>& vectorPtr = *(static_cast<std::vector<Component>*>(keyPtr[hashCode]));
 
     // Note that even though this is for each vector component, this should
     // not matter as every component goes through this, resulting in the
@@ -242,8 +238,8 @@ class Registry {
     // Check if the archetype actually exists before first
     // If the archetype is not found
     if (archetypeComponentMap.find(archetype) == archetypeComponentMap.end()) {
-      std::cout << "Archetype for entity : " << id
-                << " is not found, please create it" << std::endl;
+      std::cout << "Archetype for entity : " << id << " is not found, please create it"
+                << std::endl;
       return;
     }
 
@@ -270,8 +266,7 @@ class Registry {
   template <typename Component>
   void InitializeArchetypeVector(Archetype archetype) {
     std::unordered_map<unsigned int, void*>& keyPtr =
-        *(static_cast<std::unordered_map<unsigned int, void*>*>(
-            archetypeComponentMap[archetype]));
+        *(static_cast<std::unordered_map<unsigned int, void*>*>(archetypeComponentMap[archetype]));
     keyPtr[GetHashCode<Component>()] = new std::vector<Component>();
   }
 
@@ -285,8 +280,7 @@ class Registry {
 
     // This archetype will then be a pointer to a dictionary of vectors
     // where the vectors are each component of the archetype.
-    archetypeComponentMap[archetype] =
-        new std::unordered_map<unsigned int, void*>();
+    archetypeComponentMap[archetype] = new std::unordered_map<unsigned int, void*>();
 
     // Initialization list has to be assigned, default value of 0 to avoid
     // dealing with initializer list void returns from
@@ -307,6 +301,42 @@ class Registry {
     }
   }
 
+  // This will explain how this will really work
+  // In each entity, they will belong to a single archetype
+  // By adding a new component to the entity, the entity will now belong to another archetype
+  // i.e. (previous archetype) + (new component) = new/existing archetype
+  template <typename Component>
+  void AddComponent(Entity entity) {
+    // Convert the component
+    uint32_t componentHashCode = GetHashCode<Component>();
+
+    // Get the entity's current archetype
+    Archetype& archetype = entityComponentMap[entity];
+
+    // Check that the new component does not already exist
+    bool exists = false;
+    for (uint32_t hashCode : archetype) {
+      if (hashCode == componentHashCode) {
+        exists = true;
+      }
+    }
+
+    if (exists) {
+      std::cout << "Error : Component for this entity already exists" << std::endl;
+      return;
+    }
+
+    uint32_t entityIndex = entityIndexMap[entity];
+
+    // Update the archetype hashcode
+    archetype.push_back(componentHashCode);
+
+    // If the archetype does not exist, it should be created
+    if (archetypeComponentMap.find(archetype) == archetypeComponentMap.end()) {
+      // TODO : This can be memcpy-ed over from the original archetype to the new archetype
+    }
+  }
+
   // This is named addComponentData rather than addComponent because this does
   // not actually 'add' a component to an entity. The component is added by
   // default when it is created together with the archetype. What this really
@@ -320,8 +350,7 @@ class Registry {
 
     // Get a pointer to the vector of this type.
     unsigned int hashCode = GetHashCode(component);
-    std::vector<Component>& vectorPtr =
-        *(static_cast<std::vector<Component>*>(keyPtr[hashCode]));
+    std::vector<Component>& vectorPtr = *(static_cast<std::vector<Component>*>(keyPtr[hashCode]));
     vectorPtr.at(entityIndexMap[entity]) = component;
   }
 
@@ -331,8 +360,7 @@ class Registry {
   }
 
   template <typename Component>
-  void FillComponentVector(Archetype archetype,
-                           std::vector<void*>& componentVectors,
+  void FillComponentVector(Archetype archetype, std::vector<void*>& componentVectors,
                            int& componentIndex) {
     // Find out which index Component belongs in, through hashCodes so that
     // it can Cast to the right type at the right index in componentVectors
@@ -340,15 +368,12 @@ class Registry {
 
     // This is a componentVector where all the data is stored.
     ComponentVector<Component>& componentVectorPtr =
-        *(static_cast<ComponentVector<Component>*>(
-            componentVectors[componentIndex]));
+        *(static_cast<ComponentVector<Component>*>(componentVectors[componentIndex]));
 
     std::unordered_map<unsigned int, void*>& keyPtr =
-        *(static_cast<std::unordered_map<unsigned int, void*>*>(
-            archetypeComponentMap[archetype]));
+        *(static_cast<std::unordered_map<unsigned int, void*>*>(archetypeComponentMap[archetype]));
 
-    std::vector<Component>* vectorPtr =
-        static_cast<std::vector<Component>*>(keyPtr[hashCode]);
+    std::vector<Component>* vectorPtr = static_cast<std::vector<Component>*>(keyPtr[hashCode]);
 
     // Add to componentvector if only the size is more than 0;
     // i.e. if there are entities.
@@ -368,8 +393,7 @@ class Registry {
   template <typename... Components>
   std::vector<void*> GetComponents() {
     Archetype hashCodes = {(GetHashCode<Components>())...};
-    std::vector<void*> componentVectors = {
-        (MakeComponentVector<Components>())...};
+    std::vector<void*> componentVectors = {(MakeComponentVector<Components>())...};
 
     for (auto& archetypePair : archetypeComponentMap) {
       Archetype archetype = archetypePair.first;
@@ -381,8 +405,7 @@ class Registry {
       bool archetypeMatch = true;
       for (unsigned int hashCode : hashCodes) {
         // If it is equals to the end of the iterator - not found
-        if (std::find(archetype.begin(), archetype.end(), hashCode) ==
-            archetype.end()) {
+        if (std::find(archetype.begin(), archetype.end(), hashCode) == archetype.end()) {
           archetypeMatch = false;
         }
       }
@@ -393,9 +416,8 @@ class Registry {
         // Auto fills in the 0 so that the compiler can deal with void
         // returns from fillComponentVector
         int componentIndex = 0;
-        auto p = {(FillComponentVector<Components>(archetype, componentVectors,
-                                                   componentIndex),
-                   0)...};
+        auto p = {
+            (FillComponentVector<Components>(archetype, componentVectors, componentIndex), 0)...};
         (void)p;  // To silence the compiler warning about unused vars
       }
     }
@@ -407,16 +429,14 @@ class Registry {
   template <typename... Components>
   std::vector<void*> GetComponentsExact() {
     Archetype hashCodes = {(GetHashCode<Components>())...};
-    std::vector<void*> componentVectors = {
-        (MakeComponentVector<Components>())...};
+    std::vector<void*> componentVectors = {(MakeComponentVector<Components>())...};
 
     for (auto& archetypePair : archetypeComponentMap) {
       Archetype archetype = archetypePair.first;
       if (archetype == hashCodes) {
         int componentIndex = 0;
-        auto p = {(FillComponentVector<Components>(archetype, componentVectors,
-                                                   componentIndex),
-                   0)...};
+        auto p = {
+            (FillComponentVector<Components>(archetype, componentVectors, componentIndex), 0)...};
         (void)p;
       }
     }
@@ -432,20 +452,17 @@ class Registry {
 
     // Check that the entity has the said component in the first place.
     if (!EntityHasComponent<Component>(id)) {
-      std::cout << "Entity id : " << id << " does not have component!!"
-                << std::endl;
+      std::cout << "Entity id : " << id << " does not have component!!" << std::endl;
       return nullptr;
     }
 
     // get entity archetype
     Archetype archetype = entityComponentMap[id];
     std::unordered_map<unsigned int, void*>& keyPtr =
-        *(static_cast<std::unordered_map<unsigned int, void*>*>(
-            archetypeComponentMap[archetype]));
+        *(static_cast<std::unordered_map<unsigned int, void*>*>(archetypeComponentMap[archetype]));
 
     // Get a pointer to the vector of this type.
-    std::vector<Component>& vectorPtr =
-        *(static_cast<std::vector<Component>*>(keyPtr[hashCode]));
+    std::vector<Component>& vectorPtr = *(static_cast<std::vector<Component>*>(keyPtr[hashCode]));
 
     // Get entity index
     unsigned int entityIndex = entityIndexMap[id];
