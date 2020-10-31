@@ -97,6 +97,7 @@ include_directories(lib/glfw/deps)
 add_subdirectory(lib/googletest)
 enable_testing()
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
 # Executable target
 add_executable(lucid
@@ -123,5 +124,5 @@ add_executable(tests
     ${GLM_HEADERS})
 
 # Link test executable against gtest & gtest_main
-target_link_libraries(tests gtest gtest_main glfw)
+target_link_libraries(tests gtest gtest_main glfw assimp*)
 add_test(tests tests)
