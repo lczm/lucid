@@ -337,6 +337,13 @@ class Registry {
     }
   }
 
+  // Likewise for RemoveComponent, it is very similar to AddComponent
+  // The issue here is just that there is a need to memcpy...
+  // Once that is resolved, this should all be easy to fix.
+  template <typename Component>
+  void RemoveComponent(Entity entity) {
+  }
+
   // This is named addComponentData rather than addComponent because this does
   // not actually 'add' a component to an entity. The component is added by
   // default when it is created together with the archetype. What this really
@@ -468,10 +475,6 @@ class Registry {
     unsigned int entityIndex = entityIndexMap[id];
     return &vectorPtr.at(entityIndex);
   }
-
-  // template <typename Component>
-  // void removeComponent(Entity entity, Component component) {
-  // }
 
   void RegisterSystem(System* system) {
     systems.push_back(system);
