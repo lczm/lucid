@@ -34,6 +34,13 @@ typedef std::vector<unsigned int> Archetype;
 // instance This could be set to be dynamic at some point.
 const Entity MAX_ENTITIES = 1000000;
 
+struct ComponentMovementStatus {
+  bool add;
+  bool reconstructArchetype;
+  uint32_t componentHash;
+  uint32_t previousIndex;
+};
+
 /*
    The role of a ComponentVector is so that the user is able to iterate over
    multiple vectors.
@@ -124,6 +131,9 @@ class Registry {
 
   // Simple map to keep track of how big each component is
   std::unordered_map<unsigned int, size_t> componentSizeMap;
+
+  // This is to keep track of the entities that have been moved and needs to be flushed
+  std::unordered_map<uint32_t, ComponentMovementStatus> flushCache;
 
   // ComponentType/ArcheType -> unordered_map<unsigned int,
   // vector<Component>> Archetypes are the key, as a vector of unsigned
@@ -353,10 +363,28 @@ class Registry {
     // Update the archetype hashcode
     archetype.push_back(componentHashCode);
 
+    bool reconstruct = false;
     // If the archetype does not exist, it should be created
     if (archetypeComponentMap.find(archetype) == archetypeComponentMap.end()) {
-      // TODO : This can be memcpy-ed over from the original archetype to the new archetype
+      // Create the new component vector first, after Flush() is called, then
+      // the rest of the data will be moved over.
+      InitializeArchetypeVector<Component>(archetype);
+      reconstruct = true;
     }
+
+    // Add the data to the archetype
+    std::unordered_map<unsigned int, void*>& keyPtr =
+        *(static_cast<std::unordered_map<unsigned int, void*>*>(archetypeComponentMap[archetype]));
+
+    std::vector<Component>& vectorPtr = *(static_cast<std::vector<Component>*>(keyPtr[hashCode]));
+
+    // Note that even though this is for each vector component, this should
+    // not matter as every component goes through this, resulting in the
+    // size (i.e. index) being all the same.
+    flushCache[entity] = {true, reconstruct, componentHashCode, entityIndexMap[entity]};
+    entityIndexMap[entity] = vectorPtr.size();
+
+    vectorPtr.push_back(Component());
   }
 
   // Likewise for RemoveComponent, it is very similar to AddComponent
@@ -364,6 +392,44 @@ class Registry {
   // Once that is resolved, this should all be easy to fix.
   template <typename Component>
   void RemoveComponent(Entity entity) {
+  }
+
+  // This will make all the changes to the entity.
+  // For now, this is assuming that all entities are only using AddComponent and not
+  // RemoveComponent
+  template <typename... Components>
+  void FlushEntity(Entity entity) {
+    // If trying to flush an entity that has no prior AddComponent or RemoveComponent
+    if (flushCache.find(entity) == flushCache.end()) {
+      std::cout << "Warning : Tried to flush an entity id that did not have any operations on it"
+                << std::endl;
+      return;
+    }
+
+    ComponentMovementStatus status = flushCache[entity];
+
+    Archetype archetype = entityComponentMap[entity];
+    Archetype temporaryArchetype;
+    for (size_t i = 0; i < archetype.size(); i++) {
+      if (archetype[i] == status.previousHash) {
+        temporaryArchetype.push_back(archetype[i]);
+      }
+    }
+
+    // Reconstruct the vectors if needed
+    if (status.reconstructArchetype) {
+      auto p = {(InitializeArchetypeVector<Components>(temporaryArchetype), 0)...};
+      (void)p;
+    }
+
+    // Move the components from the old archetype to the new archetype
+    uint32_t previousIndex = status.previousIndex;
+    std::unordered_map<unsigned int, void*>& keyPtr =
+        *(static_cast<std::unordered_map<unsigned int, void*>*>(
+            archetypeComponentMap[temporaryArchetype]));
+
+    // TODO : Move components around
+    // TODO : Keep previous vector packed (sparse sets)
   }
 
   // This is named addComponentData rather than addComponent because this does
