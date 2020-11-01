@@ -48,9 +48,9 @@ void Renderer::DrawModel(Model& model, Shader& shader) {
     DrawMesh(mesh, shader);
   }
 
-  BoundingBox boundingBox = CalculateModelBoundingBox(model);
-  DrawBoundingBox(boundingBox);
-  return;
+  // BoundingBox boundingBox = CalculateModelBoundingBox(model);
+  // DrawBoundingBox(boundingBox);
+  // return;
 }
 
 void Renderer::DrawBoundingBox(BoundingBox& boundingBox) {

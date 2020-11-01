@@ -542,6 +542,10 @@ class Registry {
     return &vectorPtr.at(entityIndex);
   }
 
+  void SortArchetype(Archetype& archetype) {
+    std::sort(archetype.begin(), archetype.end());
+  }
+
   void RegisterSystem(System* system) {
     systems.push_back(system);
   };
