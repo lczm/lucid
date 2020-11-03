@@ -28,7 +28,6 @@ class Model {
   std::vector<Mesh> meshes;
   std::string directory;
 
-  bool hasMoved;
   BoundingBox boundingBox;
 
  public:
@@ -45,19 +44,15 @@ class Model {
 
   std::vector<Mesh> GetMeshes();
 
-  void SetHasMoved(bool hasMoved);
-  bool GetHasMoved();
-
   void SetBoundingBox(BoundingBox& boundingBox);
   BoundingBox GetBoundingBox();
 
   void LoadModel(std::string path);
   void ProcessNode(aiNode* node, const aiScene* scene);
   Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene);
-  std::vector<MeshTexture> LoadMaterialTextures(aiMaterial* material,
-                                                aiTextureType type,
+  std::vector<MeshTexture> LoadMaterialTextures(aiMaterial* material, aiTextureType type,
                                                 std::string typeName);
 
-  uint32_t TextureFromFile(const char* path, const std::string& directory,
-                           bool gamma);
+  uint32_t TextureFromFile(const char* path, const std::string& directory, bool gamma);
+  void CalculateModelBoundingBox();
 };

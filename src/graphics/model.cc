@@ -1,9 +1,6 @@
 #include "model.h"
 
-Model::Model() {
-  // temporary
-  Model::hasMoved = true;
-};
+Model::Model(){};
 
 Model::Model(std::string path) {
   LoadModel(path);
@@ -11,17 +8,17 @@ Model::Model(std::string path) {
 
 void Model::LoadModel(std::string path) {
   Assimp::Importer importer;
-  const aiScene* scene =
-      importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+  const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
 
-  if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE ||
-      !scene->mRootNode) {
+  if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
     std::cout << "Error : " << importer.GetErrorString() << std::endl;
     return;
   }
 
   directory = path.substr(0, path.find_last_of('/'));
   ProcessNode(scene->mRootNode, scene);
+
+  CalculateModelBoundingBox();
 }
 
 void Model::SetTag(std::string tag) {
@@ -34,14 +31,6 @@ std::string Model::GetTag() {
 
 std::vector<Mesh> Model::GetMeshes() {
   return Model::meshes;
-}
-
-void Model::SetHasMoved(bool hasMoved) {
-  Model::hasMoved = hasMoved;
-}
-
-bool Model::GetHasMoved() {
-  return hasMoved;
 }
 
 void Model::SetBoundingBox(BoundingBox& boundingBox) {
@@ -79,15 +68,12 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene) {
     // position.y = mesh->mVertices[i].y;
     // position.z = mesh->mVertices[i].z;
     // vertex.position = position;
-    vertex.position = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y,
-                                mesh->mVertices[i].z);
+    vertex.position = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
 
-    vertex.normal = glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y,
-                              mesh->mNormals[i].z);
+    vertex.normal = glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
 
     if (mesh->mTextureCoords[0]) {
-      vertex.texCoords =
-          glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
+      vertex.texCoords = glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
     } else {
       vertex.texCoords = glm::vec2(0.0f, 0.0f);
     }
@@ -107,20 +93,19 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene) {
   if (mesh->mMaterialIndex >= 0) {
     aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
-    std::vector<MeshTexture> diffuseMaps = LoadMaterialTextures(
-        material, aiTextureType_DIFFUSE, "texture_diffuse");
+    std::vector<MeshTexture> diffuseMaps =
+        LoadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
     textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 
-    std::vector<MeshTexture> specularMaps = LoadMaterialTextures(
-        material, aiTextureType_SPECULAR, "texture_specular");
+    std::vector<MeshTexture> specularMaps =
+        LoadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
     textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
   }
 
   return Mesh(vertices, indices, textures);
 }
 
-std::vector<MeshTexture> Model::LoadMaterialTextures(aiMaterial* material,
-                                                     aiTextureType type,
+std::vector<MeshTexture> Model::LoadMaterialTextures(aiMaterial* material, aiTextureType type,
                                                      std::string typeName) {
   std::vector<MeshTexture> textures;
 
@@ -150,8 +135,7 @@ std::vector<MeshTexture> Model::LoadMaterialTextures(aiMaterial* material,
   return textures;
 }
 
-uint32_t Model::TextureFromFile(const char* path, const std::string& directory,
-                                bool gamma) {
+uint32_t Model::TextureFromFile(const char* path, const std::string& directory, bool gamma) {
   std::string filename = std::string(path);
   filename = directory + '/' + filename;
 
@@ -159,8 +143,7 @@ uint32_t Model::TextureFromFile(const char* path, const std::string& directory,
   glGenTextures(1, &textureID);
 
   int width, height, nrComponents;
-  unsigned char* data =
-      stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
+  unsigned char* data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
 
   if (data) {
     GLenum format;
@@ -172,14 +155,12 @@ uint32_t Model::TextureFromFile(const char* path, const std::string& directory,
       format = GL_RGBA;
 
     glBindTexture(GL_TEXTURE_2D, textureID);
-    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format,
-                 GL_UNSIGNED_BYTE, data);
+    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                    GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     stbi_image_free(data);
@@ -189,4 +170,24 @@ uint32_t Model::TextureFromFile(const char* path, const std::string& directory,
   }
 
   return textureID;
+}
+
+void Model::CalculateModelBoundingBox() {
+  BoundingBox boundingBox;
+
+  for (size_t i = 0; i < meshes.size(); i++) {
+    std::vector<MeshVertex>& vertices = meshes[i].vertices;
+    for (size_t j = 0; j < vertices.size(); j++) {
+      boundingBox.minX = glm::min(boundingBox.minX, vertices[j].position.x);
+      boundingBox.maxX = glm::max(boundingBox.maxX, vertices[j].position.x);
+
+      boundingBox.minY = glm::min(boundingBox.minY, vertices[j].position.y);
+      boundingBox.maxY = glm::max(boundingBox.maxY, vertices[j].position.y);
+
+      boundingBox.minZ = glm::min(boundingBox.minZ, vertices[j].position.z);
+      boundingBox.maxZ = glm::max(boundingBox.maxZ, vertices[j].position.z);
+    }
+  }
+
+  SetBoundingBox(boundingBox);
 }

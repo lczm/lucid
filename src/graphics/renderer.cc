@@ -50,15 +50,13 @@ void Renderer::DrawModel(Model& model, Shader& shader) {
 
   // std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
-  if (model.GetHasMoved()) {
-    CalculateModelBoundingBox(model);
-    model.SetHasMoved(false);
-  }
+  // CalculateModelBoundingBox(model);
 
   // std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-  // std::cout << "(Bounding Box) Time Taken : " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count()
+  // std::cout << "(Bounding Box) Time Taken : " <<
+  // std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count()
   //           << std::endl;
-  // DrawBoundingBox(boundingBox);
+  DrawBoundingBox(model.GetBoundingBox());
   // return;
 }
 
@@ -128,26 +126,4 @@ void Renderer::DrawBoundingBox(BoundingBox& boundingBox) {
   glLineWidth(1.0f);
   glDrawArrays(GL_LINE_LOOP, 0, 24);
   // bbShader.Unbind();
-}
-
-void Renderer::CalculateModelBoundingBox(Model& model) {
-  std::vector<Mesh> meshes = model.GetMeshes();
-
-  BoundingBox boundingBox;
-
-  for (size_t i = 0; i < meshes.size(); i++) {
-    std::vector<MeshVertex>& vertices = meshes[i].vertices;
-    for (size_t j = 0; j < vertices.size(); j++) {
-      boundingBox.minX = glm::min(boundingBox.minX, vertices[j].position.x);
-      boundingBox.maxX = glm::max(boundingBox.maxX, vertices[j].position.x);
-
-      boundingBox.minY = glm::min(boundingBox.minY, vertices[j].position.y);
-      boundingBox.maxY = glm::max(boundingBox.maxY, vertices[j].position.y);
-
-      boundingBox.minZ = glm::min(boundingBox.minZ, vertices[j].position.z);
-      boundingBox.maxZ = glm::max(boundingBox.maxZ, vertices[j].position.z);
-    }
-  }
-
-  model.SetBoundingBox(boundingBox);
 }
