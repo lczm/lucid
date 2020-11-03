@@ -61,6 +61,7 @@ void Renderer::DrawModel(Model& model, Shader& shader) {
 }
 
 void Renderer::DrawBoundingBox(BoundingBox& boundingBox) {
+  // TODO : This should be using index buffers...
   float vertices[] = {
       // x , y, z , r, g, b
       boundingBox.minX, boundingBox.minY, boundingBox.minZ, 1.0f, 1.0f, 1.0f,  //
