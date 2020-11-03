@@ -1,6 +1,9 @@
 #include "model.h"
 
-Model::Model() = default;
+Model::Model() {
+  // temporary
+  Model::hasMoved = true;
+};
 
 Model::Model(std::string path) {
   LoadModel(path);
@@ -31,6 +34,22 @@ std::string Model::GetTag() {
 
 std::vector<Mesh> Model::GetMeshes() {
   return Model::meshes;
+}
+
+void Model::SetHasMoved(bool hasMoved) {
+  Model::hasMoved = hasMoved;
+}
+
+bool Model::GetHasMoved() {
+  return hasMoved;
+}
+
+void Model::SetBoundingBox(BoundingBox& boundingBox) {
+  Model::boundingBox = boundingBox;
+}
+
+BoundingBox Model::GetBoundingBox() {
+  return boundingBox;
 }
 
 void Model::ProcessNode(aiNode* node, const aiScene* scene) {

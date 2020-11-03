@@ -2,22 +2,11 @@
 
 #include <math.h>
 #include <vector>
-#include <limits>
+#include <chrono>
 
 #include "gl.h"
 #include "model.h"
 #include "gtx/string_cast.hpp"
-
-struct BoundingBox {
-  float minX = std::numeric_limits<float>::max();
-  float maxX = std::numeric_limits<float>::min();
-
-  float minY = std::numeric_limits<float>::max();
-  float maxY = std::numeric_limits<float>::min();
-
-  float minZ = std::numeric_limits<float>::max();
-  float maxZ = std::numeric_limits<float>::min();
-};
 
 class Renderer {
  private:
@@ -39,7 +28,7 @@ class Renderer {
   void DrawTexturedQuad();
 
   void DrawBoundingBox(BoundingBox& boundingBox);
-  BoundingBox CalculateModelBoundingBox(Model& model);
+  void CalculateModelBoundingBox(Model& model);
 
   /*
    * This is to start and end draw calls, this is mostly to help batch calls

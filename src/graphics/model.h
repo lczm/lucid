@@ -1,5 +1,6 @@
 #pragma once
 
+#include <limits>
 #include <vector>
 #include <string>
 #include <assimp/scene.h>
@@ -9,12 +10,26 @@
 #include "gl.h"
 #include "mesh.h"
 
+struct BoundingBox {
+  float minX = std::numeric_limits<float>::max();
+  float maxX = std::numeric_limits<float>::min();
+
+  float minY = std::numeric_limits<float>::max();
+  float maxY = std::numeric_limits<float>::min();
+
+  float minZ = std::numeric_limits<float>::max();
+  float maxZ = std::numeric_limits<float>::min();
+};
+
 class Model {
  private:
   std::string tag;
   std::vector<MeshTexture> loadedTextures;
   std::vector<Mesh> meshes;
   std::string directory;
+
+  bool hasMoved;
+  BoundingBox boundingBox;
 
  public:
   Model();
@@ -29,6 +44,12 @@ class Model {
   std::string GetTag();
 
   std::vector<Mesh> GetMeshes();
+
+  void SetHasMoved(bool hasMoved);
+  bool GetHasMoved();
+
+  void SetBoundingBox(BoundingBox& boundingBox);
+  BoundingBox GetBoundingBox();
 
   void LoadModel(std::string path);
   void ProcessNode(aiNode* node, const aiScene* scene);
