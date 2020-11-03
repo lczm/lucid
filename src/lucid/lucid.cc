@@ -93,49 +93,8 @@ Lucid::~Lucid() {
 };
 
 void Lucid::Update(double dt) {
-  if (mouseKeys[MOUSE_LEFT] && (lastX != input->GetMouseX() || lastY != input->GetMouseY())) {
-    float offsetX = input->GetMouseX() - lastX;
-    float offsetY = input->GetMouseY() - lastY;
-
-    // Mouse moving to the left side, pan camera to the upper right
-    if (offsetY > 0) {
-      cameraPos.y -= offsetY * dt;
-    } else if (offsetY < 0) {
-      cameraPos.y -= offsetY * dt;
-    }
-
-    if (offsetX > 0) {
-      cameraPos.z -= offsetX * dt;
-    } else if (offsetX < 0) {
-      cameraPos.z -= offsetX * dt;
-    }
-
-    lastX = input->GetMouseX();
-    lastY = input->GetMouseY();
-  } else if (mouseKeys[MOUSE_RIGHT] &&
-             (lastX != input->GetMouseX() || lastY != input->GetMouseY())) {
-    float offsetX = input->GetMouseX() - lastX;
-    float offsetY = input->GetMouseY() - lastY;
-
-    lastX = input->GetMouseX();
-    lastY = input->GetMouseY();
-
-    UpdateCameraVector(offsetX, offsetY);
-  }
-
-  if (IsKeyDown('w')) cameraPos += static_cast<float>(CAMERA_SPEED * dt) * cameraFront;
-  if (IsKeyDown('s')) cameraPos -= static_cast<float>(CAMERA_SPEED * dt) * cameraFront;
-  if (IsKeyDown('a'))
-    cameraPos -=
-        glm::normalize(glm::cross(cameraFront, cameraUp)) * static_cast<float>(CAMERA_SPEED * dt);
-  if (IsKeyDown('d'))
-    cameraPos +=
-        glm::normalize(glm::cross(cameraFront, cameraUp)) * static_cast<float>(CAMERA_SPEED * dt);
-
-  if (scroll == 1) cameraPos += static_cast<float>(SCROLL_SPEED * dt) * cameraFront;
-  if (scroll == -1) cameraPos -= static_cast<float>(SCROLL_SPEED * dt) * cameraFront;
-
-  scroll = 0;
+  HandleMousePan(dt);
+  HandleKeyboardPan(dt);
 
   view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
@@ -263,4 +222,63 @@ void Lucid::KeyCallback(GLFWwindow* window, int key, int scancode, int action, i
 void Lucid::ScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
   Lucid* lucid = (Lucid*)glfwGetWindowUserPointer(window);
   lucid->HandleScrollCallback(window, xoffset, yoffset);
+}
+
+void Lucid::HandleMousePan(double dt) {
+  if (mouseKeys[MOUSE_LEFT] && (lastX != input->GetMouseX() || lastY != input->GetMouseY())) {
+    float offsetX = input->GetMouseX() - lastX;
+    float offsetY = input->GetMouseY() - lastY;
+
+    // Handle the x-axis movement
+    cameraPos -=
+        glm::normalize(glm::cross(cameraFront, cameraUp)) * static_cast<float>(offsetX * dt);
+
+    // Handle the y-axis movement
+    cameraPos -= glm::normalize(cameraUp) * static_cast<float>(offsetY * dt);
+
+    lastX = input->GetMouseX();
+    lastY = input->GetMouseY();
+  } else if (mouseKeys[MOUSE_RIGHT] &&
+             (lastX != input->GetMouseX() || lastY != input->GetMouseY())) {
+    float offsetX = input->GetMouseX() - lastX;
+    float offsetY = input->GetMouseY() - lastY;
+
+    lastX = input->GetMouseX();
+    lastY = input->GetMouseY();
+
+    UpdateCameraVector(offsetX, offsetY);
+  }
+
+  // Scroll up
+  if (scroll == 1) {
+    cameraPos += static_cast<float>(SCROLL_SPEED * dt) * cameraFront;
+  }
+
+  // Scroll down
+  if (scroll == -1) {
+    cameraPos -= static_cast<float>(SCROLL_SPEED * dt) * cameraFront;
+  }
+
+  // Reset the scroll variable once done
+  scroll = 0;
+}
+
+void Lucid::HandleKeyboardPan(double dt) {
+  if (IsKeyDown('w')) {
+    cameraPos += static_cast<float>(CAMERA_SPEED * dt) * cameraFront;
+  }
+
+  if (IsKeyDown('s')) {
+    cameraPos -= static_cast<float>(CAMERA_SPEED * dt) * cameraFront;
+  }
+
+  if (IsKeyDown('a')) {
+    cameraPos -=
+        glm::normalize(glm::cross(cameraFront, cameraUp)) * static_cast<float>(CAMERA_SPEED * dt);
+  }
+
+  if (IsKeyDown('d')) {
+    cameraPos +=
+        glm::normalize(glm::cross(cameraFront, cameraUp)) * static_cast<float>(CAMERA_SPEED * dt);
+  }
 }
