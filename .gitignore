@@ -25,3 +25,9 @@ gambit
 # CLion ignores
 .idea/
 cmake-build-debug/
+
+# Ignore asset files for now
+assets/
+
+# TODO : Fix this... but for now also ignore assimp
+lib/assimp/*
