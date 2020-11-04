@@ -399,8 +399,8 @@ class Registry {
       Archetype remainderArchetype;
 
       if (status.move == Move::ADD) {
-        for (uint32_t hash : archetype) {
-          if (hash != status.componentHash) {
+        for (size_t i = 0; i < archetype.size(); i++) {
+          if (archetype[i] != status.componentHash) {
             remainderArchetype.push_back(archetype[i]);
           }
         }
@@ -433,8 +433,8 @@ class Registry {
       // After moving the components from the previous archetype to the new archetype
       // To keep things packed, the space in the previous archetype needs to be filled
       // To fill this space, the latest entity can take its place
-      auto d = {(ReorderComponentVector<Components>(status.previousIndex, previousPtr), 0)...};
-      (void)d;
+      // auto d = {(ReorderComponentVector<Components>(status.previousIndex, previousPtr), 0)...};
+      // (void)d;
     }
   }
 
