@@ -13,6 +13,7 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window) {
   for (bool& key : keys) {
     key = false;
   }
+
   for (bool& mouseKey : mouseKeys) {
     mouseKey = false;
   }

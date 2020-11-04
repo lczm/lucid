@@ -3,9 +3,7 @@
 #include "component.h"
 #include "gtest/gtest.h"
 
-struct TestAddStruct {
-  int a;
-};
+struct TestAddStruct { int a; };
 
 TEST(ECS, AddComponent) {
   Registry* registry = new Registry();

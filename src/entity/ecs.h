@@ -397,10 +397,14 @@ class Registry {
     for (ComponentMovementStatus& status : flushCache[entity]) {
       Archetype archetype = entityComponentMap[entity];
       Archetype remainderArchetype;
-      for (size_t i = 0; i < archetype.size(); i++) {
-        if (archetype[i] != status.componentHash) {
-          remainderArchetype.push_back(archetype[i]);
+
+      if (status.move == Move::ADD) {
+        for (uint32_t hash : archetype) {
+          if (hash != status.componentHash) {
+            remainderArchetype.push_back(archetype[i]);
+          }
         }
+      } else if (status.move == Move::REMOVE) {  // TODO : Remove
       }
 
       // Reconstruct the vectors if needed
@@ -425,14 +429,19 @@ class Registry {
                                            previousPtr, currentPtr, status.componentHash),
                  0)...};
       (void)p;
+
+      // After moving the components from the previous archetype to the new archetype
+      // To keep things packed, the space in the previous archetype needs to be filled
+      // To fill this space, the latest entity can take its place
+      auto d = {(ReorderComponentVector<Components>(status.previousIndex, previousPtr), 0)...};
+      (void)d;
     }
   }
 
   template <typename Component>
   void MoveComponent(uint32_t previousIndex, uint32_t currentIndex,
                      std::unordered_map<uint32_t, void*> from,
-                     std::unordered_map<uint32_t, void*> to,
-                     uint32_t exclude) {
+                     std::unordered_map<uint32_t, void*> to, uint32_t exclude) {
     if (GetHashCode<Component>() == exclude) {
       return;
     }
@@ -445,6 +454,19 @@ class Registry {
         *(static_cast<std::vector<Component>*>(to[hashCode]));
 
     toComponentVector[currentIndex] = fromComponentVector[previousIndex];
+  }
+
+  template <typename Component>
+  void ReorderComponentVector(uint32_t fillIndex, std::unordered_map<uint32_t, void*> keyPtr) {
+    uint32_t hashCode = GetHashCode<Component>();
+
+    std::vector<Component>& componentVector =
+        *(static_cast<std::vector<Component>*>(keyPtr[hashCode]));
+
+    // Cannot move elements around to do anything
+    if (componentVector.size() <= 1) {
+      return;
+    }
   }
 
   // This is named addComponentData rather than addComponent because this does
