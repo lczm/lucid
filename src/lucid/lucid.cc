@@ -40,19 +40,6 @@ Lucid::~Lucid() {
 
 void Lucid::Update(double dt) {
   registry->UpdateSystems(dt, input);
-
-  ImGui_ImplOpenGL3_NewFrame();
-  ImGui_ImplGlfw_NewFrame();
-  ImGui::NewFrame();
-
-  ImGui::Begin("Lucid");
-  ImGui::BeginTabBar("Lucid Tab Bar");
-
-  ImGui::EndTabBar();
-  ImGui::End();
-
-  ImGui::Render();
-  ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 void Lucid::InitializeEntities() {
@@ -87,6 +74,7 @@ void Lucid::InitializeEntities() {
 void Lucid::InitializeSystems() {
   registry->RegisterSystem(new RenderSystem());
   registry->RegisterSystem(new LucidSystem());
+  registry->RegisterSystem(new UiSystem());
 }
 
 void Lucid::SetMouseCallback(std::function<void(GLFWwindow*, int, int, int)> fn) {
