@@ -24,12 +24,6 @@ class Lucid {
   Input* input;
   GLFWwindow* window;
 
-  // There are ~350 keys defined by GLFW
-  bool keys[350];
-
-  // Left / Right / Middle
-  bool mouseKeys[3];
-
   uint32_t VAO, VBO, EBO;
   uint32_t vertexShader, fragmentShader;
 
@@ -43,13 +37,8 @@ class Lucid {
 
   uint32_t modelShaderID;
 
-  float lastX;
-  float lastY;
-
   float yaw;
   float pitch;
-
-  int scroll;
 
   std::function<void(GLFWwindow* window, int button, int action, int mods)> mouseCallback;
   std::function<void(GLFWwindow* window, int key, int scancode, int action, int mods)> keyCallback;
@@ -80,6 +69,6 @@ class Lucid {
   static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
   static void ScrollCallback(GLFWwindow* window, double xOffset, double yOffset);
 
-  void HandleMousePan(double dt);
-  void HandleKeyboardPan(double dt);
+  void HandleMousePan(double dt, Input* input);
+  void HandleKeyboardPan(double dt, Input* input);
 };

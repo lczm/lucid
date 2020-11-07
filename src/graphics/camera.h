@@ -20,12 +20,12 @@ class Camera {
 
   float lastX, lastY;
   float yaw, pitch;
+
  public:
   Camera();
   ~Camera();
 
   glm::mat4 GetView();
   glm::mat4 GetProjection();
-
   glm::vec3 GetCameraPos();
 };

@@ -2,6 +2,8 @@
 
 RenderSystem::RenderSystem() {
   RenderSystem::renderer = new Renderer();
+  RenderSystem::camera = new Camera();
+
   modelShader.CreateShader(MODEL_VERTEX_SHADER, MODEL_FRAGMENT_SHADER);
 }
 
@@ -32,4 +34,10 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
     shader->SetUniformMatFloat4("model", model);
     renderer->DrawModel(*m, *shader);
   }
+}
+
+void RenderSystem::HandleMousePan(double dt, Input* input) {
+}
+
+void RenderSystem::HandleKeyboardPan(double dt, Input* input) {
 }
