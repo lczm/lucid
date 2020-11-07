@@ -95,7 +95,13 @@ int main(void) {
   double dt = 0;
   double secondDt = 0;
   int frameCount = 0;
+
   while (!glfwWindowShouldClose(window)) {
+    // Flip buffers
+    glfwSwapBuffers(window);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     // Handle events -> inputs, resize, etc.
     glfwPollEvents();
 
@@ -125,11 +131,6 @@ int main(void) {
       std::cout << "Breaking out of the loop, OpenGL Error" << std::endl;
       break;
     }
-
-    // Flip buffers
-    glfwSwapBuffers(window);
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   }
 
   glfwDestroyWindow(window);

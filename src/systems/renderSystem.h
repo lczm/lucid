@@ -13,7 +13,7 @@ class RenderSystem : public System {
   Renderer* renderer;
   Camera* camera;
 
-  uint32_t fbo;
+  uint32_t fbo, rbo;
   uint32_t texture;
 
  public:

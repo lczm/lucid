@@ -15,6 +15,15 @@ RenderSystem::RenderSystem() {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
   glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+
+  glGenRenderbuffers(1, &rbo);
+  glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+  glRenderbufferStorage(
+      GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 1920,
+      1080);  // use a single renderbuffer object for both a depth AND stencil buffer.
+  glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER,
+                            rbo);  // now actually attach it
+
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -29,7 +38,7 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
 
   glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
-  glEnable(GL_DEPTH_TEST);
+  // glEnable(GL_DEPTH_TEST);
 
   glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
