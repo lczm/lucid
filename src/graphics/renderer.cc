@@ -48,16 +48,7 @@ void Renderer::DrawModel(Model& model, Shader& shader) {
     DrawMesh(mesh, shader);
   }
 
-  // std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-
-  // CalculateModelBoundingBox(model);
-
-  // std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-  // std::cout << "(Bounding Box) Time Taken : " <<
-  // std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count()
-  //           << std::endl;
-  // DrawBoundingBox(model.GetBoundingBox());
-  // return;
+  DrawBoundingBox(model.GetBoundingBox());
 }
 
 void Renderer::DrawBoundingBox(BoundingBox& boundingBox) {

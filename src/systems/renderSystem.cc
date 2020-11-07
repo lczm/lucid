@@ -28,8 +28,8 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
   for (size_t i = 0; i < models->Size(); i++) {
     Model* m = models->At(i);
     glm::mat4 model = glm::mat4(1.0f);
-
     model = glm::translate(model, glm::vec3(1.0f, 1.0f, 1.0f * (i * 5)));
+
     // Avocado model is very small, scale it all the way up (debugging purposes)
     if (m->GetTag() == "avocado") {
       model = glm::scale(model, glm::vec3(50.0f, 50.0f, 50.0f));
