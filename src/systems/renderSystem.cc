@@ -10,7 +10,7 @@ RenderSystem::RenderSystem() {
   glGenTextures(1, &texture);
   glBindTexture(GL_TEXTURE_2D, texture);
 
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1920, 1080, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
@@ -28,6 +28,11 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
   HandleKeyboardPan(dt, input);
 
   glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
+  glEnable(GL_DEPTH_TEST);
+
+  glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   camera->UpdateView();
 
