@@ -45,7 +45,61 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
 }
 
 void RenderSystem::HandleMousePan(double dt, Input* input) {
+  if (input->IsMouseLDown() &&
+      (input->lastX != input->GetMouseX() || input->lastY != input->GetMouseY())) {
+    float offsetX = input->GetMouseX() - input->lastX;
+    float offsetY = input->GetMouseY() - input->lastY;
+
+    // Handle the x-axis movement
+    camera->cameraPos -= glm::normalize(glm::cross(camera->cameraFront, camera->cameraUp)) *
+                         static_cast<float>(offsetX * dt);
+
+    // Handle the y-axis movement
+    camera->cameraPos -= glm::normalize(camera->cameraUp) * static_cast<float>(offsetY * dt);
+
+    input->lastX = input->GetMouseX();
+    input->lastY = input->GetMouseY();
+  } else if (input->IsMouseRDown() &&
+             (input->lastX != input->GetMouseX() || input->lastY != input->GetMouseY())) {
+    float offsetX = input->GetMouseX() - input->lastX;
+    float offsetY = input->GetMouseY() - input->lastY;
+
+    input->lastX = input->GetMouseX();
+    input->lastY = input->GetMouseY();
+
+    camera->UpdateCameraVector(offsetX, offsetY);
+  }
+
+  // Scroll up
+  if (input->scroll == 1) {
+    camera->cameraPos += static_cast<float>(SCROLL_SPEED * dt) * camera->cameraFront;
+  }
+
+  // Scroll down
+  if (input->scroll == -1) {
+    camera->cameraPos -= static_cast<float>(SCROLL_SPEED * dt) * camera->cameraFront;
+  }
+
+  // Reset the scroll variable once done
+  input->scroll = 0;
 }
 
 void RenderSystem::HandleKeyboardPan(double dt, Input* input) {
+  if (input->IsKeyDown('w')) {
+    camera->cameraPos += static_cast<float>(CAMERA_SPEED * dt) * camera->cameraFront;
+  }
+
+  if (input->IsKeyDown('s')) {
+    camera->cameraPos -= static_cast<float>(CAMERA_SPEED * dt) * camera->cameraFront;
+  }
+
+  if (input->IsKeyDown('a')) {
+    camera->cameraPos -= glm::normalize(glm::cross(camera->cameraFront, camera->cameraUp)) *
+                         static_cast<float>(CAMERA_SPEED * dt);
+  }
+
+  if (input->IsKeyDown('d')) {
+    camera->cameraPos += glm::normalize(glm::cross(camera->cameraFront, camera->cameraUp)) *
+                         static_cast<float>(CAMERA_SPEED * dt);
+  }
 }

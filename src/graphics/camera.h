@@ -6,7 +6,7 @@
 #include "gtc/matrix_transform.hpp"
 
 class Camera {
- private:
+ public:
   glm::vec3 cameraPos;
   glm::vec3 cameraUp;
   glm::vec3 cameraFront;

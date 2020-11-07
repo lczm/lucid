@@ -5,9 +5,6 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window) {
   Lucid::input = input;
   Lucid::window = window;
 
-  Lucid::yaw = 0.0f;
-  Lucid::pitch = 0.0f;
-
   // Target this window for user pointer for GLFW, this is so that
   // in callbacks, we can retrieve back the class
   glfwSetWindowUserPointer(window, this);
@@ -31,19 +28,6 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window) {
   ImGui_ImplGlfw_InitForOpenGL(window, true);
   ImGui_ImplOpenGL3_Init(GLSL_VERSION);
 
-  // cameraPos = glm::vec3(0.0f, 0.0f, 5.0f);
-  // cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-  cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-
-  glm::vec3 front;
-  front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-  front.y = sin(glm::radians(pitch));
-  front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-
-  cameraFront = front;
-  cameraPos = glm::normalize(glm::cross(cameraFront, cameraUp));
-  cameraUp = glm::normalize(glm::cross(cameraPos, cameraFront));
-
   InitializeEntities();
   InitializeSystems();
 }
@@ -55,22 +39,6 @@ Lucid::~Lucid() {
 };
 
 void Lucid::Update(double dt) {
-  HandleMousePan(dt, input);
-  HandleKeyboardPan(dt, input);
-
-  // view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-
-  // glm::mat4 projection = glm::perspective(
-  //     glm::radians(45.0f), static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT),
-  //     0.1f, 100.0f);
-
-  // Shader* shader = registry->GetComponent<Shader>(modelShaderID);
-
-  // shader->Bind();
-  // shader->SetUniformMatFloat4("projection", projection);
-  // shader->SetUniformMatFloat4("view", view);
-  // shader->Unbind();
-
   registry->UpdateSystems(dt, input);
 
   ImGui_ImplOpenGL3_NewFrame();
@@ -112,8 +80,6 @@ void Lucid::InitializeEntities() {
   uint32_t shaderID = registry->GetAvailableEntityId();
   registry->CreateEntity<Shader>(shaderID);
 
-  modelShaderID = shaderID;
-
   Shader* shader = registry->GetComponent<Shader>(shaderID);
   shader->CreateShader(MODEL_VERTEX_SHADER, MODEL_FRAGMENT_SHADER);
 }
@@ -121,23 +87,6 @@ void Lucid::InitializeEntities() {
 void Lucid::InitializeSystems() {
   registry->RegisterSystem(new RenderSystem());
   registry->RegisterSystem(new LucidSystem());
-}
-
-void Lucid::UpdateCameraVector(float xOffset, float yOffset) {
-  xOffset *= CAMERA_SENSITIVITY;
-  yOffset *= CAMERA_SENSITIVITY;
-
-  yaw += xOffset;
-  pitch += yOffset;
-
-  if (pitch > 89.0f) pitch = 89.0f;
-  if (pitch < -89.0f) pitch = -89.0f;
-
-  glm::vec3 front;
-  front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-  front.y = sin(glm::radians(pitch));
-  front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-  cameraFront = glm::normalize(front);
 }
 
 void Lucid::SetMouseCallback(std::function<void(GLFWwindow*, int, int, int)> fn) {
@@ -207,64 +156,4 @@ void Lucid::KeyCallback(GLFWwindow* window, int key, int scancode, int action, i
 void Lucid::ScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
   Lucid* lucid = (Lucid*)glfwGetWindowUserPointer(window);
   lucid->HandleScrollCallback(window, xoffset, yoffset);
-}
-
-void Lucid::HandleMousePan(double dt, Input* input) {
-  if (input->IsMouseLDown() &&
-      (input->lastX != input->GetMouseX() || input->lastY != input->GetMouseY())) {
-    float offsetX = input->GetMouseX() - input->lastX;
-    float offsetY = input->GetMouseY() - input->lastY;
-
-    // Handle the x-axis movement
-    cameraPos -=
-        glm::normalize(glm::cross(cameraFront, cameraUp)) * static_cast<float>(offsetX * dt);
-
-    // Handle the y-axis movement
-    cameraPos -= glm::normalize(cameraUp) * static_cast<float>(offsetY * dt);
-
-    input->lastX = input->GetMouseX();
-    input->lastY = input->GetMouseY();
-  } else if (input->IsMouseRDown() &&
-             (input->lastX != input->GetMouseX() || input->lastY != input->GetMouseY())) {
-    float offsetX = input->GetMouseX() - input->lastX;
-    float offsetY = input->GetMouseY() - input->lastY;
-
-    input->lastX = input->GetMouseX();
-    input->lastY = input->GetMouseY();
-
-    UpdateCameraVector(offsetX, offsetY);
-  }
-
-  // Scroll up
-  if (input->scroll == 1) {
-    cameraPos += static_cast<float>(SCROLL_SPEED * dt) * cameraFront;
-  }
-
-  // Scroll down
-  if (input->scroll == -1) {
-    cameraPos -= static_cast<float>(SCROLL_SPEED * dt) * cameraFront;
-  }
-
-  // Reset the scroll variable once done
-  input->scroll = 0;
-}
-
-void Lucid::HandleKeyboardPan(double dt, Input* input) {
-  if (input->IsKeyDown('w')) {
-    cameraPos += static_cast<float>(CAMERA_SPEED * dt) * cameraFront;
-  }
-
-  if (input->IsKeyDown('s')) {
-    cameraPos -= static_cast<float>(CAMERA_SPEED * dt) * cameraFront;
-  }
-
-  if (input->IsKeyDown('a')) {
-    cameraPos -=
-        glm::normalize(glm::cross(cameraFront, cameraUp)) * static_cast<float>(CAMERA_SPEED * dt);
-  }
-
-  if (input->IsKeyDown('d')) {
-    cameraPos +=
-        glm::normalize(glm::cross(cameraFront, cameraUp)) * static_cast<float>(CAMERA_SPEED * dt);
-  }
 }

@@ -27,17 +27,6 @@ class Lucid {
   uint32_t VAO, VBO, EBO;
   uint32_t vertexShader, fragmentShader;
 
-  glm::vec3 cameraPos;
-  glm::vec3 cameraFront;
-  glm::vec3 cameraUp;
-  glm::vec3 cameraRight;
-  glm::mat4 view;
-
-  uint32_t modelShaderID;
-
-  float yaw;
-  float pitch;
-
   std::function<void(GLFWwindow* window, int button, int action, int mods)> mouseCallback;
   std::function<void(GLFWwindow* window, int key, int scancode, int action, int mods)> keyCallback;
   std::function<void(GLFWwindow* window, double xoffset, double yoffset)> scrollCallback;
@@ -49,10 +38,6 @@ class Lucid {
   void Update(double dt);
   void InitializeEntities();
   void InitializeSystems();
-
-  bool IsKeyDown(int key);
-
-  void UpdateCameraVector(float xOffset, float yOffset);
 
   void SetMouseCallback(
       std::function<void(GLFWwindow* window, int button, int action, int mods)> fn);
@@ -68,7 +53,4 @@ class Lucid {
   static void MouseCallback(GLFWwindow* window, int button, int action, int mods);
   static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
   static void ScrollCallback(GLFWwindow* window, double xOffset, double yOffset);
-
-  void HandleMousePan(double dt, Input* input);
-  void HandleKeyboardPan(double dt, Input* input);
 };
