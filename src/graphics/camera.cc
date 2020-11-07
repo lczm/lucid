@@ -34,7 +34,7 @@ glm::mat4 Camera::GetProjection() {
 }
 
 glm::vec3 Camera::GetCameraPos() {
-  return glm::vec3(1.0f);
+  return cameraPos;
 }
 
 void Camera::UpdateView() {
