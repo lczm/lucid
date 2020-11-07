@@ -56,7 +56,7 @@ void Renderer::DrawModel(Model& model, Shader& shader) {
   // std::cout << "(Bounding Box) Time Taken : " <<
   // std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count()
   //           << std::endl;
-  DrawBoundingBox(model.GetBoundingBox());
+  // DrawBoundingBox(model.GetBoundingBox());
   // return;
 }
 

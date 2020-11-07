@@ -12,7 +12,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 set(CMAKE_CXX_STANDARD 11)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-        set(CMAKE_CXX_FLAGS "-Wall -Wpedantic -Wextra -Wshadow -Wno-unused-parameter -fdiagnostics-color -g")
+    set(CMAKE_CXX_FLAGS "-Wall -Wpedantic -Wextra -Wshadow -Wno-unused-parameter -fdiagnostics-color -g")
 endif()
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
@@ -110,7 +110,11 @@ add_executable(lucid
     ${GLM_HEADERS})
 
 # Link the executable to glfw
-target_link_libraries(lucid glfw assimp*)
+if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    target_link_libraries(lucid glfw assimp)
+elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    target_link_libraries(lucid glfw assimp*)
+endif()
 
 # Tests
 # Add the all the source files to the executable as well
