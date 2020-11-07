@@ -20,17 +20,17 @@ class UiSystem : public System {
 
   void Update(double dt, Registry* registry, Input* input);
 
-  void InitializeGUI();
+  void InitializeGUI(double dt, Registry* registry, Input* input);
   void PresetLayout(ImGuiID dockSpaceID);
-  void InitializeImGuiWindows();
+  void InitializeImGuiWindows(double dt, Registry* registry, Input* input);
 
-  void DrawHierarchy();
-  void DrawAssets();
-  void DrawScene();
-  void DrawProject();
-  void DrawConsole();
-  void DrawAnimation();
-  void DrawAnimator();
-  void DrawInspector();
-  void DrawServices();
+  void DrawHierarchy(double dt, Registry* registry, Input* input);
+  void DrawAssets(double dt, Registry* registry, Input* input);
+  void DrawScene(double dt, Registry* registry, Input* input);
+  void DrawProject(double dt, Registry* registry, Input* input);
+  void DrawConsole(double dt, Registry* registry, Input* input);
+  void DrawAnimation(double dt, Registry* registry, Input* input);
+  void DrawAnimator(double dt, Registry* registry, Input* input);
+  void DrawInspector(double dt, Registry* registry, Input* input);
+  void DrawServices(double dt, Registry* registry, Input* input);
 };

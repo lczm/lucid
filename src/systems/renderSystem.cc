@@ -3,13 +3,31 @@
 RenderSystem::RenderSystem() {
   RenderSystem::renderer = new Renderer();
   RenderSystem::camera = new Camera();
+
+  glGenFramebuffers(1, &fbo);
+  glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
+  glGenTextures(1, &texture);
+  glBindTexture(GL_TEXTURE_2D, texture);
+
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-RenderSystem::~RenderSystem() = default;
+RenderSystem::~RenderSystem() {
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  glDeleteFramebuffers(1, &fbo);
+}
 
 void RenderSystem::Update(double dt, Registry* registry, Input* input) {
   HandleMousePan(dt, input);
   HandleKeyboardPan(dt, input);
+
+  glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
   camera->UpdateView();
 
@@ -42,6 +60,8 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
   }
 
   shader->Unbind();
+
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void RenderSystem::HandleMousePan(double dt, Input* input) {

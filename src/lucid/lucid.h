@@ -25,9 +25,6 @@ class Lucid {
   Input* input;
   GLFWwindow* window;
 
-  uint32_t VAO, VBO, EBO;
-  uint32_t vertexShader, fragmentShader;
-
   std::function<void(GLFWwindow* window, int button, int action, int mods)> mouseCallback;
   std::function<void(GLFWwindow* window, int key, int scancode, int action, int mods)> keyCallback;
   std::function<void(GLFWwindow* window, double xoffset, double yoffset)> scrollCallback;

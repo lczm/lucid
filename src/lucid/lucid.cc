@@ -45,6 +45,7 @@ void Lucid::Update(double dt) {
 void Lucid::InitializeEntities() {
   registry->RegisterArchetype<Model>();
   registry->RegisterArchetype<Shader>();
+  registry->RegisterArchetype<TextureID>();
 
   uint32_t modelID = registry->GetAvailableEntityId();
   uint32_t modelID2 = registry->GetAvailableEntityId();
@@ -69,6 +70,9 @@ void Lucid::InitializeEntities() {
 
   Shader* shader = registry->GetComponent<Shader>(shaderID);
   shader->CreateShader(MODEL_VERTEX_SHADER, MODEL_FRAGMENT_SHADER);
+
+  TextureID textureID = registry->GetAvailableEntityId();
+  registry->CreateEntity<TextureID>(textureID);
 }
 
 void Lucid::InitializeSystems() {

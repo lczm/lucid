@@ -11,10 +11,10 @@ UiSystem::UiSystem() {
 UiSystem::~UiSystem() = default;
 
 void UiSystem::Update(double dt, Registry* registry, Input* input) {
-  InitializeGUI();
+  InitializeGUI(dt, registry, input);
 }
 
-void UiSystem::InitializeGUI() {
+void UiSystem::InitializeGUI(double dt, Registry* registry, Input* input) {
   ImGui_ImplOpenGL3_NewFrame();
   ImGui_ImplGlfw_NewFrame();
   ImGui::NewFrame();
@@ -62,7 +62,7 @@ void UiSystem::InitializeGUI() {
     }
   }
 
-  InitializeImGuiWindows();
+  InitializeImGuiWindows(dt, registry, input);
 
   ImGui::Render();
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -100,58 +100,73 @@ void UiSystem::PresetLayout(ImGuiID dockSpaceID) {
   ImGui::DockBuilderFinish(dockSpaceID);
 }
 
-void UiSystem::InitializeImGuiWindows() {
-  DrawHierarchy();
-  DrawAssets();
-  DrawScene();
-  DrawProject();
-  DrawConsole();
-  DrawAnimation();
-  DrawAnimator();
-  DrawInspector();
-  DrawServices();
+void UiSystem::InitializeImGuiWindows(double dt, Registry* registry, Input* input) {
+  DrawHierarchy(dt, registry, input);
+  DrawAssets(dt, registry, input);
+  DrawScene(dt, registry, input);
+  DrawProject(dt, registry, input);
+  DrawConsole(dt, registry, input);
+  DrawAnimation(dt, registry, input);
+  DrawAnimator(dt, registry, input);
+  DrawInspector(dt, registry, input);
+  DrawServices(dt, registry, input);
 }
 
-void UiSystem::DrawHierarchy() {
+void UiSystem::DrawHierarchy(double dt, Registry* registry, Input* input) {
   ImGui::Begin("Hierarchy");
   ImGui::Text("This is the scene hierarchy");
   ImGui::End();
 }
-void UiSystem::DrawAssets() {
+
+void UiSystem::DrawAssets(double dt, Registry* registry, Input* input) {
   ImGui::Begin("Assets");
   ImGui::Text("This is the assets");
   ImGui::End();
 }
-void UiSystem::DrawScene() {
+
+void UiSystem::DrawScene(double dt, Registry* registry, Input* input) {
   ImGui::Begin("Scene");
+
+  ImVec2 pos = ImGui::GetCursorScreenPos();
+  ImGui::GetWindowDrawList()->AddImage(
+      (void*)5, ImVec2(ImGui::GetCursorScreenPos()),
+      ImVec2(ImGui::GetCursorScreenPos().x + 1000, ImGui::GetCursorScreenPos().y + 1000),
+      ImVec2(0, 1), ImVec2(1, 0));
+
   ImGui::End();
 }
-void UiSystem::DrawProject() {
+
+void UiSystem::DrawProject(double dt, Registry* registry, Input* input) {
   ImGui::Begin("Project");
   ImGui::Text("This is the project");
   ImGui::End();
 }
-void UiSystem::DrawConsole() {
+
+void UiSystem::DrawConsole(double dt, Registry* registry, Input* input) {
   ImGui::Begin("Console");
   ImGui::Text("This is the console");
   ImGui::End();
 }
-void UiSystem::DrawAnimation() {
+
+void UiSystem::DrawAnimation(double dt, Registry* registry, Input* input) {
   ImGui::Begin("Animation");
   ImGui::Text("This is the animations");
   ImGui::End();
 }
-void UiSystem::DrawAnimator() {
+
+void UiSystem::DrawAnimator(double dt, Registry* registry, Input* input) {
   ImGui::Begin("Animator");
   ImGui::Text("This is the animator");
   ImGui::End();
 }
-void UiSystem::DrawInspector() {
+
+void UiSystem::DrawInspector(double dt, Registry* registry, Input* input) {
   ImGui::Begin("Inspector");
   ImGui::Text("This is the inspector");
   ImGui::End();
 }
-void UiSystem::DrawServices() {
+
+void UiSystem::DrawServices(double dt, Registry* registry, Input* input) {
   ImGui::Begin("Services");
   ImGui::Text("This is the services");
   ImGui::End();

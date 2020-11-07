@@ -26,6 +26,7 @@
 
 // Entities are inherently just ids
 typedef std::uint32_t Entity;
+typedef std::uint32_t TextureID;
 
 // Archetypes are inherently just a std::vector<unsigned int>
 typedef std::vector<unsigned int> Archetype;
