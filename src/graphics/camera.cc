@@ -24,7 +24,7 @@ Camera::~Camera() {
 }
 
 glm::mat4 Camera::GetView() {
-  return glm::mat4(1.0f);
+  return view;
 }
 
 glm::mat4 Camera::GetProjection() {
@@ -35,4 +35,25 @@ glm::mat4 Camera::GetProjection() {
 
 glm::vec3 Camera::GetCameraPos() {
   return glm::vec3(1.0f);
+}
+
+void Camera::UpdateView() {
+  view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+}
+
+void Camera::UpdateCameraVector(float xOffset, float yOffset) {
+  xOffset *= CAMERA_SENSITIVITY;
+  yOffset *= CAMERA_SENSITIVITY;
+
+  yaw += xOffset;
+  pitch += yOffset;
+
+  if (pitch > 89.0f) pitch = 89.0f;
+  if (pitch < -89.0f) pitch = -89.0f;
+
+  glm::vec3 front;
+  front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+  front.y = sin(glm::radians(pitch));
+  front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+  cameraFront = glm::normalize(front);
 }

@@ -44,9 +44,50 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window) {
   cameraPos = glm::normalize(glm::cross(cameraFront, cameraUp));
   cameraUp = glm::normalize(glm::cross(cameraPos, cameraFront));
 
-  registry->RegisterSystem(new RenderSystem());
-  registry->RegisterSystem(new LucidSystem());
+  InitializeEntities();
+  InitializeSystems();
+}
 
+Lucid::~Lucid() {
+  ImGui_ImplOpenGL3_Shutdown();
+  ImGui_ImplGlfw_Shutdown();
+  ImGui::DestroyContext();
+};
+
+void Lucid::Update(double dt) {
+  HandleMousePan(dt, input);
+  HandleKeyboardPan(dt, input);
+
+  // view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+
+  // glm::mat4 projection = glm::perspective(
+  //     glm::radians(45.0f), static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT),
+  //     0.1f, 100.0f);
+
+  // Shader* shader = registry->GetComponent<Shader>(modelShaderID);
+
+  // shader->Bind();
+  // shader->SetUniformMatFloat4("projection", projection);
+  // shader->SetUniformMatFloat4("view", view);
+  // shader->Unbind();
+
+  registry->UpdateSystems(dt, input);
+
+  ImGui_ImplOpenGL3_NewFrame();
+  ImGui_ImplGlfw_NewFrame();
+  ImGui::NewFrame();
+
+  ImGui::Begin("Lucid");
+  ImGui::BeginTabBar("Lucid Tab Bar");
+
+  ImGui::EndTabBar();
+  ImGui::End();
+
+  ImGui::Render();
+  ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
+void Lucid::InitializeEntities() {
   registry->RegisterArchetype<Model>();
   registry->RegisterArchetype<Shader>();
 
@@ -77,43 +118,9 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window) {
   shader->CreateShader(MODEL_VERTEX_SHADER, MODEL_FRAGMENT_SHADER);
 }
 
-Lucid::~Lucid() {
-  ImGui_ImplOpenGL3_Shutdown();
-  ImGui_ImplGlfw_Shutdown();
-  ImGui::DestroyContext();
-};
-
-void Lucid::Update(double dt) {
-  HandleMousePan(dt, input);
-  HandleKeyboardPan(dt, input);
-
-  view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-
-  glm::mat4 projection = glm::perspective(
-      glm::radians(45.0f), static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT),
-      0.1f, 100.0f);
-
-  Shader* shader = registry->GetComponent<Shader>(modelShaderID);
-
-  shader->Bind();
-  shader->SetUniformMatFloat4("projection", projection);
-  shader->SetUniformMatFloat4("view", view);
-  shader->Unbind();
-
-  registry->UpdateSystems(dt, input);
-
-  ImGui_ImplOpenGL3_NewFrame();
-  ImGui_ImplGlfw_NewFrame();
-  ImGui::NewFrame();
-
-  ImGui::Begin("Lucid");
-  ImGui::BeginTabBar("Lucid Tab Bar");
-
-  ImGui::EndTabBar();
-  ImGui::End();
-
-  ImGui::Render();
-  ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+void Lucid::InitializeSystems() {
+  registry->RegisterSystem(new RenderSystem());
+  registry->RegisterSystem(new LucidSystem());
 }
 
 void Lucid::UpdateCameraVector(float xOffset, float yOffset) {

@@ -13,8 +13,6 @@ class RenderSystem : public System {
   Renderer* renderer;
   Camera* camera;
 
-  Shader modelShader;
-
  public:
   RenderSystem();
   ~RenderSystem();

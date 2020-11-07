@@ -27,8 +27,6 @@ class Lucid {
   uint32_t VAO, VBO, EBO;
   uint32_t vertexShader, fragmentShader;
 
-  Shader shader;
-
   glm::vec3 cameraPos;
   glm::vec3 cameraFront;
   glm::vec3 cameraUp;
@@ -49,6 +47,8 @@ class Lucid {
   ~Lucid();
 
   void Update(double dt);
+  void InitializeEntities();
+  void InitializeSystems();
 
   bool IsKeyDown(int key);
 

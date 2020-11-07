@@ -3,13 +3,16 @@
 RenderSystem::RenderSystem() {
   RenderSystem::renderer = new Renderer();
   RenderSystem::camera = new Camera();
-
-  modelShader.CreateShader(MODEL_VERTEX_SHADER, MODEL_FRAGMENT_SHADER);
 }
 
 RenderSystem::~RenderSystem() = default;
 
 void RenderSystem::Update(double dt, Registry* registry, Input* input) {
+  HandleMousePan(dt, input);
+  HandleKeyboardPan(dt, input);
+
+  camera->UpdateView();
+
   std::vector<void*> modelComponents = registry->GetComponents<Model>();
   std::vector<void*> shaderComponents = registry->GetComponents<Shader>();
 
@@ -17,7 +20,10 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
   auto* shaders = static_cast<ComponentVector<Shader>*>(shaderComponents[0]);
 
   Shader* shader = shaders->At(0);
+
   shader->Bind();
+  shader->SetUniformMatFloat4("projection", camera->GetProjection());
+  shader->SetUniformMatFloat4("view", camera->GetView());
 
   for (size_t i = 0; i < models->Size(); i++) {
     Model* m = models->At(i);
@@ -34,6 +40,8 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
     shader->SetUniformMatFloat4("model", model);
     renderer->DrawModel(*m, *shader);
   }
+
+  shader->Unbind();
 }
 
 void RenderSystem::HandleMousePan(double dt, Input* input) {

@@ -28,4 +28,7 @@ class Camera {
   glm::mat4 GetView();
   glm::mat4 GetProjection();
   glm::vec3 GetCameraPos();
+
+  void UpdateView();
+  void UpdateCameraVector(float xOffset, float yOffset);
 };
