@@ -19,11 +19,33 @@ Input::~Input() {
 
 double Input::GetMouseX() {
   glfwGetCursorPos(window, &x, &y);
+
+#if DEBUG
+  if (activeWindow == WindowType::Scene) {
+    return x;
+  }
+#endif
+
+#if RELEASE
+  return x;
+#endif
+
   return x;
 }
 
 double Input::GetMouseY() {
   glfwGetCursorPos(window, &x, &y);
+
+#if DEBUG
+  if (activeWindow == WindowType::Scene) {
+    return std::abs(SCREEN_HEIGHT - y);
+  }
+#endif
+
+#if RELEASE
+  return std::abs(SCREEN_HEIGHT - y);
+#endif
+
   // OpenGL uses inverse y values compared to glfw window values
   return std::abs(SCREEN_HEIGHT - y);
 }
@@ -38,7 +60,18 @@ bool Input::IsKeyDown(int key) {
   if (key >= 97) {
     key -= 32;
   }
+
+#if DEBUG
+  if (activeWindow == WindowType::Scene) {
+    return keys[key];
+  }
+#endif
+
+#if RELEASE
   return keys[key];
+#endif
+
+  return false;
 }
 
 void Input::SetKeyOn(int key) {
@@ -59,6 +92,9 @@ bool Input::IsMouseLDown() {
   if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT)) {
 #if DEBUG
     // Handle imgui windows
+    if (activeWindow == WindowType::Scene) {
+      return true;
+    }
 #endif
 
 #if RELEASE
@@ -66,14 +102,26 @@ bool Input::IsMouseLDown() {
     return true;
 #endif
 
-    return true;
+    return false;
   }
   return false;
 }
 
 bool Input::IsMouseRDown() {
   if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT)) {
+#if DEBUG
+    // Handle imgui windows
+    if (activeWindow == WindowType::Scene) {
+      return true;
+    }
+#endif
+
+#if RELEASE
+    // Dont handle imgui windows
     return true;
+#endif
+
+    return false;
   }
   return false;
 }

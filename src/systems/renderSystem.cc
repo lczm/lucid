@@ -39,6 +39,19 @@ RenderSystem::~RenderSystem() {
 }
 
 void RenderSystem::Update(double dt, Registry* registry, Input* input) {
+  // WindowType windowType = input->activeWindow;
+  // if (windowType == WindowType::None) {
+  //   std::cout << "none" << std::endl;
+  // } else if (windowType == WindowType::Scene) {
+  //   std::cout << "scene" << std::endl;
+  // } else if (windowType == WindowType::Hierarchy) {
+  //   std::cout << "hierarchy" << std::endl;
+  // } else if (windowType == WindowType::Project) {
+  //   std::cout << "project" << std::endl;
+  // } else if (windowType == WindowType::Console) {
+  //   std::cout << "console" << std::endl;
+  // }
+
   HandleMousePan(dt, input);
   HandleKeyboardPan(dt, input);
 

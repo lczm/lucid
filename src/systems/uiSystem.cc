@@ -133,9 +133,9 @@ void UiSystem::DrawAssets(double dt, Registry* registry, Input* input) {
 void UiSystem::DrawScene(double dt, Registry* registry, Input* input) {
   ImGui::Begin("Scene");
 
-  UpdateInputActiveWindow(input, WindowType::Scene);
-
   ImGui::BeginChild("SceneRender");
+
+  UpdateInputActiveWindow(input, WindowType::Scene);
 
   // Get the size of the current imgui window to draw in
   ImVec2 wsize = ImGui::GetWindowSize();
@@ -204,7 +204,6 @@ void UiSystem::DrawServices(double dt, Registry* registry, Input* input) {
 
 void UiSystem::UpdateInputActiveWindow(Input* input, WindowType windowType) {
   if (ImGui::IsWindowFocused() && input->activeWindow != windowType) {
-    std::cout << "updating window enum" << std::endl;
     input->activeWindow = windowType;
   }
 }
