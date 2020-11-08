@@ -1,7 +1,10 @@
 #pragma once
 #include <GLFW/glfw3.h>
 #include <iostream>
+
 #include "constants.h"
+#include "windowEnum.h"
+
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
 
@@ -18,6 +21,8 @@ class Input {
 
   float lastX, lastY;
   int scroll;
+
+  WindowType activeWindow;
 
  public:
   Input(GLFWwindow* window);

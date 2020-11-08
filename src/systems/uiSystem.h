@@ -6,6 +6,7 @@
 #include "gl.h"
 #include "ecs.h"
 #include "renderer.h"
+#include "windowEnum.h"
 
 #include "imgui.h"
 #include "imgui_internal.h"
@@ -33,4 +34,6 @@ class UiSystem : public System {
   void DrawAnimator(double dt, Registry* registry, Input* input);
   void DrawInspector(double dt, Registry* registry, Input* input);
   void DrawServices(double dt, Registry* registry, Input* input);
+
+  void UpdateInputActiveWindow(Input* input, WindowType windowType);
 };

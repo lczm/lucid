@@ -10,6 +10,8 @@ Input::Input(GLFWwindow* window) {
   for (bool& mouseKey : mouseKeys) {
     mouseKey = false;
   }
+
+  activeWindow = WindowType::None;
 }
 
 Input::~Input() {

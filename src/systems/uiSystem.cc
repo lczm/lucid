@@ -114,18 +114,26 @@ void UiSystem::InitializeImGuiWindows(double dt, Registry* registry, Input* inpu
 
 void UiSystem::DrawHierarchy(double dt, Registry* registry, Input* input) {
   ImGui::Begin("Hierarchy");
+
+  UpdateInputActiveWindow(input, WindowType::Hierarchy);
+
   ImGui::Text("This is the scene hierarchy");
   ImGui::End();
 }
 
 void UiSystem::DrawAssets(double dt, Registry* registry, Input* input) {
   ImGui::Begin("Assets");
+
+  UpdateInputActiveWindow(input, WindowType::Assets);
+
   ImGui::Text("This is the assets");
   ImGui::End();
 }
 
 void UiSystem::DrawScene(double dt, Registry* registry, Input* input) {
   ImGui::Begin("Scene");
+
+  UpdateInputActiveWindow(input, WindowType::Scene);
 
   ImGui::BeginChild("SceneRender");
 
@@ -142,36 +150,61 @@ void UiSystem::DrawScene(double dt, Registry* registry, Input* input) {
 
 void UiSystem::DrawProject(double dt, Registry* registry, Input* input) {
   ImGui::Begin("Project");
+
+  UpdateInputActiveWindow(input, WindowType::Project);
+
   ImGui::Text("This is the project");
   ImGui::End();
 }
 
 void UiSystem::DrawConsole(double dt, Registry* registry, Input* input) {
   ImGui::Begin("Console");
+
+  UpdateInputActiveWindow(input, WindowType::Console);
+
   ImGui::Text("This is the console");
   ImGui::End();
 }
 
 void UiSystem::DrawAnimation(double dt, Registry* registry, Input* input) {
   ImGui::Begin("Animation");
+
+  UpdateInputActiveWindow(input, WindowType::Animation);
+
   ImGui::Text("This is the animations");
   ImGui::End();
 }
 
 void UiSystem::DrawAnimator(double dt, Registry* registry, Input* input) {
   ImGui::Begin("Animator");
+
+  UpdateInputActiveWindow(input, WindowType::Animator);
+
   ImGui::Text("This is the animator");
   ImGui::End();
 }
 
 void UiSystem::DrawInspector(double dt, Registry* registry, Input* input) {
   ImGui::Begin("Inspector");
+
+  UpdateInputActiveWindow(input, WindowType::Inspector);
+
   ImGui::Text("This is the inspector");
   ImGui::End();
 }
 
 void UiSystem::DrawServices(double dt, Registry* registry, Input* input) {
   ImGui::Begin("Services");
+
+  UpdateInputActiveWindow(input, WindowType::Services);
+
   ImGui::Text("This is the services");
   ImGui::End();
+}
+
+void UiSystem::UpdateInputActiveWindow(Input* input, WindowType windowType) {
+  if (ImGui::IsWindowFocused() && input->activeWindow != windowType) {
+    std::cout << "updating window enum" << std::endl;
+    input->activeWindow = windowType;
+  }
 }
