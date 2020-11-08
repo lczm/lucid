@@ -50,6 +50,18 @@ double Input::GetMouseY() {
   return std::abs(SCREEN_HEIGHT - y);
 }
 
+int Input::GetScrollState() {
+#if DEBUG
+  if (activeWindow == WindowType::Scene) {
+    return scroll;
+  }
+#endif
+
+#if RELEASE
+  return scroll;
+#endif
+}
+
 bool Input::IsKeyDown(int key) {
   // This sets everything to capitalised ascii numbers
   // lets us use something like

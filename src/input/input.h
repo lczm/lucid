@@ -31,6 +31,7 @@ class Input {
  public:
   double GetMouseX();
   double GetMouseY();
+  int GetScrollState();
 
  public:
   bool IsKeyDown(int key);

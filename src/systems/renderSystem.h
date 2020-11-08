@@ -26,4 +26,5 @@ class RenderSystem : public System {
 
   void HandleMousePan(double dt, Input* input);
   void HandleKeyboardPan(double dt, Input* input);
+  void HandleMouseScroll(double dt, Input* input);
 };

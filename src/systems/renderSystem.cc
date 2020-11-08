@@ -53,6 +53,7 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
   // }
 
   HandleMousePan(dt, input);
+  HandleMouseScroll(dt, input);
   HandleKeyboardPan(dt, input);
 
   glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -112,8 +113,11 @@ void RenderSystem::HandleMousePan(double dt, Input* input) {
 
     input->lastX = input->GetMouseX();
     input->lastY = input->GetMouseY();
-  } else if (input->IsMouseRDown() &&
-             (input->lastX != input->GetMouseX() || input->lastY != input->GetMouseY())) {
+    return;
+  }
+
+  if (input->IsMouseRDown() &&
+      (input->lastX != input->GetMouseX() || input->lastY != input->GetMouseY())) {
     float offsetX = input->GetMouseX() - input->lastX;
     float offsetY = input->GetMouseY() - input->lastY;
 
@@ -121,20 +125,24 @@ void RenderSystem::HandleMousePan(double dt, Input* input) {
     input->lastY = input->GetMouseY();
 
     camera->UpdateCameraVector(offsetX, offsetY);
+    return;
   }
+}
 
+void RenderSystem::HandleMouseScroll(double dt, Input* input) {
   // Scroll up
-  if (input->scroll == 1) {
+  if (input->GetScrollState() == 1) {
     camera->cameraPos += static_cast<float>(SCROLL_SPEED * dt) * camera->cameraFront;
   }
 
   // Scroll down
-  if (input->scroll == -1) {
+  if (input->GetScrollState() == -1) {
     camera->cameraPos -= static_cast<float>(SCROLL_SPEED * dt) * camera->cameraFront;
   }
 
   // Reset the scroll variable once done
   input->scroll = 0;
+  return;
 }
 
 void RenderSystem::HandleKeyboardPan(double dt, Input* input) {
