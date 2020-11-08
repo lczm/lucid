@@ -8,6 +8,8 @@
 #include "renderer.h"
 #include "camera.h"
 
+#include "gtx/string_cast.hpp"
+
 class RenderSystem : public System {
  private:
   Renderer* renderer;

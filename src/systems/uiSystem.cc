@@ -127,21 +127,15 @@ void UiSystem::DrawAssets(double dt, Registry* registry, Input* input) {
 void UiSystem::DrawScene(double dt, Registry* registry, Input* input) {
   ImGui::Begin("Scene");
 
-  // Note that the 5 here is hard coded, because the textures are not dynamically generated
-  // ImVec2 pos = ImGui::GetCursorScreenPos();
-  // ImGui::GetWindowDrawList()->AddImage(
-  //     (void*)5, ImVec2(ImGui::GetCursorScreenPos()),
-  //     ImVec2(ImGui::GetCursorScreenPos().x + 800, ImGui::GetCursorScreenPos().y + 600),
-  //     ImVec2(0, 1), ImVec2(1, 0));
+  ImGui::BeginChild("SceneRender");
 
   // Get the size of the current imgui window to draw in
   ImVec2 wsize = ImGui::GetWindowSize();
 
-  wsize.x = 1920;
-  wsize.y = 1080;
-
   // Flip V in the UV
   ImGui::Image((ImTextureID)5, wsize, ImVec2(0, 1), ImVec2(1, 0));
+
+  ImGui::EndChild();
 
   ImGui::End();
 }

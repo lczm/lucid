@@ -13,8 +13,8 @@ const float SCROLL_SPEED = 25.0f;
 const float CAMERA_SENSITIVITY = 0.05f;
 
 // Screen values, can deal with resizing some other day
-const int SCREEN_WIDTH = 1280;
-const int SCREEN_HEIGHT = 720;
+const int SCREEN_WIDTH = 1440;
+const int SCREEN_HEIGHT = 900;
 
 const char TRIANGLE_VERTEX_SHADER[] = "../src/shaders/triangle.vert";
 const char TRIANGLE_FRAGMENT_SHADER[] = "../src/shaders/triangle.frag";

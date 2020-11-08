@@ -18,6 +18,10 @@ Camera::Camera() {
 
   cameraPos = glm::normalize(glm::cross(cameraFront, cameraUp));
   cameraUp = glm::normalize(glm::cross(cameraPos, cameraFront));
+
+  projection = glm::perspective(
+      glm::radians(fov), static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT), near,
+      far);
 }
 
 Camera::~Camera() {
@@ -28,9 +32,7 @@ glm::mat4 Camera::GetView() {
 }
 
 glm::mat4 Camera::GetProjection() {
-  return glm::perspective(glm::radians(fov),
-                          static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT),
-                          near, far);
+  return projection;
 }
 
 glm::vec3 Camera::GetCameraPos() {

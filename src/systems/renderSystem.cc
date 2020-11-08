@@ -10,7 +10,10 @@ RenderSystem::RenderSystem() {
   glGenTextures(1, &texture);
   glBindTexture(GL_TEXTURE_2D, texture);
 
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1920, 1080, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+  // TODO : The SCREEN_WIDTH and SCREEN_HEIGHT here has to be changed
+  // whenever the game is resized
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SCREEN_WIDTH, SCREEN_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE,
+               NULL);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
@@ -18,9 +21,12 @@ RenderSystem::RenderSystem() {
 
   glGenRenderbuffers(1, &rbo);
   glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+
+  // TODO : The SCREEN_WIDTH and SCREEN_HEIGHT here has to be changed
+  // whenever the game is resized
   glRenderbufferStorage(
-      GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 1920,
-      1080);  // use a single renderbuffer object for both a depth AND stencil buffer.
+      GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 1440,
+      900);  // use a single renderbuffer object for both a depth AND stencil buffer.
   glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER,
                             rbo);  // now actually attach it
 
@@ -38,8 +44,6 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
 
   glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
-  // glEnable(GL_DEPTH_TEST);
-
   glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -54,8 +58,10 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
   Shader* shader = shaders->At(0);
 
   shader->Bind();
-  shader->SetUniformMatFloat4("projection", camera->GetProjection());
-  shader->SetUniformMatFloat4("view", camera->GetView());
+  shader->SetUniformMatFloat4("projection", camera->projection);
+  shader->SetUniformMatFloat4("view", camera->view);
+
+  // std::cout << glm::to_string(camera->projection) << std::endl;
 
   for (size_t i = 0; i < models->Size(); i++) {
     Model* m = models->At(i);
