@@ -75,12 +75,14 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
   shader->SetUniformMatFloat4("projection", camera->projection);
   shader->SetUniformMatFloat4("view", camera->view);
 
-  // std::cout << glm::to_string(camera->projection) << std::endl;
-
   for (size_t i = 0; i < models->Size(); i++) {
     Model* m = models->At(i);
     glm::mat4 model = glm::mat4(1.0f);
+
+    // Move the model according to transform.position
     model = glm::translate(model, glm::vec3(1.0f, 1.0f, 1.0f * (i * 5)));
+
+    // TODO : Scale the model according to transform.scale
 
     // Avocado model is very small, scale it all the way up (debugging purposes)
     if (m->GetTag() == "avocado") {

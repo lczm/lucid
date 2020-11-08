@@ -117,7 +117,21 @@ void UiSystem::DrawHierarchy(double dt, Registry* registry, Input* input) {
 
   UpdateInputActiveWindow(input, WindowType::Hierarchy);
 
-  ImGui::Text("This is the scene hierarchy");
+  // ImGui::ShowDemoWindow();
+
+  // TODO : This can be improved upon
+  // For now just take anything that has a transform component attached to it
+
+  std::vector<void*> components = registry->GetComponents<Transform>();
+  auto* models = static_cast<ComponentVector<Transform>*>(components[0]);
+
+  for (size_t i = 0; i < models->Size(); i++) {
+    std::string modelName = "Transform " + std::to_string(i);
+    if (ImGui::CollapsingHeader(modelName.c_str())) {
+    }
+  }
+
+  // ImGui::Text("This is the scene hierarchy");
   ImGui::End();
 }
 
