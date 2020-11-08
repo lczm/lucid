@@ -55,6 +55,15 @@ void Input::SetKeyOff(int key) {
 
 bool Input::IsMouseLDown() {
   if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT)) {
+#if DEBUG
+    // Handle imgui windows
+#endif
+
+#if RELEASE
+    // Don't have to handle imgui windows
+    return true;
+#endif
+
     return true;
   }
   return false;
