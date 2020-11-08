@@ -43,7 +43,7 @@ void Lucid::Update(double dt) {
 }
 
 void Lucid::InitializeEntities() {
-  registry->RegisterArchetype<Model>();
+  registry->RegisterArchetype<Model, Transform>();
   registry->RegisterArchetype<Shader>();
   registry->RegisterArchetype<TextureID>();
 
@@ -52,10 +52,10 @@ void Lucid::InitializeEntities() {
   uint32_t modelID3 = registry->GetAvailableEntityId();
   uint32_t modelID4 = registry->GetAvailableEntityId();
 
-  registry->CreateEntity<Model>(modelID);
-  registry->CreateEntity<Model>(modelID2);
-  registry->CreateEntity<Model>(modelID3);
-  registry->CreateEntity<Model>(modelID4);
+  registry->CreateEntity<Model, Transform>(modelID);
+  registry->CreateEntity<Model, Transform>(modelID2);
+  registry->CreateEntity<Model, Transform>(modelID3);
+  registry->CreateEntity<Model, Transform>(modelID4);
 
   registry->AddComponentData<Model>(modelID, Model(MICROPHONE_MODEL));
   registry->AddComponentData<Model>(modelID2, Model(SCIFIHELMET_MODEL));
