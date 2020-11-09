@@ -1,16 +1,28 @@
 #pragma once
 #include <GLFW/glfw3.h>
 #include <iostream>
+
 #include "constants.h"
+#include "windowEnum.h"
+
+#include "glm.hpp"
+#include "gtc/matrix_transform.hpp"
 
 class Input {
- private:
+ public:
   GLFWwindow* window;
   double x;
   double y;
 
   // All the glfw supported keys
   bool keys[350];
+  // Left / Right / Middle
+  bool mouseKeys[3];
+
+  float lastX, lastY;
+  int scroll;
+
+  WindowType activeWindow;
 
  public:
   Input(GLFWwindow* window);
@@ -19,6 +31,7 @@ class Input {
  public:
   double GetMouseX();
   double GetMouseY();
+  int GetScrollState();
 
  public:
   bool IsKeyDown(int key);
@@ -28,19 +41,4 @@ class Input {
   bool IsMouseLDown();
   bool IsMouseRDown();
   bool IsMouseMDown();
-
-  void HandleKeyCallback(GLFWwindow* window, int key, int scancode, int action,
-                         int mods);
-
- private:
-  static void KeyCallback(GLFWwindow* window, int key, int scancode, int action,
-                          int mods) {
-    // Quit the program
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-      glfwSetWindowShouldClose(window, GLFW_TRUE);
-    }
-
-    Input* input = (Input*)glfwGetWindowUserPointer(window);
-    input->HandleKeyCallback(window, key, scancode, action, mods);
-  }
 };

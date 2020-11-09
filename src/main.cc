@@ -12,7 +12,7 @@
 
 #include <glad/gl.h>
 
-#include "sandbox.h"
+#include "lucid.h"
 #include "constants.h"
 #include "errors.h"
 #include "ecs.h"
@@ -26,26 +26,22 @@ static void ErrorCallback(int error, const char* description) {
   fprintf(stderr, "Error: %s\n", description);
 }
 
-static void KeyCallback(GLFWwindow* window, int key, int scancode, int action,
-                        int mods) {
+static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
   if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
     glfwSetWindowShouldClose(window, GLFW_TRUE);
   }
 }
 
-void GLAPIENTRY MessageCallback(GLenum source, GLenum type, GLuint id,
-                                GLenum severity, GLsizei length,
-                                const GLchar* message, const void* userParam) {
+void GLAPIENTRY MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity,
+                                GLsizei length, const GLchar* message, const void* userParam) {
   // 0x826B is just a notification, which is what is printing out most of the
   // time. To keep the output verbose, only print out when there is a explicitly
   // defined severity error.
   if (severity == 0x9146 ||  // Severity_High
       severity == 0x9147 ||  // Severity_Medium
       severity == 0x9148) {  // Severity_Low
-    fprintf(stderr,
-            "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
-            (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""), type,
-            severity, message);
+    fprintf(stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
+            (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""), type, severity, message);
   }
 }
 
@@ -73,9 +69,9 @@ int main(void) {
   gladLoadGL(glfwGetProcAddress);
 
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-  glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+  // glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 
   // glEnable(GL_DEBUG_OUTPUT);
   // glDebugMessageCallback(MessageCallback, 0);
@@ -88,18 +84,24 @@ int main(void) {
   // Tell OpenGL to depth test
   glEnable(GL_DEPTH_TEST);
 
+  // stbi_set_flip_vertically_on_load(true);
+
   Registry* registry = new Registry();
   Input* input = new Input(window);
 
-  Sandbox* sandbox = new Sandbox(registry, input, window);
-
-  // glfwSetKeyCallback(window, keyCallback);
+  Lucid* lucid = new Lucid(registry, input, window);
 
   auto timer = std::chrono::high_resolution_clock::now();
   double dt = 0;
   double secondDt = 0;
   int frameCount = 0;
+
   while (!glfwWindowShouldClose(window)) {
+    // Flip buffers
+    glfwSwapBuffers(window);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     // Handle events -> inputs, resize, etc.
     glfwPollEvents();
 
@@ -107,12 +109,7 @@ int main(void) {
     // errors are not checking the previous iteration
     GlClearError();
 
-    sandbox->Update(dt);
-
-    // if (SANDBOX_TEST)
-    //   sandbox->update(dt);
-    // else
-    //   gambit->update(dt);
+    lucid->Update(dt);
 
     auto now = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsed = now - timer;
@@ -134,11 +131,6 @@ int main(void) {
       std::cout << "Breaking out of the loop, OpenGL Error" << std::endl;
       break;
     }
-
-    // Flip buffers
-    glfwSwapBuffers(window);
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   }
 
   glfwDestroyWindow(window);

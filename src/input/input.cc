@@ -3,12 +3,15 @@
 Input::Input(GLFWwindow* window) {
   Input::window = window;
 
-  glfwSetWindowUserPointer(window, this);
-  glfwSetKeyCallback(window, KeyCallback);
-
-  for (size_t i = 0; i < 350; i++) {
-    keys[i] = false;
+  for (bool& key : keys) {
+    key = false;
   }
+
+  for (bool& mouseKey : mouseKeys) {
+    mouseKey = false;
+  }
+
+  activeWindow = WindowType::None;
 }
 
 Input::~Input() {
@@ -16,13 +19,47 @@ Input::~Input() {
 
 double Input::GetMouseX() {
   glfwGetCursorPos(window, &x, &y);
+
+#if DEBUG
+  if (activeWindow == WindowType::Scene) {
+    return x;
+  }
+#endif
+
+#if RELEASE
+  return x;
+#endif
+
   return x;
 }
 
 double Input::GetMouseY() {
   glfwGetCursorPos(window, &x, &y);
+
+#if DEBUG
+  if (activeWindow == WindowType::Scene) {
+    return std::abs(SCREEN_HEIGHT - y);
+  }
+#endif
+
+#if RELEASE
+  return std::abs(SCREEN_HEIGHT - y);
+#endif
+
   // OpenGL uses inverse y values compared to glfw window values
   return std::abs(SCREEN_HEIGHT - y);
+}
+
+int Input::GetScrollState() {
+#if DEBUG
+  if (activeWindow == WindowType::Scene) {
+    return scroll;
+  }
+#endif
+
+#if RELEASE
+  return scroll;
+#endif
 }
 
 bool Input::IsKeyDown(int key) {
@@ -35,7 +72,18 @@ bool Input::IsKeyDown(int key) {
   if (key >= 97) {
     key -= 32;
   }
+
+#if DEBUG
+  if (activeWindow == WindowType::Scene) {
+    return keys[key];
+  }
+#endif
+
+#if RELEASE
   return keys[key];
+#endif
+
+  return false;
 }
 
 void Input::SetKeyOn(int key) {
@@ -54,14 +102,38 @@ void Input::SetKeyOff(int key) {
 
 bool Input::IsMouseLDown() {
   if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT)) {
+#if DEBUG
+    // Handle imgui windows
+    if (activeWindow == WindowType::Scene) {
+      return true;
+    }
+#endif
+
+#if RELEASE
+    // Don't have to handle imgui windows
     return true;
+#endif
+
+    return false;
   }
   return false;
 }
 
 bool Input::IsMouseRDown() {
   if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT)) {
+#if DEBUG
+    // Handle imgui windows
+    if (activeWindow == WindowType::Scene) {
+      return true;
+    }
+#endif
+
+#if RELEASE
+    // Dont handle imgui windows
     return true;
+#endif
+
+    return false;
   }
   return false;
 }
@@ -71,16 +143,4 @@ bool Input::IsMouseMDown() {
     return true;
   }
   return false;
-}
-
-void Input::HandleKeyCallback(GLFWwindow* window, int key, int scancode,
-                              int action, int mods) {
-  // Dont handle unknown keys
-  if (key == GLFW_KEY_UNKNOWN) return;
-
-  if (action == GLFW_PRESS || action == GLFW_REPEAT) {
-    keys[key] = true;
-  } else if (action == GLFW_RELEASE) {
-    keys[key] = false;
-  }
 }

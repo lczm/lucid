@@ -16,9 +16,6 @@ typedef struct Vertex {
   glm::vec2 texCoord;
 } Vertex;
 
-// Globally used double triangle to make a quad indices
-const unsigned int indices[] = {0, 1, 2, 2, 3, 0};
-
 // Shader class
 class Shader {
  private:
@@ -61,107 +58,6 @@ class Shader {
                         float v4);
 
   void SetUniformMatFloat4(const std::string& name, glm::mat4 mat);
-};
-
-// VertexBufferObjects (VBOs)
-class VertexBuffer {
- private:
-  unsigned int id;
-
- public:
-  VertexBuffer();
-  ~VertexBuffer();
-
-  void Bind();
-  void Unbind();
-  void BindData(const void* data, unsigned int size);
-
-  unsigned int GetId() {
-    return id;
-  };
-  void Generate() {
-    glGenBuffers(1, &id);
-  };
-};
-
-// IndexBuffers
-class IndexBuffer {
- private:
-  unsigned int id;
-  unsigned int count;
-
- public:
-  IndexBuffer();
-  ~IndexBuffer();
-
-  void Bind();
-  void Unbind();
-  void BindData(const unsigned int* data, unsigned int count);
-  unsigned int GetCount();
-  unsigned int GetId();
-  void Generate() {
-    glGenBuffers(1, &id);
-  };
-};
-
-// VertexBufferLayout
-struct VertexBufferElement {
-  unsigned int type;
-  unsigned int count;
-  unsigned char normalized;
-
-  static unsigned int GetSizeOfType(unsigned int type) {
-    switch (type) {
-      case GL_FLOAT:
-        return 4;
-      case GL_UNSIGNED_INT:
-        return 4;
-      case GL_UNSIGNED_BYTE:
-        return 1;
-    }
-    return 0;
-  }
-};
-
-class VertexBufferLayout {
- private:
-  unsigned int stride;
-  std::vector<VertexBufferElement> elements;
-
- public:
-  VertexBufferLayout();
-  ~VertexBufferLayout();
-
-  // TODO : Support other types other than floats
-  // Note : This push function assumes all incoming is float
-  void Push(unsigned int count);
-
-  std::vector<VertexBufferElement>& GetElements() {
-    return elements;
-  }
-  unsigned int GetStride() {
-    return stride;
-  }
-};
-
-class VertexArray {
- private:
-  unsigned int id;
-
- public:
-  VertexArray();
-  ~VertexArray();
-
-  void Bind();
-  void Unbind();
-  void AddBuffer(VertexBuffer& vb, VertexBufferLayout& layout);
-
-  unsigned int GetId() {
-    return id;
-  };
-  void Generate() {
-    glGenVertexArrays(1, &id);
-  }
 };
 
 // Texture
