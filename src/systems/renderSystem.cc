@@ -64,16 +64,17 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
   camera->UpdateView();
 
   std::vector<void*> modelComponents = registry->GetComponents<Model>();
-  std::vector<void*> shaderComponents = registry->GetComponents<Shader>();
+  // std::vector<void*> shaderComponents = registry->GetComponents<Shader>();
 
   auto* models = static_cast<ComponentVector<Model>*>(modelComponents[0]);
-  auto* shaders = static_cast<ComponentVector<Shader>*>(shaderComponents[0]);
+  // auto* shaders = static_cast<ComponentVector<Shader>*>(shaderComponents[0]);
 
-  Shader* shader = shaders->At(0);
+  // Shader* shader = shaders->At(0);
+  Shader& shader = registry->GetComponent<Shader>();
 
-  shader->Bind();
-  shader->SetUniformMatFloat4("projection", camera->projection);
-  shader->SetUniformMatFloat4("view", camera->view);
+  shader.Bind();
+  shader.SetUniformMatFloat4("projection", camera->projection);
+  shader.SetUniformMatFloat4("view", camera->view);
 
   for (size_t i = 0; i < models->Size(); i++) {
     Model* m = models->At(i);
@@ -91,11 +92,11 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
       model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
     }
 
-    shader->SetUniformMatFloat4("model", model);
-    renderer->DrawModel(*m, *shader);
+    shader.SetUniformMatFloat4("model", model);
+    renderer->DrawModel(*m, shader);
   }
 
-  shader->Unbind();
+  shader.Unbind();
 
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
