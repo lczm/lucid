@@ -39,19 +39,6 @@ RenderSystem::~RenderSystem() {
 }
 
 void RenderSystem::Update(double dt, Registry* registry, Input* input) {
-  // WindowType windowType = input->activeWindow;
-  // if (windowType == WindowType::None) {
-  //   std::cout << "none" << std::endl;
-  // } else if (windowType == WindowType::Scene) {
-  //   std::cout << "scene" << std::endl;
-  // } else if (windowType == WindowType::Hierarchy) {
-  //   std::cout << "hierarchy" << std::endl;
-  // } else if (windowType == WindowType::Project) {
-  //   std::cout << "project" << std::endl;
-  // } else if (windowType == WindowType::Console) {
-  //   std::cout << "console" << std::endl;
-  // }
-
   HandleMousePan(dt, input);
   HandleMouseScroll(dt, input);
   HandleKeyboardPan(dt, input);
@@ -64,12 +51,8 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
   camera->UpdateView();
 
   std::vector<void*> modelComponents = registry->GetComponents<Model>();
-  // std::vector<void*> shaderComponents = registry->GetComponents<Shader>();
-
   auto* models = static_cast<ComponentVector<Model>*>(modelComponents[0]);
-  // auto* shaders = static_cast<ComponentVector<Shader>*>(shaderComponents[0]);
 
-  // Shader* shader = shaders->At(0);
   Shader& shader = registry->GetComponent<Shader>();
 
   shader.Bind();
@@ -84,7 +67,6 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
     model = glm::translate(model, glm::vec3(1.0f, 1.0f, 1.0f * (i * 5)));
 
     // TODO : Scale the model according to transform.scale
-
     // Avocado model is very small, scale it all the way up (debugging purposes)
     if (m->GetTag() == "avocado") {
       model = glm::scale(model, glm::vec3(50.0f, 50.0f, 50.0f));
