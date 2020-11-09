@@ -576,6 +576,31 @@ class Registry {
     return componentVectors;
   }
 
+  // This assumes that there is only one component passed into the the registry.
+  template <typename Component>
+  Component GetComponent() {
+    uint32_t hashCode = GetHashCode<Component>();
+
+    for (auto& pair : archetypeComponentMap) {
+      if (pair.first.size() == 1 && pair.first[0] == hashCode) {
+        // auto* keyPtr = static_cast<std::unordered_map<uint32_t, void*>*>(pair.second);
+        std::unordered_map<unsigned int, void*>& keyPtr =
+            *(static_cast<std::unordered_map<unsigned int, void*>*>(pair.second));
+
+        // auto* vectorPtr = static_cast<std::vector<Component>*>(keyPtr[pair.first[0]]);
+        std::vector<Component>* vectorPtr =
+            static_cast<std::vector<Component>*>(keyPtr[pair.first[0]]);
+
+        return vectorPtr->at(0);
+      }
+    }
+
+    // TODO : Find a better way to deal with this...? for now this can just return a default
+    // component
+    std::cout << "GetComponent() not able to retrieve component" << std::endl;
+    // return Component();
+  }
+
   // This differs from getComponents() in the sense that getComponents is used
   // as a way to batch collect all the components of a certain pattern.
   // This exists as a way to get a component given the id.

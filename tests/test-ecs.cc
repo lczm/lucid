@@ -203,3 +203,23 @@ TEST(ECS, GetComponentExact) {
   EXPECT_EQ(transformImageComponentVector->Size(), 1);
   EXPECT_EQ(animationComponentVector->Size(), 1);
 }
+
+TEST(ECS, GetComponentSingle) {
+  Registry* registry = new Registry();
+
+  // Create one archetype
+  registry->RegisterArchetype<TestAddStruct1>();
+
+  // Get some entities
+  Entity entity1 = registry->GetAvailableEntityId();
+
+  // Create some entities
+  registry->CreateEntity<TestAddStruct1>(entity1);
+  registry->AddComponentData<TestAddStruct1>(entity1, {10, 20});
+
+  // Get the struct
+  TestAddStruct1 testStruct = registry->GetComponent<TestAddStruct1>();
+
+  EXPECT_EQ(testStruct.a, 10);
+  EXPECT_EQ(testStruct.b, 20);
+}
