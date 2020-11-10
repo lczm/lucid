@@ -99,22 +99,35 @@ TEST(ECS, ComponentVectorIteration) {
       EXPECT_EQ(transformComponentVector->At(i)->b, 0);
     }
   }
+}
 
-  // Test component vector size
-  // std::vector<void*> imageComponents = registry->getComponents<Image>();
-  // ComponentVector<Image>* imageComponentVector =
-  //     static_cast<ComponentVector<Image>*>(imageComponents[0]);
-  // EXPECT_EQ(imageComponentVector->size(), 1);
+TEST(ECS, ComponentVectorIterationIndex) {
+  Registry* registry = new Registry();
 
-  // // Test component vector iteration
-  // for (size_t i = 0; i < imageComponentVector->size(); i++) {
-  //   // There are multiple members of this struct, just testing these would be
-  //   // enough for now.
-  //   if (i == 0) {
-  //     EXPECT_EQ(imageComponentVector->at(i)->spriteX, 0);
-  //     EXPECT_EQ(imageComponentVector->at(i)->spriteY, 0);
-  //   }
-  // }
+  // Create some archetypes
+  registry->RegisterArchetype<TestAddStruct1>();
+  registry->RegisterArchetype<TestAddStruct1, TestAddStruct2>();
+
+  // Get some entities
+  Entity entity1 = registry->GetAvailableEntityId();
+  Entity entity2 = registry->GetAvailableEntityId();
+
+  // Create the entities
+  registry->CreateEntity<TestAddStruct1>(entity1);
+  registry->CreateEntity<TestAddStruct1, TestAddStruct2>(entity2);
+
+  std::vector<void*> components = registry->GetComponents<TestAddStruct1>();
+  auto* testAddStructComponentVector = static_cast<ComponentVector<TestAddStruct1>*>(components[0]);
+
+  EXPECT_EQ(testAddStructComponentVector->Size(), 2);
+
+  ComponentVector<TestAddStruct1>& a = *(testAddStructComponentVector);
+
+  for (size_t i = 0; i < testAddStructComponentVector->Size(); i++) {
+    TestAddStruct1 testAddStruct = a[i];
+    EXPECT_EQ(testAddStruct.a, 0);
+    EXPECT_EQ(testAddStruct.b, 0);
+  }
 }
 
 /*

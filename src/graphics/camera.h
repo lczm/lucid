@@ -31,4 +31,6 @@ class Camera {
 
   void UpdateView();
   void UpdateCameraVector(float xOffset, float yOffset);
+
+  void MoveCamera(glm::vec3 offset);
 };

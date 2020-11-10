@@ -92,6 +92,19 @@ class ComponentVector {
     return &store.at(primaryIndex)->at(index);
   };
 
+  Component& operator[](uint32_t index) {
+    unsigned int primaryIndex = 0;
+    for (size_t i = 0; i < storeSizeIndex.size(); i++) {
+      if (index < storeSizeIndex[i]) {
+        primaryIndex = i;
+        break;
+      } else {
+        index -= storeSizeIndex[i];
+      }
+    }
+    return store.at(primaryIndex)->at(index);
+  }
+
   // Usage : somethingComponentVector.size();
   // This is mostly used to know the total size of the ComponentVector so that
   // it is iterable with a for loop

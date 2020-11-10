@@ -4,6 +4,8 @@ RenderSystem::RenderSystem() {
   RenderSystem::renderer = new Renderer();
   RenderSystem::camera = new Camera();
 
+  camera->MoveCamera(glm::vec3(-10.0f, 0.0f, 0.0f));
+
   glGenFramebuffers(1, &fbo);
   glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 

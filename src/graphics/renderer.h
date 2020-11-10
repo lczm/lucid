@@ -33,6 +33,10 @@ class Renderer {
   void DrawTexturedCube(Cube& cube, Shader& shader);
   void DrawTexturedSphere(Sphere& sphere, Shader& shader);
 
+  // Draw lines might be abit difficult to do...
+  void DrawLine();
+  void DrawLine(glm::vec3 vector, Shader& shader);
+
   // Potential skeleton methods that needs to be implemented.
   void DrawQuad();
   void DrawTexturedQuad();
