@@ -6,6 +6,8 @@
 
 #include "gl.h"
 #include "model.h"
+#include "cube.h"
+#include "sphere.h"
 #include "gtx/string_cast.hpp"
 
 class Renderer {
@@ -22,6 +24,9 @@ class Renderer {
   // The draw method for 3d models
   void DrawMesh(Mesh& mesh, Shader& shader);
   void DrawModel(Model& model, Shader& shader);
+
+  void DrawCube(Cube& cube, Shader& shader);
+  void DrawSphere(Sphere& sphere, Shader& shader);
 
   // Potential skeleton methods that needs to be implemented.
   void DrawQuad();
