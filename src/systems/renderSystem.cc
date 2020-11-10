@@ -189,7 +189,6 @@ void RenderSystem::HandleKeyboardInput(double dt, Registry* registry, Input* inp
 
     Transform* transform = registry->GetComponent<Transform>(cubeID);
     transform->position = camera->cameraPos;
-    transform->scale = glm::vec3(1.0f);
 
     input->SetKeyOff('1');
   }
