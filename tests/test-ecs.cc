@@ -223,3 +223,31 @@ TEST(ECS, GetComponentSingle) {
   EXPECT_EQ(testStruct.a, 10);
   EXPECT_EQ(testStruct.b, 20);
 }
+
+TEST(ECS, GetComponentSingleAndModify) {
+  Registry* registry = new Registry();
+
+  // Create one archetype
+  registry->RegisterArchetype<TestAddStruct1>();
+
+  // Get some entities
+  Entity entity1 = registry->GetAvailableEntityId();
+
+  // Create some entities
+  registry->CreateEntity<TestAddStruct1>(entity1);
+  registry->AddComponentData<TestAddStruct1>(entity1, {10, 20});
+
+  // Get the struct
+  TestAddStruct1 testStruct = registry->GetComponent<TestAddStruct1>();
+
+  EXPECT_EQ(testStruct.a, 10);
+  EXPECT_EQ(testStruct.b, 20);
+
+  testStruct.a = 500;
+  testStruct.b = 1000;
+
+  TestAddStruct1 testStructModified = registry->GetComponent<TestAddStruct1>();
+
+  EXPECT_EQ(testStruct.a, 500);
+  EXPECT_EQ(testStruct.b, 1000);
+}
