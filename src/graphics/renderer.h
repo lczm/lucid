@@ -8,6 +8,7 @@
 #include "model.h"
 #include "cube.h"
 #include "sphere.h"
+#include "boundingBox.h"
 #include "gtx/string_cast.hpp"
 
 class Renderer {
