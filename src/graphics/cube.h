@@ -46,8 +46,6 @@ const std::vector<uint32_t> cube_indices = {
 class Cube {
  public:
   uint32_t VAO, VBO, EBO;
-  std::vector<CubeVertex> vertices;
-  std::vector<uint32_t> indices;
 
  public:
   Cube();

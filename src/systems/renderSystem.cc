@@ -63,29 +63,29 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
   SceneRender& sceneRender = registry->GetComponent<SceneRender>();
   sceneRender.textureID = texture;
 
-  // shaderResource.modelShader.Bind();
-  // shaderResource.modelShader.SetUniformMatFloat4("projection", camera->projection);
-  // shaderResource.modelShader.SetUniformMatFloat4("view", camera->view);
+  shaderResource.modelShader.Bind();
+  shaderResource.modelShader.SetUniformMatFloat4("projection", camera->projection);
+  shaderResource.modelShader.SetUniformMatFloat4("view", camera->view);
 
-  // for (size_t i = 0; i < models->Size(); i++) {
-  //   Model* m = models->At(i);
-  //   Transform* t = transforms->At(i);
+  for (size_t i = 0; i < models->Size(); i++) {
+    Model* m = models->At(i);
+    Transform* t = transforms->At(i);
 
-  //   glm::mat4 model = glm::mat4(1.0f);
+    glm::mat4 model = glm::mat4(1.0f);
 
-  //   // Move the model according to transform.position
-  //   model = glm::translate(model, t->position);
-  //   // TODO : Multiply by transform rotation
-  //   // Note : using a vec3 for rotation might be quaternion related rather than
-  //   // euler angles related
-  //   // model = glm::rotate(model, t->rotation, 30);
-  //   model = glm::scale(model, t->scale);
+    // Move the model according to transform.position
+    model = glm::translate(model, t->position);
+    // TODO : Multiply by transform rotation
+    // Note : using a vec3 for rotation might be quaternion related rather than
+    // euler angles related
+    // model = glm::rotate(model, t->rotation, 30);
+    model = glm::scale(model, t->scale);
 
-  //   shaderResource.modelShader.SetUniformMatFloat4("model", model);
-  //   renderer->DrawModel(*m, shaderResource.modelShader);
-  // }
+    shaderResource.modelShader.SetUniformMatFloat4("model", model);
+    renderer->DrawModel(*m, shaderResource.modelShader);
+  }
 
-  // shaderResource.modelShader.Unbind();
+  shaderResource.modelShader.Unbind();
 
   shaderResource.cubeShader.Bind();
   shaderResource.cubeShader.SetUniformMatFloat4("projection", camera->projection);
@@ -93,7 +93,7 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
 
   for (size_t i = 0; i < cubes->Size(); i++) {
     Cube* c = cubes->At(i);
-    Transform* t = transforms->At(i);
+    Transform* t = cubeTransforms->At(i);
 
     glm::mat4 model = glm::mat4(1.0f);
 

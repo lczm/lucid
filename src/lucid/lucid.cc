@@ -51,7 +51,6 @@ void Lucid::InitializeEntities() {
   uint32_t modelID = registry->GetAvailableEntityId();
   uint32_t modelID2 = registry->GetAvailableEntityId();
   uint32_t modelID3 = registry->GetAvailableEntityId();
-  // uint32_t modelID4 = registry->GetAvailableEntityId();
 
   uint32_t cubeID = registry->GetAvailableEntityId();
   uint32_t shaderResourceID = registry->GetAvailableEntityId();
@@ -60,7 +59,6 @@ void Lucid::InitializeEntities() {
   registry->CreateEntity<Model, Transform>(modelID);
   registry->CreateEntity<Model, Transform>(modelID2);
   registry->CreateEntity<Model, Transform>(modelID3);
-  // registry->CreateEntity<Model, Transform>(modelID4);
   registry->CreateEntity<Cube, Transform>(cubeID);
   registry->CreateEntity<ShaderResource>(shaderResourceID);
   registry->CreateEntity<SceneRender>(sceneRenderID);
@@ -68,8 +66,6 @@ void Lucid::InitializeEntities() {
   registry->AddComponentData<Model>(modelID, Model(MICROPHONE_MODEL));
   registry->AddComponentData<Model>(modelID2, Model(SCIFIHELMET_MODEL));
   registry->AddComponentData<Model>(modelID3, Model(AVOCADO_MODEL));
-  // registry->AddComponentData<Model>(modelID4, Model(MICROPHONE_MODEL));
-  // registry->AddComponentData<Cube>(cubeID, Cube());
 
   registry->AddComponentData<Transform>(modelID, {
                                                      {3.0f, 3.0f, 3.0f},  // position
@@ -88,9 +84,9 @@ void Lucid::InitializeEntities() {
                                                   });
 
   registry->AddComponentData<Transform>(cubeID, {
-                                                    {1.0f, 1.0f, 1.0f},  // position
-                                                    {1.0f, 1.0f, 1.0f},  // rotation
-                                                    {3.0f, 3.0f, 3.0f},  // scale
+                                                    {-2.0f, -2.0f, -2.0f},  // position
+                                                    {1.0f, 1.0f, 1.0f},     // rotation
+                                                    {2.0f, 2.0f, 2.0f},     // scale
                                                 });
 
   ShaderResource& shaderResource = registry->GetComponent<ShaderResource>();
