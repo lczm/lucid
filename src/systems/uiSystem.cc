@@ -154,8 +154,10 @@ void UiSystem::DrawScene(double dt, Registry* registry, Input* input) {
   // Get the size of the current imgui window to draw in
   ImVec2 wsize = ImGui::GetWindowSize();
 
+  SceneRender sceneRender = registry->GetComponent<SceneRender>();
+
   // Flip V in the UV
-  ImGui::Image((ImTextureID)5, wsize, ImVec2(0, 1), ImVec2(1, 0));
+  ImGui::Image((ImTextureID)sceneRender.textureID, wsize, ImVec2(0, 1), ImVec2(1, 0));
 
   ImGui::EndChild();
 

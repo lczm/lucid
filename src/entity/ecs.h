@@ -26,7 +26,10 @@
 
 // Entities are inherently just ids
 typedef std::uint32_t Entity;
-typedef std::uint32_t TextureID;
+
+struct SceneRender {
+  uint32_t textureID;
+};
 
 // Archetypes are inherently just a std::vector<unsigned int>
 typedef std::vector<unsigned int> Archetype;
@@ -578,12 +581,11 @@ class Registry {
 
   // This assumes that there is only one component passed into the the registry.
   template <typename Component>
-  Component GetComponent() {
+  Component& GetComponent() {
     uint32_t hashCode = GetHashCode<Component>();
 
     for (auto& pair : archetypeComponentMap) {
       if (pair.first.size() == 1 && pair.first[0] == hashCode) {
-        // auto* keyPtr = static_cast<std::unordered_map<uint32_t, void*>*>(pair.second);
         std::unordered_map<unsigned int, void*>& keyPtr =
             *(static_cast<std::unordered_map<unsigned int, void*>*>(pair.second));
 

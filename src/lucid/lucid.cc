@@ -45,22 +45,22 @@ void Lucid::Update(double dt) {
 void Lucid::InitializeEntities() {
   registry->RegisterArchetype<Model, Transform>();
   registry->RegisterArchetype<Shader>();
-  registry->RegisterArchetype<TextureID>();
+  registry->RegisterArchetype<SceneRender>();
 
   uint32_t modelID = registry->GetAvailableEntityId();
   uint32_t modelID2 = registry->GetAvailableEntityId();
   uint32_t modelID3 = registry->GetAvailableEntityId();
-  uint32_t modelID4 = registry->GetAvailableEntityId();
+  // uint32_t modelID4 = registry->GetAvailableEntityId();
 
   registry->CreateEntity<Model, Transform>(modelID);
   registry->CreateEntity<Model, Transform>(modelID2);
   registry->CreateEntity<Model, Transform>(modelID3);
-  registry->CreateEntity<Model, Transform>(modelID4);
+  // registry->CreateEntity<Model, Transform>(modelID4);
 
   registry->AddComponentData<Model>(modelID, Model(MICROPHONE_MODEL));
   registry->AddComponentData<Model>(modelID2, Model(SCIFIHELMET_MODEL));
   registry->AddComponentData<Model>(modelID3, Model(AVOCADO_MODEL));
-  registry->AddComponentData<Model>(modelID4, Model(MICROPHONE_MODEL));
+  // registry->AddComponentData<Model>(modelID4, Model(MICROPHONE_MODEL));
 
   // registry->AddComponentData<Transform>(modelID, transform);
   registry->AddComponentData<Transform>(modelID, {
@@ -72,8 +72,8 @@ void Lucid::InitializeEntities() {
                                         {glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f)});
   registry->AddComponentData<Transform>(modelID3,
                                         {glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f)});
-  registry->AddComponentData<Transform>(modelID4,
-                                        {glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f)});
+  // registry->AddComponentData<Transform>(modelID4,
+  //                                       {glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f)});
 
   // Model* model = registry->GetComponent<Model>(modelID3);
   // model->SetTag("avocado");
@@ -84,8 +84,8 @@ void Lucid::InitializeEntities() {
   Shader* shader = registry->GetComponent<Shader>(shaderID);
   shader->CreateShader(MODEL_VERTEX_SHADER, MODEL_FRAGMENT_SHADER);
 
-  TextureID textureID = registry->GetAvailableEntityId();
-  registry->CreateEntity<TextureID>(textureID);
+  Entity sceneRenderID = registry->GetAvailableEntityId();
+  registry->CreateEntity<SceneRender>(sceneRenderID);
 }
 
 void Lucid::InitializeSystems() {

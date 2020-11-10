@@ -56,6 +56,9 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
 
   Shader& shader = registry->GetComponent<Shader>();
 
+  SceneRender& sceneRender = registry->GetComponent<SceneRender>();
+  sceneRender.textureID = texture;
+
   shader.Bind();
   shader.SetUniformMatFloat4("projection", camera->projection);
   shader.SetUniformMatFloat4("view", camera->view);
