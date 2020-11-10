@@ -63,6 +63,9 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
   SceneRender& sceneRender = registry->GetComponent<SceneRender>();
   sceneRender.textureID = texture;
 
+  // Show draw scaffold
+  // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
   shaderResource.modelShader.Bind();
   shaderResource.modelShader.SetUniformMatFloat4("projection", camera->projection);
   shaderResource.modelShader.SetUniformMatFloat4("view", camera->view);
