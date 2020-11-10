@@ -69,7 +69,7 @@ void Lucid::InitializeEntities() {
   registry->AddComponentData<Model>(modelID2, Model(SCIFIHELMET_MODEL));
   registry->AddComponentData<Model>(modelID3, Model(AVOCADO_MODEL));
   // registry->AddComponentData<Model>(modelID4, Model(MICROPHONE_MODEL));
-  registry->AddComponentData<Cube>(cubeID, Cube());
+  // registry->AddComponentData<Cube>(cubeID, Cube());
 
   registry->AddComponentData<Transform>(modelID, {
                                                      {3.0f, 3.0f, 3.0f},  // position
@@ -87,11 +87,11 @@ void Lucid::InitializeEntities() {
                                                       {30.0f, 30.0f, 30.0f},  // scale
                                                   });
 
-  registry->AddComponentData<Transform>(modelID3, {
-                                                      {5.0f, 1.0f, 1.0f},     // position
-                                                      {1.0f, 1.0f, 1.0f},     // rotation
-                                                      {30.0f, 30.0f, 30.0f},  // scale
-                                                  });
+  registry->AddComponentData<Transform>(cubeID, {
+                                                    {1.0f, 1.0f, 1.0f},  // position
+                                                    {1.0f, 1.0f, 1.0f},  // rotation
+                                                    {3.0f, 3.0f, 3.0f},  // scale
+                                                });
 
   ShaderResource& shaderResource = registry->GetComponent<ShaderResource>();
   shaderResource.modelShader.CreateShader(MODEL_VERTEX_SHADER, MODEL_FRAGMENT_SHADER);

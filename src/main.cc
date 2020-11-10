@@ -32,8 +32,8 @@ static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, i
   }
 }
 
-void GLAPIENTRY MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity,
-                                GLsizei length, const GLchar* message, const void* userParam) {
+void APIENTRY MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity,
+                              GLsizei length, const GLchar* message, const void* userParam) {
   // 0x826B is just a notification, which is what is printing out most of the
   // time. To keep the output verbose, only print out when there is a explicitly
   // defined severity error.
@@ -71,10 +71,11 @@ int main(void) {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-  // glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+  glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 
-  // glEnable(GL_DEBUG_OUTPUT);
-  // glDebugMessageCallback(MessageCallback, 0);
+  glEnable(GL_DEBUG_OUTPUT);
+  glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+  // glDebugMessageCallback(MessageCallback, nullptr);
 
   std::cout << "OpenGL Version : " << glGetString(GL_VERSION) << std::endl;
 

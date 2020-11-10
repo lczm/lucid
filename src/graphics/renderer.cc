@@ -53,7 +53,9 @@ void Renderer::DrawModel(Model& model, Shader& shader) {
 
 void Renderer::DrawCube(Cube& cube, Shader& shader) {
   glBindVertexArray(cube.VAO);
-  glDrawElements(GL_TRIANGLES, cube.indices.size(), GL_UNSIGNED_INT, 0);
+  // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cube.EBO);
+  glDrawElements(GL_TRIANGLES, cube_indices.size(), GL_UNSIGNED_INT, 0);
+  glBindVertexArray(0);
 }
 
 void Renderer::DrawBoundingBox(BoundingBox& boundingBox) {
