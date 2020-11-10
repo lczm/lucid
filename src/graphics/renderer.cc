@@ -51,6 +51,11 @@ void Renderer::DrawModel(Model& model, Shader& shader) {
   DrawBoundingBox(model.GetBoundingBox());
 }
 
+void Renderer::DrawCube(Cube& cube, Shader& shader) {
+  glBindVertexArray(cube.VAO);
+  glDrawElements(GL_TRIANGLES, cube.indices.size(), GL_UNSIGNED_INT, 0);
+}
+
 void Renderer::DrawBoundingBox(BoundingBox& boundingBox) {
   // TODO : This should be using index buffers...
   float vertices[] = {

@@ -54,14 +54,18 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
   auto* models = static_cast<ComponentVector<Model>*>(modelComponents[0]);
   auto* transforms = static_cast<ComponentVector<Transform>*>(modelComponents[1]);
 
-  Shader& shader = registry->GetComponent<Shader>();
+  std::vector<void*> cubeComponents = registry->GetComponents<Cube, Transform>();
+  auto* cubes = static_cast<ComponentVector<Cube>*>(cubeComponents[0]);
+  auto* cubeTransforms = static_cast<ComponentVector<Transform>*>(cubeComponents[1]);
+
+  ShaderResource& shaderResource = registry->GetComponent<ShaderResource>();
 
   SceneRender& sceneRender = registry->GetComponent<SceneRender>();
   sceneRender.textureID = texture;
 
-  shader.Bind();
-  shader.SetUniformMatFloat4("projection", camera->projection);
-  shader.SetUniformMatFloat4("view", camera->view);
+  shaderResource.modelShader.Bind();
+  shaderResource.modelShader.SetUniformMatFloat4("projection", camera->projection);
+  shaderResource.modelShader.SetUniformMatFloat4("view", camera->view);
 
   for (size_t i = 0; i < models->Size(); i++) {
     Model* m = models->At(i);
@@ -77,11 +81,30 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
     // model = glm::rotate(model, t->rotation, 30);
     model = glm::scale(model, t->scale);
 
-    shader.SetUniformMatFloat4("model", model);
-    renderer->DrawModel(*m, shader);
+    shaderResource.modelShader.SetUniformMatFloat4("model", model);
+    renderer->DrawModel(*m, shaderResource.modelShader);
   }
 
-  shader.Unbind();
+  shaderResource.modelShader.Unbind();
+
+  shaderResource.cubeShader.Bind();
+  shaderResource.modelShader.SetUniformMatFloat4("projection", camera->projection);
+  shaderResource.modelShader.SetUniformMatFloat4("view", camera->view);
+
+  for (size_t i = 0; i < cubes->Size(); i++) {
+    Cube* c = cubes->At(i);
+    Transform* t = transforms->At(i);
+
+    glm::mat4 model = glm::mat4(1.0f);
+
+    model = glm::translate(model, t->position);
+    model = glm::scale(model, t->scale);
+
+    shaderResource.cubeShader.SetUniformMatFloat4("model", model);
+    renderer->DrawCube(*c, shaderResource.cubeShader);
+  }
+
+  shaderResource.cubeShader.Unbind();
 
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

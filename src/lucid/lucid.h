@@ -5,8 +5,13 @@
 #include "gl.h"
 #include "ecs.h"
 #include "input.h"
-#include "model.h"
 #include "constants.h"
+
+#include "model.h"
+#include "cube.h"
+#include "sphere.h"
+#include "shaderResource.h"
+
 #include "glm.hpp"
 #include "gtx/string_cast.hpp"
 #include "gtc/matrix_transform.hpp"

@@ -13,6 +13,7 @@
 
 class Renderer {
  private:
+  // Note : Remove this down the line
   uint32_t bbVAO;
   uint32_t bbVBO;
   Shader bbShader;
@@ -28,6 +29,9 @@ class Renderer {
 
   void DrawCube(Cube& cube, Shader& shader);
   void DrawSphere(Sphere& sphere, Shader& shader);
+
+  void DrawTexturedCube(Cube& cube, Shader& shader);
+  void DrawTexturedSphere(Sphere& sphere, Shader& shader);
 
   // Potential skeleton methods that needs to be implemented.
   void DrawQuad();

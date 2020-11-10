@@ -7,6 +7,7 @@
 #include "ecs.h"
 #include "renderer.h"
 #include "camera.h"
+#include "shaderResource.h"
 
 #include "gtx/string_cast.hpp"
 

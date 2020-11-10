@@ -44,23 +44,32 @@ void Lucid::Update(double dt) {
 
 void Lucid::InitializeEntities() {
   registry->RegisterArchetype<Model, Transform>();
-  registry->RegisterArchetype<Shader>();
+  registry->RegisterArchetype<ShaderResource>();
   registry->RegisterArchetype<SceneRender>();
+  registry->RegisterArchetype<Cube, Transform>();
 
   uint32_t modelID = registry->GetAvailableEntityId();
   uint32_t modelID2 = registry->GetAvailableEntityId();
   uint32_t modelID3 = registry->GetAvailableEntityId();
   // uint32_t modelID4 = registry->GetAvailableEntityId();
 
+  uint32_t cubeID = registry->GetAvailableEntityId();
+  uint32_t shaderResourceID = registry->GetAvailableEntityId();
+  uint32_t sceneRenderID = registry->GetAvailableEntityId();
+
   registry->CreateEntity<Model, Transform>(modelID);
   registry->CreateEntity<Model, Transform>(modelID2);
   registry->CreateEntity<Model, Transform>(modelID3);
   // registry->CreateEntity<Model, Transform>(modelID4);
+  registry->CreateEntity<Cube, Transform>(cubeID);
+  registry->CreateEntity<ShaderResource>(shaderResourceID);
+  registry->CreateEntity<SceneRender>(sceneRenderID);
 
   registry->AddComponentData<Model>(modelID, Model(MICROPHONE_MODEL));
   registry->AddComponentData<Model>(modelID2, Model(SCIFIHELMET_MODEL));
   registry->AddComponentData<Model>(modelID3, Model(AVOCADO_MODEL));
   // registry->AddComponentData<Model>(modelID4, Model(MICROPHONE_MODEL));
+  registry->AddComponentData<Cube>(cubeID, Cube());
 
   registry->AddComponentData<Transform>(modelID, {
                                                      {3.0f, 3.0f, 3.0f},  // position
@@ -78,14 +87,16 @@ void Lucid::InitializeEntities() {
                                                       {30.0f, 30.0f, 30.0f},  // scale
                                                   });
 
-  uint32_t shaderID = registry->GetAvailableEntityId();
-  registry->CreateEntity<Shader>(shaderID);
+  registry->AddComponentData<Transform>(modelID3, {
+                                                      {5.0f, 1.0f, 1.0f},     // position
+                                                      {1.0f, 1.0f, 1.0f},     // rotation
+                                                      {30.0f, 30.0f, 30.0f},  // scale
+                                                  });
 
-  Shader* shader = registry->GetComponent<Shader>(shaderID);
-  shader->CreateShader(MODEL_VERTEX_SHADER, MODEL_FRAGMENT_SHADER);
-
-  Entity sceneRenderID = registry->GetAvailableEntityId();
-  registry->CreateEntity<SceneRender>(sceneRenderID);
+  ShaderResource& shaderResource = registry->GetComponent<ShaderResource>();
+  shaderResource.modelShader.CreateShader(MODEL_VERTEX_SHADER, MODEL_FRAGMENT_SHADER);
+  shaderResource.triangleShader.CreateShader(TRIANGLE_VERTEX_SHADER, TRIANGLE_FRAGMENT_SHADER);
+  shaderResource.cubeShader.CreateShader(CUBE_VERTEX_SHADER, CUBE_FRAGMENT_SHADER);
 }
 
 void Lucid::InitializeSystems() {
