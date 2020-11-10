@@ -62,8 +62,21 @@ void Lucid::InitializeEntities() {
   registry->AddComponentData<Model>(modelID3, Model(AVOCADO_MODEL));
   registry->AddComponentData<Model>(modelID4, Model(MICROPHONE_MODEL));
 
-  Model* model = registry->GetComponent<Model>(modelID3);
-  model->SetTag("avocado");
+  // registry->AddComponentData<Transform>(modelID, transform);
+  registry->AddComponentData<Transform>(modelID, {
+                                                     {3.0f, 3.0f, 3.0f},  // position
+                                                     {1.0f, 1.0f, 1.0f},  // rotation
+                                                     {1.0f, 1.0f, 1.0f},  // scale
+                                                 });
+  registry->AddComponentData<Transform>(modelID2,
+                                        {glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f)});
+  registry->AddComponentData<Transform>(modelID3,
+                                        {glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f)});
+  registry->AddComponentData<Transform>(modelID4,
+                                        {glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f)});
+
+  // Model* model = registry->GetComponent<Model>(modelID3);
+  // model->SetTag("avocado");
 
   uint32_t shaderID = registry->GetAvailableEntityId();
   registry->CreateEntity<Shader>(shaderID);
