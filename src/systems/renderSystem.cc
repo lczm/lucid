@@ -42,6 +42,7 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
   HandleMousePan(dt, input);
   HandleMouseScroll(dt, input);
   HandleKeyboardPan(dt, input);
+  HandleKeyboardInput(dt, registry, input);
 
   glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
@@ -176,5 +177,20 @@ void RenderSystem::HandleKeyboardPan(double dt, Input* input) {
   if (input->IsKeyDown('d')) {
     camera->cameraPos += glm::normalize(glm::cross(camera->cameraFront, camera->cameraUp)) *
                          static_cast<float>(CAMERA_SPEED * dt);
+  }
+}
+
+// Note : temporary
+void RenderSystem::HandleKeyboardInput(double dt, Registry* registry, Input* input) {
+  if (input->IsKeyDown('1')) {
+    Entity cubeID = registry->GetAvailableEntityId();
+
+    registry->CreateEntity<Cube, Transform>(cubeID);
+
+    Transform* transform = registry->GetComponent<Transform>(cubeID);
+    transform->position = camera->cameraPos;
+    transform->scale = glm::vec3(1.0f);
+
+    input->SetKeyOff('1');
   }
 }

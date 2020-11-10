@@ -8,6 +8,7 @@
 #include "renderer.h"
 #include "camera.h"
 #include "shaderResource.h"
+#include "cube.h"
 
 #include "gtx/string_cast.hpp"
 
@@ -28,4 +29,6 @@ class RenderSystem : public System {
   void HandleMousePan(double dt, Input* input);
   void HandleKeyboardPan(double dt, Input* input);
   void HandleMouseScroll(double dt, Input* input);
+
+  void HandleKeyboardInput(double dt, Registry* registry, Input* input);
 };
