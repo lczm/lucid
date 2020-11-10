@@ -21,14 +21,6 @@ void Model::LoadModel(std::string path) {
   CalculateModelBoundingBox();
 }
 
-void Model::SetTag(std::string tag) {
-  Model::tag = tag;
-}
-
-std::string Model::GetTag() {
-  return Model::tag;
-}
-
 std::vector<Mesh> Model::GetMeshes() {
   return Model::meshes;
 }

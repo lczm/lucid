@@ -75,9 +75,6 @@ void Lucid::InitializeEntities() {
   // registry->AddComponentData<Transform>(modelID4,
   //                                       {glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f)});
 
-  // Model* model = registry->GetComponent<Model>(modelID3);
-  // model->SetTag("avocado");
-
   uint32_t shaderID = registry->GetAvailableEntityId();
   registry->CreateEntity<Shader>(shaderID);
 

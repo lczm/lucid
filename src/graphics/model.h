@@ -23,7 +23,6 @@ struct BoundingBox {
 
 class Model {
  private:
-  std::string tag;
   std::vector<MeshTexture> loadedTextures;
   std::vector<Mesh> meshes;
   std::string directory;
@@ -33,14 +32,6 @@ class Model {
  public:
   Model();
   Model(std::string path);
-
-  /*
-   * TODO : Temporary or find a solution around this.
-   * Needs a way to find a certain model in space through 'tags' mostly
-   * debugging purposes.
-   */
-  void SetTag(std::string tag);
-  std::string GetTag();
 
   std::vector<Mesh> GetMeshes();
 
