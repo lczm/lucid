@@ -117,19 +117,44 @@ void UiSystem::DrawHierarchy(double dt, Registry* registry, Input* input) {
 
   UpdateInputActiveWindow(input, WindowType::Hierarchy);
 
-  // ImGui::ShowDemoWindow();
-
   // TODO : This can be improved upon
   // For now just take anything that has a transform component attached to it
 
-  std::vector<void*> components = registry->GetComponents<Transform>();
-  auto* models = static_cast<ComponentVector<Transform>*>(components[0]);
+  // We will run into the same problem that AddComponent is facing right now
+  // If we wanted a way to 'get all components that can be drawn'
 
-  for (size_t i = 0; i < models->Size(); i++) {
-    std::string modelName = "Transform " + std::to_string(i);
+  // Rather than that, we can define 'all components that can be drawn'
+  // as primitives & 3d models.
+
+  // TODO : The hierarchy is not drawn this way.
+
+  std::vector<void*> cubeComponents = registry->GetComponents<Cube>();
+  auto* cubes = static_cast<ComponentVector<Cube>*>(cubeComponents[0]);
+
+  std::vector<void*> sphereComponents = registry->GetComponents<Sphere>();
+  auto* spheres = static_cast<ComponentVector<Sphere>*>(sphereComponents[0]);
+
+  std::vector<void*> modelComponents = registry->GetComponents<Model>();
+  auto* models = static_cast<ComponentVector<Model>*>(modelComponents[0]);
+
+  // Draw the cubes
+  for (size_t i = 0; i < cubes->Size(); i++) {
+    std::string modelName = "Cube : " + std::to_string(i);
     if (ImGui::CollapsingHeader(modelName.c_str())) {
     }
   }
+
+  for (size_t i = 0; i < spheres ->Size(); i++) {
+    std::string modelName = "Sphere : " + std::to_string(i);
+    if (ImGui::CollapsingHeader(modelName.c_str())) {
+    }
+ }
+
+  for (size_t i = 0; i < models->Size(); i++) {
+    std::string modelName = "Model : " + std::to_string(i);
+    if (ImGui::CollapsingHeader(modelName.c_str())) {
+    }
+ }
 
   // ImGui::Text("This is the scene hierarchy");
   ImGui::End();
