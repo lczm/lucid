@@ -140,16 +140,19 @@ class ComponentVectorContainer {
   ~ComponentVectorContainer(){};
 
   template <typename Func>
-  void Each(Func&& func) {
+  void Each(Func&& function) {
     componentVectors = registry->GetComponents<Components...>();
 
     uint32_t maxSize = GetSize<Components...>(componentVectors);
 
     // For each of the components
     for (size_t i = 0; i < maxSize; i++) {
-      func(                                                     //
-          GetComponentData<Components>(componentVectors, i)...  //
-      );
+      // Make a tuple consisting of the component data
+      // this has to be forward_as_tuple and not make_tuple as GetComponentData returns a reference
+      auto tuple = std::forward_as_tuple(GetComponentData<Components>(componentVectors, i)...);
+
+      // Use apply to match arguments to function pointer
+      std::apply(function, tuple);
 
       getComponentCounter = 0;
     }

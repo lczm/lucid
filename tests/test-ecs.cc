@@ -291,6 +291,9 @@ TEST(ECS, GetComponentsLambdaSingleIteration) {
   std::vector<uint32_t> testAData = {10, 0, 0, 0};
   std::vector<uint32_t> testBData = {10, 0, 0, 0};
 
+  std::vector<uint32_t> testAData2 = {11, 1, 1, 1};
+  std::vector<uint32_t> testBData2 = {11, 1, 1, 1};
+
   uint32_t i = 0;
   registry->GetComponentsIter<TestAddStruct1>()->Each(
       [dt, &i, &testAData, &testBData](TestAddStruct1& testAddStruct) {
@@ -299,34 +302,84 @@ TEST(ECS, GetComponentsLambdaSingleIteration) {
         EXPECT_EQ(testAddStruct.b, testBData[i]);
 
         i++;
+
+        testAddStruct.a++;
+        testAddStruct.b++;
+      });
+
+  i = 0;
+  registry->GetComponentsIter<TestAddStruct1>()->Each(
+      [dt, &i, &testAData2, &testBData2](TestAddStruct1& testAddStruct) {
+        EXPECT_EQ(dt, 0.001);
+        EXPECT_EQ(testAddStruct.a, testAData2[i]);
+        EXPECT_EQ(testAddStruct.b, testBData2[i]);
+
+        i++;
       });
 }
 
-// TEST(ECS, GetComponentsLambdaMultiIteration) {
-//   Registry* registry = new Registry();
-//
-//   // Create a few archetypes
-//   registry->RegisterArchetype<TestAddStruct1>();
-//   registry->RegisterArchetype<TestAddStruct1, TestAddStruct2>();
-//
-//   // Get some entities
-//   Entity entity1 = registry->GetAvailableEntityId();
-//   Entity entity2 = registry->GetAvailableEntityId();
-//   Entity entity3 = registry->GetAvailableEntityId();
-//   Entity entity4 = registry->GetAvailableEntityId();
-//
-//   // Create some entities
-//   registry->CreateEntity<TestAddStruct1>(entity1);
-//   registry->CreateEntity<TestAddStruct1>(entity2);
-//   registry->CreateEntity<TestAddStruct1, TestAddStruct2>(entity3);
-//   registry->CreateEntity<TestAddStruct1, TestAddStruct2>(entity4);
-//
-//   const double dt = 0.001;
-//
-//   registry->GetComponentsIter<TestAddStruct1>()->Each(
-//       [dt](TestAddStruct1 testAddStruct, TestAddStruct2 testAddStruct2) {
-//         EXPECT_EQ(dt, 0.001);
-//         EXPECT_EQ(testAddStruct.a, 0);
-//         EXPECT_EQ(testAddStruct2.c, 0);
-//       });
-// }
+TEST(ECS, GetComponentsLambdaMultiIteration) {
+  Registry* registry = new Registry();
+
+  // Create a few archetypes
+  registry->RegisterArchetype<TestAddStruct1>();
+  registry->RegisterArchetype<TestAddStruct1, TestAddStruct2>();
+
+  // Get some entities
+  Entity entity1 = registry->GetAvailableEntityId();
+  Entity entity2 = registry->GetAvailableEntityId();
+  Entity entity3 = registry->GetAvailableEntityId();
+  Entity entity4 = registry->GetAvailableEntityId();
+
+  // Create some entities
+  registry->CreateEntity<TestAddStruct1>(entity1);
+  registry->CreateEntity<TestAddStruct1>(entity2);
+  registry->CreateEntity<TestAddStruct1, TestAddStruct2>(entity3);
+  registry->CreateEntity<TestAddStruct1, TestAddStruct2>(entity4);
+
+  const double dt = 0.001;
+
+  std::vector<uint32_t> testAData = {0, 0, 0, 0};
+  std::vector<uint32_t> testBData = {0, 0, 0, 0};
+
+  std::vector<uint32_t> testCData = {0, 0, 0, 0};
+  std::vector<uint32_t> testDData = {0, 0, 0, 0};
+
+  // After modification
+  std::vector<uint32_t> testAData2 = {1, 1, 1, 1};
+  std::vector<uint32_t> testBData2 = {1, 1, 1, 1};
+
+  std::vector<uint32_t> testCData2 = {1, 1, 1, 1};
+  std::vector<uint32_t> testDData2 = {1, 1, 1, 1};
+
+  uint32_t i = 0;
+  registry->GetComponentsIter<TestAddStruct1, TestAddStruct2>()->Each(
+      [dt, &i, &testAData, &testBData, &testCData, &testDData](TestAddStruct1& testAddStruct,
+                                                               TestAddStruct2& testAddStruct2) {
+        EXPECT_EQ(dt, 0.001);
+        EXPECT_EQ(testAddStruct.a, testAData[i]);
+        EXPECT_EQ(testAddStruct.b, testBData[i]);
+        EXPECT_EQ(testAddStruct2.c, testCData[i]);
+        EXPECT_EQ(testAddStruct2.d, testDData[i]);
+
+        testAddStruct.a++;
+        testAddStruct.b++;
+        testAddStruct2.c++;
+        testAddStruct2.d++;
+
+        i++;
+      });
+
+  i = 0;
+  registry->GetComponentsIter<TestAddStruct1, TestAddStruct2>()->Each(
+      [dt, &i, &testAData2, &testBData2, &testCData2, &testDData2](TestAddStruct1& testAddStruct,
+                                                                   TestAddStruct2& testAddStruct2) {
+        EXPECT_EQ(dt, 0.001);
+        EXPECT_EQ(testAddStruct.a, testAData2[i]);
+        EXPECT_EQ(testAddStruct.b, testBData2[i]);
+        EXPECT_EQ(testAddStruct2.c, testCData2[i]);
+        EXPECT_EQ(testAddStruct2.d, testDData2[i]);
+
+        i++;
+      });
+}
