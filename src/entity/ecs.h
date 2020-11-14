@@ -139,15 +139,15 @@ class ComponentVectorContainer {
   };
   ~ComponentVectorContainer(){};
 
-  template <typename Functor>
-  void Each(Functor functor) {
+  template <typename Func>
+  void Each(Func&& func) {
     componentVectors = registry->GetComponents<Components...>();
 
     uint32_t maxSize = GetSize<Components...>(componentVectors);
 
     // For each of the components
     for (size_t i = 0; i < maxSize; i++) {
-      functor(                                                  //
+      func(                                                     //
           GetComponentData<Components>(componentVectors, i)...  //
       );
 
