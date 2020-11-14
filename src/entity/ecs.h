@@ -79,7 +79,7 @@ class ComponentVector {
   };
 
   // Usage: somethingComponentVector->at(i).{structFields};
-  Component* At(unsigned int index) {
+  Component& At(unsigned int index) {
     unsigned int primaryIndex = 0;
     for (size_t i = 0; i < storeSizeIndex.size(); i++) {
       if (index < storeSizeIndex[i]) {
@@ -89,7 +89,7 @@ class ComponentVector {
         index -= storeSizeIndex[i];
       }
     }
-    return &store.at(primaryIndex)->at(index);
+    return store.at(primaryIndex)->at(index);
   };
 
   Component& operator[](uint32_t index) {

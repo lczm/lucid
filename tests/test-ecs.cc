@@ -92,11 +92,11 @@ TEST(ECS, ComponentVectorIteration) {
   // Test component vector iteration
   for (size_t i = 0; i < transformComponentVector->Size(); i++) {
     if (i == 0) {  // The updated component data
-      EXPECT_EQ(transformComponentVector->At(i)->a, 500);
-      EXPECT_EQ(transformComponentVector->At(i)->b, 500);
+      EXPECT_EQ(transformComponentVector->At(i).a, 500);
+      EXPECT_EQ(transformComponentVector->At(i).b, 500);
     } else if (i == 1) {  // The default component values
-      EXPECT_EQ(transformComponentVector->At(i)->a, 0);
-      EXPECT_EQ(transformComponentVector->At(i)->b, 0);
+      EXPECT_EQ(transformComponentVector->At(i).a, 0);
+      EXPECT_EQ(transformComponentVector->At(i).b, 0);
     }
   }
 }
