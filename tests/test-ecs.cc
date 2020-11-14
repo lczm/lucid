@@ -301,3 +301,32 @@ TEST(ECS, GetComponentsLambdaSingleIteration) {
         i++;
       });
 }
+
+// TEST(ECS, GetComponentsLambdaMultiIteration) {
+//   Registry* registry = new Registry();
+//
+//   // Create a few archetypes
+//   registry->RegisterArchetype<TestAddStruct1>();
+//   registry->RegisterArchetype<TestAddStruct1, TestAddStruct2>();
+//
+//   // Get some entities
+//   Entity entity1 = registry->GetAvailableEntityId();
+//   Entity entity2 = registry->GetAvailableEntityId();
+//   Entity entity3 = registry->GetAvailableEntityId();
+//   Entity entity4 = registry->GetAvailableEntityId();
+//
+//   // Create some entities
+//   registry->CreateEntity<TestAddStruct1>(entity1);
+//   registry->CreateEntity<TestAddStruct1>(entity2);
+//   registry->CreateEntity<TestAddStruct1, TestAddStruct2>(entity3);
+//   registry->CreateEntity<TestAddStruct1, TestAddStruct2>(entity4);
+//
+//   const double dt = 0.001;
+//
+//   registry->GetComponentsIter<TestAddStruct1>()->Each(
+//       [dt](TestAddStruct1 testAddStruct, TestAddStruct2 testAddStruct2) {
+//         EXPECT_EQ(dt, 0.001);
+//         EXPECT_EQ(testAddStruct.a, 0);
+//         EXPECT_EQ(testAddStruct2.c, 0);
+//       });
+// }

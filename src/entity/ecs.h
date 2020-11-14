@@ -6,6 +6,7 @@
 #include <iostream>
 #include <algorithm>
 #include <unordered_map>
+#include <type_traits>
 
 #include "component.h"
 #include "input.h"
@@ -146,7 +147,10 @@ class ComponentVectorContainer {
 
     // For each of the components
     for (size_t i = 0; i < maxSize; i++) {
-      functor({(GetComponentData<Components>(componentVectors, i))...});
+      functor(                                                  //
+          GetComponentData<Components>(componentVectors, i)...  //
+      );
+
       getComponentCounter = 0;
     }
   }
