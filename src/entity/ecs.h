@@ -73,7 +73,7 @@ class ComponentVector {
 
  public:
   ComponentVector(){};
-  void AddVector(std::vector<Component>*& vectorPtr) {
+  void AddVector(std::vector<Component>* vectorPtr) {
     store.push_back(vectorPtr);
     storeSizeIndex.push_back(vectorPtr->size());
   };
@@ -181,6 +181,22 @@ class Registry {
   };
   ~Registry();
 
+  // Very useful utility functions
+  std::unordered_map<uint32_t, void*>& GetArchetypeComponentMap(Archetype archetype) {
+    return *(static_cast<std::unordered_map<uint32_t, void*>*>(archetypeComponentMap[archetype]));
+  }
+
+  // Use case for when using a for range loop over the archetypeComponentMap
+  std::unordered_map<uint32_t, void*>& GetArchetypeComponentMap(void* pairIterSecond) {
+    return *(static_cast<std::unordered_map<uint32_t, void*>*>(pairIterSecond));
+  }
+
+  template <typename Component>
+  std::vector<Component>& GetVectorFromArchetypeComponentMap(
+      std::unordered_map<uint32_t, void*> keyPtr, uint32_t hashCode) {
+    return *(static_cast<std::vector<Component>*>(keyPtr[hashCode]));
+  }
+
   Entity GetAvailableEntityId() {
     if (availablePool.size() == 0) {
       std::cout << "Not enough ids" << std::endl;
@@ -252,10 +268,8 @@ class Registry {
     // Specific hashcode for this component
     uint32_t hashCode = GetHashCode<Component>();
 
-    std::unordered_map<uint32_t, void*>& keyPtr =
-        *(static_cast<std::unordered_map<uint32_t, void*>*>(archetypeComponentMap[archetype]));
-
-    std::vector<Component>& vectorPtr = *(static_cast<std::vector<Component>*>(keyPtr[hashCode]));
+    auto& keyPtr = GetArchetypeComponentMap(archetype);
+    auto& vectorPtr = GetVectorFromArchetypeComponentMap<Component>(keyPtr, hashCode);
 
     // Note that even though this is for each vector component, this should
     // not matter as every component goes through this, resulting in the
@@ -377,11 +391,8 @@ class Registry {
     }
 
     // Add the data to the archetype
-    std::unordered_map<uint32_t, void*>& keyPtr =
-        *(static_cast<std::unordered_map<uint32_t, void*>*>(archetypeComponentMap[archetype]));
-
-    std::vector<Component>& vectorPtr =
-        *(static_cast<std::vector<Component>*>(keyPtr[componentHashCode]));
+    auto& keyPtr = GetArchetypeComponentMap(archetype);
+    auto& vectorPtr = GetVectorFromArchetypeComponentMap<Component>(keyPtr, componentHashCode);
 
     // Note that even though this is for each vector component, this should
     // not matter as every component goes through this, resulting in the
@@ -436,12 +447,9 @@ class Registry {
 
       // Move the components from the old archetype to the new archetype
       uint32_t previousIndex = status.previousIndex;
-      std::unordered_map<uint32_t, void*>& previousPtr =
-          *(static_cast<std::unordered_map<uint32_t, void*>*>(
-              archetypeComponentMap[remainderArchetype]));
 
-      std::unordered_map<uint32_t, void*>& currentPtr =
-          *(static_cast<std::unordered_map<uint32_t, void*>*>(archetypeComponentMap[archetype]));
+      auto& previousPtr = GetArchetypeComponentMap(remainderArchetype);
+      auto& currentPtr = GetArchetypeComponentMap(archetype);
 
       // Move the components around
       auto p = {(MoveComponent<Components>(status.previousIndex, entityIndexMap[entity],
@@ -466,11 +474,9 @@ class Registry {
     }
 
     uint32_t hashCode = GetHashCode<Component>();
-    std::vector<Component>& fromComponentVector =
-        *(static_cast<std::vector<Component>*>(from[hashCode]));
 
-    std::vector<Component>& toComponentVector =
-        *(static_cast<std::vector<Component>*>(to[hashCode]));
+    auto& fromComponentVector = GetVectorFromArchetypeComponentMap<Component>(from, hashCode);
+    auto& toComponentVector = GetVectorFromArchetypeComponentMap<Component>(to, hashCode);
 
     toComponentVector[currentIndex] = fromComponentVector[previousIndex];
   }
@@ -479,8 +485,7 @@ class Registry {
   void ReorderComponentVector(uint32_t fillIndex, std::unordered_map<uint32_t, void*> keyPtr) {
     uint32_t hashCode = GetHashCode<Component>();
 
-    std::vector<Component>& componentVector =
-        *(static_cast<std::vector<Component>*>(keyPtr[hashCode]));
+    auto& componentVector = GetVectorFromArchetypeComponentMap<Component>(keyPtr, hashCode);
 
     // Cannot move elements around to do anything
     if (componentVector.size() <= 1) {
@@ -495,13 +500,12 @@ class Registry {
   // component with the one that is passed in.
   template <typename Component>
   void AddComponentData(Entity entity, Component component) {
-    std::unordered_map<uint32_t, void*>& keyPtr =
-        *(static_cast<std::unordered_map<uint32_t, void*>*>(
-            archetypeComponentMap[entityComponentMap[entity]]));
-
     // Get a pointer to the vector of this type.
     uint32_t hashCode = GetHashCode(component);
-    std::vector<Component>& vectorPtr = *(static_cast<std::vector<Component>*>(keyPtr[hashCode]));
+
+    auto& keyPtr = GetArchetypeComponentMap(entityComponentMap[entity]);
+    auto& vectorPtr = GetVectorFromArchetypeComponentMap<Component>(keyPtr, hashCode);
+
     vectorPtr.at(entityIndexMap[entity]) = component;
   }
 
@@ -521,15 +525,13 @@ class Registry {
     ComponentVector<Component>& componentVectorPtr =
         *(static_cast<ComponentVector<Component>*>(componentVectors[componentIndex]));
 
-    std::unordered_map<uint32_t, void*>& keyPtr =
-        *(static_cast<std::unordered_map<uint32_t, void*>*>(archetypeComponentMap[archetype]));
-
-    std::vector<Component>* vectorPtr = static_cast<std::vector<Component>*>(keyPtr[hashCode]);
+    auto& keyPtr = GetArchetypeComponentMap(archetype);
+    auto& vectorPtr = GetVectorFromArchetypeComponentMap<Component>(keyPtr, hashCode);
 
     // Add to componentvector if only the size is more than 0;
     // i.e. if there are entities.
-    if (vectorPtr->size() > 0) {
-      componentVectorPtr.AddVector(vectorPtr);
+    if (vectorPtr.size() > 0) {
+      componentVectorPtr.AddVector(&vectorPtr);
     }
 
     // Increment the index for the next component index when this function
@@ -601,14 +603,10 @@ class Registry {
 
     for (auto& pair : archetypeComponentMap) {
       if (pair.first.size() == 1 && pair.first[0] == hashCode) {
-        std::unordered_map<uint32_t, void*>& keyPtr =
-            *(static_cast<std::unordered_map<uint32_t, void*>*>(pair.second));
+        auto& keyPtr = GetArchetypeComponentMap(pair.second);
+        auto& vectorPtr = GetVectorFromArchetypeComponentMap<Component>(keyPtr, pair.first[0]);
 
-        // auto* vectorPtr = static_cast<std::vector<Component>*>(keyPtr[pair.first[0]]);
-        std::vector<Component>* vectorPtr =
-            static_cast<std::vector<Component>*>(keyPtr[pair.first[0]]);
-
-        return vectorPtr->at(0);
+        return vectorPtr.at(0);
       }
     }
 
@@ -633,11 +631,10 @@ class Registry {
 
     // get entity archetype
     Archetype archetype = entityComponentMap[id];
-    std::unordered_map<uint32_t, void*>& keyPtr =
-        *(static_cast<std::unordered_map<uint32_t, void*>*>(archetypeComponentMap[archetype]));
+    auto& keyPtr = GetArchetypeComponentMap(archetype);
 
     // Get a pointer to the vector of this type.
-    std::vector<Component>& vectorPtr = *(static_cast<std::vector<Component>*>(keyPtr[hashCode]));
+    auto& vectorPtr = GetVectorFromArchetypeComponentMap<Component>(keyPtr, hashCode);
 
     // Get entity index
     uint32_t entityIndex = entityIndexMap[id];
