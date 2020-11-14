@@ -122,6 +122,70 @@ class ComponentVector {
 // itself will need to take in a systems, so one way or the other there needs to
 // be a forward declaration here
 class Registry;
+
+template <typename... Components>
+class ComponentVectorContainer {
+ public:
+  Registry* registry;
+  std::vector<void*> componentVectors;
+
+  uint32_t getSizeCounter = 0;
+  uint32_t getComponentCounter = 0;
+
+ public:
+  ComponentVectorContainer(Registry* registry) {
+    ComponentVectorContainer::registry = registry;
+  };
+  ~ComponentVectorContainer(){};
+
+  template <typename Functor>
+  void Each(Functor functor) {
+    componentVectors = registry->GetComponents<Components...>();
+
+    uint32_t maxSize = GetSize<Components...>(componentVectors);
+
+    // For each of the components
+    for (size_t i = 0; i < maxSize; i++) {
+      functor({(GetComponentData<Components>(componentVectors, i))...});
+      getComponentCounter = 0;
+    }
+  }
+
+  template <typename Component>
+  Component& GetComponentData(std::vector<void*> componentVectorPtr, uint32_t index) {
+    Component& component =
+        static_cast<ComponentVector<Component>*>(componentVectorPtr[getComponentCounter])
+            ->At(index);
+
+    getComponentCounter++;
+    return component;
+  }
+
+  template <typename... Components>
+  uint32_t GetSize(std::vector<void*> componentVectors) {
+    std::vector<uint32_t> sizes = {(GetIndividualSize<Components>(componentVectors))...};
+
+    getSizeCounter = 0;
+
+    uint32_t compare = sizes[0];
+    for (uint32_t size : sizes) {
+      if (size != compare) {
+        std::cout << "Something went real bad" << std::endl;
+        return 0;
+      }
+    }
+
+    return compare;
+  }
+
+  template <typename Component>
+  uint32_t GetIndividualSize(std::vector<void*> componentVectorPtr) {
+    auto counter =
+        static_cast<ComponentVector<Component>*>(componentVectorPtr[getSizeCounter])->Size();
+    getSizeCounter++;
+    return counter;
+  }
+};
 /*
     Abstract class for other systems to inherit out of
     We just need the virtual dispatch on update.
@@ -575,6 +639,14 @@ class Registry {
       }
     }
     return componentVectors;
+  }
+
+  template <typename... Components>
+  ComponentVectorContainer<Components...>* GetComponentsIter() {
+    ComponentVectorContainer<Components...>* container =
+        new ComponentVectorContainer<Components...>(this);
+
+    return container;
   }
 
   // This is to get exact components rather than 'inclusive of <Components>'

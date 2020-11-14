@@ -264,3 +264,40 @@ TEST(ECS, GetComponentSingleAndModify) {
   EXPECT_EQ(testStruct.a, 500);
   EXPECT_EQ(testStruct.b, 1000);
 }
+
+TEST(ECS, GetComponentsLambdaSingleIteration) {
+  Registry* registry = new Registry();
+
+  // Create a few archetypes
+  registry->RegisterArchetype<TestAddStruct1>();
+  registry->RegisterArchetype<TestAddStruct1, TestAddStruct2>();
+
+  // Get some entities
+  Entity entity1 = registry->GetAvailableEntityId();
+  Entity entity2 = registry->GetAvailableEntityId();
+  Entity entity3 = registry->GetAvailableEntityId();
+  Entity entity4 = registry->GetAvailableEntityId();
+
+  // Create some entities
+  registry->CreateEntity<TestAddStruct1>(entity1);
+  registry->CreateEntity<TestAddStruct1>(entity2);
+  registry->CreateEntity<TestAddStruct1, TestAddStruct2>(entity3);
+  registry->CreateEntity<TestAddStruct1, TestAddStruct2>(entity4);
+
+  registry->AddComponentData<TestAddStruct1>(entity1, {10, 10});
+
+  const double dt = 0.001;
+
+  std::vector<uint32_t> testAData = {10, 0, 0, 0};
+  std::vector<uint32_t> testBData = {10, 0, 0, 0};
+
+  uint32_t i = 0;
+  registry->GetComponentsIter<TestAddStruct1>()->Each(
+      [dt, &i, &testAData, &testBData](TestAddStruct1& testAddStruct) {
+        EXPECT_EQ(dt, 0.001);
+        EXPECT_EQ(testAddStruct.a, testAData[i]);
+        EXPECT_EQ(testAddStruct.b, testBData[i]);
+
+        i++;
+      });
+}
