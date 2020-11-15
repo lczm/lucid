@@ -82,7 +82,6 @@ void Lucid::InitializeEntities() {
                                                       {1.0f, 1.0f, 1.0f},     // rotation
                                                       {30.0f, 30.0f, 30.0f},  // scale
                                                   });
-
   registry->AddComponentData<Transform>(cubeID, {
                                                     {-2.0f, -2.0f, -2.0f},  // position
                                                     {1.0f, 1.0f, 1.0f},     // rotation

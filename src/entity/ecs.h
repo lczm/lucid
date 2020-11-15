@@ -68,7 +68,7 @@ struct ComponentMovementStatus {
 */
 template <typename Component>
 class ComponentVector {
- private:
+ public:
   std::vector<std::vector<Component>*> store;
   std::vector<uint32_t> storeSizeIndex;
 
@@ -130,6 +130,10 @@ class ComponentVectorContainer {
   Registry* registry;
   std::vector<void*> componentVectors;
 
+  // GetHashCode<Component> : Index
+  // where the index is the index for the componentVectors
+  std::unordered_map<uint32_t, uint32_t> componentIndex;
+
   uint32_t getSizeCounter = 0;
   uint32_t getComponentCounter = 0;
 
@@ -140,8 +144,13 @@ class ComponentVectorContainer {
   ~ComponentVectorContainer(){};
 
   template <typename Func>
-  void Each(Func&& function) {
+  void Each(Func function) {
     componentVectors = registry->GetComponents<Components...>();
+
+    std::vector<uint32_t> hashCodes = {(registry->GetHashCode<Components>())...};
+    for (size_t i = 0; i < hashCodes.size(); i++) {
+      componentIndex[hashCodes[i]] = i;
+    }
 
     uint32_t maxSize = GetSize<Components...>(componentVectors);
 
@@ -153,23 +162,34 @@ class ComponentVectorContainer {
 
       // Use apply to match arguments to function pointer
       std::apply(function, tuple);
+      // function(std::get<decltype(GetComponentData<Components>(componentVectors, i))>(tuple)...);
 
-      getComponentCounter = 0;
+      // getComponentCounter = 0;
     }
   }
 
   template <typename Component>
-  Component& GetComponentData(std::vector<void*> componentVectorPtr, uint32_t index) {
-    Component& component =
-        static_cast<ComponentVector<Component>*>(componentVectorPtr[getComponentCounter])
-            ->At(index);
+  Component& GetComponentData(std::vector<void*>& componentVectorPtr, uint32_t index) {
+    ComponentVector<Component>* compVector = static_cast<ComponentVector<Component>*>(
+        componentVectorPtr[componentIndex[registry->GetHashCode<Component>()]]);
 
-    getComponentCounter++;
+    // std::cout << "@@@ : " << compVector->store[0]->size() << std::endl;
+
+    // std::cout << "@@@@ : " << compVector->Size() << std::endl;
+    // std::cout << "Index : " << index << std::endl;
+
+    Component& component = compVector->At(index);
+
+    // Component& component =
+    //     static_cast<ComponentVector<Component>*>(componentVectorPtr[getComponentCounter])
+    //         ->At(index);
+
+    // getComponentCounter++;
     return component;
   }
 
   template <typename... Components>
-  uint32_t GetSize(std::vector<void*> componentVectors) {
+  uint32_t GetSize(std::vector<void*>& componentVectors) {
     std::vector<uint32_t> sizes = {(GetIndividualSize<Components>(componentVectors))...};
 
     getSizeCounter = 0;
@@ -186,9 +206,16 @@ class ComponentVectorContainer {
   }
 
   template <typename Component>
-  uint32_t GetIndividualSize(std::vector<void*> componentVectorPtr) {
-    auto counter =
-        static_cast<ComponentVector<Component>*>(componentVectorPtr[getSizeCounter])->Size();
+  uint32_t GetIndividualSize(std::vector<void*>& componentVectorPtr) {
+    // auto counter =
+    //     static_cast<ComponentVector<Component>*>(componentVectorPtr[getSizeCounter])->Size();
+    ComponentVector<Component>* compVector =
+        static_cast<ComponentVector<Component>*>(componentVectorPtr[getSizeCounter]);
+
+    // std::cout << "### : " << compVector->store[0]->size() << std::endl;
+
+    auto counter = compVector->Size();
+
     getSizeCounter++;
     return counter;
   }
@@ -619,6 +646,7 @@ class Registry {
     Archetype hashCodes = {(GetHashCode<Components>())...};
     std::vector<void*> componentVectors = {(MakeComponentVector<Components>())...};
 
+    // archetype : std::unordered_map<hashcode, void*>
     for (auto& archetypePair : archetypeComponentMap) {
       Archetype archetype = archetypePair.first;
       // I don't think there is a way to do this in a fast way as

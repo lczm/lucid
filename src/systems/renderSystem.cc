@@ -53,13 +53,14 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
 
   camera->UpdateView();
 
-  std::vector<void*> modelComponents = registry->GetComponents<Model, Transform>();
-  auto* models = static_cast<ComponentVector<Model>*>(modelComponents[0]);
-  auto* transforms = static_cast<ComponentVector<Transform>*>(modelComponents[1]);
+  // Note : Remember to uncomment
+  // std::vector<void*> modelComponents = registry->GetComponents<Model, Transform>();
+  // auto* models = static_cast<ComponentVector<Model>*>(modelComponents[0]);
+  // auto* transforms = static_cast<ComponentVector<Transform>*>(modelComponents[1]);
 
-  std::vector<void*> cubeComponents = registry->GetComponents<Cube, Transform>();
-  auto* cubes = static_cast<ComponentVector<Cube>*>(cubeComponents[0]);
-  auto* cubeTransforms = static_cast<ComponentVector<Transform>*>(cubeComponents[1]);
+  // std::vector<void*> cubeComponents = registry->GetComponents<Cube, Transform>();
+  // auto* cubes = static_cast<ComponentVector<Cube>*>(cubeComponents[0]);
+  // auto* cubeTransforms = static_cast<ComponentVector<Transform>*>(cubeComponents[1]);
 
   ShaderResource& shaderResource = registry->GetComponent<ShaderResource>();
 
@@ -73,23 +74,21 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
   shaderResource.modelShader.SetUniformMatFloat4("projection", camera->projection);
   shaderResource.modelShader.SetUniformMatFloat4("view", camera->view);
 
-  for (size_t i = 0; i < models->Size(); i++) {
-    Model m = models->At(i);
-    Transform t = transforms->At(i);
+  registry->GetComponentsIter<Model, Transform>()->Each(
+      [dt, &shaderResource, &renderer = renderer](Model& model, Transform& transform) {
+        glm::mat4 matrixModel = glm::mat4(1.0f);
 
-    glm::mat4 model = glm::mat4(1.0f);
+        matrixModel = glm::translate(matrixModel, transform.position);
+        matrixModel = glm::scale(matrixModel, transform.scale);
 
-    // Move the model according to transform.position
-    model = glm::translate(model, t.position);
-    // TODO : Multiply by transform rotation
-    // Note : using a vec3 for rotation might be quaternion related rather than
-    // euler angles related
-    // model = glm::rotate(model, t->rotation, 30);
-    model = glm::scale(model, t.scale);
+        //   // TODO : Multiply by transform rotation
+        //   // Note : using a vec3 for rotation might be quaternion related rather than
+        //   // euler angles related
+        //   // model = glm::rotate(model, transform.rotation, 30);
 
-    shaderResource.modelShader.SetUniformMatFloat4("model", model);
-    renderer->DrawModel(m, shaderResource.modelShader);
-  }
+        shaderResource.modelShader.SetUniformMatFloat4("model", matrixModel);
+        renderer->DrawModel(model, shaderResource.modelShader);
+      });
 
   shaderResource.modelShader.Unbind();
 
@@ -97,18 +96,16 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
   shaderResource.cubeShader.SetUniformMatFloat4("projection", camera->projection);
   shaderResource.cubeShader.SetUniformMatFloat4("view", camera->view);
 
-  for (size_t i = 0; i < cubes->Size(); i++) {
-    Cube c = cubes->At(i);
-    Transform t = cubeTransforms->At(i);
+  registry->GetComponentsIter<Cube, Transform>()->Each(
+      [dt, &shaderResource, &renderer = renderer](Cube& cube, Transform& transform) {
+        glm::mat4 matrixModel = glm::mat4(1.0f);
 
-    glm::mat4 model = glm::mat4(1.0f);
+        matrixModel = glm::translate(matrixModel, transform.position);
+        matrixModel = glm::scale(matrixModel, transform.scale);
 
-    model = glm::translate(model, t.position);
-    model = glm::scale(model, t.scale);
-
-    shaderResource.cubeShader.SetUniformMatFloat4("model", model);
-    renderer->DrawCube(c, shaderResource.cubeShader);
-  }
+        shaderResource.modelShader.SetUniformMatFloat4("model", matrixModel);
+        renderer->DrawCube(cube, shaderResource.modelShader);
+      });
 
   shaderResource.cubeShader.Unbind();
 
