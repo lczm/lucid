@@ -81,10 +81,10 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
         matrixModel = glm::translate(matrixModel, transform.position);
         matrixModel = glm::scale(matrixModel, transform.scale);
 
-        //   // TODO : Multiply by transform rotation
-        //   // Note : using a vec3 for rotation might be quaternion related rather than
-        //   // euler angles related
-        //   // model = glm::rotate(model, transform.rotation, 30);
+        // TODO : Multiply by transform rotation
+        // Note : using a vec3 for rotation might be quaternion related rather than
+        // euler angles related
+        // model = glm::rotate(model, transform.rotation, 30);
 
         shaderResource.modelShader.SetUniformMatFloat4("model", matrixModel);
         renderer->DrawModel(model, shaderResource.modelShader);

@@ -144,17 +144,17 @@ void UiSystem::DrawHierarchy(double dt, Registry* registry, Input* input) {
     }
   }
 
-  for (size_t i = 0; i < spheres ->Size(); i++) {
+  for (size_t i = 0; i < spheres->Size(); i++) {
     std::string modelName = "Sphere : " + std::to_string(i);
     if (ImGui::CollapsingHeader(modelName.c_str())) {
     }
- }
+  }
 
   for (size_t i = 0; i < models->Size(); i++) {
     std::string modelName = "Model : " + std::to_string(i);
     if (ImGui::CollapsingHeader(modelName.c_str())) {
     }
- }
+  }
 
   // ImGui::Text("This is the scene hierarchy");
   ImGui::End();
