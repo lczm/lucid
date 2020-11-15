@@ -69,22 +69,22 @@ void Lucid::InitializeEntities() {
 
   registry->AddComponentData<Transform>(modelID, {
                                                      {3.0f, 3.0f, 3.0f},  // position
-                                                     {1.0f, 1.0f, 1.0f},  // rotation
+                                                     {0.0f, 0.0f, 0.0f},  // rotation
                                                      {1.0f, 1.0f, 1.0f},  // scale
                                                  });
   registry->AddComponentData<Transform>(modelID2, {
                                                       {6.0f, 6.0f, 6.0f},  // position
-                                                      {1.0f, 1.0f, 1.0f},  // rotation
+                                                      {0.0f, 0.0f, 0.0f},  // rotation
                                                       {1.0f, 1.0f, 1.0f},  // scale
                                                   });
   registry->AddComponentData<Transform>(modelID3, {
                                                       {1.0f, 1.0f, 1.0f},     // position
-                                                      {1.0f, 1.0f, 1.0f},     // rotation
+                                                      {0.0f, 0.0f, 0.0f},     // rotation
                                                       {30.0f, 30.0f, 30.0f},  // scale
                                                   });
   registry->AddComponentData<Transform>(cubeID, {
                                                     {-2.0f, -2.0f, -2.0f},  // position
-                                                    {1.0f, 1.0f, 1.0f},     // rotation
+                                                    {0.0f, 0.0f, 0.0f},     // rotation
                                                     {2.0f, 2.0f, 2.0f},     // scale
                                                 });
 
