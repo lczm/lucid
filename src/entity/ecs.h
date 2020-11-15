@@ -135,7 +135,6 @@ class ComponentVectorContainer {
   std::unordered_map<uint32_t, uint32_t> componentIndex;
 
   uint32_t getSizeCounter = 0;
-  uint32_t getComponentCounter = 0;
 
  public:
   ComponentVectorContainer(Registry* registry) {
@@ -163,28 +162,16 @@ class ComponentVectorContainer {
       // Use apply to match arguments to function pointer
       std::apply(function, tuple);
       // function(std::get<decltype(GetComponentData<Components>(componentVectors, i))>(tuple)...);
-
-      // getComponentCounter = 0;
     }
   }
 
   template <typename Component>
   Component& GetComponentData(std::vector<void*>& componentVectorPtr, uint32_t index) {
-    ComponentVector<Component>* compVector = static_cast<ComponentVector<Component>*>(
-        componentVectorPtr[componentIndex[registry->GetHashCode<Component>()]]);
+    Component& component =
+        static_cast<ComponentVector<Component>*>(
+            componentVectorPtr[componentIndex[registry->GetHashCode<Component>()]])
+            ->At(index);
 
-    // std::cout << "@@@ : " << compVector->store[0]->size() << std::endl;
-
-    // std::cout << "@@@@ : " << compVector->Size() << std::endl;
-    // std::cout << "Index : " << index << std::endl;
-
-    Component& component = compVector->At(index);
-
-    // Component& component =
-    //     static_cast<ComponentVector<Component>*>(componentVectorPtr[getComponentCounter])
-    //         ->At(index);
-
-    // getComponentCounter++;
     return component;
   }
 
@@ -207,14 +194,8 @@ class ComponentVectorContainer {
 
   template <typename Component>
   uint32_t GetIndividualSize(std::vector<void*>& componentVectorPtr) {
-    // auto counter =
-    //     static_cast<ComponentVector<Component>*>(componentVectorPtr[getSizeCounter])->Size();
-    ComponentVector<Component>* compVector =
-        static_cast<ComponentVector<Component>*>(componentVectorPtr[getSizeCounter]);
-
-    // std::cout << "### : " << compVector->store[0]->size() << std::endl;
-
-    auto counter = compVector->Size();
+    auto counter =
+        static_cast<ComponentVector<Component>*>(componentVectorPtr[getSizeCounter])->Size();
 
     getSizeCounter++;
     return counter;
