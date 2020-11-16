@@ -33,3 +33,6 @@ const char MICROPHONE_MODEL[] = "../assets/microphone/scene.gltf";
 const char SCIFIHELMET_MODEL[] = "../assets/helmet/ScifiHelmet.gltf";
 const char FOX_MODEL[] = "../assets/fox/Fox.gltf";
 const char AVOCADO_MODEL[] = "../assets/avocado/Avocado.gltf";
+
+// Pseudo standard values that will not change
+const float PI = 3.14159265359;

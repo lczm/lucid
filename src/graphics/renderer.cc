@@ -58,6 +58,12 @@ void Renderer::DrawCube(Cube& cube, Shader& shader) {
   glBindVertexArray(0);
 }
 
+void Renderer::DrawSphere(Sphere& sphere, Shader& shader) {
+  glBindVertexArray(sphere.VAO);
+  glDrawElements(GL_TRIANGLES, sphere.indices.size(), GL_UNSIGNED_INT, 0);
+  glBindVertexArray(0);
+}
+
 void Renderer::DrawBoundingBox(BoundingBox& boundingBox) {
   // TODO : This should be using index buffers...
   float vertices[] = {

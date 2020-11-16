@@ -47,6 +47,7 @@ void Lucid::InitializeEntities() {
   registry->RegisterArchetype<ShaderResource>();
   registry->RegisterArchetype<SceneRender>();
   registry->RegisterArchetype<Cube, Transform>();
+  registry->RegisterArchetype<Sphere, Transform>();
 
   uint32_t modelID = registry->GetAvailableEntityId();
   uint32_t modelID2 = registry->GetAvailableEntityId();
@@ -55,17 +56,33 @@ void Lucid::InitializeEntities() {
   uint32_t cubeID = registry->GetAvailableEntityId();
   uint32_t shaderResourceID = registry->GetAvailableEntityId();
   uint32_t sceneRenderID = registry->GetAvailableEntityId();
+  uint32_t sphereID = registry->GetAvailableEntityId();
 
   registry->CreateEntity<Model, Transform>(modelID);
   registry->CreateEntity<Model, Transform>(modelID2);
   registry->CreateEntity<Model, Transform>(modelID3);
   registry->CreateEntity<Cube, Transform>(cubeID);
+  registry->CreateEntity<Sphere, Transform>(sphereID);
+
   registry->CreateEntity<ShaderResource>(shaderResourceID);
   registry->CreateEntity<SceneRender>(sceneRenderID);
 
   registry->AddComponentData<Model>(modelID, Model(MICROPHONE_MODEL));
   registry->AddComponentData<Model>(modelID2, Model(SCIFIHELMET_MODEL));
   registry->AddComponentData<Model>(modelID3, Model(AVOCADO_MODEL));
+
+  registry->GetComponentsIter<Sphere, Transform>()->Each([](Sphere& sphere, Transform& transform) {
+    sphere.radius = 1.0f;
+    sphere.sectors = 36;
+    sphere.stacks = 18;
+    sphere.BuildSphere();
+    sphere.BuildIndices();
+    sphere.Build();
+
+    transform.position = {-5.0f, -5.0f, -5.0f};
+    transform.rotation = {0.0f, 0.0f, 0.0f};
+    transform.scale = {1.0f, 1.0f, 1.0f};
+  });
 
   registry->AddComponentData<Transform>(modelID, {
                                                      {3.0f, 3.0f, 3.0f},  // position

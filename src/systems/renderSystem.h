@@ -9,6 +9,7 @@
 #include "camera.h"
 #include "shaderResource.h"
 #include "cube.h"
+#include "sphere.h"
 
 #include "gtx/string_cast.hpp"
 

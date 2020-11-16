@@ -93,6 +93,26 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
     renderer->DrawModel(model, shaderResource.modelShader);
   });
 
+  registry->GetComponentsIter<Sphere, Transform>()->Each([dt, &shaderResource,
+                                                          &renderer = renderer](
+                                                             Sphere& sphere, Transform& transform) {
+    glm::mat4 matrixModel = glm::mat4(1.0f);
+    glm::mat4 rotationMatrix = glm::mat4(1.0f);
+
+    matrixModel = glm::translate(matrixModel, transform.position);
+    matrixModel = glm::scale(matrixModel, transform.scale);
+
+    // Rotation matrix
+    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[0], glm::vec3(1.0, 0.0, 0.0));
+    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[1], glm::vec3(0.0, 1.0, 0.0));
+    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[2], glm::vec3(0.0, 0.0, 1.0));
+
+    matrixModel *= rotationMatrix;
+
+    shaderResource.modelShader.SetUniformMatFloat4("model", matrixModel);
+    renderer->DrawSphere(sphere, shaderResource.modelShader);
+  });
+
   shaderResource.modelShader.Unbind();
 
   shaderResource.cubeShader.Bind();
