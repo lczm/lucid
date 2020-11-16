@@ -250,7 +250,10 @@ void UiSystem::DrawDevDebug(double dt, Registry* registry, Input* input) {
 
   UpdateInputActiveWindow(input, WindowType::DevDebug);
 
-  ImGui::Text("DevDebug");
+  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+
+  ImGui::Checkbox("Draw all with wireframe", &devDebug.drawWireframe);
+
   ImGui::End();
 }
 

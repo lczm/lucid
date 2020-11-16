@@ -57,85 +57,28 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
   SceneRender& sceneRender = registry->GetComponent<SceneRender>();
   sceneRender.textureID = texture;
 
-  // Show draw scaffold
-  // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-  // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  DevDebug& devDebug = registry->GetComponent<DevDebug>();
 
-  shaderResource.modelShader.Bind();
-  shaderResource.modelShader.SetUniformMatFloat4("projection", camera->projection);
-  shaderResource.modelShader.SetUniformMatFloat4("view", camera->view);
+  // TODO : wireframe drawing should have its own shaders
+  // Draw wireframe
+  if (devDebug.drawWireframe) {
+    // Set the lines to be drawn
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glEnable(GL_POLYGON_OFFSET_LINE);
+    glLineWidth(3.0f);
 
-  registry->GetComponentsIter<Model, Transform>()->Each([dt, &shaderResource, &renderer = renderer](
-                                                            Model& model, Transform& transform) {
-    glm::mat4 matrixModel = glm::mat4(1.0f);
-    glm::mat4 rotationMatrix = glm::mat4(1.0f);
+    DrawAllModels(dt, registry, input);
+    DrawAllCubes(dt, registry, input);
+    DrawAllSpheres(dt, registry, input);
 
-    matrixModel = glm::translate(matrixModel, transform.position);
-    matrixModel = glm::scale(matrixModel, transform.scale);
-
-    // Rotation matrix
-    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[0], glm::vec3(1.0, 0.0, 0.0));
-    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[1], glm::vec3(0.0, 1.0, 0.0));
-    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[2], glm::vec3(0.0, 0.0, 1.0));
-
-    matrixModel *= rotationMatrix;
-
-    shaderResource.modelShader.SetUniformMatFloat4("model", matrixModel);
-    renderer->DrawModel(model, shaderResource.modelShader);
-  });
-
-  shaderResource.modelShader.Unbind();
-
-  shaderResource.cubeShader.Bind();
-  shaderResource.cubeShader.SetUniformMatFloat4("projection", camera->projection);
-  shaderResource.cubeShader.SetUniformMatFloat4("view", camera->view);
-
-  registry->GetComponentsIter<Cube, Transform>()->Each([dt, &shaderResource, &renderer = renderer](
-                                                           Cube& cube, Transform& transform) {
-    glm::mat4 matrixModel = glm::mat4(1.0f);
-    glm::mat4 rotationMatrix = glm::mat4(1.0f);
-
-    matrixModel = glm::translate(matrixModel, transform.position);
-    matrixModel = glm::scale(matrixModel, transform.scale);
-
-    // Rotation matrix
-    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[0], glm::vec3(1.0, 0.0, 0.0));
-    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[1], glm::vec3(0.0, 1.0, 0.0));
-    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[2], glm::vec3(0.0, 0.0, 1.0));
-
-    matrixModel *= rotationMatrix;
-
-    shaderResource.cubeShader.SetUniformMatFloat4("model", matrixModel);
-    renderer->DrawCube(cube, shaderResource.cubeShader);
-  });
-
-  shaderResource.cubeShader.Unbind();
-
-  shaderResource.cubeShader.Bind();
-  shaderResource.cubeShader.SetUniformMatFloat4("projection", camera->projection);
-  shaderResource.cubeShader.SetUniformMatFloat4("view", camera->view);
-
-  registry->GetComponentsIter<Sphere, Transform>()->Each([dt, &shaderResource,
-                                                          &renderer = renderer](
-                                                             Sphere& sphere, Transform& transform) {
-    glm::mat4 matrixModel = glm::mat4(1.0f);
-    glm::mat4 rotationMatrix = glm::mat4(1.0f);
-
-    matrixModel = glm::translate(matrixModel, transform.position);
-    matrixModel = glm::scale(matrixModel, transform.scale);
-
-    // Rotation matrix
-    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[0], glm::vec3(1.0, 0.0, 0.0));
-    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[1], glm::vec3(0.0, 1.0, 0.0));
-    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[2], glm::vec3(0.0, 0.0, 1.0));
-
-    matrixModel *= rotationMatrix;
-
-    shaderResource.cubeShader.SetUniformMatFloat4("model", matrixModel);
-    renderer->DrawSphere(sphere, shaderResource.cubeShader);
-  });
-
-  shaderResource.cubeShader.Unbind();
+    // Reset it back to the default fill
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  } else {
+    // Regular standard draw
+    DrawAllModels(dt, registry, input);
+    DrawAllCubes(dt, registry, input);
+    DrawAllSpheres(dt, registry, input);
+  }
 
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -219,4 +162,92 @@ void RenderSystem::HandleKeyboardInput(double dt, Registry* registry, Input* inp
 
     input->SetKeyOff('1');
   }
+}
+
+void RenderSystem::DrawAllModels(double dt, Registry* registry, Input* input) {
+  ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
+
+  shaderResource.modelShader.Bind();
+  shaderResource.modelShader.SetUniformMatFloat4("projection", camera->projection);
+  shaderResource.modelShader.SetUniformMatFloat4("view", camera->view);
+
+  registry->GetComponentsIter<Model, Transform>()->Each([dt, &shaderResource, &renderer = renderer](
+                                                            Model& model, Transform& transform) {
+    glm::mat4 matrixModel = glm::mat4(1.0f);
+    glm::mat4 rotationMatrix = glm::mat4(1.0f);
+
+    matrixModel = glm::translate(matrixModel, transform.position);
+    matrixModel = glm::scale(matrixModel, transform.scale);
+
+    // Rotation matrix
+    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[0], glm::vec3(1.0, 0.0, 0.0));
+    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[1], glm::vec3(0.0, 1.0, 0.0));
+    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[2], glm::vec3(0.0, 0.0, 1.0));
+
+    matrixModel *= rotationMatrix;
+
+    shaderResource.modelShader.SetUniformMatFloat4("model", matrixModel);
+    renderer->DrawModel(model, shaderResource.modelShader);
+  });
+
+  shaderResource.modelShader.Unbind();
+}
+
+void RenderSystem::DrawAllCubes(double dt, Registry* registry, Input* input) {
+  ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
+
+  shaderResource.cubeShader.Bind();
+  shaderResource.cubeShader.SetUniformMatFloat4("projection", camera->projection);
+  shaderResource.cubeShader.SetUniformMatFloat4("view", camera->view);
+
+  registry->GetComponentsIter<Cube, Transform>()->Each([dt, &shaderResource, &renderer = renderer](
+                                                           Cube& cube, Transform& transform) {
+    glm::mat4 matrixModel = glm::mat4(1.0f);
+    glm::mat4 rotationMatrix = glm::mat4(1.0f);
+
+    matrixModel = glm::translate(matrixModel, transform.position);
+    matrixModel = glm::scale(matrixModel, transform.scale);
+
+    // Rotation matrix
+    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[0], glm::vec3(1.0, 0.0, 0.0));
+    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[1], glm::vec3(0.0, 1.0, 0.0));
+    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[2], glm::vec3(0.0, 0.0, 1.0));
+
+    matrixModel *= rotationMatrix;
+
+    shaderResource.cubeShader.SetUniformMatFloat4("model", matrixModel);
+    renderer->DrawCube(cube, shaderResource.cubeShader);
+  });
+
+  shaderResource.cubeShader.Unbind();
+}
+
+void RenderSystem::DrawAllSpheres(double dt, Registry* registry, Input* input) {
+  ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
+
+  shaderResource.cubeShader.Bind();
+  shaderResource.cubeShader.SetUniformMatFloat4("projection", camera->projection);
+  shaderResource.cubeShader.SetUniformMatFloat4("view", camera->view);
+
+  registry->GetComponentsIter<Sphere, Transform>()->Each([dt, &shaderResource,
+                                                          &renderer = renderer](
+                                                             Sphere& sphere, Transform& transform) {
+    glm::mat4 matrixModel = glm::mat4(1.0f);
+    glm::mat4 rotationMatrix = glm::mat4(1.0f);
+
+    matrixModel = glm::translate(matrixModel, transform.position);
+    matrixModel = glm::scale(matrixModel, transform.scale);
+
+    // Rotation matrix
+    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[0], glm::vec3(1.0, 0.0, 0.0));
+    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[1], glm::vec3(0.0, 1.0, 0.0));
+    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[2], glm::vec3(0.0, 0.0, 1.0));
+
+    matrixModel *= rotationMatrix;
+
+    shaderResource.cubeShader.SetUniformMatFloat4("model", matrixModel);
+    renderer->DrawSphere(sphere, shaderResource.cubeShader);
+  });
+
+  shaderResource.cubeShader.Unbind();
 }

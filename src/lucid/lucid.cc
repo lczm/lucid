@@ -44,19 +44,24 @@ void Lucid::Update(double dt) {
 
 void Lucid::InitializeEntities() {
   registry->RegisterArchetype<Model, Transform>();
-  registry->RegisterArchetype<ShaderResource>();
-  registry->RegisterArchetype<SceneRender>();
   registry->RegisterArchetype<Cube, Transform>();
   registry->RegisterArchetype<Sphere, Transform>();
+
+  // Singletons single struct usage
+  registry->RegisterArchetype<ShaderResource>();
+  registry->RegisterArchetype<SceneRender>();
+  registry->RegisterArchetype<DevDebug>();
 
   uint32_t modelID = registry->GetAvailableEntityId();
   uint32_t modelID2 = registry->GetAvailableEntityId();
   uint32_t modelID3 = registry->GetAvailableEntityId();
 
   uint32_t cubeID = registry->GetAvailableEntityId();
+  uint32_t sphereID = registry->GetAvailableEntityId();
+
   uint32_t shaderResourceID = registry->GetAvailableEntityId();
   uint32_t sceneRenderID = registry->GetAvailableEntityId();
-  uint32_t sphereID = registry->GetAvailableEntityId();
+  uint32_t devDebugID = registry->GetAvailableEntityId();
 
   registry->CreateEntity<Model, Transform>(modelID);
   registry->CreateEntity<Model, Transform>(modelID2);
@@ -66,6 +71,7 @@ void Lucid::InitializeEntities() {
 
   registry->CreateEntity<ShaderResource>(shaderResourceID);
   registry->CreateEntity<SceneRender>(sceneRenderID);
+  registry->CreateEntity<DevDebug>(devDebugID);
 
   registry->AddComponentData<Model>(modelID, Model(MICROPHONE_MODEL));
   registry->AddComponentData<Model>(modelID2, Model(SCIFIHELMET_MODEL));

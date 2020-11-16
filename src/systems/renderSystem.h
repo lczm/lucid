@@ -10,6 +10,7 @@
 #include "shaderResource.h"
 #include "cube.h"
 #include "sphere.h"
+#include "devStructs.h"
 
 #include "gtx/string_cast.hpp"
 
@@ -32,4 +33,8 @@ class RenderSystem : public System {
   void HandleMouseScroll(double dt, Input* input);
 
   void HandleKeyboardInput(double dt, Registry* registry, Input* input);
+
+  void DrawAllModels(double dt, Registry* registry, Input* input);
+  void DrawAllCubes(double dt, Registry* registry, Input* input);
+  void DrawAllSpheres(double dt, Registry* registry, Input* input);
 };

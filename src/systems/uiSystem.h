@@ -7,6 +7,7 @@
 #include "ecs.h"
 #include "renderer.h"
 #include "windowEnum.h"
+#include "devStructs.h"
 
 #include "imgui.h"
 #include "imgui_internal.h"
@@ -15,6 +16,8 @@
 
 class UiSystem : public System {
  private:
+  bool drawWireframe;
+
  public:
   UiSystem();
   ~UiSystem();

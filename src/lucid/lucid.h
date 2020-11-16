@@ -7,6 +7,9 @@
 #include "input.h"
 #include "constants.h"
 
+// TODO : use compiler if debug flag here
+#include "devStructs.h"
+
 #include "model.h"
 #include "cube.h"
 #include "sphere.h"
