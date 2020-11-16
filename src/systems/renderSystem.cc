@@ -68,6 +68,7 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
 
   // Show draw scaffold
   // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
   shaderResource.modelShader.Bind();
   shaderResource.modelShader.SetUniformMatFloat4("projection", camera->projection);

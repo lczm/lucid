@@ -76,7 +76,6 @@ void Lucid::InitializeEntities() {
     sphere.sectors = 36;
     sphere.stacks = 18;
     sphere.BuildSphere();
-    sphere.BuildIndices();
     sphere.Build();
 
     transform.position = {-5.0f, -5.0f, -5.0f};

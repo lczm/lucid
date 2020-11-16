@@ -14,6 +14,7 @@ class Sphere {
   std::vector<float> texCoords;
 
   std::vector<uint32_t> indices;
+  std::vector<float> interleavedVertices;
 
   float radius;
   int sectors;
@@ -26,5 +27,4 @@ class Sphere {
 
   void Build();
   void BuildSphere();
-  void BuildIndices();
 };

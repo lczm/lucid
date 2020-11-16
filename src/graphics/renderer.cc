@@ -60,6 +60,7 @@ void Renderer::DrawCube(Cube& cube, Shader& shader) {
 
 void Renderer::DrawSphere(Sphere& sphere, Shader& shader) {
   glBindVertexArray(sphere.VAO);
+  // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sphere.EBO);
   glDrawElements(GL_TRIANGLES, sphere.indices.size(), GL_UNSIGNED_INT, 0);
   glBindVertexArray(0);
 }

@@ -12,7 +12,6 @@ Sphere::Sphere(float radius, int sectors, int stacks) {
 Sphere::~Sphere() = default;
 
 void Sphere::Build() {
-  // Generate the appropriate buffers
   glGenVertexArrays(1, &VAO);
   glGenBuffers(1, &VBO);
   glGenBuffers(1, &EBO);
@@ -28,7 +27,7 @@ void Sphere::Build() {
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
   // Set EBO data
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() / sizeof(uint32_t), &indices[0],
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint32_t), &indices[0],
                GL_STATIC_DRAW);
 
   // Vertex positions
@@ -51,7 +50,6 @@ void Sphere::BuildSphere() {
   // vertex normals
   float nx, ny, nz;
   float lengthInverse = 1.0f / radius;
-
   float s, t;
 
   float sectorStep = 2 * PI / sectors;
@@ -79,20 +77,21 @@ void Sphere::BuildSphere() {
       // Note : This can be uncommented out in the future, Setting this to rgb colours for
       // simplicity
       // normalized vertex normal (nx, ny, nz)
-      // nx = x * lengthInverse;
-      // ny = y * lengthInverse;
-      // nz = z * lengthInverse;
-      // normals.push_back(nx);
-      // normals.push_back(ny);
-      // normals.push_back(nz);
+      nx = x * lengthInverse;
+      ny = y * lengthInverse;
+      nz = z * lengthInverse;
+      normals.push_back(nx);
+      normals.push_back(ny);
+      normals.push_back(nz);
 
       // Note : This can be uncommented out in the future, Setting this to rgb colours for
       // simplicity
       // vertex tex coord (s, t) range between [0, 1]
-      // s = static_cast<float>(j / sectors);
-      // t = static_cast<float>(i / stacks);
-      // texCoords.push_back(s);
-      // texCoords.push_back(t);
+      s = (float)j / sectors;
+      t = (float)i / stacks;
+
+      texCoords.push_back(s);
+      texCoords.push_back(t);
 
       // RGB colours
       vertices.push_back(0.5f);
@@ -100,9 +99,7 @@ void Sphere::BuildSphere() {
       vertices.push_back(0.5f);
     }
   }
-}
 
-void Sphere::BuildIndices() {
   int k1, k2;
   for (int i = 0; i < stacks; ++i) {
     k1 = i * (sectors + 1);  // beginning of current stack
