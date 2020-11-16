@@ -113,7 +113,7 @@ void Lucid::InitializeEntities() {
   ShaderResource& shaderResource = registry->GetComponent<ShaderResource>();
   shaderResource.modelShader.CreateShader(MODEL_VERTEX_SHADER, MODEL_FRAGMENT_SHADER);
   shaderResource.triangleShader.CreateShader(TRIANGLE_VERTEX_SHADER, TRIANGLE_FRAGMENT_SHADER);
-  shaderResource.cubeShader.CreateShader(CUBE_VERTEX_SHADER, CUBE_FRAGMENT_SHADER);
+  shaderResource.cubeShader.CreateShader(PRIMITIVE_VERTEX_SHADER, PRIMITIVE_FRAGMENT_SHADER);
 }
 
 void Lucid::InitializeSystems() {

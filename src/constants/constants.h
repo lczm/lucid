@@ -25,8 +25,8 @@ const char TRIANGLE_FRAGMENT_SHADER[] = "../src/shaders/triangle.frag";
 const char MODEL_VERTEX_SHADER[] = "../src/shaders/model.vert";
 const char MODEL_FRAGMENT_SHADER[] = "../src/shaders/model.frag";
 
-const char CUBE_VERTEX_SHADER[] = "../src/shaders/cube.vert";
-const char CUBE_FRAGMENT_SHADER[] = "../src/shaders/cube.frag";
+const char PRIMITIVE_VERTEX_SHADER[] = "../src/shaders/primitive.vert";
+const char PRIMITIVE_FRAGMENT_SHADER[] = "../src/shaders/primitive.frag";
 
 // Models
 const char MICROPHONE_MODEL[] = "../assets/microphone/scene.gltf";
