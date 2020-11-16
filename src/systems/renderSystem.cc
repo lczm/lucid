@@ -26,11 +26,10 @@ RenderSystem::RenderSystem() {
 
   // TODO : The SCREEN_WIDTH and SCREEN_HEIGHT here has to be changed
   // whenever the game is resized
-  glRenderbufferStorage(
-      GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 1440,
-      900);  // use a single renderbuffer object for both a depth AND stencil buffer.
-  glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER,
-                            rbo);  // now actually attach it
+  // Use renderbuffer for both (depth) and (stencil) buffer
+  glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 1440, 900);
+  // Attach the render buffer
+  glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -68,7 +67,7 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
   sceneRender.textureID = texture;
 
   // Show draw scaffold
-  // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
   shaderResource.modelShader.Bind();
   shaderResource.modelShader.SetUniformMatFloat4("projection", camera->projection);
@@ -93,26 +92,6 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
     renderer->DrawModel(model, shaderResource.modelShader);
   });
 
-  registry->GetComponentsIter<Sphere, Transform>()->Each([dt, &shaderResource,
-                                                          &renderer = renderer](
-                                                             Sphere& sphere, Transform& transform) {
-    glm::mat4 matrixModel = glm::mat4(1.0f);
-    glm::mat4 rotationMatrix = glm::mat4(1.0f);
-
-    matrixModel = glm::translate(matrixModel, transform.position);
-    matrixModel = glm::scale(matrixModel, transform.scale);
-
-    // Rotation matrix
-    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[0], glm::vec3(1.0, 0.0, 0.0));
-    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[1], glm::vec3(0.0, 1.0, 0.0));
-    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[2], glm::vec3(0.0, 0.0, 1.0));
-
-    matrixModel *= rotationMatrix;
-
-    shaderResource.modelShader.SetUniformMatFloat4("model", matrixModel);
-    renderer->DrawSphere(sphere, shaderResource.modelShader);
-  });
-
   shaderResource.modelShader.Unbind();
 
   shaderResource.cubeShader.Bind();
@@ -134,8 +113,28 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
 
     matrixModel *= rotationMatrix;
 
-    shaderResource.modelShader.SetUniformMatFloat4("model", matrixModel);
-    renderer->DrawCube(cube, shaderResource.modelShader);
+    shaderResource.cubeShader.SetUniformMatFloat4("model", matrixModel);
+    renderer->DrawCube(cube, shaderResource.cubeShader);
+  });
+
+  registry->GetComponentsIter<Sphere, Transform>()->Each([dt, &shaderResource,
+                                                          &renderer = renderer](
+                                                             Sphere& sphere, Transform& transform) {
+    glm::mat4 matrixModel = glm::mat4(1.0f);
+    glm::mat4 rotationMatrix = glm::mat4(1.0f);
+
+    matrixModel = glm::translate(matrixModel, transform.position);
+    matrixModel = glm::scale(matrixModel, transform.scale);
+
+    // Rotation matrix
+    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[0], glm::vec3(1.0, 0.0, 0.0));
+    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[1], glm::vec3(0.0, 1.0, 0.0));
+    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[2], glm::vec3(0.0, 0.0, 1.0));
+
+    matrixModel *= rotationMatrix;
+
+    shaderResource.cubeShader.SetUniformMatFloat4("model", matrixModel);
+    renderer->DrawSphere(sphere, shaderResource.cubeShader);
   });
 
   shaderResource.cubeShader.Unbind();

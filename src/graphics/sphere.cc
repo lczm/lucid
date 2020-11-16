@@ -38,8 +38,8 @@ void Sphere::Build() {
   glEnableVertexAttribArray(1);
   glVertexAttribPointer(1, 3, GL_FLOAT, false, 8 * sizeof(float), (void*)3);
 
-  glEnableVertexAttribArray(2);
-  glVertexAttribPointer(2, 2, GL_FLOAT, false, 8 * sizeof(float), (void*)6);
+  // glEnableVertexAttribArray(2);
+  // glVertexAttribPointer(2, 2, GL_FLOAT, false, 8 * sizeof(float), (void*)6);
 
   glBindVertexArray(0);
 }
@@ -76,19 +76,28 @@ void Sphere::BuildSphere() {
       vertices.push_back(y);
       vertices.push_back(z);
 
+      // Note : This can be uncommented out in the future, Setting this to rgb colours for
+      // simplicity
       // normalized vertex normal (nx, ny, nz)
-      nx = x * lengthInverse;
-      ny = y * lengthInverse;
-      nz = z * lengthInverse;
-      normals.push_back(nx);
-      normals.push_back(ny);
-      normals.push_back(nz);
+      // nx = x * lengthInverse;
+      // ny = y * lengthInverse;
+      // nz = z * lengthInverse;
+      // normals.push_back(nx);
+      // normals.push_back(ny);
+      // normals.push_back(nz);
 
+      // Note : This can be uncommented out in the future, Setting this to rgb colours for
+      // simplicity
       // vertex tex coord (s, t) range between [0, 1]
-      s = static_cast<float>(j / sectors);
-      t = static_cast<float>(i / stacks);
-      texCoords.push_back(s);
-      texCoords.push_back(t);
+      // s = static_cast<float>(j / sectors);
+      // t = static_cast<float>(i / stacks);
+      // texCoords.push_back(s);
+      // texCoords.push_back(t);
+
+      // RGB colours
+      vertices.push_back(0.5f);
+      vertices.push_back(0.5f);
+      vertices.push_back(0.5f);
     }
   }
 }
