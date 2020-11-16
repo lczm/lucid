@@ -6,5 +6,5 @@
 struct ShaderResource {
   Shader modelShader;
   Shader triangleShader;
-  Shader cubeShader;
+  Shader primitiveShader;
 };

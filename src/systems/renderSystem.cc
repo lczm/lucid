@@ -196,9 +196,9 @@ void RenderSystem::DrawAllModels(double dt, Registry* registry, Input* input) {
 void RenderSystem::DrawAllCubes(double dt, Registry* registry, Input* input) {
   ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
 
-  shaderResource.cubeShader.Bind();
-  shaderResource.cubeShader.SetUniformMatFloat4("projection", camera->projection);
-  shaderResource.cubeShader.SetUniformMatFloat4("view", camera->view);
+  shaderResource.primitiveShader.Bind();
+  shaderResource.primitiveShader.SetUniformMatFloat4("projection", camera->projection);
+  shaderResource.primitiveShader.SetUniformMatFloat4("view", camera->view);
 
   registry->GetComponentsIter<Cube, Transform>()->Each([dt, &shaderResource, &renderer = renderer](
                                                            Cube& cube, Transform& transform) {
@@ -215,19 +215,21 @@ void RenderSystem::DrawAllCubes(double dt, Registry* registry, Input* input) {
 
     matrixModel *= rotationMatrix;
 
-    shaderResource.cubeShader.SetUniformMatFloat4("model", matrixModel);
-    renderer->DrawCube(cube, shaderResource.cubeShader);
+    shaderResource.primitiveShader.SetUniformMatFloat4("model", matrixModel);
+    shaderResource.primitiveShader.SetUniformVecFloat3("uColor", glm::vec3(0.5, 0.5, 0.5));
+    ;
+    renderer->DrawCube(cube, shaderResource.primitiveShader);
   });
 
-  shaderResource.cubeShader.Unbind();
+  shaderResource.primitiveShader.Unbind();
 }
 
 void RenderSystem::DrawAllSpheres(double dt, Registry* registry, Input* input) {
   ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
 
-  shaderResource.cubeShader.Bind();
-  shaderResource.cubeShader.SetUniformMatFloat4("projection", camera->projection);
-  shaderResource.cubeShader.SetUniformMatFloat4("view", camera->view);
+  shaderResource.primitiveShader.Bind();
+  shaderResource.primitiveShader.SetUniformMatFloat4("projection", camera->projection);
+  shaderResource.primitiveShader.SetUniformMatFloat4("view", camera->view);
 
   registry->GetComponentsIter<Sphere, Transform>()->Each([dt, &shaderResource,
                                                           &renderer = renderer](
@@ -245,9 +247,10 @@ void RenderSystem::DrawAllSpheres(double dt, Registry* registry, Input* input) {
 
     matrixModel *= rotationMatrix;
 
-    shaderResource.cubeShader.SetUniformMatFloat4("model", matrixModel);
-    renderer->DrawSphere(sphere, shaderResource.cubeShader);
+    shaderResource.primitiveShader.SetUniformMatFloat4("model", matrixModel);
+    shaderResource.primitiveShader.SetUniformVecFloat3("uColor", glm::vec3(0.5, 0.5, 0.5));
+    renderer->DrawSphere(sphere, shaderResource.primitiveShader);
   });
 
-  shaderResource.cubeShader.Unbind();
+  shaderResource.primitiveShader.Unbind();
 }

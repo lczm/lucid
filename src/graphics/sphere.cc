@@ -32,10 +32,10 @@ void Sphere::Build() {
 
   // Vertex positions
   glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
-  glEnableVertexAttribArray(1);
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+  // glEnableVertexAttribArray(1);
+  // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 
   // glEnableVertexAttribArray(2);
   // glVertexAttribPointer(2, 2, GL_FLOAT, false, 8 * sizeof(float), (void*)6);
@@ -94,9 +94,9 @@ void Sphere::BuildSphere() {
       texCoords.push_back(t);
 
       // RGB colours
-      vertices.push_back(0.5f);
-      vertices.push_back(0.5f);
-      vertices.push_back(0.5f);
+      // vertices.push_back(0.5f);
+      // vertices.push_back(0.5f);
+      // vertices.push_back(0.5f);
     }
   }
 
