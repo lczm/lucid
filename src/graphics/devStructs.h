@@ -1,5 +1,7 @@
 #pragma once
 
+#include "glm.hpp"
+
 /*
  * This is mainly structs used to pass data around in the various systems.
  * These structs should not be included in the release builds but rather only for the debug builds
@@ -9,4 +11,6 @@
 
 struct DevDebug {
   bool drawWireframe = false;
+
+  glm::vec3 rgb = glm::vec3(0.5f, 0.5f, 0.5f);
 };

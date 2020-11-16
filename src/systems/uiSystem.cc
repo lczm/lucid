@@ -232,7 +232,11 @@ void UiSystem::DrawInspector(double dt, Registry* registry, Input* input) {
 
   UpdateInputActiveWindow(input, WindowType::Inspector);
 
-  ImGui::Text("This is the inspector");
+  // Temporary
+  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+
+  ImGui::ColorEdit3("Primitive", (float*)&devDebug.rgb);
+
   ImGui::End();
 }
 
