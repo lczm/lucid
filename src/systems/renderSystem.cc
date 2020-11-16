@@ -52,15 +52,6 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
 
   camera->UpdateView();
 
-  // Note : Remember to uncomment
-  // std::vector<void*> modelComponents = registry->GetComponents<Model, Transform>();
-  // auto* models = static_cast<ComponentVector<Model>*>(modelComponents[0]);
-  // auto* transforms = static_cast<ComponentVector<Transform>*>(modelComponents[1]);
-
-  // std::vector<void*> cubeComponents = registry->GetComponents<Cube, Transform>();
-  // auto* cubes = static_cast<ComponentVector<Cube>*>(cubeComponents[0]);
-  // auto* cubeTransforms = static_cast<ComponentVector<Transform>*>(cubeComponents[1]);
-
   ShaderResource& shaderResource = registry->GetComponent<ShaderResource>();
 
   SceneRender& sceneRender = registry->GetComponent<SceneRender>();

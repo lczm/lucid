@@ -97,6 +97,7 @@ void UiSystem::PresetLayout(ImGuiID dockSpaceID) {
   ImGui::DockBuilderDockWindow("Services", dockRightID);
   ImGui::DockBuilderDockWindow("Assets", dockBottomID);
   ImGui::DockBuilderDockWindow("Scene", dockTopID);
+  ImGui::DockBuilderDockWindow("DevDebug", dockRightID);
   ImGui::DockBuilderFinish(dockSpaceID);
 }
 
@@ -110,6 +111,7 @@ void UiSystem::InitializeImGuiWindows(double dt, Registry* registry, Input* inpu
   DrawAnimator(dt, registry, input);
   DrawInspector(dt, registry, input);
   DrawServices(dt, registry, input);
+  DrawDevDebug(dt, registry, input);
 }
 
 void UiSystem::DrawHierarchy(double dt, Registry* registry, Input* input) {
@@ -240,6 +242,15 @@ void UiSystem::DrawServices(double dt, Registry* registry, Input* input) {
   UpdateInputActiveWindow(input, WindowType::Services);
 
   ImGui::Text("This is the services");
+  ImGui::End();
+}
+
+void UiSystem::DrawDevDebug(double dt, Registry* registry, Input* input) {
+  ImGui::Begin("DevDebug");
+
+  UpdateInputActiveWindow(input, WindowType::DevDebug);
+
+  ImGui::Text("DevDebug");
   ImGui::End();
 }
 

@@ -10,5 +10,6 @@ enum class WindowType {
   Services,
   Assets,
   Scene,
+  DevDebug,
   None,
 };
