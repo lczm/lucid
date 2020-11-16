@@ -67,7 +67,7 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
   sceneRender.textureID = texture;
 
   // Show draw scaffold
-  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
   shaderResource.modelShader.Bind();
   shaderResource.modelShader.SetUniformMatFloat4("projection", camera->projection);
@@ -116,6 +116,12 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
     shaderResource.cubeShader.SetUniformMatFloat4("model", matrixModel);
     renderer->DrawCube(cube, shaderResource.cubeShader);
   });
+
+  shaderResource.cubeShader.Unbind();
+
+  shaderResource.cubeShader.Bind();
+  shaderResource.cubeShader.SetUniformMatFloat4("projection", camera->projection);
+  shaderResource.cubeShader.SetUniformMatFloat4("view", camera->view);
 
   registry->GetComponentsIter<Sphere, Transform>()->Each([dt, &shaderResource,
                                                           &renderer = renderer](
