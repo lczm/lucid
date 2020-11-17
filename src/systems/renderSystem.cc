@@ -71,6 +71,7 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     // glEnable(GL_POLYGON_OFFSET_LINE);
 
+    DrawAllLines(dt, registry, input);
     DrawAllModels(dt, registry, input);
     DrawAllCubes(dt, registry, input);
     DrawAllSpheres(dt, registry, input);
@@ -79,7 +80,6 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   } else {
     // Regular standard draw
-
     DrawAllLines(dt, registry, input);
     DrawAllModels(dt, registry, input);
     DrawAllCubes(dt, registry, input);
