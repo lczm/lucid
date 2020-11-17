@@ -4,7 +4,7 @@ RenderSystem::RenderSystem() {
   RenderSystem::renderer = new Renderer();
   RenderSystem::camera = new Camera();
 
-  camera->MoveCamera(glm::vec3(-10.0f, 0.0f, 0.0f));
+  // camera->MoveCamera(glm::vec3(-10.0f, 0.0f, 0.0f));
 
   glGenFramebuffers(1, &fbo);
   glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -59,6 +59,10 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
 
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
 
+  devDebug.cameraUp = camera->cameraUp;
+  devDebug.cameraFront = camera->cameraFront;
+  devDebug.cameraPos = camera->cameraPos;
+
   // TODO : wireframe drawing should have its own shaders
   // Draw wireframe
   if (devDebug.drawWireframe) {
@@ -75,9 +79,12 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   } else {
     // Regular standard draw
-    DrawAllModels(dt, registry, input);
-    DrawAllCubes(dt, registry, input);
-    DrawAllSpheres(dt, registry, input);
+
+    glLineWidth(3.0f);
+    DrawAllLines(dt, registry, input);
+    // DrawAllModels(dt, registry, input);
+    // DrawAllCubes(dt, registry, input);
+    // DrawAllSpheres(dt, registry, input);
   }
 
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -162,6 +169,38 @@ void RenderSystem::HandleKeyboardInput(double dt, Registry* registry, Input* inp
 
     input->SetKeyOff('1');
   }
+}
+
+void RenderSystem::DrawAllLines(double dt, Registry* registry, Input* input) {
+  ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
+  DevDebug devDebug = registry->GetComponent<DevDebug>();
+
+  shaderResource.primitiveShader.Bind();
+  shaderResource.primitiveShader.SetUniformMatFloat4("projection", camera->projection);
+  shaderResource.primitiveShader.SetUniformMatFloat4("view", camera->view);
+
+  registry->GetComponentsIter<Line, Transform>()->Each([dt, &shaderResource, &renderer = renderer,
+                                                        &devDebug](Line& line,
+                                                                   Transform& transform) {
+    glm::mat4 matrixModel = glm::mat4(1.0f);
+    glm::mat4 rotationMatrix = glm::mat4(1.0f);
+
+    matrixModel = glm::translate(matrixModel, transform.position);
+    matrixModel = glm::scale(matrixModel, transform.scale);
+
+    // Rotation matrix
+    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[0], glm::vec3(1.0, 0.0, 0.0));
+    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[1], glm::vec3(0.0, 1.0, 0.0));
+    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[2], glm::vec3(0.0, 0.0, 1.0));
+
+    matrixModel *= rotationMatrix;
+
+    shaderResource.primitiveShader.SetUniformMatFloat4("model", matrixModel);
+    shaderResource.primitiveShader.SetUniformVecFloat3("uColor", devDebug.rgb);
+    renderer->DrawLine(line, shaderResource.primitiveShader);
+  });
+
+  shaderResource.primitiveShader.Unbind();
 }
 
 void RenderSystem::DrawAllModels(double dt, Registry* registry, Input* input) {

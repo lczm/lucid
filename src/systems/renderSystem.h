@@ -34,6 +34,7 @@ class RenderSystem : public System {
 
   void HandleKeyboardInput(double dt, Registry* registry, Input* input);
 
+  void DrawAllLines(double dt, Registry* registry, Input* input);
   void DrawAllModels(double dt, Registry* registry, Input* input);
   void DrawAllCubes(double dt, Registry* registry, Input* input);
   void DrawAllSpheres(double dt, Registry* registry, Input* input);

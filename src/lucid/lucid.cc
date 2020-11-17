@@ -69,6 +69,35 @@ void Lucid::InitializeBulitInEntities() {
   shaderResource.modelShader.CreateShader(MODEL_VERTEX_SHADER, MODEL_FRAGMENT_SHADER);
   shaderResource.triangleShader.CreateShader(TRIANGLE_VERTEX_SHADER, TRIANGLE_FRAGMENT_SHADER);
   shaderResource.primitiveShader.CreateShader(PRIMITIVE_VERTEX_SHADER, PRIMITIVE_FRAGMENT_SHADER);
+
+  registry->RegisterArchetype<Line, Transform>();
+
+  Entity xlineID = registry->GetAvailableEntityId();
+  Entity ylineID = registry->GetAvailableEntityId();
+  Entity zlineID = registry->GetAvailableEntityId();
+
+  registry->CreateEntity<Line, Transform>(xlineID);
+  registry->CreateEntity<Line, Transform>(ylineID);
+  registry->CreateEntity<Line, Transform>(zlineID);
+
+  // x-axis
+  registry->AddComponentData<Transform>(xlineID, {
+                                                     {0.0f, 0.0f, 0.0f},     // position
+                                                     {90.0f, 0.0f, 0.0f},    // rotation
+                                                     {10.0f, 10.0f, 10.0f},  // scale
+                                                 });
+  // y-axis
+  registry->AddComponentData<Transform>(ylineID, {
+                                                     {0.0f, 0.0f, 0.0f},     // position
+                                                     {0.0f, 90.0f, 0.0f},    // rotation
+                                                     {10.0f, 10.0f, 10.0f},  // scale
+                                                 });
+  // z-axis
+  registry->AddComponentData<Transform>(zlineID, {
+                                                     {0.0f, 0.0f, 0.0f},     // position
+                                                     {0.0f, 0.0f, 90.0f},    // rotation
+                                                     {10.0f, 10.0f, 10.0f},  // scale
+                                                 });
 }
 
 void Lucid::InitializeBuiltInSystems() {
@@ -82,12 +111,12 @@ void Lucid::InitializeEntities() {
   registry->RegisterArchetype<Cube, Transform>();
   registry->RegisterArchetype<Sphere, Transform>();
 
-  uint32_t modelID = registry->GetAvailableEntityId();
-  uint32_t modelID2 = registry->GetAvailableEntityId();
-  uint32_t modelID3 = registry->GetAvailableEntityId();
+  Entity modelID = registry->GetAvailableEntityId();
+  Entity modelID2 = registry->GetAvailableEntityId();
+  Entity modelID3 = registry->GetAvailableEntityId();
 
-  uint32_t cubeID = registry->GetAvailableEntityId();
-  uint32_t sphereID = registry->GetAvailableEntityId();
+  Entity cubeID = registry->GetAvailableEntityId();
+  Entity sphereID = registry->GetAvailableEntityId();
 
   registry->CreateEntity<Model, Transform>(modelID);
   registry->CreateEntity<Model, Transform>(modelID2);

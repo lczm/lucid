@@ -258,6 +258,10 @@ void UiSystem::DrawDevDebug(double dt, Registry* registry, Input* input) {
 
   ImGui::Checkbox("Draw all with wireframe", &devDebug.drawWireframe);
 
+  ImGui::Text(("CameraUp : " + glm::to_string(devDebug.cameraUp)).c_str());
+  ImGui::Text(("CameraFront : " + glm::to_string(devDebug.cameraFront)).c_str());
+  ImGui::Text(("CameraPos : " + glm::to_string(devDebug.cameraPos)).c_str());
+
   ImGui::End();
 }
 

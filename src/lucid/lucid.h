@@ -11,6 +11,7 @@
 #include "devStructs.h"
 
 #include "model.h"
+#include "line.h"
 #include "cube.h"
 #include "sphere.h"
 #include "shaderResource.h"
