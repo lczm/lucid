@@ -47,6 +47,9 @@ class Cube {
  public:
   uint32_t VAO, VBO, EBO;
 
+  // Default color to grey
+  glm::vec3 color = {0.5f, 0.5f, 0.5f};
+
  public:
   Cube();
   ~Cube();

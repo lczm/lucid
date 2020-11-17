@@ -82,21 +82,21 @@ void Lucid::InitializeBulitInEntities() {
 
   // x-axis
   registry->AddComponentData<Transform>(xlineID, {
-                                                     {0.0f, 0.0f, 0.0f},     // position
-                                                     {90.0f, 0.0f, 0.0f},    // rotation
-                                                     {10.0f, 10.0f, 10.0f},  // scale
+                                                     {0.0f, 0.0f, 0.0f},        // position
+                                                     {90.0f, 0.0f, 0.0f},       // rotation
+                                                     {100.0f, 100.0f, 100.0f},  // scale
                                                  });
   // y-axis
   registry->AddComponentData<Transform>(ylineID, {
-                                                     {0.0f, 0.0f, 0.0f},     // position
-                                                     {0.0f, 90.0f, 0.0f},    // rotation
-                                                     {10.0f, 10.0f, 10.0f},  // scale
+                                                     {0.0f, 0.0f, 0.0f},        // position
+                                                     {0.0f, 90.0f, 0.0f},       // rotation
+                                                     {100.0f, 100.0f, 100.0f},  // scale
                                                  });
   // z-axis
   registry->AddComponentData<Transform>(zlineID, {
-                                                     {0.0f, 0.0f, 0.0f},     // position
-                                                     {0.0f, 0.0f, 90.0f},    // rotation
-                                                     {10.0f, 10.0f, 10.0f},  // scale
+                                                     {0.0f, 0.0f, 0.0f},        // position
+                                                     {0.0f, 0.0f, 90.0f},       // rotation
+                                                     {100.0f, 100.0f, 100.0f},  // scale
                                                  });
 }
 

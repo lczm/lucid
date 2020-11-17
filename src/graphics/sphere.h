@@ -20,6 +20,9 @@ class Sphere {
   int sectors;
   int stacks;
 
+  // Default color to grey
+  glm::vec3 color = {0.5f, 0.5f, 0.5f};
+
  public:
   Sphere();
   Sphere(float radius, int sectors, int stacks);

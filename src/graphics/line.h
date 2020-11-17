@@ -15,6 +15,9 @@ class Line {
   // Line does not need index buffer
   uint32_t VAO, VBO;
 
+  // Default color to grey
+  glm::vec3 color = {0.5f, 0.5f, 0.5f};
+
  public:
   Line();
   ~Line();

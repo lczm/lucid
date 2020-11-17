@@ -196,7 +196,7 @@ void RenderSystem::DrawAllLines(double dt, Registry* registry, Input* input) {
     matrixModel *= rotationMatrix;
 
     shaderResource.primitiveShader.SetUniformMatFloat4("model", matrixModel);
-    shaderResource.primitiveShader.SetUniformVecFloat3("uColor", devDebug.rgb);
+    shaderResource.primitiveShader.SetUniformVecFloat3("uColor", line.color);
     renderer->DrawLine(line, shaderResource.primitiveShader);
   });
 
@@ -257,7 +257,7 @@ void RenderSystem::DrawAllCubes(double dt, Registry* registry, Input* input) {
     matrixModel *= rotationMatrix;
 
     shaderResource.primitiveShader.SetUniformMatFloat4("model", matrixModel);
-    shaderResource.primitiveShader.SetUniformVecFloat3("uColor", devDebug.rgb);
+    shaderResource.primitiveShader.SetUniformVecFloat3("uColor", cube.color);
     ;
     renderer->DrawCube(cube, shaderResource.primitiveShader);
   });
@@ -290,7 +290,7 @@ void RenderSystem::DrawAllSpheres(double dt, Registry* registry, Input* input) {
     matrixModel *= rotationMatrix;
 
     shaderResource.primitiveShader.SetUniformMatFloat4("model", matrixModel);
-    shaderResource.primitiveShader.SetUniformVecFloat3("uColor", devDebug.rgb);
+    shaderResource.primitiveShader.SetUniformVecFloat3("uColor", sphere.color);
     renderer->DrawSphere(sphere, shaderResource.primitiveShader);
   });
 
