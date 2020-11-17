@@ -65,11 +65,11 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
 
   // TODO : wireframe drawing should have its own shaders
   // Draw wireframe
+  glLineWidth(3.0f);
   if (devDebug.drawWireframe) {
     // Set the lines to be drawn
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glEnable(GL_POLYGON_OFFSET_LINE);
-    glLineWidth(3.0f);
+    // glEnable(GL_POLYGON_OFFSET_LINE);
 
     DrawAllModels(dt, registry, input);
     DrawAllCubes(dt, registry, input);
@@ -80,11 +80,10 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
   } else {
     // Regular standard draw
 
-    glLineWidth(3.0f);
     DrawAllLines(dt, registry, input);
-    // DrawAllModels(dt, registry, input);
-    // DrawAllCubes(dt, registry, input);
-    // DrawAllSpheres(dt, registry, input);
+    DrawAllModels(dt, registry, input);
+    DrawAllCubes(dt, registry, input);
+    DrawAllSpheres(dt, registry, input);
   }
 
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
