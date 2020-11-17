@@ -72,32 +72,40 @@ void Lucid::InitializeBulitInEntities() {
 
   registry->RegisterArchetype<Line, Transform>();
 
-  Entity xlineID = registry->GetAvailableEntityId();
-  Entity ylineID = registry->GetAvailableEntityId();
-  Entity zlineID = registry->GetAvailableEntityId();
+  Entity xLineID = registry->GetAvailableEntityId();
+  Entity yLineID = registry->GetAvailableEntityId();
+  Entity zLineID = registry->GetAvailableEntityId();
 
-  registry->CreateEntity<Line, Transform>(xlineID);
-  registry->CreateEntity<Line, Transform>(ylineID);
-  registry->CreateEntity<Line, Transform>(zlineID);
+  registry->CreateEntity<Line, Transform>(xLineID);
+  registry->CreateEntity<Line, Transform>(yLineID);
+  registry->CreateEntity<Line, Transform>(zLineID);
 
-  // x-axis
-  registry->AddComponentData<Transform>(xlineID, {
+  // x-axis, set to red colour
+  registry->AddComponentData<Transform>(xLineID, {
                                                      {0.0f, 0.0f, 0.0f},        // position
                                                      {90.0f, 0.0f, 0.0f},       // rotation
                                                      {100.0f, 100.0f, 100.0f},  // scale
                                                  });
+  Line* xLine = registry->GetComponent<Line>(xLineID);
+  xLine->color = {1.0f, 0.0f, 0.0f};
+
   // y-axis
-  registry->AddComponentData<Transform>(ylineID, {
+  registry->AddComponentData<Transform>(yLineID, {
                                                      {0.0f, 0.0f, 0.0f},        // position
                                                      {0.0f, 90.0f, 0.0f},       // rotation
                                                      {100.0f, 100.0f, 100.0f},  // scale
                                                  });
+  Line* yLine = registry->GetComponent<Line>(yLineID);
+  yLine->color = {0.0f, 1.0f, 0.0f};
+
   // z-axis
-  registry->AddComponentData<Transform>(zlineID, {
+  registry->AddComponentData<Transform>(zLineID, {
                                                      {0.0f, 0.0f, 0.0f},        // position
                                                      {0.0f, 0.0f, 90.0f},       // rotation
                                                      {100.0f, 100.0f, 100.0f},  // scale
                                                  });
+  Line* zLine = registry->GetComponent<Line>(zLineID);
+  zLine->color = {0.0f, 1.0f, 1.0f};
 }
 
 void Lucid::InitializeBuiltInSystems() {
