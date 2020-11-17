@@ -42,8 +42,16 @@ class Lucid {
   ~Lucid();
 
   void Update(double dt);
+
+  void InitializeBulitInEntities();
+  void InitializeBuiltInSystems();
+
   void InitializeEntities();
   void InitializeSystems();
+
+  // Demo pong game
+  void InitializeDemoPongEntities();
+  void InitializeDemoPongSystems();
 
   void SetMouseCallback(
       std::function<void(GLFWwindow* window, int button, int action, int mods)> fn);

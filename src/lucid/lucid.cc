@@ -28,8 +28,16 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window) {
   ImGui_ImplGlfw_InitForOpenGL(window, true);
   ImGui_ImplOpenGL3_Init(GLSL_VERSION);
 
-  InitializeEntities();
-  InitializeSystems();
+  InitializeBulitInEntities();
+  InitializeBuiltInSystems();
+
+  // InitializeEntities();
+  // InitializeSystems();
+
+  // TODO : This should be abstracted out into a user system
+  // Demo pong
+  InitializeDemoPongEntities();
+  InitializeDemoPongSystems();
 }
 
 Lucid::~Lucid() {
@@ -42,15 +50,37 @@ void Lucid::Update(double dt) {
   registry->UpdateSystems(dt, input);
 }
 
-void Lucid::InitializeEntities() {
-  registry->RegisterArchetype<Model, Transform>();
-  registry->RegisterArchetype<Cube, Transform>();
-  registry->RegisterArchetype<Sphere, Transform>();
-
+void Lucid::InitializeBulitInEntities() {
+  // Builtin usage, not for hte user
   // Singletons single struct usage
   registry->RegisterArchetype<ShaderResource>();
   registry->RegisterArchetype<SceneRender>();
   registry->RegisterArchetype<DevDebug>();
+
+  Entity shaderResourceID = registry->GetAvailableEntityId();
+  Entity sceneRenderID = registry->GetAvailableEntityId();
+  Entity devDebugID = registry->GetAvailableEntityId();
+
+  registry->CreateEntity<ShaderResource>(shaderResourceID);
+  registry->CreateEntity<SceneRender>(sceneRenderID);
+  registry->CreateEntity<DevDebug>(devDebugID);
+
+  ShaderResource& shaderResource = registry->GetComponent<ShaderResource>();
+  shaderResource.modelShader.CreateShader(MODEL_VERTEX_SHADER, MODEL_FRAGMENT_SHADER);
+  shaderResource.triangleShader.CreateShader(TRIANGLE_VERTEX_SHADER, TRIANGLE_FRAGMENT_SHADER);
+  shaderResource.primitiveShader.CreateShader(PRIMITIVE_VERTEX_SHADER, PRIMITIVE_FRAGMENT_SHADER);
+}
+
+void Lucid::InitializeBuiltInSystems() {
+  registry->RegisterSystem(new UiSystem());
+  registry->RegisterSystem(new RenderSystem());
+  registry->RegisterSystem(new LucidSystem());
+}
+
+void Lucid::InitializeEntities() {
+  registry->RegisterArchetype<Model, Transform>();
+  registry->RegisterArchetype<Cube, Transform>();
+  registry->RegisterArchetype<Sphere, Transform>();
 
   uint32_t modelID = registry->GetAvailableEntityId();
   uint32_t modelID2 = registry->GetAvailableEntityId();
@@ -59,19 +89,11 @@ void Lucid::InitializeEntities() {
   uint32_t cubeID = registry->GetAvailableEntityId();
   uint32_t sphereID = registry->GetAvailableEntityId();
 
-  uint32_t shaderResourceID = registry->GetAvailableEntityId();
-  uint32_t sceneRenderID = registry->GetAvailableEntityId();
-  uint32_t devDebugID = registry->GetAvailableEntityId();
-
   registry->CreateEntity<Model, Transform>(modelID);
   registry->CreateEntity<Model, Transform>(modelID2);
   registry->CreateEntity<Model, Transform>(modelID3);
   registry->CreateEntity<Cube, Transform>(cubeID);
   registry->CreateEntity<Sphere, Transform>(sphereID);
-
-  registry->CreateEntity<ShaderResource>(shaderResourceID);
-  registry->CreateEntity<SceneRender>(sceneRenderID);
-  registry->CreateEntity<DevDebug>(devDebugID);
 
   registry->AddComponentData<Model>(modelID, Model(MICROPHONE_MODEL));
   registry->AddComponentData<Model>(modelID2, Model(SCIFIHELMET_MODEL));
@@ -109,17 +131,50 @@ void Lucid::InitializeEntities() {
                                                     {0.0f, 0.0f, 0.0f},     // rotation
                                                     {2.0f, 2.0f, 2.0f},     // scale
                                                 });
-
-  ShaderResource& shaderResource = registry->GetComponent<ShaderResource>();
-  shaderResource.modelShader.CreateShader(MODEL_VERTEX_SHADER, MODEL_FRAGMENT_SHADER);
-  shaderResource.triangleShader.CreateShader(TRIANGLE_VERTEX_SHADER, TRIANGLE_FRAGMENT_SHADER);
-  shaderResource.primitiveShader.CreateShader(PRIMITIVE_VERTEX_SHADER, PRIMITIVE_FRAGMENT_SHADER);
 }
 
 void Lucid::InitializeSystems() {
-  registry->RegisterSystem(new UiSystem());
-  registry->RegisterSystem(new RenderSystem());
-  registry->RegisterSystem(new LucidSystem());
+}
+
+void Lucid::InitializeDemoPongEntities() {
+  // Register the necessary archetypes
+  registry->RegisterArchetype<Cube, Transform>();
+  registry->RegisterArchetype<Sphere, Transform>();
+
+  // Cube / rectangle entities
+  Entity playerPaddleID = registry->GetAvailableEntityId();
+  Entity aiPaddleID = registry->GetAvailableEntityId();
+  // The ball that will be used to be passed around
+  Entity ballID = registry->GetAvailableEntityId();
+
+  registry->CreateEntity<Cube, Transform>(playerPaddleID);
+  registry->CreateEntity<Cube, Transform>(aiPaddleID);
+  registry->CreateEntity<Sphere, Transform>(ballID);
+
+  // TODO : This can be simplified
+  registry->GetComponentsIter<Sphere>()->Each([](Sphere& sphere) {
+    sphere.radius = 1.0f;
+    sphere.sectors = 36;
+    sphere.stacks = 18;
+    sphere.BuildSphere();
+    sphere.Build();
+  });
+
+  // TODO : Need to scale the cubes to become 'paddles'
+
+  // TODO : registry->GetComponent<Transform> should return a reference not a pointer
+  // Move around the transforms of each
+  Transform* playerPaddleTransform = registry->GetComponent<Transform>(playerPaddleID);
+  playerPaddleTransform->position = {0.0f, 0.0f, 0.0f};
+
+  Transform* aiPaddleTransform = registry->GetComponent<Transform>(aiPaddleID);
+  aiPaddleTransform->position = {0.0f, 10.0f, 0.0f};
+
+  Transform* ballTransform = registry->GetComponent<Transform>(ballID);
+  ballTransform->position = {0.0f, 5.0f, 0.0f};
+}
+
+void Lucid::InitializeDemoPongSystems() {
 }
 
 void Lucid::SetMouseCallback(std::function<void(GLFWwindow*, int, int, int)> fn) {
