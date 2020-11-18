@@ -40,5 +40,5 @@ class QuatCamera {
   void Yaw(const float angle);    // y-axis
   void Roll(const float angle);   // z-axis
 
-  void Update(double dt, float offsetX, float offsetY);
+  void PanCamera(double dt, float offsetX, float offsetY);
 };

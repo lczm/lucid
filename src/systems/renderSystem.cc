@@ -94,17 +94,11 @@ void RenderSystem::HandleMousePan(double dt, Input* input) {
     float offsetX = input->GetMouseX() - input->lastX;
     float offsetY = input->GetMouseY() - input->lastY;
 
+    // These are simple movements that can just be translated on the spot
     // Handle the x-axis movement
-    // camera->cameraPos -= glm::normalize(glm::cross(camera->cameraFront, camera->cameraUp)) *
-    //                      static_cast<float>(offsetX * dt);
-    // quatCamera->position -= glm::normalize(glm::cross(camera->cameraFront, camera->cameraUp)) *
-    //                         static_cast<float>(offsetX * dt);
-
     quatCamera->Translate(glm::vec3((offsetX * dt), 0.0f, 0.0f));
 
     // Handle the y-axis movement
-    // camera->cameraPos -= glm::normalize(camera->cameraUp) * static_cast<float>(offsetY * dt);
-    // quatCamera->position -= glm::normalize(camera->cameraUp) * static_cast<float>(offsetY * dt);
     quatCamera->Translate(glm::vec3(0.0f, offsetY * dt, 0.0f));
 
     input->lastX = input->GetMouseX();
@@ -121,7 +115,7 @@ void RenderSystem::HandleMousePan(double dt, Input* input) {
     input->lastY = input->GetMouseY();
 
     // camera->UpdateCameraVector(offsetX, offsetY);
-    quatCamera->Update(dt, offsetX, offsetY);
+    quatCamera->PanCamera(dt, offsetX, offsetY);
     return;
   }
 }
