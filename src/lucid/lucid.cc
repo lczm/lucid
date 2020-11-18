@@ -175,8 +175,9 @@ void Lucid::InitializeSystems() {
 
 void Lucid::InitializeDemoPongEntities() {
   // Register the necessary archetypes
-  registry->RegisterArchetype<Cube, Transform>();
-  registry->RegisterArchetype<Sphere, Transform>();
+  registry->RegisterArchetype<Cube, Transform, RigidBody>();
+  registry->RegisterArchetype<Sphere, Transform, RigidBody>();
+  registry->RegisterArchetype<PongRules>();
 
   // Cube / rectangle entities
   Entity playerPaddleID = registry->GetAvailableEntityId();
@@ -202,13 +203,13 @@ void Lucid::InitializeDemoPongEntities() {
   // TODO : registry->GetComponent<Transform> should return a reference not a pointer
   // Move around the transforms of each
   Transform* playerPaddleTransform = registry->GetComponent<Transform>(playerPaddleID);
-  playerPaddleTransform->position = {0.0f, 0.0f, 0.0f};
+  playerPaddleTransform->position = {-10.0f, 0.0f, 0.0f};
+
+  Transform* ballTransform = registry->GetComponent<Transform>(ballID);
+  ballTransform->position = {0.0f, 0.0f, 0.0f};
 
   Transform* aiPaddleTransform = registry->GetComponent<Transform>(aiPaddleID);
   aiPaddleTransform->position = {10.0f, 0.0f, 0.0f};
-
-  Transform* ballTransform = registry->GetComponent<Transform>(ballID);
-  ballTransform->position = {5.0f, 0.0f, 0.0f};
 }
 
 void Lucid::InitializeDemoPongSystems() {

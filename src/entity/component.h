@@ -19,6 +19,10 @@ struct Transform {
   glm::vec3 scale = glm::vec3(1.0f);
 };
 
+struct RigidBody {
+  glm::vec3 velocity = glm::vec3(0.0f);
+};
+
 struct Animation {
   float animCounter = 0;   // Counter on time passed
   float animInterval = 1;  // Counter on the threshold of each animation

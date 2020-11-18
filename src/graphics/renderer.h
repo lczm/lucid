@@ -14,11 +14,6 @@
 
 class Renderer {
  private:
-  // Note : Remove this down the line
-  uint32_t bbVAO;
-  uint32_t bbVBO;
-  Shader bbShader;
-
  public:
   Renderer();
   ~Renderer();

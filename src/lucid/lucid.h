@@ -16,6 +16,9 @@
 #include "sphere.h"
 #include "shaderResource.h"
 
+// Demo
+#include "pong.h"
+
 #include "glm.hpp"
 #include "gtx/string_cast.hpp"
 #include "gtc/matrix_transform.hpp"

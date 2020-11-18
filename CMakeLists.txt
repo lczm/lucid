@@ -62,6 +62,7 @@ include_directories(src/entity)
 include_directories(src/lucid)
 include_directories(src/shaders)
 include_directories(src/systems)
+include_directories(src/systems/pong)
 
 # Setup stb_image
 include_directories(lib/stb_image)

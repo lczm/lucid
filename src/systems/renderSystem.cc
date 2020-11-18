@@ -2,7 +2,7 @@
 
 RenderSystem::RenderSystem() {
   RenderSystem::renderer = new Renderer();
-  RenderSystem::camera = new Camera();
+  // RenderSystem::camera = new Camera();
   RenderSystem::quatCamera = new QuatCamera();
 
   // move back the camera a little bit.
@@ -123,13 +123,11 @@ void RenderSystem::HandleMousePan(double dt, Input* input) {
 void RenderSystem::HandleMouseScroll(double dt, Input* input) {
   // Scroll up
   if (input->GetScrollState() == 1) {
-    // camera->cameraPos += static_cast<float>(SCROLL_SPEED * dt) * camera->cameraFront;
     quatCamera->Translate(glm::vec3(0.0f, 0.0f, SCROLL_SPEED * dt));
   }
 
   // Scroll down
   if (input->GetScrollState() == -1) {
-    // camera->cameraPos -= static_cast<float>(SCROLL_SPEED * dt) * camera->cameraFront;
     quatCamera->Translate(glm::vec3(0.0f, 0.0f, -(SCROLL_SPEED * dt)));
   }
 
@@ -139,27 +137,10 @@ void RenderSystem::HandleMouseScroll(double dt, Input* input) {
 }
 
 void RenderSystem::HandleKeyboardPan(double dt, Input* input) {
-  if (input->IsKeyDown('w')) {
-    // camera->cameraPos += static_cast<float>(CAMERA_SPEED * dt) * camera->cameraFront;
-    quatCamera->Translate(glm::vec3(0.0f, 0.0f, CAMERA_SPEED * dt));
-  }
-
-  if (input->IsKeyDown('s')) {
-    // camera->cameraPos -= static_cast<float>(CAMERA_SPEED * dt) * camera->cameraFront;
-    quatCamera->Translate(glm::vec3(0.0f, 0.0f, -(CAMERA_SPEED * dt)));
-  }
-
-  if (input->IsKeyDown('a')) {
-    // camera->cameraPos -= glm::normalize(glm::cross(camera->cameraFront, camera->cameraUp)) *
-    //                      static_cast<float>(CAMERA_SPEED * dt);
-    quatCamera->Translate(glm::vec3(CAMERA_SPEED * dt, 0.0f, 0.0f));
-  }
-
-  if (input->IsKeyDown('d')) {
-    // camera->cameraPos += glm::normalize(glm::cross(camera->cameraFront, camera->cameraUp)) *
-    //                      static_cast<float>(CAMERA_SPEED * dt);
-    quatCamera->Translate(glm::vec3(-(CAMERA_SPEED * dt), 0.0f, 0.0f));
-  }
+  if (input->IsKeyDown('w')) quatCamera->Translate(glm::vec3(0.0f, 0.0f, CAMERA_SPEED * dt));
+  if (input->IsKeyDown('s')) quatCamera->Translate(glm::vec3(0.0f, 0.0f, -(CAMERA_SPEED * dt)));
+  if (input->IsKeyDown('a')) quatCamera->Translate(glm::vec3(CAMERA_SPEED * dt, 0.0f, 0.0f));
+  if (input->IsKeyDown('d')) quatCamera->Translate(glm::vec3(-(CAMERA_SPEED * dt), 0.0f, 0.0f));
 }
 
 // Note : temporary
@@ -242,9 +223,7 @@ void RenderSystem::DrawAllCubes(double dt, Registry* registry, Input* input) {
   DevDebug devDebug = registry->GetComponent<DevDebug>();
 
   shaderResource.primitiveShader.Bind();
-  // shaderResource.primitiveShader.SetUniformMatFloat4("projection", camera->projection);
   shaderResource.primitiveShader.SetUniformMatFloat4("projection", quatCamera->projection);
-  // shaderResource.primitiveShader.SetUniformMatFloat4("view", camera->view);
   shaderResource.primitiveShader.SetUniformMatFloat4("view", quatCamera->GetView());
 
   registry->GetComponentsIter<Cube, Transform>()->Each([dt, &shaderResource, &devDebug,

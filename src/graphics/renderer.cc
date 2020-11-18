@@ -1,13 +1,13 @@
 #include "renderer.h"
 
-Renderer::Renderer() {
-  glGenVertexArrays(1, &bbVAO);
-  glBindVertexArray(bbVAO);
+Renderer::Renderer(){
+    // glGenVertexArrays(1, &bbVAO);
+    // glBindVertexArray(bbVAO);
 
-  glGenBuffers(1, &bbVBO);
-  glBindBuffer(GL_ARRAY_BUFFER, bbVBO);
+    // glGenBuffers(1, &bbVBO);
+    // glBindBuffer(GL_ARRAY_BUFFER, bbVBO);
 
-  bbShader.CreateShader(TRIANGLE_VERTEX_SHADER, TRIANGLE_FRAGMENT_SHADER);
+    // bbShader.CreateShader(TRIANGLE_VERTEX_SHADER, TRIANGLE_FRAGMENT_SHADER);
 };
 
 Renderer::~Renderer() = default;
@@ -48,7 +48,7 @@ void Renderer::DrawModel(Model& model, Shader& shader) {
     DrawMesh(mesh, shader);
   }
 
-  DrawBoundingBox(model.GetBoundingBox());
+  // DrawBoundingBox(model.GetBoundingBox());
 }
 
 void Renderer::DrawCube(Cube& cube, Shader& shader) {
@@ -124,8 +124,8 @@ void Renderer::DrawBoundingBox(BoundingBox& boundingBox) {
   };
 
   // bbShader.Bind();
-  glBindVertexArray(bbVAO);
-  glBindBuffer(GL_ARRAY_BUFFER, bbVBO);
+  // glBindVertexArray(bbVAO);
+  // glBindBuffer(GL_ARRAY_BUFFER, bbVBO);
 
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
