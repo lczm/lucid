@@ -11,6 +11,7 @@
 #include "cube.h"
 #include "sphere.h"
 #include "devStructs.h"
+#include "quatCamera.h"
 
 #include "gtx/string_cast.hpp"
 
@@ -18,6 +19,7 @@ class RenderSystem : public System {
  private:
   Renderer* renderer;
   Camera* camera;
+  QuatCamera* quatCamera;
 
   uint32_t fbo, rbo;
   uint32_t texture;
