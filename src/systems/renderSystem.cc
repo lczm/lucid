@@ -5,7 +5,8 @@ RenderSystem::RenderSystem() {
   RenderSystem::camera = new Camera();
   RenderSystem::quatCamera = new QuatCamera();
 
-  // camera->MoveCamera(glm::vec3(-10.0f, 0.0f, 0.0f));
+  // move back the camera a little bit.
+  quatCamera->Translate(glm::vec3(0.0f, 0.0f, -10.0f));
 
   glGenFramebuffers(1, &fbo);
   glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -50,8 +51,6 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
 
   glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-  // camera->UpdateView();
 
   ShaderResource& shaderResource = registry->GetComponent<ShaderResource>();
 

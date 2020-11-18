@@ -72,22 +72,22 @@ void Lucid::InitializeBulitInEntities() {
 
   registry->RegisterArchetype<Line, Transform>();
 
-  Entity xLineID = registry->GetAvailableEntityId();
-  Entity yLineID = registry->GetAvailableEntityId();
-  Entity zLineID = registry->GetAvailableEntityId();
+  // Entity xLineID = registry->GetAvailableEntityId();
+  // Entity yLineID = registry->GetAvailableEntityId();
+  // Entity zLineID = registry->GetAvailableEntityId();
 
-  registry->CreateEntity<Line, Transform>(xLineID);
-  registry->CreateEntity<Line, Transform>(yLineID);
-  registry->CreateEntity<Line, Transform>(zLineID);
+  // registry->CreateEntity<Line, Transform>(xLineID);
+  // registry->CreateEntity<Line, Transform>(yLineID);
+  // registry->CreateEntity<Line, Transform>(zLineID);
 
   // x-axis, set to red colour
-  registry->AddComponentData<Transform>(xLineID, {
-                                                     {0.0f, 0.0f, 0.0f},        // position
-                                                     {0.0f, 0.0f, 0.0f},        // rotation
-                                                     {100.0f, 100.0f, 100.0f},  // scale
-                                                 });
-  Line* xLine = registry->GetComponent<Line>(xLineID);
-  xLine->color = {1.0f, 0.0f, 0.0f};
+  // registry->AddComponentData<Transform>(xLineID, {
+  //                                                    {0.0f, 0.0f, 0.0f},        // position
+  //                                                    {0.0f, 0.0f, 0.0f},        // rotation
+  //                                                    {100.0f, 100.0f, 100.0f},  // scale
+  //                                                });
+  // Line* xLine = registry->GetComponent<Line>(xLineID);
+  // xLine->color = {1.0f, 0.0f, 0.0f};
 
   // y-axis
   // registry->AddComponentData<Transform>(yLineID, {
