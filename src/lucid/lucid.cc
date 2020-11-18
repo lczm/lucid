@@ -83,29 +83,29 @@ void Lucid::InitializeBulitInEntities() {
   // x-axis, set to red colour
   registry->AddComponentData<Transform>(xLineID, {
                                                      {0.0f, 0.0f, 0.0f},        // position
-                                                     {90.0f, 0.0f, 0.0f},       // rotation
+                                                     {0.0f, 0.0f, 0.0f},        // rotation
                                                      {100.0f, 100.0f, 100.0f},  // scale
                                                  });
   Line* xLine = registry->GetComponent<Line>(xLineID);
   xLine->color = {1.0f, 0.0f, 0.0f};
 
   // y-axis
-  registry->AddComponentData<Transform>(yLineID, {
-                                                     {0.0f, 0.0f, 0.0f},        // position
-                                                     {0.0f, 90.0f, 0.0f},       // rotation
-                                                     {100.0f, 100.0f, 100.0f},  // scale
-                                                 });
-  Line* yLine = registry->GetComponent<Line>(yLineID);
-  yLine->color = {0.0f, 1.0f, 0.0f};
+  // registry->AddComponentData<Transform>(yLineID, {
+  //                                                    {0.0f, 0.0f, 0.0f},        // position
+  //                                                    {0.0f, 0.0f, 0.0f},        // rotation
+  //                                                    {100.0f, 100.0f, 100.0f},  // scale
+  //                                                });
+  // Line* yLine = registry->GetComponent<Line>(yLineID);
+  // yLine->color = {0.0f, 1.0f, 0.0f};
 
-  // z-axis
-  registry->AddComponentData<Transform>(zLineID, {
-                                                     {0.0f, 0.0f, 0.0f},        // position
-                                                     {0.0f, 0.0f, 180.0f},      // rotation
-                                                     {100.0f, 100.0f, 100.0f},  // scale
-                                                 });
-  Line* zLine = registry->GetComponent<Line>(zLineID);
-  zLine->color = {0.0f, 0.0f, 1.0f};
+  // // z-axis
+  // registry->AddComponentData<Transform>(zLineID, {
+  //                                                    {0.0f, 0.0f, 0.0f},        // position
+  //                                                    {0.0f, 0.0f, 0.0f},        // rotation
+  //                                                    {100.0f, 100.0f, 100.0f},  // scale
+  //                                                });
+  // Line* zLine = registry->GetComponent<Line>(zLineID);
+  // zLine->color = {0.0f, 0.0f, 1.0f};
 }
 
 void Lucid::InitializeBuiltInSystems() {
@@ -164,9 +164,9 @@ void Lucid::InitializeEntities() {
                                                       {30.0f, 30.0f, 30.0f},  // scale
                                                   });
   registry->AddComponentData<Transform>(cubeID, {
-                                                    {-2.0f, -2.0f, -2.0f},  // position
-                                                    {0.0f, 0.0f, 0.0f},     // rotation
-                                                    {2.0f, 2.0f, 2.0f},     // scale
+                                                    {0.0f, 0.0f, 0.0f},  // position
+                                                    {0.0f, 0.0f, 0.0f},  // rotation
+                                                    {2.0f, 2.0f, 2.0f},  // scale
                                                 });
 }
 
@@ -205,10 +205,10 @@ void Lucid::InitializeDemoPongEntities() {
   playerPaddleTransform->position = {0.0f, 0.0f, 0.0f};
 
   Transform* aiPaddleTransform = registry->GetComponent<Transform>(aiPaddleID);
-  aiPaddleTransform->position = {0.0f, 10.0f, 0.0f};
+  aiPaddleTransform->position = {10.0f, 0.0f, 0.0f};
 
   Transform* ballTransform = registry->GetComponent<Transform>(ballID);
-  ballTransform->position = {0.0f, 5.0f, 0.0f};
+  ballTransform->position = {5.0f, 0.0f, 0.0f};
 }
 
 void Lucid::InitializeDemoPongSystems() {
