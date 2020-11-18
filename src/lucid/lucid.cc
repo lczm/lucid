@@ -51,7 +51,7 @@ void Lucid::Update(double dt) {
 }
 
 void Lucid::InitializeBulitInEntities() {
-  // Builtin usage, not for hte user
+  // Builtin usage, not for the user
   // Singletons single struct usage
   registry->RegisterArchetype<ShaderResource>();
   registry->RegisterArchetype<SceneRender>();

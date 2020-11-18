@@ -188,8 +188,8 @@ void RenderSystem::DrawAllLines(double dt, Registry* registry, Input* input) {
   DevDebug devDebug = registry->GetComponent<DevDebug>();
 
   shaderResource.primitiveShader.Bind();
-  shaderResource.primitiveShader.SetUniformMatFloat4("projection", camera->projection);
-  shaderResource.primitiveShader.SetUniformMatFloat4("view", camera->view);
+  shaderResource.primitiveShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
+  shaderResource.primitiveShader.SetUniformMatFloat4("view", quatCamera->GetView());
 
   registry->GetComponentsIter<Line, Transform>()->Each([dt, &shaderResource, &renderer = renderer,
                                                         &devDebug](Line& line,
@@ -219,8 +219,8 @@ void RenderSystem::DrawAllModels(double dt, Registry* registry, Input* input) {
   ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
 
   shaderResource.modelShader.Bind();
-  shaderResource.modelShader.SetUniformMatFloat4("projection", camera->projection);
-  shaderResource.modelShader.SetUniformMatFloat4("view", camera->view);
+  shaderResource.modelShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
+  shaderResource.modelShader.SetUniformMatFloat4("view", quatCamera->GetView());
 
   registry->GetComponentsIter<Model, Transform>()->Each([dt, &shaderResource, &renderer = renderer](
                                                             Model& model, Transform& transform) {
@@ -284,8 +284,8 @@ void RenderSystem::DrawAllSpheres(double dt, Registry* registry, Input* input) {
   DevDebug devDebug = registry->GetComponent<DevDebug>();
 
   shaderResource.primitiveShader.Bind();
-  shaderResource.primitiveShader.SetUniformMatFloat4("projection", camera->projection);
-  shaderResource.primitiveShader.SetUniformMatFloat4("view", camera->view);
+  shaderResource.primitiveShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
+  shaderResource.primitiveShader.SetUniformMatFloat4("view", quatCamera->GetView());
 
   registry->GetComponentsIter<Sphere, Transform>()->Each([dt, &shaderResource, &devDebug,
                                                           &renderer = renderer](
