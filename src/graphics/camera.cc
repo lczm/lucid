@@ -58,6 +58,11 @@ void Camera::UpdateCameraVector(float xOffset, float yOffset) {
   front.y = sin(glm::radians(pitch));
   front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
   cameraFront = glm::normalize(front);
+
+  // Note: not too sure if this is needed... update camera to a free camera
+  // before changing
+  glm::vec3 cameraRight = glm::normalize(glm::cross(cameraFront, cameraUp));
+  cameraUp = glm::normalize(glm::cross(cameraRight, cameraFront));
 }
 
 void Camera::MoveCamera(glm::vec3 offset) {

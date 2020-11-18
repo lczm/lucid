@@ -83,7 +83,7 @@ void Lucid::InitializeBulitInEntities() {
   // x-axis, set to red colour
   registry->AddComponentData<Transform>(xLineID, {
                                                      {0.0f, 0.0f, 0.0f},        // position
-                                                     {0.0f, 0.0f, 0.0f},        // rotation
+                                                     {90.0f, 0.0f, 0.0f},       // rotation
                                                      {100.0f, 100.0f, 100.0f},  // scale
                                                  });
   Line* xLine = registry->GetComponent<Line>(xLineID);
@@ -101,7 +101,7 @@ void Lucid::InitializeBulitInEntities() {
   // z-axis
   registry->AddComponentData<Transform>(zLineID, {
                                                      {0.0f, 0.0f, 0.0f},        // position
-                                                     {0.0f, 0.0f, 90.0f},       // rotation
+                                                     {0.0f, 0.0f, 180.0f},      // rotation
                                                      {100.0f, 100.0f, 100.0f},  // scale
                                                  });
   Line* zLine = registry->GetComponent<Line>(zLineID);
