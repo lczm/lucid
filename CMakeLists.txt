@@ -83,7 +83,6 @@ include_directories(lib/imgui)
 include_directories(lib/imgui/backends)
 
 # Setup openal
-include_directories(lib/openal)
 include_directories(lib/openal/include)
 
 # Setup libsndfile
@@ -118,9 +117,9 @@ add_executable(lucid
 
 # Link the executable to glfw
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    target_link_libraries(lucid glfw assimp)
+    target_link_libraries(lucid glfw assimp sndfile OpenAL32)
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    target_link_libraries(lucid glfw assimp*)
+    target_link_libraries(lucid glfw assimp* sndfile OpenAL32)
 endif()
 
 # Tests
