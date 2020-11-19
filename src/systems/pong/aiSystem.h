@@ -2,6 +2,7 @@
 
 #include "gl.h"
 #include "ecs.h"
+#include "pong.h"
 
 class AiSystem : public System {
  private:

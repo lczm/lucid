@@ -202,6 +202,7 @@ void Lucid::InitializeDemoPongEntities() {
   PongRules& pongRules = registry->GetComponent<PongRules>();
   pongRules.playerPaddleID = playerPaddleID;
   pongRules.aiPaddleID = aiPaddleID;
+  pongRules.ballID = ballID;
 
   Transform* playerTransform = registry->GetComponent<Transform>(playerPaddleID);
   Transform* aiTransform = registry->GetComponent<Transform>(aiPaddleID);

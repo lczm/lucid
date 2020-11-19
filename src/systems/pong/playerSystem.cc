@@ -8,7 +8,6 @@ PlayerSystem::~PlayerSystem() {
 
 void PlayerSystem::Update(double dt, Registry* registry, Input* input) {
   PongRules& pongRules = registry->GetComponent<PongRules>();
-  Transform* playerTransform = registry->GetComponent<Transform>(pongRules.playerPaddleID);
   RigidBody* playerRigidBody = registry->GetComponent<RigidBody>(pongRules.playerPaddleID);
 
   // I think pong only moves from left to right, so this should only move the z-values
