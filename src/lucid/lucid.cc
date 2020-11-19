@@ -216,7 +216,7 @@ void Lucid::InitializeDemoPongEntities() {
   RigidBody* ballRigidBody = registry->GetComponent<RigidBody>(ballID);
   // note 0.05f is just harded 'movement speed'
   ballRigidBody->velocity =
-      glm::normalize(playerTransform->position - ballTransform->position) * 0.05f;
+      glm::normalize(playerTransform->position - ballTransform->position) * 0.005f;
 
   // TODO : This can be simplified
   registry->GetComponentsIter<Sphere>()->Each([](Sphere& sphere) {
