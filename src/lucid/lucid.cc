@@ -110,6 +110,14 @@ void Lucid::InitializeBulitInEntities() {
 
 void Lucid::InitializeBuiltInSystems() {
   registry->RegisterSystem(new UiSystem());
+
+  // Demo start -- TODO : This should be separated, need a way of prioritising systems
+  registry->RegisterSystem(new PlayerSystem());
+  registry->RegisterSystem(new AiSystem());
+  registry->RegisterSystem(new MovementSystem());
+  registry->RegisterSystem(new PongSystem());
+  // Demo end
+
   registry->RegisterSystem(new RenderSystem());
   registry->RegisterSystem(new LucidSystem());
 }
@@ -215,10 +223,6 @@ void Lucid::InitializeDemoPongEntities() {
 }
 
 void Lucid::InitializeDemoPongSystems() {
-  registry->RegisterSystem(new AiSystem());
-  registry->RegisterSystem(new MovementSystem());
-  registry->RegisterSystem(new PlayerSystem());
-  registry->RegisterSystem(new PongSystem());
 }
 
 void Lucid::SetMouseCallback(std::function<void(GLFWwindow*, int, int, int)> fn) {
