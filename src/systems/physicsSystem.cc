@@ -51,7 +51,8 @@ void PhysicsSystem::CalculateBoundingBox(Model& const model, Transform& const tr
 
   // Note : not too sure if this is correct, check by visualizing
   matrixModel *= rotationMatrix;
-  matrixModel *= boundingBox;
+  // TODO : This cant be done, overload the boundingbox or find an alternative method
+  // matrixModel *= boundingBox;
 
   rigidBody.aabb = boundingBox;
 }
