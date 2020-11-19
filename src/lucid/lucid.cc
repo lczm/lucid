@@ -80,7 +80,7 @@ void Lucid::InitializeBulitInEntities() {
   // registry->CreateEntity<Line, Transform>(yLineID);
   // registry->CreateEntity<Line, Transform>(zLineID);
 
-  // x-axis, set to red colour
+  // // x-axis, set to red colour
   // registry->AddComponentData<Transform>(xLineID, {
   //                                                    {0.0f, 0.0f, 0.0f},        // position
   //                                                    {0.0f, 0.0f, 0.0f},        // rotation
@@ -89,7 +89,7 @@ void Lucid::InitializeBulitInEntities() {
   // Line* xLine = registry->GetComponent<Line>(xLineID);
   // xLine->color = {1.0f, 0.0f, 0.0f};
 
-  // y-axis
+  // // y-axis
   // registry->AddComponentData<Transform>(yLineID, {
   //                                                    {0.0f, 0.0f, 0.0f},        // position
   //                                                    {0.0f, 0.0f, 0.0f},        // rotation
@@ -184,10 +184,12 @@ void Lucid::InitializeDemoPongEntities() {
   Entity aiPaddleID = registry->GetAvailableEntityId();
   // The ball that will be used to be passed around
   Entity ballID = registry->GetAvailableEntityId();
+  Entity pongRulesID = registry->GetAvailableEntityId();
 
-  registry->CreateEntity<Cube, Transform>(playerPaddleID);
-  registry->CreateEntity<Cube, Transform>(aiPaddleID);
-  registry->CreateEntity<Sphere, Transform>(ballID);
+  registry->CreateEntity<Cube, Transform, RigidBody>(playerPaddleID);
+  registry->CreateEntity<Cube, Transform, RigidBody>(aiPaddleID);
+  registry->CreateEntity<Sphere, Transform, RigidBody>(ballID);
+  registry->CreateEntity<PongRules>(pongRulesID);
 
   // TODO : This can be simplified
   registry->GetComponentsIter<Sphere>()->Each([](Sphere& sphere) {
@@ -213,6 +215,10 @@ void Lucid::InitializeDemoPongEntities() {
 }
 
 void Lucid::InitializeDemoPongSystems() {
+  registry->RegisterSystem(new AiSystem());
+  registry->RegisterSystem(new MovementSystem());
+  registry->RegisterSystem(new PlayerSystem());
+  registry->RegisterSystem(new PongSystem());
 }
 
 void Lucid::SetMouseCallback(std::function<void(GLFWwindow*, int, int, int)> fn) {

@@ -18,6 +18,10 @@
 
 // Demo
 #include "pong.h"
+#include "aiSystem.h"
+#include "movementSystem.h"
+#include "playerSystem.h"
+#include "pongSystem.h"
 
 #include "glm.hpp"
 #include "gtx/string_cast.hpp"

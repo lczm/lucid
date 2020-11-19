@@ -3,11 +3,11 @@
 #include "gl.h"
 #include "ecs.h"
 
-class PongSystem : public System {
+class PlayerSystem : public System {
  private:
  public:
-  PongSystem();
-  ~PongSystem();
+  PlayerSystem();
+  ~PlayerSystem();
 
   void Update(double dt, Registry* registry, Input* input);
 };
