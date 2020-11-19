@@ -199,6 +199,25 @@ void Lucid::InitializeDemoPongEntities() {
   registry->CreateEntity<Sphere, Transform, RigidBody>(ballID);
   registry->CreateEntity<PongRules>(pongRulesID);
 
+  PongRules& pongRules = registry->GetComponent<PongRules>();
+  pongRules.playerPaddleID = playerPaddleID;
+  pongRules.aiPaddleID = aiPaddleID;
+
+  Transform* playerTransform = registry->GetComponent<Transform>(playerPaddleID);
+  Transform* aiTransform = registry->GetComponent<Transform>(aiPaddleID);
+  Transform* ballTransform = registry->GetComponent<Transform>(ballID);
+
+  // TODO : registry->GetComponent<Transform> should return a reference not a pointer
+  // Move around the transforms of each
+  playerTransform->position = {-10.0f, 0.0f, 0.0f};
+  ballTransform->position = {0.0f, 0.0f, 0.0f};
+  aiTransform->position = {10.0f, 0.0f, 0.0f};
+
+  RigidBody* ballRigidBody = registry->GetComponent<RigidBody>(ballID);
+  // note 0.05f is just harded 'movement speed'
+  ballRigidBody->velocity =
+      glm::normalize(playerTransform->position - ballTransform->position) * 0.05f;
+
   // TODO : This can be simplified
   registry->GetComponentsIter<Sphere>()->Each([](Sphere& sphere) {
     sphere.radius = 1.0f;
@@ -209,17 +228,6 @@ void Lucid::InitializeDemoPongEntities() {
   });
 
   // TODO : Need to scale the cubes to become 'paddles'
-
-  // TODO : registry->GetComponent<Transform> should return a reference not a pointer
-  // Move around the transforms of each
-  Transform* playerPaddleTransform = registry->GetComponent<Transform>(playerPaddleID);
-  playerPaddleTransform->position = {-10.0f, 0.0f, 0.0f};
-
-  Transform* ballTransform = registry->GetComponent<Transform>(ballID);
-  ballTransform->position = {0.0f, 0.0f, 0.0f};
-
-  Transform* aiPaddleTransform = registry->GetComponent<Transform>(aiPaddleID);
-  aiPaddleTransform->position = {10.0f, 0.0f, 0.0f};
 }
 
 void Lucid::InitializeDemoPongSystems() {

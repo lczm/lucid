@@ -5,6 +5,7 @@
 #include "cube.h"
 #include "sphere.h"
 #include "pong.h"
+#include "gtx/string_cast.hpp"
 
 class MovementSystem : public System {
  private:
