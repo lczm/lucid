@@ -118,6 +118,7 @@ void Lucid::InitializeBuiltInSystems() {
   registry->RegisterSystem(new PongSystem());
   // Demo end
 
+  registry->RegisterSystem(new PhysicsSystem());
   registry->RegisterSystem(new RenderSystem());
   registry->RegisterSystem(new LucidSystem());
 }

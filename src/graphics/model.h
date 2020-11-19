@@ -16,16 +16,11 @@ class Model {
   std::vector<Mesh> meshes;
   std::string directory;
 
-  BoundingBox boundingBox;
-
  public:
   Model();
   Model(std::string path);
 
   std::vector<Mesh> GetMeshes();
-
-  void SetBoundingBox(BoundingBox& boundingBox);
-  BoundingBox GetBoundingBox();
 
   void LoadModel(std::string path);
   void ProcessNode(aiNode* node, const aiScene* scene);
@@ -34,5 +29,5 @@ class Model {
                                                 std::string typeName);
 
   uint32_t TextureFromFile(const char* path, const std::string& directory, bool gamma);
-  void CalculateModelBoundingBox();
+  // void CalculateModelBoundingBox();
 };

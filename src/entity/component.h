@@ -4,8 +4,10 @@
 #include "gl.h"
 #include "glm.hpp"
 
+#include "boundingBox.h"
+
 /*
-   A standard place to store components.
+   A common place to store components.
    Components should just be defined as POD (Plain Old Data)
    i.e. simply a struct.
 
@@ -19,9 +21,23 @@ struct Transform {
   glm::vec3 scale = glm::vec3(1.0f);
 };
 
+// For now, RigidBody will also act as a collider
+// as it is simpler this way
 struct RigidBody {
   glm::vec3 velocity = glm::vec3(0.0f);
+  BoundingBox aabb;
 };
+
+// enum class ColliderType {
+//   Cube,
+//   Sphere,
+//   Model,
+//   None,
+// };
+//
+// struct Collider {
+//   ColliderType type = ColliderType::None;
+// };
 
 struct Animation {
   float animCounter = 0;   // Counter on time passed

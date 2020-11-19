@@ -16,12 +16,13 @@
 #include "sphere.h"
 #include "shaderResource.h"
 
-// Demo
+// Demo imports
 #include "pong.h"
 #include "aiSystem.h"
 #include "movementSystem.h"
 #include "playerSystem.h"
 #include "pongSystem.h"
+// Demo imports end
 
 #include "glm.hpp"
 #include "gtx/string_cast.hpp"
@@ -34,6 +35,7 @@
 #include "renderSystem.h"
 #include "lucidSystem.h"
 #include "uiSystem.h"
+#include "physicsSystem.h"
 
 class Lucid {
  public:

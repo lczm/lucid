@@ -89,8 +89,9 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
 }
 
 void RenderSystem::HandleMousePan(double dt, Input* input) {
-  if (input->IsMouseLDown() &&
-      (input->lastX != input->GetMouseX() || input->lastY != input->GetMouseY())) {
+  if (input->IsMouseLDown() &&                //
+      (input->lastX != input->GetMouseX() ||  //
+       input->lastY != input->GetMouseY())) {
     float offsetX = input->GetMouseX() - input->lastX;
     float offsetY = input->GetMouseY() - input->lastY;
 
@@ -106,8 +107,9 @@ void RenderSystem::HandleMousePan(double dt, Input* input) {
     return;
   }
 
-  if (input->IsMouseRDown() &&
-      (input->lastX != input->GetMouseX() || input->lastY != input->GetMouseY())) {
+  if (input->IsMouseRDown() &&                //
+      (input->lastX != input->GetMouseX() ||  //
+       input->lastY != input->GetMouseY())) {
     float offsetX = input->GetMouseX() - input->lastX;
     float offsetY = input->GetMouseY() - input->lastY;
 
