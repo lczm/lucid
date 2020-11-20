@@ -11,7 +11,7 @@
 #include "boundingBox.h"
 
 class Model {
- private:
+ public:
   std::vector<MeshTexture> loadedTextures;
   std::vector<Mesh> meshes;
   std::string directory;
@@ -29,5 +29,5 @@ class Model {
                                                 std::string typeName);
 
   uint32_t TextureFromFile(const char* path, const std::string& directory, bool gamma);
-  // void CalculateModelBoundingBox();
+  void CalculateModelBoundingBox();
 };

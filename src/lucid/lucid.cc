@@ -184,8 +184,9 @@ void Lucid::InitializeSystems() {
 
 void Lucid::InitializeDemoPongEntities() {
   // Register the necessary archetypes
-  registry->RegisterArchetype<Cube, Transform, RigidBody>();
-  registry->RegisterArchetype<Sphere, Transform, RigidBody>();
+  // Note that this should be using `ColliderCube` but it is hardcoded like this for now.
+  registry->RegisterArchetype<Cube, Transform, RigidBody, ColliderSphere>();
+  registry->RegisterArchetype<Sphere, Transform, RigidBody, ColliderSphere>();
   registry->RegisterArchetype<PongRules>();
 
   // Cube / rectangle entities
@@ -195,9 +196,9 @@ void Lucid::InitializeDemoPongEntities() {
   Entity ballID = registry->GetAvailableEntityId();
   Entity pongRulesID = registry->GetAvailableEntityId();
 
-  registry->CreateEntity<Cube, Transform, RigidBody>(playerPaddleID);
-  registry->CreateEntity<Cube, Transform, RigidBody>(aiPaddleID);
-  registry->CreateEntity<Sphere, Transform, RigidBody>(ballID);
+  registry->CreateEntity<Cube, Transform, RigidBody, ColliderSphere>(playerPaddleID);
+  registry->CreateEntity<Cube, Transform, RigidBody, ColliderSphere>(aiPaddleID);
+  registry->CreateEntity<Sphere, Transform, RigidBody, ColliderSphere>(ballID);
   registry->CreateEntity<PongRules>(pongRulesID);
 
   PongRules& pongRules = registry->GetComponent<PongRules>();

@@ -284,3 +284,34 @@ void RenderSystem::DrawAllSpheres(double dt, Registry* registry, Input* input) {
 
   shaderResource.primitiveShader.Unbind();
 }
+
+void RenderSystem::DrawBoundingBoxes(double dt, Registry* registry, Input* input) {
+  ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
+
+  shaderResource.triangleShader.Bind();
+  shaderResource.triangleShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
+  shaderResource.triangleShader.SetUniformMatFloat4("view", quatCamera->GetView());
+
+  // Draw all models...? for now, since only models have bounding boxes
+  registry->GetComponentsIter<Model, Transform>()->Each([dt, &shaderResource, &renderer = renderer](
+                                                            Model& model, Transform& transform) {
+    glm::mat4 matrixModel = glm::mat4(1.0f);
+    glm::mat4 rotationMatrix = glm::mat4(1.0f);
+
+    matrixModel = glm::translate(matrixModel, transform.position);
+    matrixModel = glm::scale(matrixModel, transform.scale);
+
+    // Rotation matrix
+    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[0], glm::vec3(1.0, 0.0, 0.0));
+    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[1], glm::vec3(0.0, 1.0, 0.0));
+    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[2], glm::vec3(0.0, 0.0, 1.0));
+
+    matrixModel *= rotationMatrix;
+
+    shaderResource.triangleShader.SetUniformMatFloat4("model", matrixModel);
+    shaderResource.triangleShader.SetUniformVecFloat3("uColor", glm::vec3(1.0f, 1.0f, 1.0f));
+    renderer->DrawBoundingBox(model, shaderResource.triangleShader);
+  });
+
+  shaderResource.triangleShader.Unbind();
+}

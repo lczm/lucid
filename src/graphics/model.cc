@@ -17,6 +17,8 @@ void Model::LoadModel(std::string path) {
 
   directory = path.substr(0, path.find_last_of('/'));
   ProcessNode(scene->mRootNode, scene);
+
+  // CalculateModelBoundingBox();
 }
 
 std::vector<Mesh> Model::GetMeshes() {
@@ -171,6 +173,5 @@ uint32_t Model::TextureFromFile(const char* path, const std::string& directory, 
 //     }
 //   }
 //
-//   SetBoundingBox(boundingBox);
+//   Model::boundingBox = boundingBox;
 // }
-//

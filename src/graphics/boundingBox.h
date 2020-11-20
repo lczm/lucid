@@ -1,6 +1,7 @@
 #pragma once
 
 #include <limits>
+#include "glm.hpp"
 
 struct BoundingBox {
   float minX = std::numeric_limits<float>::max();

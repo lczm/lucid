@@ -35,7 +35,7 @@ class Renderer {
   void DrawQuad();
   void DrawTexturedQuad();
 
-  void DrawBoundingBox(BoundingBox& boundingBox);
+  void DrawBoundingBox(Model& model, Shader& shader);
   void CalculateModelBoundingBox(Model& model);
 
   /*
