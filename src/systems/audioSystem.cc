@@ -10,10 +10,10 @@ void AudioSystem::Update(double dt, Registry* registry, Input* input) {
   ALuint sound = SoundBuffer::Get()->AddSoundEffect(GRUNT_SOUND);
 
   static MusicBuffer pianoMusic(PIANO_MUSIC);
-  if (!pianoMusic.isPlaying()) {
+  if (!pianoMusic.IsPlaying()) {
     pianoMusic.Play();
   }
-  if (pianoMusic.isPlaying()) {
+  if (pianoMusic.IsPlaying()) {
 	  pianoMusic.UpdateBufferStream();
   }
 }
