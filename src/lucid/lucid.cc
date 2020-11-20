@@ -79,6 +79,7 @@ void Lucid::InitializeSystems() {
   registry->RegisterSystem(new UiSystem());
   registry->RegisterSystem(new RenderSystem());
   registry->RegisterSystem(new LucidSystem());
+  registry->RegisterSystem(new AudioSystem());
 }
 
 void Lucid::SetMouseCallback(std::function<void(GLFWwindow*, int, int, int)> fn) {

@@ -30,3 +30,7 @@ const char MICROPHONE_MODEL[] = "../assets/microphone/scene.gltf";
 const char SCIFIHELMET_MODEL[] = "../assets/helmet/ScifiHelmet.gltf";
 const char FOX_MODEL[] = "../assets/fox/Fox.gltf";
 const char AVOCADO_MODEL[] = "../assets/avocado/Avocado.gltf";
+
+// Audio
+const char GRUNT_SOUND[] = "../audio/grunt.wav";
+const char PIANO_MUSIC[] = "../audio/piano.wav";

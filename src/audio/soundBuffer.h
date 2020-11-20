@@ -6,12 +6,12 @@
 #include <inttypes.h>
 
 class SoundBuffer {
- private:
+ public:
   static SoundBuffer* Get();
   ALuint AddSoundEffect(const char* filename);
   bool RemoveSoundEffect(const ALuint& buffer);
 
- public:
+ private:
   SoundBuffer();
   ~SoundBuffer();
 

@@ -57,6 +57,7 @@ set (STB_IMAGE_HEADERS
 include_directories(src/utils)
 include_directories(src/constants)
 include_directories(src/input)
+include_directories(src/audio)
 include_directories(src/graphics)
 include_directories(src/entity)
 include_directories(src/lucid)

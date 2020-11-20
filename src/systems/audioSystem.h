@@ -1,5 +1,8 @@
 #include "ecs.h"
-#include "AL/al.h"
+#include "soundBuffer.h"
+#include "soundDevice.h"
+#include "constants.h"
+#include "musicBuffer.h"
 
 class AudioSystem : public System {
  private:

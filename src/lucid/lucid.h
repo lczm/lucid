@@ -17,6 +17,7 @@
 
 #include "renderSystem.h"
 #include "lucidSystem.h"
+#include "audioSystem.h"
 #include "uiSystem.h"
 
 class Lucid {
