@@ -20,13 +20,9 @@ class PhysicsSystem : public System {
 
   void Update(double dt, Registry* registry, Input* input);
 
-  void CollisionCheck(ColliderSphere& collider, Transform& transform, ColliderSphere& colliderOther,
-                      Transform& transformOther);
+  void CheckCollision(BoundingBoxCube& boundingBoxCube, Transform& transform,
+                      BoundingBoxCube& boundingBoxCubeOther, Transform& transformOther);
 
   void GetAxisAlignedBoundingBox(ColliderSphere& collider, Transform& transform);
   void GetOrientedBoundingBox(ColliderSphere& collider, Transform& transform);
-
-  void CalculateBoundingBox(Cube& const cube, Transform& const transform, RigidBody& rigidBody);
-  void CalculateBoundingBox(Sphere& const sphere, Transform& const transform, RigidBody& rigidBody);
-  void CalculateBoundingBox(Model& const model, Transform& const transform, RigidBody& rigidBody);
 };
