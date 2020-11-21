@@ -139,10 +139,18 @@ void RenderSystem::HandleMouseScroll(double dt, Input* input) {
 }
 
 void RenderSystem::HandleKeyboardPan(double dt, Input* input) {
-  if (input->IsKeyDown('w')) quatCamera->Translate(glm::vec3(0.0f, 0.0f, CAMERA_SPEED * dt));
-  if (input->IsKeyDown('s')) quatCamera->Translate(glm::vec3(0.0f, 0.0f, -(CAMERA_SPEED * dt)));
-  if (input->IsKeyDown('a')) quatCamera->Translate(glm::vec3(CAMERA_SPEED * dt, 0.0f, 0.0f));
-  if (input->IsKeyDown('d')) quatCamera->Translate(glm::vec3(-(CAMERA_SPEED * dt), 0.0f, 0.0f));
+  if (input->IsKeyDown('W')) quatCamera->Translate(glm::vec3(0.0f, 0.0f, CAMERA_SPEED * dt));
+  if (input->IsKeyDown('S')) quatCamera->Translate(glm::vec3(0.0f, 0.0f, -(CAMERA_SPEED * dt)));
+  if (input->IsKeyDown('A')) quatCamera->Translate(glm::vec3(CAMERA_SPEED * dt, 0.0f, 0.0f));
+  if (input->IsKeyDown('D')) quatCamera->Translate(glm::vec3(-(CAMERA_SPEED * dt), 0.0f, 0.0f));
+
+  // Temporary : TODO : make this more usable; this can use modifier keys to be more accessible / do
+  // more things
+  const float PAN_SPEED = 5.0f;
+  if (input->IsKeyDown(GLFW_KEY_LEFT)) quatCamera->PanCamera(dt, -PAN_SPEED, 0);
+  if (input->IsKeyDown(GLFW_KEY_RIGHT)) quatCamera->PanCamera(dt, PAN_SPEED, 0);
+  if (input->IsKeyDown(GLFW_KEY_UP)) quatCamera->PanCamera(dt, 0, PAN_SPEED);
+  if (input->IsKeyDown(GLFW_KEY_DOWN)) quatCamera->PanCamera(dt, 0, -PAN_SPEED);
 }
 
 // Note : temporary
@@ -283,6 +291,40 @@ void RenderSystem::DrawAllSpheres(double dt, Registry* registry, Input* input) {
   });
 
   shaderResource.primitiveShader.Unbind();
+
+  // Debug Start
+  // Draw bounding box for sphere...
+
+  // shaderResource.triangleShader.Bind();
+  // shaderResource.primitiveShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
+  // shaderResource.primitiveShader.SetUniformMatFloat4("view", quatCamera->GetView());
+
+  // registry->GetComponentsIter<Sphere, Transform>()->Each([dt, &shaderResource, &devDebug,
+  //                                                         &renderer = renderer](
+  //                                                            Sphere& sphere, Transform&
+  //                                                            transform) {
+  //   glm::mat4 matrixModel = glm::mat4(1.0f);
+  //   glm::mat4 rotationMatrix = glm::mat4(1.0f);
+
+  //   matrixModel = glm::translate(matrixModel, transform.position);
+  //   matrixModel = glm::scale(matrixModel, transform.scale);
+
+  //   // Rotation matrix
+  //   rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[0], glm::vec3(1.0, 0.0,
+  //   0.0)); rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[1],
+  //   glm::vec3(0.0, 1.0, 0.0)); rotationMatrix = glm::rotate(rotationMatrix,
+  //   transform.rotation[2], glm::vec3(0.0, 0.0, 1.0));
+
+  //   matrixModel *= rotationMatrix;
+
+  //   shaderResource.primitiveShader.SetUniformMatFloat4("model", matrixModel);
+  //   shaderResource.primitiveShader.SetUniformVecFloat3("uColor", sphere.color);
+  //   renderer->DrawBoundingBox(sphere, shaderResource.primitiveShader);
+  // });
+
+  // shaderResource.triangleShader.Unbind();
+
+  // Debug End
 }
 
 void RenderSystem::DrawBoundingBoxes(double dt, Registry* registry, Input* input) {

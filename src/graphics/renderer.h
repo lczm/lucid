@@ -14,6 +14,8 @@
 
 class Renderer {
  private:
+  uint32_t VAO, VBO, EBO;
+
  public:
   Renderer();
   ~Renderer();
@@ -36,6 +38,8 @@ class Renderer {
   void DrawTexturedQuad();
 
   void DrawBoundingBox(Model& model, Shader& shader);
+  void DrawBoundingBox(Sphere& sphere, Shader& shader);
+
   void CalculateModelBoundingBox(Model& model);
 
   /*

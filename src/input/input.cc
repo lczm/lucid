@@ -69,9 +69,11 @@ bool Input::IsKeyDown(int key) {
   // input->isKeyDown('L')
   // I guess in the future if we need to do mod keys, this will have to be
   // changed
-  if (key >= 97) {
-    key -= 32;
-  }
+
+  // Don't really need this anymore...?
+  // if (key >= 97) {
+  //   key -= 32;
+  // }
 
 #if DEBUG
   if (activeWindow == WindowType::Scene) {

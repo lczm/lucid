@@ -11,14 +11,14 @@ Cube::Cube() {
   glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
   // Set VBO data
-  glBufferData(GL_ARRAY_BUFFER, cube_vertices.size() * sizeof(float), &cube_vertices[0],
+  glBufferData(GL_ARRAY_BUFFER, cubeVertices.size() * sizeof(float), &cubeVertices[0],
                GL_STATIC_DRAW);
 
   // Bind EBO
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
   // Set EBO data
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, cube_indices.size() * sizeof(uint32_t), &cube_indices[0],
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, cubeIndices.size() * sizeof(uint32_t), &cubeIndices[0],
                GL_STATIC_DRAW);
 
   // Vertex positions

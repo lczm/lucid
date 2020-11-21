@@ -7,4 +7,5 @@ struct ShaderResource {
   Shader modelShader;
   Shader triangleShader;
   Shader primitiveShader;
+  Shader boundingBoxShader;
 };

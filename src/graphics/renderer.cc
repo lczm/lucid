@@ -52,7 +52,7 @@ void Renderer::DrawModel(Model& model, Shader& shader) {
 void Renderer::DrawCube(Cube& cube, Shader& shader) {
   glBindVertexArray(cube.VAO);
   // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cube.EBO);
-  glDrawElements(GL_TRIANGLES, cube_indices.size(), GL_UNSIGNED_INT, 0);
+  glDrawElements(GL_TRIANGLES, cubeIndices.size(), GL_UNSIGNED_INT, 0);
   glBindVertexArray(0);
 }
 
@@ -70,4 +70,30 @@ void Renderer::DrawLine(Line& line, Shader& shader) {
 }
 
 void Renderer::DrawBoundingBox(Model& model, Shader& shader) {
+}
+
+void Renderer::DrawBoundingBox(Sphere& sphere, Shader& shader) {
+  // glGenVertexArrays(1, &VAO);
+  // glGenBuffers(1, &VBO);
+  // glGenBuffers(1, &EBO);
+
+  // // Bind VAO & VBO
+  // glBindVertexArray(VAO);
+  // glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+  // // Set VBO data
+  // glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
+
+  // // Bind EBO
+  // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+
+  // // Set EBO data
+  // glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint32_t), &indices[0],
+  //              GL_STATIC_DRAW);
+
+  // // Vertex positions
+  // glEnableVertexAttribArray(0);
+  // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+
+  // glBindVertexArray(0);
 }

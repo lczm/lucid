@@ -5,11 +5,7 @@
 #include "gl.h"
 #include "glm.hpp"
 
-struct CubeVertex {
-  glm::vec3 position;
-};
-
-const std::vector<float> cube_vertices = {
+const std::vector<float> cubeVertices = {
     // front
     -1.0, -1.0, 1.0,  //
     1.0, -1.0, 1.0,   //
@@ -22,7 +18,7 @@ const std::vector<float> cube_vertices = {
     -1.0, 1.0, -1.0,   //
 };
 
-const std::vector<uint32_t> cube_indices = {
+const std::vector<uint32_t> cubeIndices = {
     // front
     0, 1, 2,  //
     2, 3, 0,  //

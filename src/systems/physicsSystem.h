@@ -23,7 +23,8 @@ class PhysicsSystem : public System {
   void CollisionCheck(ColliderSphere& collider, Transform& transform, ColliderSphere& colliderOther,
                       Transform& transformOther);
 
-  void GetOrientedBoundingBox(Collider& collider, Transform& transform);
+  void GetAxisAlignedBoundingBox(ColliderSphere& collider, Transform& transform);
+  void GetOrientedBoundingBox(ColliderSphere& collider, Transform& transform);
 
   void CalculateBoundingBox(Cube& const cube, Transform& const transform, RigidBody& rigidBody);
   void CalculateBoundingBox(Sphere& const sphere, Transform& const transform, RigidBody& rigidBody);
