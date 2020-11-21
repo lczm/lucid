@@ -54,7 +54,7 @@ class BoundingBoxCube {
  public:
   uint32_t VAO, VBO, EBO;
 
-  glm::vec3 color = {0.5f, 0.5f, 0.5f};
+  glm::vec3 color = {1.0f, 0.0f, 0.0f};
 
  public:
   BoundingBoxCube();

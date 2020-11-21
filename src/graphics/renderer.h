@@ -39,6 +39,7 @@ class Renderer {
 
   void DrawBoundingBox(Model& model, Shader& shader);
   void DrawBoundingBox(Sphere& sphere, Shader& shader);
+  void DrawBoundingBox(BoundingBoxCube& boundingBoxCube, Shader& shader);
 
   void CalculateModelBoundingBox(Model& model);
 
