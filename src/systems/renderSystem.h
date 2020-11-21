@@ -41,6 +41,6 @@ class RenderSystem : public System {
   void DrawAllCubes(double dt, Registry* registry, Input* input);
   void DrawAllSpheres(double dt, Registry* registry, Input* input);
 
-  // Debugging...
-  void DrawBoundingBoxes(double dt, Registry* registry, Input* input);
+  // Debugging purposes for now?
+  void DrawAllBoundingBoxes(double dt, Registry* registry, Input* input);
 };
