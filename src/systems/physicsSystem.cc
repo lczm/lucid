@@ -77,45 +77,21 @@ void PhysicsSystem::CheckCollision(BoundingBoxCube& boundingBoxCube, Transform& 
   for (size_t i = 0; i < bbVertices.size(); i++) {
     bb.minX = glm::min(bbVertices[i].x, bb.minX);
     bb.maxX = glm::max(bbVertices[i].x, bb.maxX);
-
-    bb.minY = glm::min(bbVertices[i].y, bb.minY);
-    bb.maxY = glm::max(bbVertices[i].y, bb.maxY);
-
-    bb.minZ = glm::min(bbVertices[i].z, bb.minZ);
-    bb.maxZ = glm::max(bbVertices[i].z, bb.maxZ);
-  }
-
-  for (size_t i = 0; i < bbVerticesOther.size(); i++) {
     bbOther.minX = glm::min(bbVerticesOther[i].x, bbOther.minX);
     bbOther.maxX = glm::max(bbVerticesOther[i].x, bbOther.maxX);
 
+    bb.minY = glm::min(bbVertices[i].y, bb.minY);
+    bb.maxY = glm::max(bbVertices[i].y, bb.maxY);
     bbOther.minY = glm::min(bbVerticesOther[i].y, bbOther.minY);
     bbOther.maxY = glm::max(bbVerticesOther[i].y, bbOther.maxY);
 
+    bb.minZ = glm::min(bbVertices[i].z, bb.minZ);
+    bb.maxZ = glm::max(bbVertices[i].z, bb.maxZ);
     bbOther.minZ = glm::min(bbVerticesOther[i].z, bbOther.minZ);
     bbOther.maxZ = glm::max(bbVerticesOther[i].z, bbOther.maxZ);
   }
 
-  // std::cout << " ------ " << std::endl;
-
-  // std::cout << "bb.minX : " << bb.minX << std::endl;
-  // std::cout << "bb.minY : " << bb.minY << std::endl;
-  // std::cout << "bb.minZ : " << bb.minZ << std::endl;
-  // std::cout << "bb.maxX : " << bb.maxX << std::endl;
-  // std::cout << "bb.maxY : " << bb.maxY << std::endl;
-  // std::cout << "bb.maxZ : " << bb.maxZ << std::endl;
-
-  // std::cout << " ------ " << std::endl;
-
-  // std::cout << "bbOther.minX : " << bbOther.minX << std::endl;
-  // std::cout << "bbOther.minY : " << bbOther.minY << std::endl;
-  // std::cout << "bbOther.minZ : " << bbOther.minZ << std::endl;
-  // std::cout << "bbOther.maxX : " << bbOther.maxX << std::endl;
-  // std::cout << "bbOther.maxY : " << bbOther.maxY << std::endl;
-  // std::cout << "bbOther.maxZ : " << bbOther.maxZ << std::endl;
-
-  // std::cout << " ------ " << std::endl;
-
+  // Just turn the colors red/white for now.
   if (CheckCollisionBetweenBoundingBox(bb, bbOther)) {
     boundingBoxCube.color = glm::vec3(1.0f, 0.0f, 0.0f);
     boundingBoxCubeOther.color = glm::vec3(1.0f, 0.0f, 0.0f);
