@@ -21,7 +21,6 @@ void PhysicsSystem::Update(double dt, Registry* registry, Input* input) {
 
   std::unordered_map<uint32_t, bool> collidedCache;
 
-  // Debug :: hard-coded for sphere collisions
   for (size_t i = 0; i < boundingBoxCubeComponents->Size(); i++) {
     for (size_t j = 0; j < boundingBoxCubeComponents->Size(); j++) {
       // TODO can cache results,
@@ -56,7 +55,6 @@ void PhysicsSystem::Update(double dt, Registry* registry, Input* input) {
       }
     }
   }
-  // Debug End
 }
 
 bool PhysicsSystem::CheckCollision(BoundingBoxCube& boundingBoxCube, Transform& transform,
