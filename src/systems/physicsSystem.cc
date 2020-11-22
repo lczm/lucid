@@ -43,12 +43,16 @@ void PhysicsSystem::Update(double dt, Registry* registry, Input* input) {
 
         collidedCache[i] = true;
         collidedCache[j] = true;
+        collider1.collided = true;
+        collider2.collided = true;
       } else {
         collider1.color = glm::vec3(1.0f, 1.0f, 1.0f);
         collider2.color = glm::vec3(1.0f, 1.0f, 1.0f);
 
         collidedCache[i] = false;
         collidedCache[j] = false;
+        collider1.collided = false;
+        collider2.collided = false;
       }
     }
   }

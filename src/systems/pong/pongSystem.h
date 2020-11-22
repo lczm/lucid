@@ -2,6 +2,7 @@
 
 #include "gl.h"
 #include "ecs.h"
+#include "sphere.h"
 
 class PongSystem : public System {
  private:

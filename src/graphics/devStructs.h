@@ -11,10 +11,5 @@
 
 struct DevDebug {
   bool drawWireframe = false;
-
-  glm::vec3 rgb = glm::vec3(0.5f, 0.5f, 0.5f);
-
-  glm::vec3 cameraUp = glm::vec3(1.0f);
-  glm::vec3 cameraFront = glm::vec3(1.0f);
-  glm::vec3 cameraPos = glm::vec3(1.0f);
+  bool drawColliders = false;
 };

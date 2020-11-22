@@ -232,10 +232,9 @@ void UiSystem::DrawInspector(double dt, Registry* registry, Input* input) {
 
   UpdateInputActiveWindow(input, WindowType::Inspector);
 
-  // Temporary
-  DevDebug& devDebug = registry->GetComponent<DevDebug>();
-
-  ImGui::ColorEdit3("Primitive", (float*)&devDebug.rgb);
+  // Temporary : this will be useful when mouse picking works
+  // DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  // ImGui::ColorEdit3("Primitive", (float*)&devDebug.rgb);
 
   ImGui::End();
 }
@@ -257,10 +256,7 @@ void UiSystem::DrawDevDebug(double dt, Registry* registry, Input* input) {
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
 
   ImGui::Checkbox("Draw all with wireframe", &devDebug.drawWireframe);
-
-  ImGui::Text(("CameraUp : " + glm::to_string(devDebug.cameraUp)).c_str());
-  ImGui::Text(("CameraFront : " + glm::to_string(devDebug.cameraFront)).c_str());
-  ImGui::Text(("CameraPos : " + glm::to_string(devDebug.cameraPos)).c_str());
+  ImGui::Checkbox("Draw all colliders", &devDebug.drawColliders);
 
   ImGui::End();
 }

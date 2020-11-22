@@ -15,8 +15,8 @@ void PlayerSystem::Update(double dt, Registry* registry, Input* input) {
   // movement system
 
   // Move the player paddle
-  // if (input->IsKeyDown('i')) playerTransform->position.x += PLAYER_MOVE_SPEED;
-  // if (input->IsKeyDown('k')) playerTransform->position.x -= PLAYER_MOVE_SPEED;
-  if (input->IsKeyDown('j')) playerRigidBody->velocity = glm::vec3(0.0f, 0.0f, PADDLE_MOVE_SPEED);
-  if (input->IsKeyDown('l')) playerRigidBody->velocity = glm::vec3(0.0f, 0.0f, -PADDLE_MOVE_SPEED);
+  // if (input->IsKeyDown('I')) playerTransform->position.x += PLAYER_MOVE_SPEED;
+  // if (input->IsKeyDown('K')) playerTransform->position.x -= PLAYER_MOVE_SPEED;
+  if (input->IsKeyDown('J')) playerRigidBody->velocity = glm::vec3(0.0f, 0.0f, PADDLE_MOVE_SPEED);
+  if (input->IsKeyDown('L')) playerRigidBody->velocity = glm::vec3(0.0f, 0.0f, -PADDLE_MOVE_SPEED);
 }

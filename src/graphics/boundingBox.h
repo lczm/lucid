@@ -54,6 +54,7 @@ class BoundingBoxCube {
  public:
   uint32_t VAO, VBO, EBO;
 
+  bool collided = false;
   glm::vec3 color = {1.0f, 1.0f, 1.0f};
 
  public:
@@ -65,6 +66,7 @@ class BoundingBoxSphere {
  public:
   uint32_t VAO, VBO, EBO;
 
+  bool collided = false;
   glm::vec3 color = {1.0f, 1.0f, 1.0f};
 
  public:
@@ -75,6 +77,8 @@ class BoundingBoxSphere {
 class BoundingBoxPolygon {
  public:
   uint32_t VAO, VBO, EBO;
+
+  bool collided = false;
   glm::vec3 color = {1.0f, 1.0f, 1.0f};
 
  public:

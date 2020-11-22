@@ -115,10 +115,14 @@ void Lucid::InitializeBuiltInSystems() {
   registry->RegisterSystem(new PlayerSystem());
   registry->RegisterSystem(new AiSystem());
   registry->RegisterSystem(new MovementSystem());
-  registry->RegisterSystem(new PongSystem());
   // Demo end
 
   registry->RegisterSystem(new PhysicsSystem());
+
+  // Demo start -- PongSystem will need to deal with collision for the ball
+  registry->RegisterSystem(new PongSystem());
+  // Demo end
+
   registry->RegisterSystem(new RenderSystem());
   registry->RegisterSystem(new LucidSystem());
 }
@@ -213,7 +217,7 @@ void Lucid::InitializeDemoPongEntities() {
   // TODO : registry->GetComponent<Transform> should return a reference not a pointer
   // Move around the transforms of each
   playerTransform->position = {-10.0f, 0.0f, 0.0f};
-  ballTransform->position = {0.0f, 0.0f, 0.0f};
+  ballTransform->position = {0.0f, 0.0f, -10.0f};
   aiTransform->position = {10.0f, 0.0f, 0.0f};
 
   RigidBody* ballRigidBody = registry->GetComponent<RigidBody>(ballID);
