@@ -19,37 +19,43 @@ void PhysicsSystem::Update(double dt, Registry* registry, Input* input) {
     return;
   }
 
-  if (boundingBoxCubeComponents->Size() == 2) {
-    BoundingBoxCube& collider1 = boundingBoxCubeComponents->At(0);
-    Transform& transform1 = transformComponents->At(0);
-
-    BoundingBoxCube& collider2 = boundingBoxCubeComponents->At(1);
-    Transform& transform2 = transformComponents->At(1);
-
-    CheckCollision(collider1, transform1, collider2, transform2);
-  }
+  std::unordered_map<uint32_t, bool> collidedCache;
 
   // Debug :: hard-coded for sphere collisions
-  // for (size_t i = 0; i < boundingBoxCubeComponents->Size(); i++) {
-  //   for (size_t j = 0; j < boundingBoxCubeComponents->Size(); j++) {
-  //     // TODO can cache results,
-  //     // i.e. if A collides with B, there is no need to check if
-  //     // B collides with A
-  //     if (i == j) continue;
+  for (size_t i = 0; i < boundingBoxCubeComponents->Size(); i++) {
+    for (size_t j = 0; j < boundingBoxCubeComponents->Size(); j++) {
+      // TODO can cache results,
+      // i.e. if A collides with B, there is no need to check if
+      // B collides with A
+      if (i == j) continue;
 
-  //     BoundingBoxCube& collider1 = boundingBoxCubeComponents->At(i);
-  //     Transform& transform1 = transformComponents->At(i);
+      BoundingBoxCube& collider1 = boundingBoxCubeComponents->At(i);
+      Transform& transform1 = transformComponents->At(i);
 
-  //     BoundingBoxCube& collider2 = boundingBoxCubeComponents->At(j);
-  //     Transform& transform2 = transformComponents->At(j);
+      BoundingBoxCube& collider2 = boundingBoxCubeComponents->At(j);
+      Transform& transform2 = transformComponents->At(j);
 
-  //     CheckCollision(collider1, transform1, collider2, transform2);
-  //   }
-  // }
+      if (collidedCache[i] || collidedCache[j]) continue;
+
+      if (CheckCollision(collider1, transform1, collider2, transform2)) {
+        collider1.color = glm::vec3(1.0f, 0.0f, 0.0f);
+        collider2.color = glm::vec3(1.0f, 0.0f, 0.0f);
+
+        collidedCache[i] = true;
+        collidedCache[j] = true;
+      } else {
+        collider1.color = glm::vec3(1.0f, 1.0f, 1.0f);
+        collider2.color = glm::vec3(1.0f, 1.0f, 1.0f);
+
+        collidedCache[i] = false;
+        collidedCache[j] = false;
+      }
+    }
+  }
   // Debug End
 }
 
-void PhysicsSystem::CheckCollision(BoundingBoxCube& boundingBoxCube, Transform& transform,
+bool PhysicsSystem::CheckCollision(BoundingBoxCube& boundingBoxCube, Transform& transform,
                                    BoundingBoxCube& boundingBoxCubeOther,
                                    Transform& transformOther) {
   // Assume that it is a box/cube...
@@ -90,14 +96,8 @@ void PhysicsSystem::CheckCollision(BoundingBoxCube& boundingBoxCube, Transform& 
     bbOther.minZ = glm::min(bbVerticesOther[i].z, bbOther.minZ);
     bbOther.maxZ = glm::max(bbVerticesOther[i].z, bbOther.maxZ);
   }
-
-  // Just turn the colors red/white for now.
   if (CheckCollisionBetweenBoundingBox(bb, bbOther)) {
-    boundingBoxCube.color = glm::vec3(1.0f, 0.0f, 0.0f);
-    boundingBoxCubeOther.color = glm::vec3(1.0f, 0.0f, 0.0f);
-  } else {
-    boundingBoxCube.color = glm::vec3(1.0f, 1.0f, 1.0f);
-    boundingBoxCubeOther.color = glm::vec3(1.0f, 1.0f, 1.0f);
+    return true;
   }
 }
 
@@ -109,9 +109,9 @@ glm::mat4 PhysicsSystem::ApplyTransformation(Transform& transform) {
   matrixModel = glm::scale(matrixModel, transform.scale);
 
   // Rotation matrix
-  // rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[0], glm::vec3(1.0, 0.0, 0.0));
-  // rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[1], glm::vec3(0.0, 1.0, 0.0));
-  // rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[2], glm::vec3(0.0, 0.0, 1.0));
+  rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[0], glm::vec3(1.0, 0.0, 0.0));
+  rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[1], glm::vec3(0.0, 1.0, 0.0));
+  rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[2], glm::vec3(0.0, 0.0, 1.0));
 
   matrixModel *= rotationMatrix;
   return matrixModel;

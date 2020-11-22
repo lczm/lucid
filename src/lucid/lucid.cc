@@ -186,7 +186,6 @@ void Lucid::InitializeDemoPongEntities() {
   // Register the necessary archetypes
   // Note that this should be using `ColliderCube` but it is hardcoded like this for now.
   registry->RegisterArchetype<Cube, Transform, RigidBody, BoundingBoxCube>();
-  registry->RegisterArchetype<Cube, Transform, RigidBody>();
   registry->RegisterArchetype<Sphere, Transform, RigidBody, BoundingBoxCube>();
   registry->RegisterArchetype<PongRules>();
 
@@ -198,7 +197,7 @@ void Lucid::InitializeDemoPongEntities() {
   Entity pongRulesID = registry->GetAvailableEntityId();
 
   registry->CreateEntity<Cube, Transform, RigidBody, BoundingBoxCube>(playerPaddleID);
-  registry->CreateEntity<Cube, Transform, RigidBody>(aiPaddleID);
+  registry->CreateEntity<Cube, Transform, RigidBody, BoundingBoxCube>(aiPaddleID);
   registry->CreateEntity<Sphere, Transform, RigidBody, BoundingBoxCube>(ballID);
   registry->CreateEntity<PongRules>(pongRulesID);
 
@@ -220,7 +219,7 @@ void Lucid::InitializeDemoPongEntities() {
   RigidBody* ballRigidBody = registry->GetComponent<RigidBody>(ballID);
   // note 0.05f is just harded 'movement speed'
   ballRigidBody->velocity =
-      glm::normalize(playerTransform->position - ballTransform->position) * 0.010f;
+      glm::normalize(playerTransform->position - ballTransform->position) * 0.030f;
 
   // TODO : This can be simplified
   registry->GetComponentsIter<Sphere>()->Each([](Sphere& sphere) {

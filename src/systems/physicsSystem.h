@@ -20,7 +20,7 @@ class PhysicsSystem : public System {
 
   void Update(double dt, Registry* registry, Input* input);
 
-  void CheckCollision(BoundingBoxCube& boundingBoxCube, Transform& transform,
+  bool CheckCollision(BoundingBoxCube& boundingBoxCube, Transform& transform,
                       BoundingBoxCube& boundingBoxCubeOther, Transform& transformOther);
 
   glm::mat4 PhysicsSystem::ApplyTransformation(Transform& transform);
