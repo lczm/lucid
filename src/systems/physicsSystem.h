@@ -20,6 +20,24 @@ class PhysicsSystem : public System {
 
   bool CheckCollision(BoundingBoxCube& boundingBoxCube, Transform& transform,
                       BoundingBoxCube& boundingBoxCubeOther, Transform& transformOther);
+  bool CheckCollision(BoundingBoxCube& boundingBoxCube, Transform& transform,
+                      BoundingBoxSphere& boundingBoxSphereOther, Transform& transformOther);
+  bool CheckCollision(BoundingBoxCube& boundingBoxCube, Transform& transform,
+                      BoundingBoxPolygon& boundingBoxPolygonOther, Transform& transformOther);
+
+  bool CheckCollision(BoundingBoxSphere& boundingBoxSphere, Transform& transform,
+                      BoundingBoxSphere& boundingBoxSphereOther, Transform& transformOther);
+  bool CheckCollision(BoundingBoxSphere& boundingBoxSphere, Transform& transform,
+                      BoundingBoxCube& boundingBoxCubeOther, Transform& transformOther);
+  bool CheckCollision(BoundingBoxSphere& boundingBoxSphere, Transform& transform,
+                      BoundingBoxPolygon& boundingBoxPolygonOther, Transform& transformOther);
+
+  bool CheckCollision(BoundingBoxPolygon& boundingBoxPolygon, Transform& transform,
+                      BoundingBoxPolygon& boundingBoxPolygonOther, Transform& transformOther);
+  bool CheckCollision(BoundingBoxPolygon& boundingBoxPolygon, Transform& transform,
+                      BoundingBoxCube& boundingBoxCubeOther, Transform& transformOther);
+  bool CheckCollision(BoundingBoxPolygon& boundingBoxPolygon, Transform& transform,
+                      BoundingBoxSphere& boundingBoxSphereOther, Transform& transformOther);
 
   glm::mat4 PhysicsSystem::ApplyTransformation(Transform& transform);
   bool CheckCollisionBetweenBoundingBox(BoundingBox boundingBox, BoundingBox boundingBoxOther);
