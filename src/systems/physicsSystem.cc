@@ -19,23 +19,33 @@ void PhysicsSystem::Update(double dt, Registry* registry, Input* input) {
     return;
   }
 
-  // Debug :: hard-coded for sphere collisions
-  for (size_t i = 0; i < boundingBoxCubeComponents->Size(); i++) {
-    for (size_t j = 0; j < boundingBoxCubeComponents->Size(); j++) {
-      // TODO can cache results,
-      // i.e. if A collides with B, there is no need to check if
-      // B collides with A
-      if (i == j) continue;
+  if (boundingBoxCubeComponents->Size() == 2) {
+    BoundingBoxCube& collider1 = boundingBoxCubeComponents->At(0);
+    Transform& transform1 = transformComponents->At(0);
 
-      BoundingBoxCube& collider1 = boundingBoxCubeComponents->At(i);
-      Transform& transform1 = transformComponents->At(i);
+    BoundingBoxCube& collider2 = boundingBoxCubeComponents->At(1);
+    Transform& transform2 = transformComponents->At(1);
 
-      BoundingBoxCube& collider2 = boundingBoxCubeComponents->At(j);
-      Transform& transform2 = transformComponents->At(j);
-
-      CheckCollision(collider1, transform1, collider2, transform2);
-    }
+    CheckCollision(collider1, transform1, collider2, transform2);
   }
+
+  // Debug :: hard-coded for sphere collisions
+  // for (size_t i = 0; i < boundingBoxCubeComponents->Size(); i++) {
+  //   for (size_t j = 0; j < boundingBoxCubeComponents->Size(); j++) {
+  //     // TODO can cache results,
+  //     // i.e. if A collides with B, there is no need to check if
+  //     // B collides with A
+  //     if (i == j) continue;
+
+  //     BoundingBoxCube& collider1 = boundingBoxCubeComponents->At(i);
+  //     Transform& transform1 = transformComponents->At(i);
+
+  //     BoundingBoxCube& collider2 = boundingBoxCubeComponents->At(j);
+  //     Transform& transform2 = transformComponents->At(j);
+
+  //     CheckCollision(collider1, transform1, collider2, transform2);
+  //   }
+  // }
   // Debug End
 }
 
@@ -43,13 +53,99 @@ void PhysicsSystem::CheckCollision(BoundingBoxCube& boundingBoxCube, Transform& 
                                    BoundingBoxCube& boundingBoxCubeOther,
                                    Transform& transformOther) {
   // Assume that it is a box/cube...
+  // Get both the model transforms
+  glm::mat4 boundingBoxModelMatrix = ApplyTransformation(transform);
+  glm::mat4 boundingBoxModelMatrixOther = ApplyTransformation(transformOther);
 
-  // Check for x-axis collision
-  // Check for y-axis collision
+  std::vector<glm::vec4> bbVertices;
+  std::vector<glm::vec4> bbVerticesOther;
 
-  // return (a.minX <= b.maxX && a.maxX >= b.minX) &&
-  //        (a.minY <= b.maxY && a.maxY >= b.minY) &&
-  //        (a.minZ <= b.maxZ && a.maxZ >= b.minZ);
+  for (size_t i = 0; i < boundingBoxCubeVertices.size(); i += 3) {
+    bbVertices.push_back(boundingBoxModelMatrix * glm::vec4(boundingBoxCubeVertices[i],
+                                                            boundingBoxCubeVertices[i + 1],
+                                                            boundingBoxCubeVertices[i + 2], 1.0f));
+
+    bbVerticesOther.push_back(boundingBoxModelMatrixOther *
+                              glm::vec4(boundingBoxCubeVertices[i],      //
+                                        boundingBoxCubeVertices[i + 1],  //
+                                        boundingBoxCubeVertices[i + 2], 1.0f));
+  }
+
+  BoundingBox bb;
+  BoundingBox bbOther;
+
+  for (size_t i = 0; i < bbVertices.size(); i++) {
+    bb.minX = glm::min(bbVertices[i].x, bb.minX);
+    bb.maxX = glm::max(bbVertices[i].x, bb.maxX);
+
+    bb.minY = glm::min(bbVertices[i].y, bb.minY);
+    bb.maxY = glm::max(bbVertices[i].y, bb.maxY);
+
+    bb.minZ = glm::min(bbVertices[i].z, bb.minZ);
+    bb.maxZ = glm::max(bbVertices[i].z, bb.maxZ);
+  }
+
+  for (size_t i = 0; i < bbVerticesOther.size(); i++) {
+    bbOther.minX = glm::min(bbVerticesOther[i].x, bbOther.minX);
+    bbOther.maxX = glm::max(bbVerticesOther[i].x, bbOther.maxX);
+
+    bbOther.minY = glm::min(bbVerticesOther[i].y, bbOther.minY);
+    bbOther.maxY = glm::max(bbVerticesOther[i].y, bbOther.maxY);
+
+    bbOther.minZ = glm::min(bbVerticesOther[i].z, bbOther.minZ);
+    bbOther.maxZ = glm::max(bbVerticesOther[i].z, bbOther.maxZ);
+  }
+
+  // std::cout << " ------ " << std::endl;
+
+  // std::cout << "bb.minX : " << bb.minX << std::endl;
+  // std::cout << "bb.minY : " << bb.minY << std::endl;
+  // std::cout << "bb.minZ : " << bb.minZ << std::endl;
+  // std::cout << "bb.maxX : " << bb.maxX << std::endl;
+  // std::cout << "bb.maxY : " << bb.maxY << std::endl;
+  // std::cout << "bb.maxZ : " << bb.maxZ << std::endl;
+
+  // std::cout << " ------ " << std::endl;
+
+  // std::cout << "bbOther.minX : " << bbOther.minX << std::endl;
+  // std::cout << "bbOther.minY : " << bbOther.minY << std::endl;
+  // std::cout << "bbOther.minZ : " << bbOther.minZ << std::endl;
+  // std::cout << "bbOther.maxX : " << bbOther.maxX << std::endl;
+  // std::cout << "bbOther.maxY : " << bbOther.maxY << std::endl;
+  // std::cout << "bbOther.maxZ : " << bbOther.maxZ << std::endl;
+
+  // std::cout << " ------ " << std::endl;
+
+  if (CheckCollisionBetweenBoundingBox(bb, bbOther)) {
+    boundingBoxCube.color = glm::vec3(1.0f, 0.0f, 0.0f);
+    boundingBoxCubeOther.color = glm::vec3(1.0f, 0.0f, 0.0f);
+  } else {
+    boundingBoxCube.color = glm::vec3(1.0f, 1.0f, 1.0f);
+    boundingBoxCubeOther.color = glm::vec3(1.0f, 1.0f, 1.0f);
+  }
+}
+
+glm::mat4 PhysicsSystem::ApplyTransformation(Transform& transform) {
+  glm::mat4 matrixModel = glm::mat4(1.0f);
+  glm::mat4 rotationMatrix = glm::mat4(1.0f);
+
+  matrixModel = glm::translate(matrixModel, transform.position);
+  matrixModel = glm::scale(matrixModel, transform.scale);
+
+  // Rotation matrix
+  // rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[0], glm::vec3(1.0, 0.0, 0.0));
+  // rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[1], glm::vec3(0.0, 1.0, 0.0));
+  // rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[2], glm::vec3(0.0, 0.0, 1.0));
+
+  matrixModel *= rotationMatrix;
+  return matrixModel;
+}
+
+bool PhysicsSystem::CheckCollisionBetweenBoundingBox(const BoundingBox boundingBox,
+                                                     const BoundingBox boundingBoxOther) {
+  return (boundingBox.minX <= boundingBoxOther.maxX && boundingBox.maxX >= boundingBoxOther.minX) &&
+         (boundingBox.minY <= boundingBoxOther.maxY && boundingBox.maxY >= boundingBoxOther.minY) &&
+         (boundingBox.minZ <= boundingBoxOther.maxZ && boundingBox.maxZ >= boundingBoxOther.minZ);
 }
 
 void PhysicsSystem::GetAxisAlignedBoundingBox(ColliderSphere& collider, Transform& transform) {

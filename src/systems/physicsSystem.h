@@ -23,6 +23,9 @@ class PhysicsSystem : public System {
   void CheckCollision(BoundingBoxCube& boundingBoxCube, Transform& transform,
                       BoundingBoxCube& boundingBoxCubeOther, Transform& transformOther);
 
+  glm::mat4 PhysicsSystem::ApplyTransformation(Transform& transform);
+  bool CheckCollisionBetweenBoundingBox(BoundingBox boundingBox, BoundingBox boundingBoxOther);
+
   void GetAxisAlignedBoundingBox(ColliderSphere& collider, Transform& transform);
   void GetOrientedBoundingBox(ColliderSphere& collider, Transform& transform);
 };

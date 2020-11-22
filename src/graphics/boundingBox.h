@@ -7,13 +7,13 @@
 
 struct BoundingBox {
   float minX = std::numeric_limits<float>::max();
-  float maxX = std::numeric_limits<float>::min();
+  float maxX = std::numeric_limits<float>::lowest();
 
   float minY = std::numeric_limits<float>::max();
-  float maxY = std::numeric_limits<float>::min();
+  float maxY = std::numeric_limits<float>::lowest();
 
   float minZ = std::numeric_limits<float>::max();
-  float maxZ = std::numeric_limits<float>::min();
+  float maxZ = std::numeric_limits<float>::lowest();
 };
 
 const std::vector<float> boundingBoxCubeVertices = {
