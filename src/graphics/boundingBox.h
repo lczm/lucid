@@ -60,3 +60,24 @@ class BoundingBoxCube {
   BoundingBoxCube();
   ~BoundingBoxCube();
 };
+
+class BoundingBoxSphere {
+ public:
+  uint32_t VAO, VBO, EBO;
+
+  glm::vec3 color = {1.0f, 1.0f, 1.0f};
+
+ public:
+  BoundingBoxSphere();
+  ~BoundingBoxSphere();
+};
+
+class BoundingBoxPolygon {
+ public:
+  uint32_t VAO, VBO, EBO;
+  glm::vec3 color = {1.0f, 1.0f, 1.0f};
+
+ public:
+  BoundingBoxPolygon();
+  ~BoundingBoxPolygon();
+};

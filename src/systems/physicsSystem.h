@@ -7,9 +7,7 @@
 #include "model.h"
 #include "gtx/string_cast.hpp"
 
-// A box without rotation (axis-aligned)
 struct AxisAlignedBoundingBox {};
-
 struct OrientedBoundingBox {};
 
 class PhysicsSystem : public System {
