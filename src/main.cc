@@ -45,6 +45,18 @@ void APIENTRY MessageCallback(GLenum source, GLenum type, GLuint id, GLenum seve
   }
 }
 
+// Explicitly turn on vsync through GLFW
+void EnableVSync() {
+  glfwSwapInterval(1);
+}
+
+// To disable vsync, on computers that do not have the GPU enforcing
+// vsync on game windows (laptops), this will make it so that it 
+// possibly goes on (hundreds) of frames per second.
+void DisableVSync() {
+  glfwSwapInterval(0);
+}
+
 int main(void) {
   GLFWwindow* window;
 
@@ -64,6 +76,8 @@ int main(void) {
   // You can move contexts around windows, but for now we can just leave
   // this here, this sets the current window as the context current
   glfwMakeContextCurrent(window);
+
+  EnableVSync();
 
   // Load gl with glad
   gladLoadGL(glfwGetProcAddress);
