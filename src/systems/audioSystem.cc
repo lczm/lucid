@@ -20,5 +20,4 @@ void AudioSystem::Update(double dt, Registry* registry, Input* input) {
     sePlayer1.Play(sound1);
     gruntCooldown = 0;
   }
-
 }

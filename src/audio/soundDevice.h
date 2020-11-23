@@ -16,12 +16,12 @@ class SoundDevice {
   static SoundDevice* Get();
   static void Init();
 
-  void GetLocation(float &x, float &y, float &z);
-  void GetOrientation(float &orientation);
+  void GetLocation(float& x, float& y, float& z);
+  void GetOrientation(float& orientation);
   float GetGain();
 
-  void SetLocation(const float &x, const float &y, const float &z);
-  void SetOrientation(const float &atx, const float &aty, const float &atz, const float &upx,
-                      const float &upy, const float &upz);
-  void SetGain(const float &val);
+  void SetLocation(const float& x, const float& y, const float& z);
+  void SetOrientation(const float& atx, const float& aty, const float& atz, const float& upx,
+                      const float& upy, const float& upz);
+  void SetGain(const float& val);
 };

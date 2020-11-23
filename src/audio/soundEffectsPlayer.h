@@ -6,6 +6,7 @@ class SoundEffectsPlayer {
  private:
   ALuint source;
   ALuint buffer = 0;
+
  public:
   SoundEffectsPlayer();
   ~SoundEffectsPlayer();
@@ -19,5 +20,4 @@ class SoundEffectsPlayer {
   void SetLooping(const bool& loop);
 
   bool IsPlaying();
-
 };

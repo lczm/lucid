@@ -8,6 +8,7 @@
 class AudioSystem : public System {
  private:
   float gruntCooldown;
+
  public:
   AudioSystem();
   ~AudioSystem();

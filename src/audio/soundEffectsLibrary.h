@@ -5,18 +5,16 @@
 #include <inttypes.h>
 #include <vector>
 
-class SoundEffectsLibrary
-{
-private:
-	SoundEffectsLibrary();
-	~SoundEffectsLibrary();
+class SoundEffectsLibrary {
+ private:
+  SoundEffectsLibrary();
+  ~SoundEffectsLibrary();
 
-	std::vector<ALuint> p_SoundEffectBuffers;
+  std::vector<ALuint> p_SoundEffectBuffers;
 
-public:
-	static SoundEffectsLibrary* Get();
+ public:
+  static SoundEffectsLibrary* Get();
 
-	ALuint Load(const char* filename);
-	bool UnLoad(const ALuint& bufferId);
-
+  ALuint Load(const char* filename);
+  bool UnLoad(const ALuint& bufferId);
 };

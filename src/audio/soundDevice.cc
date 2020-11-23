@@ -4,15 +4,13 @@ static SoundDevice* _instance = nullptr;
 
 SoundDevice::SoundDevice() {
   p_ALCDevice = alcOpenDevice(nullptr);  // nullptr = get default device
-  if (!p_ALCDevice) 
-      throw("Failed to get sound device");
+  if (!p_ALCDevice) throw("Failed to get sound device");
 
   p_ALCContext = alcCreateContext(p_ALCDevice, nullptr);  // create context
-  if (!p_ALCContext) 
-      throw("Failed to set sound context");
+  if (!p_ALCContext) throw("Failed to set sound context");
 
-  if (!alcMakeContextCurrent(p_ALCContext))     // make context current 
-      throw("Failed to make context current");
+  if (!alcMakeContextCurrent(p_ALCContext))  // make context current
+    throw("Failed to make context current");
 
   const ALCchar* name = nullptr;
 
@@ -40,48 +38,43 @@ void SoundDevice::Init() {
   }
 }
 
-void SoundDevice::GetLocation(float& x, float& y, float& z)
-{
-	alGetListener3f(AL_POSITION, &x, &y, &z);
+void SoundDevice::GetLocation(float& x, float& y, float& z) {
+  alGetListener3f(AL_POSITION, &x, &y, &z);
 }
 
-void SoundDevice::GetOrientation(float& ori)
-{
-	alGetListenerfv(AL_ORIENTATION, &ori);
+void SoundDevice::GetOrientation(float& ori) {
+  alGetListenerfv(AL_ORIENTATION, &ori);
 }
 
-float SoundDevice::GetGain()
-{
-	float curr_gain;
-	alGetListenerf(AL_GAIN, &curr_gain);
-	return curr_gain;
+float SoundDevice::GetGain() {
+  float curr_gain;
+  alGetListenerf(AL_GAIN, &curr_gain);
+  return curr_gain;
 }
 
-void SoundDevice::SetLocation(const float& x, const float& y, const float& z)
-{
-	alListener3f(AL_POSITION, x, y, z);
+void SoundDevice::SetLocation(const float& x, const float& y, const float& z) {
+  alListener3f(AL_POSITION, x, y, z);
 }
 
-void SoundDevice::SetOrientation(const float& atx, const float& aty, const float& atz, const float& upx, const float& upy, const float& upz)
-{
-	std::vector<float> orientation;
-	orientation.push_back(atx);
-	orientation.push_back(aty);
-	orientation.push_back(atz);
-	orientation.push_back(upx);
-	orientation.push_back(upy);
-	orientation.push_back(upz);
-	alListenerfv(AL_ORIENTATION, orientation.data());
+void SoundDevice::SetOrientation(const float& atx, const float& aty, const float& atz,
+                                 const float& upx, const float& upy, const float& upz) {
+  std::vector<float> orientation;
+  orientation.push_back(atx);
+  orientation.push_back(aty);
+  orientation.push_back(atz);
+  orientation.push_back(upx);
+  orientation.push_back(upy);
+  orientation.push_back(upz);
+  alListenerfv(AL_ORIENTATION, orientation.data());
 }
 
-void SoundDevice::SetGain(const float& val)
-{
-	// clamp between 0 and 5
-	float newVol = val;
-	if (newVol < 0.f)
-		newVol = 0.f;
-	else if (newVol > 5.f)
-		newVol = 5.f;
+void SoundDevice::SetGain(const float& val) {
+  // clamp between 0 and 5
+  float newVol = val;
+  if (newVol < 0.f)
+    newVol = 0.f;
+  else if (newVol > 5.f)
+    newVol = 5.f;
 
-	alListenerf(AL_GAIN, newVol);
+  alListenerf(AL_GAIN, newVol);
 }
