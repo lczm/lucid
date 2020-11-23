@@ -1,5 +1,9 @@
 #include "input.h"
 
+// Mostly used for mock / tests
+Input::Input() {
+}
+
 Input::Input(GLFWwindow* window) {
   Input::window = window;
 

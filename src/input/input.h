@@ -25,6 +25,7 @@ class Input {
   WindowType activeWindow;
 
  public:
+  Input();
   Input(GLFWwindow* window);
   ~Input();
 
