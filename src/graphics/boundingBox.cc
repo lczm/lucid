@@ -1,6 +1,12 @@
 #include "boundingBox.h"
 
 BoundingBoxCube::BoundingBoxCube() {
+}
+
+BoundingBoxCube::~BoundingBoxCube() {
+}
+
+void BoundingBoxCube::Build() {
   // Generate the appropriate buffers
   glGenVertexArrays(1, &VAO);
   glGenBuffers(1, &VBO);
@@ -29,7 +35,4 @@ BoundingBoxCube::BoundingBoxCube() {
   // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 
   glBindVertexArray(0);
-}
-
-BoundingBoxCube::~BoundingBoxCube() {
 }

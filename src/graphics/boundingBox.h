@@ -60,6 +60,8 @@ class BoundingBoxCube {
  public:
   BoundingBoxCube();
   ~BoundingBoxCube();
+
+  void Build();
 };
 
 class BoundingBoxSphere {

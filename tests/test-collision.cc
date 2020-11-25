@@ -9,9 +9,10 @@ TEST(PhysicsCollision, BoxBoxColliding) {
   Registry* registry = new Registry();
   Input* input = new Input();
 
+  registry->RegisterSystem(new PhysicsSystem());
+
   // Register systems and archetypes
   registry->RegisterArchetype<Cube, Transform, RigidBody, BoundingBoxCube>();
-  registry->RegisterSystem(new PhysicsSystem());
 
   // Get the entities
   Entity first = registry->GetAvailableEntityId();
@@ -35,5 +36,7 @@ TEST(PhysicsCollision, BoxBoxColliding) {
 
   // Check that both BoundingBoxCube(s) are colliding
   registry->GetComponentsIter<BoundingBoxCube>()->Each(
-      [](BoundingBoxCube& boundingBoxCube) { std::cout << boundingBoxCube.collided << std::endl; });
+      [](BoundingBoxCube& boundingBoxCube) {
+        EXPECT_TRUE(boundingBoxCube.collided);
+      });
 }
