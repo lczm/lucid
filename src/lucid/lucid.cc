@@ -149,6 +149,10 @@ void Lucid::InitializeEntities() {
   registry->AddComponentData<Model>(modelID2, Model(SCIFIHELMET_MODEL));
   registry->AddComponentData<Model>(modelID3, Model(AVOCADO_MODEL));
 
+  registry->GetComponentsIter<Cube>()->Each([](Cube& cube) {
+    cube.Build();
+  });
+
   registry->GetComponentsIter<Sphere, Transform>()->Each([](Sphere& sphere, Transform& transform) {
     sphere.radius = 1.0f;
     sphere.sectors = 36;
@@ -224,6 +228,16 @@ void Lucid::InitializeDemoPongEntities() {
   // note 0.05f is just harded 'movement speed'
   ballRigidBody->velocity =
       glm::normalize(playerTransform->position - ballTransform->position) * 0.020f;
+
+  // TODO : This can be simplified
+  registry->GetComponentsIter<Cube>()->Each([](Cube& cube) {
+    cube.Build();
+  });
+
+  // TODO : This can be ismplified
+  registry->GetComponentsIter<BoundingBoxCube>()->Each([](BoundingBoxCube& boundingBoxCube) {
+    boundingBoxCube.Build();
+  });
 
   // TODO : This can be simplified
   registry->GetComponentsIter<Sphere>()->Each([](Sphere& sphere) {

@@ -43,6 +43,7 @@ RenderSystem::~RenderSystem() {
 
 void RenderSystem::Update(double dt, Registry* registry, Input* input) {
   HandleMousePan(dt, input);
+  HandleMousePicking(dt, input);
   HandleMouseScroll(dt, input);
   HandleKeyboardPan(dt, input);
   HandleKeyboardInput(dt, registry, input);
@@ -106,6 +107,12 @@ void RenderSystem::HandleMousePan(double dt, Input* input) {
     // camera->UpdateCameraVector(offsetX, offsetY);
     quatCamera->PanCamera(dt, offsetX, offsetY);
     return;
+  }
+}
+
+void RenderSystem::HandleMousePicking(double dt, Input* input) {
+  if (input->IsMouseLDown()) {
+    std::cout << "Mouse left is down" << std::endl;
   }
 }
 
