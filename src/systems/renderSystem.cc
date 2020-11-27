@@ -6,7 +6,7 @@ RenderSystem::RenderSystem() {
   RenderSystem::quatCamera = new QuatCamera();
 
   // move back the camera a little bit.
-  quatCamera->Translate(glm::vec3(0.0f, 0.0f, -10.0f));
+  quatCamera->Translate(glm::vec3(0.0f, 0.0f, -15.0f));
 
   glGenFramebuffers(1, &fbo);
   glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -193,7 +193,7 @@ void RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
   // auto inversed = glm::inverse(quatCamera->GetView());
   // glm::vec3 rayWorld = glm::normalize(glm::vec3(inversed * rayEye));
   glm::vec3 rayWorld = glm::normalize(glm::vec3(quatCamera->GetView() * rayEye));
-  std::cout << glm::to_string(rayWorld) << std::endl;
+  // std::cout << glm::to_string(rayWorld) << std::endl;
 
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
   devDebug.mousePickRay = rayWorld;
@@ -268,6 +268,20 @@ void RenderSystem::DrawAllLines(double dt, Registry* registry, Input* input) {
   registry->GetComponentsIter<Line, Transform>()->Each([dt, &shaderResource, &renderer = renderer,
                                                         &quatCamera = quatCamera](
                                                            Line& line, Transform& transform) {
+    // Debug START
+    // glm::vec3 origin = quatCamera->GetPositionInWorld();
+    // point the line at the origin point in world space for now
+    // glm::vec3 destination = {0.0f, 0.0f, 0.0f};
+
+    // calculate the scale
+    // glm::vec3 diff = destination - origin;
+
+    // Update the position to the origin of the transform
+    transform.position = line.origin;
+    // The scale is the 'direction' on how far to move
+    transform.scale = line.destination - line.origin;
+    // Debug END
+
     glm::mat4 matrixModel = glm::mat4(1.0f);
     glm::mat4 rotationMatrix = glm::mat4(1.0f);
 

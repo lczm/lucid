@@ -197,8 +197,15 @@ void Lucid::InitializeDemoPongEntities() {
 
   // Temporary for debugging purposes
   registry->RegisterArchetype<Line, Transform>();
-  Entity mousePickRay = registry->GetAvailableEntityId();
-  registry->CreateEntity<Line, Transform>(mousePickRay);
+  Entity randomLine = registry->GetAvailableEntityId();
+  registry->CreateEntity<Line, Transform>(randomLine);
+
+  Line* line = registry->GetComponent<Line>(randomLine);
+  line->origin.x = -10.0f;
+  line->destination.x = 20.0f;
+  line->color.r = 1.0f;
+  line->color.g = 0.0f;
+  line->color.b = 0.0f;
 
   // Cube / rectangle entities
   Entity playerPaddleID = registry->GetAvailableEntityId();

@@ -16,6 +16,10 @@ glm::vec3 QuatCamera::GetPosition() {
   return position;
 }
 
+glm::vec3 QuatCamera::GetPositionInWorld() {
+  return {position.x, position.y, -position.z};
+}
+
 glm::quat QuatCamera::GetOrientation() {
   return orientation;
 }
