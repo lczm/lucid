@@ -6,8 +6,8 @@
 #include "glm.hpp"
 
 const std::vector<float> line_vertices = {
-    -1.0,
-    1.0,
+    -1.0, -1.0, -1.0,  //
+    1.0,  1.0,  1.0,   //
 };
 
 class Line {

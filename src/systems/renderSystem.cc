@@ -265,7 +265,8 @@ void RenderSystem::DrawAllLines(double dt, Registry* registry, Input* input) {
   shaderResource.primitiveShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
   shaderResource.primitiveShader.SetUniformMatFloat4("view", quatCamera->GetView());
 
-  registry->GetComponentsIter<Line, Transform>()->Each([dt, &shaderResource, &renderer = renderer](
+  registry->GetComponentsIter<Line, Transform>()->Each([dt, &shaderResource, &renderer = renderer,
+                                                        &quatCamera = quatCamera](
                                                            Line& line, Transform& transform) {
     glm::mat4 matrixModel = glm::mat4(1.0f);
     glm::mat4 rotationMatrix = glm::mat4(1.0f);
@@ -279,6 +280,10 @@ void RenderSystem::DrawAllLines(double dt, Registry* registry, Input* input) {
     rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[2], glm::vec3(0.0, 0.0, 1.0));
 
     matrixModel *= rotationMatrix;
+
+    // Debug START
+    // matrixModel = quatCamera->GetPosition();
+    // Debug END
 
     shaderResource.primitiveShader.SetUniformMatFloat4("model", matrixModel);
     shaderResource.primitiveShader.SetUniformVecFloat3("uColor", line.color);
