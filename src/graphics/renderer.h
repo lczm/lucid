@@ -32,6 +32,7 @@ class Renderer {
   void DrawTexturedSphere(Sphere& sphere, Shader& shader);
 
   void DrawLine(Line& line, Shader& shader);
+  void DrawLine(glm::vec3 origin, glm::vec3 end, glm::vec3 color);
 
   // Potential skeleton methods that needs to be implemented.
   void DrawQuad();

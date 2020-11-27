@@ -83,21 +83,25 @@ bool PhysicsSystem::CheckCollision(BoundingBoxCube& boundingBoxCube, Transform& 
   BoundingBox bbOther;
 
   for (size_t i = 0; i < bbVertices.size(); i++) {
+    // Min-Max x-values
     bb.minX = glm::min(bbVertices[i].x, bb.minX);
     bb.maxX = glm::max(bbVertices[i].x, bb.maxX);
     bbOther.minX = glm::min(bbVerticesOther[i].x, bbOther.minX);
     bbOther.maxX = glm::max(bbVerticesOther[i].x, bbOther.maxX);
 
+    // Min-Max y-values
     bb.minY = glm::min(bbVertices[i].y, bb.minY);
     bb.maxY = glm::max(bbVertices[i].y, bb.maxY);
     bbOther.minY = glm::min(bbVerticesOther[i].y, bbOther.minY);
     bbOther.maxY = glm::max(bbVerticesOther[i].y, bbOther.maxY);
 
+    // Min-Max z-values
     bb.minZ = glm::min(bbVertices[i].z, bb.minZ);
     bb.maxZ = glm::max(bbVertices[i].z, bb.maxZ);
     bbOther.minZ = glm::min(bbVerticesOther[i].z, bbOther.minZ);
     bbOther.maxZ = glm::max(bbVerticesOther[i].z, bbOther.maxZ);
   }
+
   if (CheckCollisionBetweenBoundingBox(bb, bbOther)) {
     return true;
   }

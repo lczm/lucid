@@ -195,6 +195,11 @@ void Lucid::InitializeDemoPongEntities() {
   registry->RegisterArchetype<Sphere, Transform, RigidBody, BoundingBoxCube>();
   registry->RegisterArchetype<PongRules>();
 
+  // Temporary for debugging purposes
+  registry->RegisterArchetype<Line, Transform>();
+  Entity mousePickRay = registry->GetAvailableEntityId();
+  registry->CreateEntity<Line, Transform>(mousePickRay);
+
   // Cube / rectangle entities
   Entity playerPaddleID = registry->GetAvailableEntityId();
   Entity aiPaddleID = registry->GetAvailableEntityId();

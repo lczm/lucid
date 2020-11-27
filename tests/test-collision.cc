@@ -36,9 +36,7 @@ TEST(PhysicsCollision, BoxBoxColliding) {
 
   // Check that both BoundingBoxCube(s) are colliding
   registry->GetComponentsIter<BoundingBoxCube>()->Each(
-      [](BoundingBoxCube& boundingBoxCube) {
-        EXPECT_TRUE(boundingBoxCube.collided);
-      });
+      [](BoundingBoxCube& boundingBoxCube) { EXPECT_TRUE(boundingBoxCube.collided); });
 }
 
 // Test that it detects that it is not colliding
@@ -73,7 +71,5 @@ TEST(PhysicsCollision, BoxBoxNotColliding) {
 
   // Check that both BoundingBoxCube(s) are colliding
   registry->GetComponentsIter<BoundingBoxCube>()->Each(
-      [](BoundingBoxCube& boundingBoxCube) {
-        EXPECT_FALSE(boundingBoxCube.collided);
-      });
+      [](BoundingBoxCube& boundingBoxCube) { EXPECT_FALSE(boundingBoxCube.collided); });
 }

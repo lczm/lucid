@@ -70,6 +70,12 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
   DrawAllCubes(dt, registry, input);
   DrawAllSpheres(dt, registry, input);
 
+  // TODO : Debugging liens
+  glm::vec3 origin = quatCamera->GetPosition();
+  glm::vec3 end = {0.0f, 0.0f, 0.0f};
+  glm::vec3 color = {1.0f, 0.0f, 0.0f};
+  renderer->DrawLine(origin, end, color);
+
   if (devDebug.drawColliders) DrawAllBoundingBoxes(dt, registry, input);
   if (devDebug.drawWireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
@@ -160,6 +166,9 @@ void RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
     return;
   }
 
+  // TODO : Perhaps this value can be a little bit more sane?
+  const float maxRayDistance = 1000.0f;
+
   float mouseX = static_cast<float>(input->GetMouseX());
   float mouseY = static_cast<float>(input->GetMouseY());
 
@@ -181,10 +190,71 @@ void RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
 
   // 4d world coordinates
   // normalize the vector as well
-  auto inversed = glm::inverse(quatCamera->GetView());
-
-  glm::vec3 rayWorld = glm::normalize(glm::vec3(inversed * rayEye));
+  // auto inversed = glm::inverse(quatCamera->GetView());
+  // glm::vec3 rayWorld = glm::normalize(glm::vec3(inversed * rayEye));
+  glm::vec3 rayWorld = glm::normalize(glm::vec3(quatCamera->GetView() * rayEye));
   std::cout << glm::to_string(rayWorld) << std::endl;
+
+  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  devDebug.mousePickRay = rayWorld;
+
+  std::vector<BoundingBox> boundingBoxes;
+
+  // Calculate all the positions, assume that there is a BoundingBoxCube around it.
+  registry->GetComponentsIter<Transform>()->Each([dt, &boundingBoxes](Transform& transform) {
+    // Calculate the model matrix
+    glm::mat4 matrixModel = glm::mat4(1.0f);
+
+    matrixModel = glm::translate(matrixModel, transform.position);
+    matrixModel = glm::scale(matrixModel, transform.scale);
+
+    std::vector<glm::vec4> verticesCollection;
+    verticesCollection.reserve(boundingBoxCubeVertices.size() / 3);
+
+    for (size_t i = 0; i < boundingBoxCubeVertices.size(); i += 3) {
+      verticesCollection.push_back(matrixModel * glm::vec4(boundingBoxCubeVertices[i],
+                                                           boundingBoxCubeVertices[i + 1],
+                                                           boundingBoxCubeVertices[i + 2], 1.0f));
+    }
+
+    BoundingBox bb;
+    for (size_t i = 0; i < verticesCollection.size(); i++) {
+      bb.minX = glm::min(verticesCollection[i].x, bb.minX);
+      bb.maxX = glm::max(verticesCollection[i].x, bb.maxX);
+
+      bb.minY = glm::min(verticesCollection[i].y, bb.minY);
+      bb.maxY = glm::max(verticesCollection[i].y, bb.maxY);
+
+      bb.minZ = glm::min(verticesCollection[i].z, bb.minZ);
+      bb.maxZ = glm::max(verticesCollection[i].z, bb.maxZ);
+    }
+    boundingBoxes.push_back(bb);
+  });
+
+  for (size_t i = 0; i < boundingBoxes.size(); i++) {
+    // Calculate the distance between the ray origin and the bounding box?
+    auto origin = quatCamera->GetPosition();
+
+    float t1 = (boundingBoxes[i].minX - origin.x) * rayWorld.x;
+    float t2 = (boundingBoxes[i].maxX - origin.x) * rayWorld.x;
+
+    float t3 = (boundingBoxes[i].minY - origin.y) * rayWorld.y;
+    float t4 = (boundingBoxes[i].maxY - origin.y) * rayWorld.y;
+
+    float t5 = (boundingBoxes[i].minZ - origin.z) * rayWorld.z;
+    float t6 = (boundingBoxes[i].maxZ - origin.z) * rayWorld.z;
+
+    float tmin = glm::max(glm::max(glm::min(t1, t2), glm::min(t3, t4)), glm::min(t5, t6));
+    float tmax = glm::min(glm::min(glm::max(t1, t2), glm::max(t3, t4)), glm::max(t5, t6));
+
+    if (tmax < 0) {
+      // std::cout << "AABB box is behind" << std::endl;
+    } else if (tmin > tmax) {
+      // std::cout << "Does not intersect" << std::endl;
+    } else {
+      std::cout << "Intersected at index : " << i << std::endl;
+    }
+  }
 }
 
 void RenderSystem::DrawAllLines(double dt, Registry* registry, Input* input) {
@@ -195,9 +265,8 @@ void RenderSystem::DrawAllLines(double dt, Registry* registry, Input* input) {
   shaderResource.primitiveShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
   shaderResource.primitiveShader.SetUniformMatFloat4("view", quatCamera->GetView());
 
-  registry->GetComponentsIter<Line, Transform>()->Each([dt, &shaderResource, &renderer = renderer,
-                                                        &devDebug](Line& line,
-                                                                   Transform& transform) {
+  registry->GetComponentsIter<Line, Transform>()->Each([dt, &shaderResource, &renderer = renderer](
+                                                           Line& line, Transform& transform) {
     glm::mat4 matrixModel = glm::mat4(1.0f);
     glm::mat4 rotationMatrix = glm::mat4(1.0f);
 
