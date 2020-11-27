@@ -12,19 +12,19 @@ QuatCamera::QuatCamera() {
 
 QuatCamera::~QuatCamera() = default;
 
-glm::vec3& QuatCamera::GetPosition() {
+glm::vec3 QuatCamera::GetPosition() {
   return position;
 }
 
-glm::quat& QuatCamera::GetOrientation() {
+glm::quat QuatCamera::GetOrientation() {
   return orientation;
 }
 
-glm::mat4& QuatCamera::GetProjection() {
+glm::mat4 QuatCamera::GetProjection() {
   return projection;
 }
 
-glm::mat4& QuatCamera::GetView() {
+glm::mat4 QuatCamera::GetView() {
   return glm::translate(glm::mat4_cast(orientation), position);
 }
 

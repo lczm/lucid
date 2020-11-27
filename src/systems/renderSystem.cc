@@ -43,10 +43,10 @@ RenderSystem::~RenderSystem() {
 
 void RenderSystem::Update(double dt, Registry* registry, Input* input) {
   HandleMousePan(dt, input);
-  HandleMousePicking(dt, input);
   HandleMouseScroll(dt, input);
   HandleKeyboardPan(dt, input);
   HandleKeyboardInput(dt, registry, input);
+  HandleMousePick(dt, registry, input);
 
   glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
@@ -110,12 +110,6 @@ void RenderSystem::HandleMousePan(double dt, Input* input) {
   }
 }
 
-void RenderSystem::HandleMousePicking(double dt, Input* input) {
-  if (input->IsMouseLDown()) {
-    std::cout << "Mouse left is down" << std::endl;
-  }
-}
-
 void RenderSystem::HandleMouseScroll(double dt, Input* input) {
   // Scroll up
   if (input->GetScrollState() == 1) {
@@ -159,6 +153,38 @@ void RenderSystem::HandleKeyboardInput(double dt, Registry* registry, Input* inp
 
     input->SetKeyOff('1');
   }
+}
+
+void RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) {
+  if (!input->IsMouseLDown()) {
+    return;
+  }
+
+  float mouseX = static_cast<float>(input->GetMouseX());
+  float mouseY = static_cast<float>(input->GetMouseY());
+
+  float x = (2.0f * mouseX) / SCREEN_WIDTH - 1.0f;
+  float y = 1.0f - (2.0f * mouseY) / SCREEN_HEIGHT;
+  float z = 1.0f;
+
+  // normalized device coordinates
+  glm::vec3 rayNds = glm::vec3(x, y, z);
+
+  // homogeneous clip coordinates
+  glm::vec4 rayClip = glm::vec4(rayNds.x, rayNds.y, -1.0f, 1.0f);
+
+  // convert to eye/camera coordinates
+  glm::vec4 rayEye = glm::inverse(quatCamera->GetProjection()) * rayClip;
+
+  // unproject the x, z part
+  rayEye = glm::vec4(rayEye.x, rayEye.y, -1.0f, 1.0f);
+
+  // 4d world coordinates
+  // normalize the vector as well
+  auto inversed = glm::inverse(quatCamera->GetView());
+
+  glm::vec3 rayWorld = glm::normalize(glm::vec3(inversed * rayEye));
+  std::cout << glm::to_string(rayWorld) << std::endl;
 }
 
 void RenderSystem::DrawAllLines(double dt, Registry* registry, Input* input) {

@@ -36,7 +36,7 @@ class RenderSystem : public System {
   void HandleMouseScroll(double dt, Input* input);
 
   void HandleKeyboardInput(double dt, Registry* registry, Input* input);
-
+  void HandleMousePick(double dt, Registry* registry, Input* input);
   void DrawAllLines(double dt, Registry* registry, Input* input);
   void DrawAllModels(double dt, Registry* registry, Input* input);
   void DrawAllCubes(double dt, Registry* registry, Input* input);

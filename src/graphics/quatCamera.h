@@ -11,7 +11,7 @@ class QuatCamera {
  public:
   glm::vec3 position = glm::vec3(0.0f, 0.0f, -5.0f);
   glm::quat orientation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
-  glm::mat4 projection;
+  glm::mat4 projection = glm::mat4(1.0f);
 
   float lastX = 0;
   float lastY = 0;
@@ -25,10 +25,10 @@ class QuatCamera {
   QuatCamera();
   ~QuatCamera();
 
-  glm::vec3& GetPosition();
-  glm::quat& GetOrientation();
-  glm::mat4& GetProjection();
-  glm::mat4& GetView();
+  glm::vec3 GetPosition();
+  glm::quat GetOrientation();
+  glm::mat4 GetProjection();
+  glm::mat4 GetView();
 
   void Translate(const glm::vec3& vec);
   void Translate(const float x, const float y, const float z);
