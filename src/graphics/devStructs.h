@@ -13,5 +13,5 @@ struct DevDebug {
   bool drawWireframe = false;
   bool drawColliders = false;
 
-  glm::vec3 mousePickRay = glm::vec3(1.0f);
+  uint32_t rayID = 0;
 };

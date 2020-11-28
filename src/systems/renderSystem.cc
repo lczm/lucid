@@ -162,9 +162,16 @@ void RenderSystem::HandleKeyboardInput(double dt, Registry* registry, Input* inp
 }
 
 void RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) {
-  if (!input->IsMouseLDown()) {
+  // if (!input->IsMouseLDown()) {
+  //   return;
+  // }
+
+  if (!input->mouseKeys[MOUSE_LEFT]) {
     return;
   }
+
+  // Turn this off for this frame so that it doesn't generate hundreds of rays
+  input->mouseKeys[MOUSE_LEFT] = false;
 
   // TODO : Perhaps this value can be a little bit more sane?
   const float maxRayDistance = 1000.0f;
@@ -190,16 +197,22 @@ void RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
 
   // 4d world coordinates
   // normalize the vector as well
-  // auto inversed = glm::inverse(quatCamera->GetView());
-  // glm::vec3 rayWorld = glm::normalize(glm::vec3(inversed * rayEye));
   glm::vec3 rayWorld = glm::normalize(glm::vec3(quatCamera->GetView() * rayEye));
-  // std::cout << glm::to_string(rayWorld) << std::endl;
+
+  // Scale this by a fairly huge amount
+  rayWorld *= 100.0f;
+
+  std::cout << glm::to_string(rayWorld) << std::endl;
 
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
-  devDebug.mousePickRay = rayWorld;
+
+  Line* line = registry->GetComponent<Line>(devDebug.rayID);
+  // line->origin = quatCamera->GetPositionInWorld();
+  line->origin = {0.0f, 0.0f, 0.0f};
+  line->destination = rayWorld;
+  line->color.r = 1.0f;
 
   std::vector<BoundingBox> boundingBoxes;
-
   // Calculate all the positions, assume that there is a BoundingBoxCube around it.
   registry->GetComponentsIter<Transform>()->Each([dt, &boundingBoxes](Transform& transform) {
     // Calculate the model matrix
@@ -231,10 +244,9 @@ void RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
     boundingBoxes.push_back(bb);
   });
 
+  // Calculate the distance between the ray origin and the bounding box?
+  auto origin = quatCamera->GetPositionInWorld();
   for (size_t i = 0; i < boundingBoxes.size(); i++) {
-    // Calculate the distance between the ray origin and the bounding box?
-    auto origin = quatCamera->GetPosition();
-
     float t1 = (boundingBoxes[i].minX - origin.x) * rayWorld.x;
     float t2 = (boundingBoxes[i].maxX - origin.x) * rayWorld.x;
 
@@ -249,11 +261,15 @@ void RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
 
     if (tmax < 0) {
       // std::cout << "AABB box is behind" << std::endl;
-    } else if (tmin > tmax) {
-      // std::cout << "Does not intersect" << std::endl;
-    } else {
-      std::cout << "Intersected at index : " << i << std::endl;
+      continue;
     }
+
+    if (tmin > tmax) {
+      // std::cout << "Does not intersect" << std::endl;
+      continue;
+    }
+
+    std::cout << "Intersected at index : " << i << std::endl;
   }
 }
 

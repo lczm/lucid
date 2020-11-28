@@ -114,7 +114,7 @@ void Lucid::InitializeBuiltInSystems() {
   // Demo start -- TODO : This should be separated, need a way of prioritising systems
   registry->RegisterSystem(new PlayerSystem());
   registry->RegisterSystem(new AiSystem());
-  registry->RegisterSystem(new MovementSystem());
+  // registry->RegisterSystem(new MovementSystem());
   // Demo end
 
   registry->RegisterSystem(new PhysicsSystem());
@@ -195,17 +195,14 @@ void Lucid::InitializeDemoPongEntities() {
   registry->RegisterArchetype<Sphere, Transform, RigidBody, BoundingBoxCube>();
   registry->RegisterArchetype<PongRules>();
 
-  // Temporary for debugging purposes
+  // This archetype is used for ray casting
   registry->RegisterArchetype<Line, Transform>();
-  Entity randomLine = registry->GetAvailableEntityId();
-  registry->CreateEntity<Line, Transform>(randomLine);
 
-  Line* line = registry->GetComponent<Line>(randomLine);
-  line->origin.x = -10.0f;
-  line->destination.x = 20.0f;
-  line->color.r = 1.0f;
-  line->color.g = 0.0f;
-  line->color.b = 0.0f;
+  Entity rayID = registry->GetAvailableEntityId();
+  registry->CreateEntity<Line, Transform>(rayID);
+
+  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  devDebug.rayID = rayID;
 
   // Cube / rectangle entities
   Entity playerPaddleID = registry->GetAvailableEntityId();
