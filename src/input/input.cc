@@ -15,7 +15,8 @@ Input::Input(GLFWwindow* window) {
     mouseKey = false;
   }
 
-  activeWindow = WindowType::None;
+  // Note to change this back to none once done with debugging
+  activeWindow = WindowType::Scene;
 }
 
 Input::~Input() {

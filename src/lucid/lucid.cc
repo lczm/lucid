@@ -109,7 +109,7 @@ void Lucid::InitializeBulitInEntities() {
 }
 
 void Lucid::InitializeBuiltInSystems() {
-  registry->RegisterSystem(new UiSystem());
+  // registry->RegisterSystem(new UiSystem());
 
   // Demo start -- TODO : This should be separated, need a way of prioritising systems
   registry->RegisterSystem(new PlayerSystem());
