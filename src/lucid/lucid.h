@@ -6,9 +6,11 @@
 #include "ecs.h"
 #include "input.h"
 #include "constants.h"
+#include "utils.h"
 
-// TODO : use compiler if debug flag here
+#if DEBUG
 #include "devStructs.h"
+#endif
 
 #include "model.h"
 #include "line.h"

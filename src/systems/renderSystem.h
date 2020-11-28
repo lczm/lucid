@@ -5,6 +5,7 @@
 
 #include "gl.h"
 #include "ecs.h"
+#include "utils.h"
 #include "renderer.h"
 #include "camera.h"
 #include "shaderResource.h"
@@ -14,6 +15,11 @@
 #include "quatCamera.h"
 
 #include "gtx/string_cast.hpp"
+
+#include "imgui.h"
+#include "imgui_internal.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 
 class RenderSystem : public System {
  private:

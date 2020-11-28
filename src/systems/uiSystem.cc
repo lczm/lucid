@@ -119,6 +119,9 @@ void UiSystem::DrawHierarchy(double dt, Registry* registry, Input* input) {
 
   UpdateInputActiveWindow(input, WindowType::Hierarchy);
 
+  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  devDebug.leftWindowWidth = ImGui::GetWindowWidth();
+
   // TODO : This can be improved upon
   // For now just take anything that has a transform component attached to it
 
@@ -254,6 +257,7 @@ void UiSystem::DrawDevDebug(double dt, Registry* registry, Input* input) {
   UpdateInputActiveWindow(input, WindowType::DevDebug);
 
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  devDebug.rightWindowWidth = ImGui::GetWindowWidth();
 
   ImGui::Checkbox("Draw all with wireframe", &devDebug.drawWireframe);
   ImGui::Checkbox("Draw all colliders", &devDebug.drawColliders);

@@ -26,6 +26,8 @@ double Input::GetMouseX() {
 
 #if DEBUG
   if (activeWindow == WindowType::Scene) {
+    // When it is defined that it is in 'DEBUG' mode,
+    // the coordinates needs to be offseted
     return x;
   }
 #endif
@@ -43,6 +45,7 @@ double Input::GetMouseY() {
 #if DEBUG
   if (activeWindow == WindowType::Scene) {
     return std::abs(SCREEN_HEIGHT - y);
+    // return y;
   }
 #endif
 

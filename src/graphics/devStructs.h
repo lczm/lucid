@@ -14,4 +14,10 @@ struct DevDebug {
   bool drawColliders = false;
 
   uint32_t rayID = 0;
+
+  float leftWindowWidth = 0;
+  float leftWindowHeight = 0;
+
+  float rightWindowWidth = 0;
+  float rightWindowHeight = 0;
 };

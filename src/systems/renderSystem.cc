@@ -170,11 +170,10 @@ void RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
     return;
   }
 
+  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+
   // Turn this off for this frame so that it doesn't generate hundreds of rays
   input->mouseKeys[MOUSE_LEFT] = false;
-
-  // TODO : Perhaps this value can be a little bit more sane?
-  const float maxRayDistance = 1000.0f;
 
   float mouseX = static_cast<float>(input->GetMouseX());
   float mouseY = static_cast<float>(input->GetMouseY());
@@ -204,11 +203,9 @@ void RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
 
   std::cout << glm::to_string(rayWorld) << std::endl;
 
-  DevDebug& devDebug = registry->GetComponent<DevDebug>();
-
   Line* line = registry->GetComponent<Line>(devDebug.rayID);
-  // line->origin = quatCamera->GetPositionInWorld();
-  line->origin = {0.0f, 0.0f, 0.0f};
+  line->origin = quatCamera->GetPositionInWorld();
+  // line->origin = {0.0f, 0.0f, 0.0f};
   line->destination = rayWorld;
   line->color.r = 1.0f;
 
