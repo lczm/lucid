@@ -183,8 +183,6 @@ void RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
   // line->destination = {0.0f, 10.0f, 0.0f};
   line->color.r = 1.0f;
 
-  return;
-
   std::vector<BoundingBox> boundingBoxes;
   // Calculate all the positions, assume that there is a BoundingBoxCube around it.
   registry->GetComponentsIter<Transform>()->Each([dt, &boundingBoxes, &quatCamera = quatCamera,
@@ -200,10 +198,6 @@ void RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
       verticesCollection.reserve(boundingBoxCubeVertices.size() / 3);
 
       for (size_t i = 0; i < boundingBoxCubeVertices.size(); i += 3) {
-        // verticesCollection.push_back(matrixModel * glm::vec4(boundingBoxCubeVertices[i],
-        //                                                      boundingBoxCubeVertices[i + 1],
-        //                                                      boundingBoxCubeVertices[i +
-        //                                                      2], 1.0f));
         verticesCollection.push_back(matrixModel * glm::vec4(boundingBoxCubeVertices[i],
                                                              boundingBoxCubeVertices[i + 1],
                                                              boundingBoxCubeVertices[i + 2], 1.0f));
@@ -221,44 +215,6 @@ void RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
         bb.maxZ = glm::max(verticesCollection[i].z, bb.maxZ);
       }
       boundingBoxes.push_back(bb);
-
-      // DEBUG START
-      float tMin = 0.0f;
-      float tMax = 100000.0f;
-
-      auto origin = quatCamera->GetPositionInWorld();
-
-      glm::vec3 positionInWorldSpace = {matrixModel[3].x, matrixModel[3].y, matrixModel[3].z};
-      glm::vec3 delta = positionInWorldSpace - origin;
-
-      glm::vec3 xaxis = {matrixModel[0].x, matrixModel[0].y, matrixModel[0].z};
-      float e = glm::dot(xaxis, delta);
-      float f = glm::dot(rayDirection, xaxis);
-
-      // Intersection with left plane
-      float t1 = (e + boundingBoxes[0].minX) / f;
-      // Intersection with right plane
-      float t2 = (e + boundingBoxes[0].maxX) / f;
-
-      // Swap t1 and t2 if t1 > t2
-      if (t1 > t2) {
-        float w = t1;
-        t1 = t2;
-        t2 = w;
-      }
-
-      // tMax is the nearest "far" intersection
-      if (t2 < tMax) tMax = t2;
-      // tMin is the farthest "near" intersection
-      if (t1 > tMin) tMin = t1;
-
-      // if "far" is closer than "near", there is no intersection
-      if (tMax < tMin) {
-      } else {
-        lucid::Log("Intersected");
-      }
-
-      // DEBUG END
     }
   });
 
@@ -270,31 +226,31 @@ void RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
   //   float tMax = 100000.0f;
   // }
 
-  // for (size_t i = 0; i < boundingBoxes.size(); i++) {
-  //   float t1 = (boundingBoxes[i].minX - origin.x) * rayDirection.x;
-  //   float t2 = (boundingBoxes[i].maxX - origin.x) * rayDirection.x;
+  for (size_t i = 0; i < boundingBoxes.size(); i++) {
+    float t1 = (boundingBoxes[i].minX - origin.x) * rayDirection.x;
+    float t2 = (boundingBoxes[i].maxX - origin.x) * rayDirection.x;
 
-  //   float t3 = (boundingBoxes[i].minY - origin.y) * rayDirection.y;
-  //   float t4 = (boundingBoxes[i].maxY - origin.y) * rayDirection.y;
+    float t3 = (boundingBoxes[i].minY - origin.y) * rayDirection.y;
+    float t4 = (boundingBoxes[i].maxY - origin.y) * rayDirection.y;
 
-  //   float t5 = (boundingBoxes[i].minZ - origin.z) * rayDirection.z;
-  //   float t6 = (boundingBoxes[i].maxZ - origin.z) * rayDirection.z;
+    float t5 = (boundingBoxes[i].minZ - origin.z) * rayDirection.z;
+    float t6 = (boundingBoxes[i].maxZ - origin.z) * rayDirection.z;
 
-  //   float tmin = glm::max(glm::max(glm::min(t1, t2), glm::min(t3, t4)), glm::min(t5, t6));
-  //   float tmax = glm::min(glm::min(glm::max(t1, t2), glm::max(t3, t4)), glm::max(t5, t6));
+    float tmin = glm::max(glm::max(glm::min(t1, t2), glm::min(t3, t4)), glm::min(t5, t6));
+    float tmax = glm::min(glm::min(glm::max(t1, t2), glm::max(t3, t4)), glm::max(t5, t6));
 
-  //   if (tmax < 0) {
-  //     // lucid::Log("AABB box is behind");
-  //     continue;
-  //   }
+    if (tmax < 0) {
+      // lucid::Log("AABB box is behind");
+      continue;
+    }
 
-  //   if (tmin > tmax) {
-  //     // lucid::Log("Does not intersect");
-  //     continue;
-  //   }
+    if (tmin > tmax) {
+      // lucid::Log("Does not intersect");
+      continue;
+    }
 
-  //   std::cout << "Intersected at index : " << i << std::endl;
-  // }
+    std::cout << "Intersected at index : " << i << std::endl;
+  }
 }
 
 void RenderSystem::DrawAllLines(double dt, Registry* registry, Input* input) {
