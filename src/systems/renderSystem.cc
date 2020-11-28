@@ -162,112 +162,133 @@ void RenderSystem::HandleKeyboardInput(double dt, Registry* registry, Input* inp
 }
 
 void RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) {
-  // if (!input->IsMouseLDown()) {
-  //   return;
-  // }
-
   if (!input->mouseKeys[MOUSE_LEFT]) {
     return;
   }
 
-  DevDebug& devDebug = registry->GetComponent<DevDebug>();
-
   // Turn this off for this frame so that it doesn't generate hundreds of rays
   input->mouseKeys[MOUSE_LEFT] = false;
+  DevDebug& devDebug = registry->GetComponent<DevDebug>();
 
-  float mouseX = static_cast<float>(input->GetMouseX());
-  float mouseY = static_cast<float>(input->GetMouseY());
-
-  float x = (2.0f * mouseX) / SCREEN_WIDTH - 1.0f;
-  float y = 1.0f - (2.0f * mouseY) / SCREEN_HEIGHT;
-  float z = 1.0f;
-
-  // normalized device coordinates
-  glm::vec3 rayNds = glm::vec3(x, y, z);
-
-  // homogeneous clip coordinates
-  glm::vec4 rayClip = glm::vec4(rayNds.x, rayNds.y, -1.0f, 1.0f);
-
-  // convert to eye/camera coordinates
-  glm::vec4 rayEye = glm::inverse(quatCamera->GetProjection()) * rayClip;
-
-  // unproject the x, z part
-  rayEye = glm::vec4(rayEye.x, rayEye.y, -1.0f, 1.0f);
-
-  // 4d world coordinates
-  // normalize the vector as well
-  glm::vec3 rayWorld = glm::normalize(glm::vec3(quatCamera->GetView() * rayEye));
-
-  // Scale this by a fairly huge amount
-  rayWorld *= 100.0f;
-
-  std::cout << glm::to_string(rayWorld) << std::endl;
+  glm::vec3 rayDirection = GetRayDirection(input);
 
   Line* line = registry->GetComponent<Line>(devDebug.rayID);
   line->origin = quatCamera->GetPositionInWorld();
   // line->origin = {0.0f, 0.0f, 0.0f};
-  line->destination = rayWorld;
+  line->destination = rayDirection;
+  // line->destination = {0.0f, 10.0f, 0.0f};
   line->color.r = 1.0f;
 
   std::vector<BoundingBox> boundingBoxes;
   // Calculate all the positions, assume that there is a BoundingBoxCube around it.
-  registry->GetComponentsIter<Transform>()->Each([dt, &boundingBoxes](Transform& transform) {
-    // Calculate the model matrix
-    glm::mat4 matrixModel = glm::mat4(1.0f);
+  registry->GetComponentsIter<Transform>()->Each([dt, &boundingBoxes, &quatCamera = quatCamera,
+                                                  &rayDirection](Transform& transform) {
+    if (transform.scale.x == 1.0f) {
+      // Calculate the model matrix
+      glm::mat4 matrixModel = glm::mat4(1.0f);
 
-    matrixModel = glm::translate(matrixModel, transform.position);
-    matrixModel = glm::scale(matrixModel, transform.scale);
+      matrixModel = glm::translate(matrixModel, transform.position);
+      matrixModel = glm::scale(matrixModel, transform.scale);
 
-    std::vector<glm::vec4> verticesCollection;
-    verticesCollection.reserve(boundingBoxCubeVertices.size() / 3);
+      std::vector<glm::vec4> verticesCollection;
+      verticesCollection.reserve(boundingBoxCubeVertices.size() / 3);
 
-    for (size_t i = 0; i < boundingBoxCubeVertices.size(); i += 3) {
-      verticesCollection.push_back(matrixModel * glm::vec4(boundingBoxCubeVertices[i],
-                                                           boundingBoxCubeVertices[i + 1],
-                                                           boundingBoxCubeVertices[i + 2], 1.0f));
+      for (size_t i = 0; i < boundingBoxCubeVertices.size(); i += 3) {
+        // verticesCollection.push_back(matrixModel * glm::vec4(boundingBoxCubeVertices[i],
+        //                                                      boundingBoxCubeVertices[i + 1],
+        //                                                      boundingBoxCubeVertices[i +
+        //                                                      2], 1.0f));
+        verticesCollection.push_back(matrixModel * glm::vec4(boundingBoxCubeVertices[i],
+                                                             boundingBoxCubeVertices[i + 1],
+                                                             boundingBoxCubeVertices[i + 2], 1.0f));
+      }
+
+      BoundingBox bb;
+      for (size_t i = 0; i < verticesCollection.size(); i++) {
+        bb.minX = glm::min(verticesCollection[i].x, bb.minX);
+        bb.maxX = glm::max(verticesCollection[i].x, bb.maxX);
+
+        bb.minY = glm::min(verticesCollection[i].y, bb.minY);
+        bb.maxY = glm::max(verticesCollection[i].y, bb.maxY);
+
+        bb.minZ = glm::min(verticesCollection[i].z, bb.minZ);
+        bb.maxZ = glm::max(verticesCollection[i].z, bb.maxZ);
+      }
+      boundingBoxes.push_back(bb);
+
+      // DEBUG START
+      float tMin = 0.0f;
+      float tMax = 100000.0f;
+
+      auto origin = quatCamera->GetPositionInWorld();
+
+      glm::vec3 positionInWorldSpace = {matrixModel[3].x, matrixModel[3].y, matrixModel[3].z};
+      glm::vec3 delta = positionInWorldSpace - origin;
+
+      glm::vec3 xaxis = {matrixModel[0].x, matrixModel[0].y, matrixModel[0].z};
+      float e = glm::dot(xaxis, delta);
+      float f = glm::dot(rayDirection, xaxis);
+
+      // Intersection with left plane
+      float t1 = (e + boundingBoxes[0].minX) / f;
+      // Intersection with right plane
+      float t2 = (e + boundingBoxes[0].maxX) / f;
+
+      // Swap t1 and t2 if t1 > t2
+      if (t1 > t2) {
+        float w = t1;
+        t1 = t2;
+        t2 = w;
+      }
+
+      // tMax is the nearest "far" intersection
+      if (t2 < tMax) tMax = t2;
+      // tMin is the farthest "near" intersection
+      if (t1 > tMin) tMin = t1;
+
+      // if "far" is closer than "near", there is no intersection
+      if (tMax < tMin) {
+      } else {
+        lucid::Log("Intersected");
+      }
+
+      // DEBUG END
     }
-
-    BoundingBox bb;
-    for (size_t i = 0; i < verticesCollection.size(); i++) {
-      bb.minX = glm::min(verticesCollection[i].x, bb.minX);
-      bb.maxX = glm::max(verticesCollection[i].x, bb.maxX);
-
-      bb.minY = glm::min(verticesCollection[i].y, bb.minY);
-      bb.maxY = glm::max(verticesCollection[i].y, bb.maxY);
-
-      bb.minZ = glm::min(verticesCollection[i].z, bb.minZ);
-      bb.maxZ = glm::max(verticesCollection[i].z, bb.maxZ);
-    }
-    boundingBoxes.push_back(bb);
   });
 
   // Calculate the distance between the ray origin and the bounding box?
   auto origin = quatCamera->GetPositionInWorld();
-  for (size_t i = 0; i < boundingBoxes.size(); i++) {
-    float t1 = (boundingBoxes[i].minX - origin.x) * rayWorld.x;
-    float t2 = (boundingBoxes[i].maxX - origin.x) * rayWorld.x;
 
-    float t3 = (boundingBoxes[i].minY - origin.y) * rayWorld.y;
-    float t4 = (boundingBoxes[i].maxY - origin.y) * rayWorld.y;
+  // for (size_t i = 0; i < boundingBoxes.size(); i++) {
+  //   float tMin = 0.0f;
+  //   float tMax = 100000.0f;
+  // }
 
-    float t5 = (boundingBoxes[i].minZ - origin.z) * rayWorld.z;
-    float t6 = (boundingBoxes[i].maxZ - origin.z) * rayWorld.z;
+  // for (size_t i = 0; i < boundingBoxes.size(); i++) {
+  //   float t1 = (boundingBoxes[i].minX - origin.x) * rayDirection.x;
+  //   float t2 = (boundingBoxes[i].maxX - origin.x) * rayDirection.x;
 
-    float tmin = glm::max(glm::max(glm::min(t1, t2), glm::min(t3, t4)), glm::min(t5, t6));
-    float tmax = glm::min(glm::min(glm::max(t1, t2), glm::max(t3, t4)), glm::max(t5, t6));
+  //   float t3 = (boundingBoxes[i].minY - origin.y) * rayDirection.y;
+  //   float t4 = (boundingBoxes[i].maxY - origin.y) * rayDirection.y;
 
-    if (tmax < 0) {
-      // std::cout << "AABB box is behind" << std::endl;
-      continue;
-    }
+  //   float t5 = (boundingBoxes[i].minZ - origin.z) * rayDirection.z;
+  //   float t6 = (boundingBoxes[i].maxZ - origin.z) * rayDirection.z;
 
-    if (tmin > tmax) {
-      // std::cout << "Does not intersect" << std::endl;
-      continue;
-    }
+  //   float tmin = glm::max(glm::max(glm::min(t1, t2), glm::min(t3, t4)), glm::min(t5, t6));
+  //   float tmax = glm::min(glm::min(glm::max(t1, t2), glm::max(t3, t4)), glm::max(t5, t6));
 
-    std::cout << "Intersected at index : " << i << std::endl;
-  }
+  //   if (tmax < 0) {
+  //     // lucid::Log("AABB box is behind");
+  //     continue;
+  //   }
+
+  //   if (tmin > tmax) {
+  //     // lucid::Log("Does not intersect");
+  //     continue;
+  //   }
+
+  //   std::cout << "Intersected at index : " << i << std::endl;
+  // }
 }
 
 void RenderSystem::DrawAllLines(double dt, Registry* registry, Input* input) {
@@ -281,19 +302,10 @@ void RenderSystem::DrawAllLines(double dt, Registry* registry, Input* input) {
   registry->GetComponentsIter<Line, Transform>()->Each([dt, &shaderResource, &renderer = renderer,
                                                         &quatCamera = quatCamera](
                                                            Line& line, Transform& transform) {
-    // Debug START
-    // glm::vec3 origin = quatCamera->GetPositionInWorld();
-    // point the line at the origin point in world space for now
-    // glm::vec3 destination = {0.0f, 0.0f, 0.0f};
-
-    // calculate the scale
-    // glm::vec3 diff = destination - origin;
-
     // Update the position to the origin of the transform
     transform.position = line.origin;
     // The scale is the 'direction' on how far to move
     transform.scale = line.destination - line.origin;
-    // Debug END
 
     glm::mat4 matrixModel = glm::mat4(1.0f);
     glm::mat4 rotationMatrix = glm::mat4(1.0f);
@@ -446,4 +458,40 @@ void RenderSystem::DrawAllBoundingBoxes(double dt, Registry* registry, Input* in
       });
 
   shaderResource.primitiveShader.Unbind();
+}
+
+glm::vec3 RenderSystem::GetRayDirection(Input* input) {
+  float mouseX = static_cast<float>(input->GetMouseX());
+  float mouseY = static_cast<float>(input->GetMouseY());
+
+  float x = (2.0f * mouseX) / SCREEN_WIDTH - 1.0f;
+  float y = 1.0f - (2.0f * mouseY) / SCREEN_HEIGHT;
+  float z = 1.0f;
+
+  // normalized device coordinates
+  glm::vec3 rayNds = glm::vec3(x, y, z);
+
+  // homogeneous clip coordinates
+  glm::vec4 rayClip = glm::vec4(rayNds.x, rayNds.y, -1.0f, 1.0f);
+
+  // convert to eye/camera coordinates
+  glm::vec4 rayEye = glm::inverse(quatCamera->GetProjection()) * rayClip;
+
+  // unproject the x, z part
+  rayEye = glm::vec4(rayEye.x, rayEye.y, -1.0f, 1.0f);
+
+  // 4d world coordinates
+  // normalize the vector as well
+  glm::vec3 rayWorld = glm::normalize(glm::vec3(quatCamera->GetView() * rayEye));
+
+  // Scale this by a fairly huge amount
+  // rayWorld *= 10.0f;
+
+  // Re-inverse the y-values since input->GetMouseY() {abs(SCREEN_HEIGHT - y)}
+  // TODO : Find out why i have to invert this for whatever reason...
+  rayWorld.x = -rayWorld.x;
+  rayWorld.y = -rayWorld.y;
+  // rayWorld.z = -15.0f;
+
+  return rayWorld;
 }

@@ -50,4 +50,7 @@ class RenderSystem : public System {
 
   // Debugging purposes for now?
   void DrawAllBoundingBoxes(double dt, Registry* registry, Input* input);
+
+ private:
+  glm::vec3 GetRayDirection(Input* input);
 };
