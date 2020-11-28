@@ -32,6 +32,7 @@ class Input {
  public:
   double GetMouseX();
   double GetMouseY();
+  double GetMouseYAbsolute();
   int GetScrollState();
 
  public:

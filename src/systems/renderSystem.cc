@@ -183,6 +183,8 @@ void RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
   // line->destination = {0.0f, 10.0f, 0.0f};
   line->color.r = 1.0f;
 
+  return;
+
   std::vector<BoundingBox> boundingBoxes;
   // Calculate all the positions, assume that there is a BoundingBoxCube around it.
   registry->GetComponentsIter<Transform>()->Each([dt, &boundingBoxes, &quatCamera = quatCamera,
@@ -466,7 +468,7 @@ void RenderSystem::DrawAllBoundingBoxes(double dt, Registry* registry, Input* in
 
 glm::vec3 RenderSystem::GetRayDirection(Input* input) {
   float mouseX = static_cast<float>(input->GetMouseX());
-  float mouseY = static_cast<float>(input->GetMouseY());
+  float mouseY = static_cast<float>(input->GetMouseYAbsolute());
 
   float x = (2.0f * mouseX) / SCREEN_WIDTH - 1.0f;
   float y = 1.0f - (2.0f * mouseY) / SCREEN_HEIGHT;
@@ -482,19 +484,21 @@ glm::vec3 RenderSystem::GetRayDirection(Input* input) {
   glm::vec4 rayEye = glm::inverse(quatCamera->GetProjection()) * rayClip;
 
   // unproject the x, z part
-  rayEye = glm::vec4(rayEye.x, rayEye.y, -1.0f, 1.0f);
+  rayEye = glm::vec4(rayEye.x, rayEye.y, -1.0f, 0.0f);
 
   // 4d world coordinates
   // normalize the vector as well
-  glm::vec3 rayWorld = glm::normalize(glm::vec3(quatCamera->GetView() * rayEye));
+  glm::vec3 rayWorld = glm::vec3(glm::normalize(glm::inverse(quatCamera->GetView()) * rayEye));
+  lucid::Log(glm::to_string(rayWorld));
 
   // Scale this by a fairly huge amount
-  // rayWorld *= 10.0f;
+  rayWorld *= 1000.0f;
 
   // Re-inverse the y-values since input->GetMouseY() {abs(SCREEN_HEIGHT - y)}
   // TODO : Find out why i have to invert this for whatever reason...
-  rayWorld.x = -rayWorld.x;
-  rayWorld.y = -rayWorld.y;
+
+  // rayWorld.x = -rayWorld.x;
+  // rayWorld.y = rayWorld.y;
   // rayWorld.z = -15.0f;
 
   return rayWorld;

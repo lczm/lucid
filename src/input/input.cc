@@ -58,6 +58,23 @@ double Input::GetMouseY() {
   return std::abs(SCREEN_HEIGHT - y);
 }
 
+double Input::GetMouseYAbsolute() {
+  glfwGetCursorPos(window, &x, &y);
+
+#if DEBUG
+  if (activeWindow == WindowType::Scene) {
+    return y;
+  }
+#endif
+
+#if RELEASE
+  return y;
+#endif
+
+  // OpenGL uses inverse y values compared to glfw window values
+  return y;
+}
+
 int Input::GetScrollState() {
 #if DEBUG
   if (activeWindow == WindowType::Scene) {
