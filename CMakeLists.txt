@@ -53,6 +53,10 @@ set (STB_IMAGE_HEADERS
     lib/stb_image/stb_image.h
 )
 
+set (IMGUIZMO_HEADERS
+    lib/ImGuizmo/ImGuizmo.h
+)
+
 # Import directories
 include_directories(src/utils)
 include_directories(src/constants)
@@ -86,6 +90,9 @@ include_directories(lib/imgui/backends)
 # Setup assimp
 include_directories(lib/assimp/include)
 
+# Setup ImGuizmo
+include_directories(lib/ImGuizmo)
+
 # Setup glfw
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
@@ -108,7 +115,8 @@ add_executable(lucid
     ${IMGUI_SOURCE_FILES}
     ${STB_IMAGE_HEADERS}
     ${GLAD_SOURCE_FILES}
-    ${GLM_HEADERS})
+    ${GLM_HEADERS}
+    ${IMGUIZMO_HEADERS})
 
 # Link the executable to glfw
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")

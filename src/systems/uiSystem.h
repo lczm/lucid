@@ -7,7 +7,10 @@
 #include "ecs.h"
 #include "renderer.h"
 #include "windowEnum.h"
+
+#if DEBUG
 #include "devStructs.h"
+#endif
 
 #include "imgui.h"
 #include "imgui_internal.h"

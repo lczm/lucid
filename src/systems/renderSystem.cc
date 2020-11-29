@@ -84,6 +84,27 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
   // glBindFramebuffer(GL_FRAMEBUFFER, 0);
   // glBindTexture(GL_TEXTURE_2D, sceneRender.textureID);
   // glDrawArrays(GL_TRIANGLES, 0, 6);
+
+  // DEBUG START
+  // static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
+
+  // static float snap[3] = {1.f, 1.f, 1.f};
+
+  // ImGui_ImplOpenGL3_NewFrame();
+  // ImGui_ImplGlfw_NewFrame();
+  // ImGui::NewFrame();
+
+  // ImGui::Begin("Hello");
+
+  // if (mCurrentGizmoOperation == ImGuizmo::TRANSLATE) {
+  //   ImGui::InputFloat3("Snap", &snap[0]);
+  // }
+
+  // ImGui::End();
+
+  // ImGui::Render();
+  // ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+  // DEBUG END
 }
 
 void RenderSystem::HandleMousePan(double dt, Input* input) {
