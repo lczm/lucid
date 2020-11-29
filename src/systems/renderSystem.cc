@@ -70,12 +70,6 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
   DrawAllCubes(dt, registry, input);
   DrawAllSpheres(dt, registry, input);
 
-  // TODO : Debugging liens
-  glm::vec3 origin = quatCamera->GetPosition();
-  glm::vec3 end = {0.0f, 0.0f, 0.0f};
-  glm::vec3 color = {1.0f, 0.0f, 0.0f};
-  renderer->DrawLine(origin, end, color);
-
   if (devDebug.drawColliders) DrawAllBoundingBoxes(dt, registry, input);
   if (devDebug.drawWireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 

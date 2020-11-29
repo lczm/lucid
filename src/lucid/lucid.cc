@@ -72,40 +72,30 @@ void Lucid::InitializeBulitInEntities() {
 
   registry->RegisterArchetype<Line, Transform>();
 
-  // Entity xLineID = registry->GetAvailableEntityId();
-  // Entity yLineID = registry->GetAvailableEntityId();
-  // Entity zLineID = registry->GetAvailableEntityId();
+  Entity xLineID = registry->GetAvailableEntityId();
+  Entity yLineID = registry->GetAvailableEntityId();
+  Entity zLineID = registry->GetAvailableEntityId();
 
-  // registry->CreateEntity<Line, Transform>(xLineID);
-  // registry->CreateEntity<Line, Transform>(yLineID);
-  // registry->CreateEntity<Line, Transform>(zLineID);
+  registry->CreateEntity<Line, Transform>(xLineID);
+  registry->CreateEntity<Line, Transform>(yLineID);
+  registry->CreateEntity<Line, Transform>(zLineID);
 
-  // // x-axis, set to red colour
-  // registry->AddComponentData<Transform>(xLineID, {
-  //                                                    {0.0f, 0.0f, 0.0f},        // position
-  //                                                    {0.0f, 0.0f, 0.0f},        // rotation
-  //                                                    {100.0f, 100.0f, 100.0f},  // scale
-  //                                                });
-  // Line* xLine = registry->GetComponent<Line>(xLineID);
-  // xLine->color = {1.0f, 0.0f, 0.0f};
+  Line* xLine = registry->GetComponent<Line>(xLineID);
+  Line* yLine = registry->GetComponent<Line>(yLineID);
+  Line* zLine = registry->GetComponent<Line>(zLineID);
 
-  // // y-axis
-  // registry->AddComponentData<Transform>(yLineID, {
-  //                                                    {0.0f, 0.0f, 0.0f},        // position
-  //                                                    {0.0f, 0.0f, 0.0f},        // rotation
-  //                                                    {100.0f, 100.0f, 100.0f},  // scale
-  //                                                });
-  // Line* yLine = registry->GetComponent<Line>(yLineID);
-  // yLine->color = {0.0f, 1.0f, 0.0f};
+  // TODO : Either define maximum limit for a scene or find a compile time number for this
+  xLine->color = {0.8f, 0.0f, 0.0f};
+  xLine->origin.x = -1000000.0f;
+  xLine->destination.x = 1000000.0f;
 
-  // // z-axis
-  // registry->AddComponentData<Transform>(zLineID, {
-  //                                                    {0.0f, 0.0f, 0.0f},        // position
-  //                                                    {0.0f, 0.0f, 0.0f},        // rotation
-  //                                                    {100.0f, 100.0f, 100.0f},  // scale
-  //                                                });
-  // Line* zLine = registry->GetComponent<Line>(zLineID);
-  // zLine->color = {0.0f, 0.0f, 1.0f};
+  yLine->color = {0.0f, 0.8f, 0.0f};
+  yLine->origin.y = -1000000.0f;
+  yLine->destination.y = 1000000.0f;
+
+  zLine->color = {0.0f, 0.0f, 0.8f};
+  zLine->origin.z = -1000000.0f;
+  zLine->destination.z = 1000000.0f;
 }
 
 void Lucid::InitializeBuiltInSystems() {
@@ -196,7 +186,8 @@ void Lucid::InitializeDemoPongEntities() {
   registry->RegisterArchetype<PongRules>();
 
   // This archetype is used for ray casting
-  registry->RegisterArchetype<Line, Transform>();
+  // Don't have to register again as it is already registered once.
+  // registry->RegisterArchetype<Line, Transform>();
 
   Entity rayID = registry->GetAvailableEntityId();
   registry->CreateEntity<Line, Transform>(rayID);
