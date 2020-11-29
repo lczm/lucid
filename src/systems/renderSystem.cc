@@ -221,32 +221,74 @@ void RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
   // Calculate the distance between the ray origin and the bounding box?
   auto origin = quatCamera->GetPositionInWorld();
 
-  // for (size_t i = 0; i < boundingBoxes.size(); i++) {
-  //   float tMin = 0.0f;
-  //   float tMax = 100000.0f;
-  // }
-
   for (size_t i = 0; i < boundingBoxes.size(); i++) {
-    float t1 = (boundingBoxes[i].minX - origin.x) * rayDirection.x;
-    float t2 = (boundingBoxes[i].maxX - origin.x) * rayDirection.x;
+    // float t1 = (boundingBoxes[i].minX - origin.x) * rayDirection.x;
+    // float t2 = (boundingBoxes[i].maxX - origin.x) * rayDirection.x;
 
-    float t3 = (boundingBoxes[i].minY - origin.y) * rayDirection.y;
-    float t4 = (boundingBoxes[i].maxY - origin.y) * rayDirection.y;
+    // float t3 = (boundingBoxes[i].minY - origin.y) * rayDirection.y;
+    // float t4 = (boundingBoxes[i].maxY - origin.y) * rayDirection.y;
 
-    float t5 = (boundingBoxes[i].minZ - origin.z) * rayDirection.z;
-    float t6 = (boundingBoxes[i].maxZ - origin.z) * rayDirection.z;
+    // float t5 = (boundingBoxes[i].minZ - origin.z) * rayDirection.z;
+    // float t6 = (boundingBoxes[i].maxZ - origin.z) * rayDirection.z;
 
-    float tmin = glm::max(glm::max(glm::min(t1, t2), glm::min(t3, t4)), glm::min(t5, t6));
-    float tmax = glm::min(glm::min(glm::max(t1, t2), glm::max(t3, t4)), glm::max(t5, t6));
+    // float tmin = glm::max(glm::max(glm::min(t1, t2), glm::min(t3, t4)), glm::min(t5, t6));
+    // float tmax = glm::min(glm::min(glm::max(t1, t2), glm::max(t3, t4)), glm::max(t5, t6));
 
-    if (tmax < 0) {
-      // lucid::Log("AABB box is behind");
+    // if (tmax < 0) {
+    //   // lucid::Log("AABB box is behind");
+    //   continue;
+    // }
+
+    // if (tmin > tmax) {
+    //   // lucid::Log("Does not intersect");
+    //   continue;
+    // }
+
+    float tmin = (boundingBoxes[i].minX - origin.x) / rayDirection.x;
+    float tmax = (boundingBoxes[i].maxX - origin.x) / rayDirection.x;
+
+    if (tmin > tmax) {
+      float temp = tmin;
+      tmin = tmax;
+      tmax = temp;
+    }
+
+    float tymin = (boundingBoxes[i].minY - origin.y) / rayDirection.y;
+    float tymax = (boundingBoxes[i].maxY - origin.y) / rayDirection.y;
+
+    if (tymin > tymax) {
+      float temp = tymin;
+      tymin = tymax;
+      tymax = tymin;
+    }
+
+    if ((tmin > tymax) || (tymin > tmax)) {
       continue;
     }
 
-    if (tmin > tmax) {
-      // lucid::Log("Does not intersect");
+    if (tymin > tmin) {
+      tmin = tymin;
+    }
+
+    if (tymax < tmax) {
+      tmax = tymax;
+    }
+
+    float tzmin = (boundingBoxes[i].minZ - origin.z) / rayDirection.z;
+    float tzmax = (boundingBoxes[i].maxZ - origin.z) / rayDirection.z;
+
+    if (tzmin > tzmax) {
+      float temp = tzmin;
+      tzmin = tzmax;
+      tzmax = temp;
+    }
+
+    if ((tmin > tzmax) || (tzmin > tmax)) {
       continue;
+    }
+
+    if (tzmax < tmax) {
+      tmax = tzmax;
     }
 
     std::cout << "Intersected at index : " << i << std::endl;

@@ -112,15 +112,15 @@ void Lucid::InitializeBuiltInSystems() {
   // registry->RegisterSystem(new UiSystem());
 
   // Demo start -- TODO : This should be separated, need a way of prioritising systems
-  registry->RegisterSystem(new PlayerSystem());
-  registry->RegisterSystem(new AiSystem());
+  // registry->RegisterSystem(new PlayerSystem());
+  // registry->RegisterSystem(new AiSystem());
   // registry->RegisterSystem(new MovementSystem());
   // Demo end
 
-  registry->RegisterSystem(new PhysicsSystem());
+  // registry->RegisterSystem(new PhysicsSystem());
 
   // Demo start -- PongSystem will need to deal with collision for the ball
-  registry->RegisterSystem(new PongSystem());
+  // registry->RegisterSystem(new PongSystem());
   // Demo end
 
   registry->RegisterSystem(new RenderSystem());
@@ -227,14 +227,14 @@ void Lucid::InitializeDemoPongEntities() {
 
   // TODO : registry->GetComponent<Transform> should return a reference not a pointer
   // Move around the transforms of each
-  playerTransform->position = {-10.0f, 0.0f, 0.0f};
+  playerTransform->position = {-10.0f, 0.0f, -10.0f};
   ballTransform->position = {0.0f, 0.0f, -10.0f};
   aiTransform->position = {10.0f, 0.0f, 0.0f};
 
   RigidBody* ballRigidBody = registry->GetComponent<RigidBody>(ballID);
   // note 0.05f is just harded 'movement speed'
-  ballRigidBody->velocity =
-      glm::normalize(playerTransform->position - ballTransform->position) * 0.020f;
+  // ballRigidBody->velocity =
+  //     glm::normalize(playerTransform->position - ballTransform->position) * 0.020f;
 
   // TODO : This can be simplified
   registry->GetComponentsIter<Cube>()->Each([](Cube& cube) { cube.Build(); });
