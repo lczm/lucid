@@ -109,18 +109,18 @@ void Lucid::InitializeBulitInEntities() {
 }
 
 void Lucid::InitializeBuiltInSystems() {
-  // registry->RegisterSystem(new UiSystem());
+  registry->RegisterSystem(new UiSystem());
 
   // Demo start -- TODO : This should be separated, need a way of prioritising systems
-  // registry->RegisterSystem(new PlayerSystem());
-  // registry->RegisterSystem(new AiSystem());
-  // registry->RegisterSystem(new MovementSystem());
+  registry->RegisterSystem(new PlayerSystem());
+  registry->RegisterSystem(new AiSystem());
+  registry->RegisterSystem(new MovementSystem());
   // Demo end
 
-  // registry->RegisterSystem(new PhysicsSystem());
+  registry->RegisterSystem(new PhysicsSystem());
 
   // Demo start -- PongSystem will need to deal with collision for the ball
-  // registry->RegisterSystem(new PongSystem());
+  registry->RegisterSystem(new PongSystem());
   // Demo end
 
   registry->RegisterSystem(new RenderSystem());

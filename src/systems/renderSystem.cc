@@ -8,34 +8,32 @@ RenderSystem::RenderSystem() {
   // move back the camera a little bit.
   quatCamera->Translate(glm::vec3(0.0f, 0.0f, -35.0f));
 
-  /*
-    glGenFramebuffers(1, &fbo);
-    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+  glGenFramebuffers(1, &fbo);
+  glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
+  glGenTextures(1, &texture);
+  glBindTexture(GL_TEXTURE_2D, texture);
 
-    // TODO : The SCREEN_WIDTH and SCREEN_HEIGHT here has to be changed
-    // whenever the game is resized
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SCREEN_WIDTH, SCREEN_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE,
-                 NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  // TODO : The SCREEN_WIDTH and SCREEN_HEIGHT here has to be changed
+  // whenever the game is resized
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SCREEN_WIDTH, SCREEN_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE,
+               NULL);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
 
-    glGenRenderbuffers(1, &rbo);
-    glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+  glGenRenderbuffers(1, &rbo);
+  glBindRenderbuffer(GL_RENDERBUFFER, rbo);
 
-    // TODO : The SCREEN_WIDTH and SCREEN_HEIGHT here has to be changed
-    // whenever the game is resized
-    // Use renderbuffer for both (depth) and (stencil) buffer
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 1440, 900);
-    // Attach the render buffer
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+  // TODO : The SCREEN_WIDTH and SCREEN_HEIGHT here has to be changed
+  // whenever the game is resized
+  // Use renderbuffer for both (depth) and (stencil) buffer
+  glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 1440, 900);
+  // Attach the render buffer
+  glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-  */
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 RenderSystem::~RenderSystem() {
@@ -50,7 +48,7 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
   HandleKeyboardInput(dt, registry, input);
   HandleMousePick(dt, registry, input);
 
-  // glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+  glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
   glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -81,9 +79,7 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
   if (devDebug.drawColliders) DrawAllBoundingBoxes(dt, registry, input);
   if (devDebug.drawWireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-  // glBindFramebuffer(GL_FRAMEBUFFER, 0);
-  // glBindTexture(GL_TEXTURE_2D, sceneRender.textureID);
-  // glDrawArrays(GL_TRIANGLES, 0, 6);
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
   // DEBUG START
   // static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
