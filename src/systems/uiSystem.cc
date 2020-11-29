@@ -58,6 +58,14 @@ void UiSystem::InitializeGUI(double dt, Registry* registry, Input* input) {
       if (ImGui::BeginMenu("Edit")) {
         ImGui::EndMenu();
       }
+      if (ImGui::BeginMenu("Help")) {
+        ImGui::Text("WASD - Move the camera");
+        ImGui::Text("Arrow Left/Right/Up/Down - Rotate Left/Right/Up/Down");
+        ImGui::Text("J/L - [Demo] pong player movement");
+        ImGui::Text("Mouse left - Pan Camera / [Debug] Shoot rays");
+        ImGui::Text("Mouse right - Rotate Camera");
+        ImGui::EndMenu();
+      }
       ImGui::EndMainMenuBar();
     }
   }
