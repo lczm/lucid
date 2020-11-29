@@ -231,39 +231,11 @@ void RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
 
   // Calculate the distance between the ray origin and the bounding box?
   auto origin = quatCamera->GetPositionInWorld();
-  // rayDirection = 1.0f / rayDirection;
-
-  glm::vec3 dirfrac;
-  dirfrac.x = 1.0f / rayDirection.x;
-  dirfrac.y = 1.0f / rayDirection.y;
-  dirfrac.z = 1.0f / rayDirection.z;
 
   for (size_t i = 0; i < boundingBoxes.size(); i++) {
-    float t1 = (boundingBoxes[i].minX - origin.x) * dirfrac.x;
-    float t2 = (boundingBoxes[i].maxX - origin.x) * dirfrac.x;
-
-    float t3 = (boundingBoxes[i].minY - origin.y) * dirfrac.y;
-    float t4 = (boundingBoxes[i].maxY - origin.y) * dirfrac.y;
-
-    float t5 = (boundingBoxes[i].minZ - origin.z) * dirfrac.z;
-    float t6 = (boundingBoxes[i].maxZ - origin.z) * dirfrac.z;
-
-    float tmin = glm::max(glm::max(glm::min(t1, t2), glm::min(t3, t4)), glm::min(t5, t6));
-    float tmax = glm::min(glm::min(glm::max(t1, t2), glm::max(t3, t4)), glm::max(t5, t6));
-
-    // AABB is behind
-    if (tmax < 0) {
-      // lucid::Log("AABB is behind");
-      continue;
-    }
-
-    // Does not intersect
-    if (tmin > tmax) {
-      // lucid::Log("Does not intersect");
-      continue;
-    }
-
-    lucid::Log("Intersected at : ", i);
+    // TODO Resolve collision based on length, which means that RayBoundingBoxCollisionCheck needs
+    // to return length.
+    auto collided = RayBoundingBoxCollisionCheck(origin, rayDirection, boundingBoxes[i]);
   }
 }
 
@@ -472,4 +444,38 @@ glm::vec3 RenderSystem::GetRayDirection(Input* input) {
   // rayWorld.z = -15.0f;
 
   return rayWorld;
+}
+
+bool RenderSystem::RayBoundingBoxCollisionCheck(glm::vec3 origin, glm::vec3 ray,
+                                                BoundingBox boundingBox) {
+  glm::vec3 dirfrac;
+  dirfrac.x = 1.0f / ray.x;
+  dirfrac.y = 1.0f / ray.y;
+  dirfrac.z = 1.0f / ray.z;
+
+  float t1 = (boundingBox.minX - origin.x) * dirfrac.x;
+  float t2 = (boundingBox.maxX - origin.x) * dirfrac.x;
+
+  float t3 = (boundingBox.minY - origin.y) * dirfrac.y;
+  float t4 = (boundingBox.maxY - origin.y) * dirfrac.y;
+
+  float t5 = (boundingBox.minZ - origin.z) * dirfrac.z;
+  float t6 = (boundingBox.maxZ - origin.z) * dirfrac.z;
+
+  float tmin = glm::max(glm::max(glm::min(t1, t2), glm::min(t3, t4)), glm::min(t5, t6));
+  float tmax = glm::min(glm::min(glm::max(t1, t2), glm::max(t3, t4)), glm::max(t5, t6));
+
+  // AABB is behind
+  if (tmax < 0) {
+    // lucid::Log("AABB is behind");
+    return false;
+  }
+
+  // Does not intersect
+  if (tmin > tmax) {
+    // lucid::Log("Does not intersect");
+    return false;
+  }
+
+  return true;
 }

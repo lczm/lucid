@@ -53,5 +53,8 @@ class RenderSystem : public System {
   void DrawAllBoundingBoxes(double dt, Registry* registry, Input* input);
 
  private:
+  // TODO : Typedef glm::vec3 to a ray as it feels overly verbose to declare
+  // a vector as input/output
   glm::vec3 GetRayDirection(Input* input);
+  bool RayBoundingBoxCollisionCheck(glm::vec3 origin, glm::vec3 ray, BoundingBox boundingBox);
 };
