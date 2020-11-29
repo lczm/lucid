@@ -5,6 +5,8 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window) {
   Lucid::input = input;
   Lucid::window = window;
 
+  timer = std::chrono::high_resolution_clock::now();
+
   // Target this window for user pointer for GLFW, this is so that
   // in callbacks, we can retrieve back the class
   glfwSetWindowUserPointer(window, this);
@@ -46,7 +48,25 @@ Lucid::~Lucid() {
   ImGui::DestroyContext();
 };
 
-void Lucid::Update(double dt) {
+void Lucid::Update() {
+  auto now = std::chrono::high_resolution_clock::now();
+  std::chrono::duration<double> elapsed = now - timer;
+  dt = elapsed.count();
+  timer = now;
+
+  secondDt += dt;
+  frameCount++;
+
+  // If it has been a second
+  if (secondDt >= 1.0f) {
+    // Update the internal fps counter before resetting it back to 0
+    DevDebug& devDebug = registry->GetComponent<DevDebug>();
+    devDebug.fps = frameCount;
+
+    secondDt -= 1.0f;
+    frameCount = 0;
+  }
+
   registry->UpdateSystems(dt, input);
 }
 
@@ -99,6 +119,16 @@ void Lucid::InitializeBulitInEntities() {
 }
 
 void Lucid::InitializeBuiltInSystems() {
+  // LucidSystem needs to be first, as this will be what 'calls' the other systems.
+  registry->RegisterSystem(new LucidSystem());
+
+  // TODO : Figure this out
+  // UiSystem can either be before or after rendersystem.
+  // It does somewhat make sense that the uisystem will be after the render system
+  // going by the logic of :
+  // renderSystem generates a frameBuffer object that the uiSystem can immediately use after
+  // But I also recall that I had a specific reason for setting UiSystem to be first
+  // perhaps double buffering...?
   registry->RegisterSystem(new UiSystem());
 
   // Demo start -- TODO : This should be separated, need a way of prioritising systems
@@ -114,7 +144,6 @@ void Lucid::InitializeBuiltInSystems() {
   // Demo end
 
   registry->RegisterSystem(new RenderSystem());
-  registry->RegisterSystem(new LucidSystem());
 }
 
 void Lucid::InitializeEntities() {

@@ -11,6 +11,7 @@
  */
 class LucidSystem : public System {
  private:
+
  public:
   LucidSystem();
   ~LucidSystem();

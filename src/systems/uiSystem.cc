@@ -66,6 +66,13 @@ void UiSystem::InitializeGUI(double dt, Registry* registry, Input* input) {
         ImGui::Text("Mouse right - Rotate Camera");
         ImGui::EndMenu();
       }
+
+      // TODO : Draw frametime
+      // Draw FPS
+      DevDebug& devDebug = registry->GetComponent<DevDebug>();
+      std::string fpsCount = "FPS : " + std::to_string(devDebug.fps);
+      ImGui::Text(fpsCount.c_str());
+
       ImGui::EndMainMenuBar();
     }
   }

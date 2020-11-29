@@ -13,6 +13,8 @@ struct DevDebug {
   bool drawWireframe = false;
   bool drawColliders = false;
 
+  // fps is updated per frame
+  uint32_t fps = 0;
   uint32_t rayID = 0;
 
   float leftWindowWidth = 0;

@@ -51,7 +51,7 @@ void EnableVSync() {
 }
 
 // To disable vsync, on computers that do not have the GPU enforcing
-// vsync on game windows (laptops), this will make it so that it 
+// vsync on game windows (laptops), this will make it so that it
 // possibly goes on (hundreds) of frames per second.
 void DisableVSync() {
   glfwSwapInterval(0);
@@ -106,11 +106,6 @@ int main(void) {
 
   Lucid* lucid = new Lucid(registry, input, window);
 
-  auto timer = std::chrono::high_resolution_clock::now();
-  double dt = 0;
-  double secondDt = 0;
-  int frameCount = 0;
-
   while (!glfwWindowShouldClose(window)) {
     // Flip buffers
     glfwSwapBuffers(window);
@@ -124,22 +119,7 @@ int main(void) {
     // errors are not checking the previous iteration
     GlClearError();
 
-    lucid->Update(dt);
-
-    auto now = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> elapsed = now - timer;
-    dt = elapsed.count();
-    timer = now;
-
-    secondDt += dt;
-    frameCount++;
-
-    // If it has been a second
-    if (secondDt >= 1.0f) {
-      std::cout << "Frames per second (FPS) : " << frameCount << std::endl;
-      secondDt -= 1.0f;
-      frameCount = 0;
-    }
+    lucid->Update();
 
     if (GlCheckError()) {
       // break out of the loop

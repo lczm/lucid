@@ -1,6 +1,12 @@
 #pragma once
 
+#include <chrono>
 #include <functional>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string>
+#include <typeinfo>
+#include <vector>
 
 #include "gl.h"
 #include "ecs.h"
@@ -45,6 +51,10 @@ class Lucid {
   Input* input;
   GLFWwindow* window;
 
+  std::chrono::high_resolution_clock::time_point timer;
+  double dt, secondDt = 0;
+  int frameCount = 0;
+
   std::function<void(GLFWwindow* window, int button, int action, int mods)> mouseCallback;
   std::function<void(GLFWwindow* window, int key, int scancode, int action, int mods)> keyCallback;
   std::function<void(GLFWwindow* window, double xoffset, double yoffset)> scrollCallback;
@@ -53,7 +63,7 @@ class Lucid {
   Lucid(Registry* registry, Input* input, GLFWwindow* window);
   ~Lucid();
 
-  void Update(double dt);
+  void Update();
 
   void InitializeBulitInEntities();
   void InitializeBuiltInSystems();
