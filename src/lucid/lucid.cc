@@ -46,12 +46,18 @@ void Lucid::InitializeEntities() {
   registry->RegisterArchetype<Model, Transform>();
   registry->RegisterArchetype<Shader>();
   registry->RegisterArchetype<TextureID>();
+  registry->RegisterArchetype<SoundEffect>();
+  registry->RegisterArchetype<Music>();
 
   uint32_t modelID = registry->GetAvailableEntityId();
   uint32_t modelID2 = registry->GetAvailableEntityId();
   uint32_t modelID3 = registry->GetAvailableEntityId();
   uint32_t modelID4 = registry->GetAvailableEntityId();
-
+  uint32_t soundEffectID = registry->GetAvailableEntityId();
+  uint32_t musicID = registry->GetAvailableEntityId();
+  
+  registry->CreateEntity<SoundEffect>(soundEffectID);
+  registry->CreateEntity<Music>(musicID);
   registry->CreateEntity<Model, Transform>(modelID);
   registry->CreateEntity<Model, Transform>(modelID2);
   registry->CreateEntity<Model, Transform>(modelID3);
@@ -61,6 +67,11 @@ void Lucid::InitializeEntities() {
   registry->AddComponentData<Model>(modelID2, Model(SCIFIHELMET_MODEL));
   registry->AddComponentData<Model>(modelID3, Model(AVOCADO_MODEL));
   registry->AddComponentData<Model>(modelID4, Model(MICROPHONE_MODEL));
+
+  SoundEffect* soundEffect = registry->GetComponent<SoundEffect>(soundEffectID);
+  soundEffect->filePath = GRUNT_SOUND;
+  Music* music = registry->GetComponent<Music>(musicID);
+  music->filePath = PIANO_MUSIC;
 
   Model* model = registry->GetComponent<Model>(modelID3);
   model->SetTag("avocado");

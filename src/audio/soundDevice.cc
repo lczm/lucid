@@ -78,3 +78,15 @@ void SoundDevice::SetGain(const float& val) {
 
   alListenerf(AL_GAIN, newVol);
 }
+
+///#define AL_INVERSE_DISTANCE                      0xD001
+///#define AL_INVERSE_DISTANCE_CLAMPED              0xD002
+///#define AL_LINEAR_DISTANCE                       0xD003
+///#define AL_LINEAR_DISTANCE_CLAMPED               0xD004
+///#define AL_EXPONENT_DISTANCE                     0xD005
+///#define AL_EXPONENT_DISTANCE_CLAMPED             0xD006
+void SoundDevice::SetAttunation(int key) {
+  if (key < 0xD001 || key > 0xD006) throw("bad attunation key");
+
+  alListeneri(AL_DISTANCE_MODEL, key);
+}

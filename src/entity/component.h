@@ -27,3 +27,14 @@ struct Animation {
   int spriteStart = 0;
   int spriteEnd = 0;
 };
+
+struct SoundEffect {
+  const char* filePath;
+  bool looping = false;
+  int gain = 1;
+};
+
+struct Music {
+  const char* filePath;
+  int gain = 1;
+};

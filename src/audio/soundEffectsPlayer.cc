@@ -46,3 +46,7 @@ bool SoundEffectsPlayer::IsPlaying() {
   alGetSourcei(source, AL_SOURCE_STATE, &playState);
   return (playState == AL_PLAYING);
 }
+
+void SoundEffectsPlayer::SetPosition(const float& x, const float& y, const float& z) {
+  alSource3f(source, AL_POSITION, x, y, z);
+}
