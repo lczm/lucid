@@ -3,6 +3,7 @@
 #include "component.h"
 #include "gtest/gtest.h"
 
+#include "renderSystem.h"
 #include "physicsSystem.h"
 
 TEST(PhysicsCollision, BoxBoxColliding) {
@@ -72,4 +73,29 @@ TEST(PhysicsCollision, BoxBoxNotColliding) {
   // Check that both BoundingBoxCube(s) are colliding
   registry->GetComponentsIter<BoundingBoxCube>()->Each(
       [](BoundingBoxCube& boundingBoxCube) { EXPECT_FALSE(boundingBoxCube.collided); });
+}
+
+// The ray & box intersection current lies in the renderSystem, so the test will be
+// using renderSystem to do the testing, but in the future I think there should
+// be a centralised place that hosts the collision checks between the primitives
+TEST(PhysicsAndRenderCollision, RayBoxColliding) {
+  Registry* registry = new Registry();
+  RenderSystem* renderSystem = new RenderSystem();
+
+  registry->RegisterArchetype<Cube, Transform>();
+  Entity first = registry->GetAvailableEntityId();
+  registry->CreateEntity<Cube, Transform>(first);
+
+  Transform* transform = registry->GetComponent<Transform>(first);
+  transform->position = {0.0f, 0.0f, 0.0f};
+
+  // Origin faces towards the origin of the world but a little further back?
+  auto origin = glm::vec3(0.0f, 0.0f, 10.0f);
+  // Ray goes towards the z-axis.
+  auto ray = glm::vec3(0.0f, 0.0f, -1.0f);
+
+  // renderSystem->RayBoundingBoxCollisionCheck(origin, ray, );
+}
+
+TEST(PhysicsAndRenderCollision, RayBoxNotColliding) {
 }

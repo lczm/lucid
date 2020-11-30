@@ -197,7 +197,7 @@ void RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
   std::vector<BoundingBox> boundingBoxes;
   // Calculate all the positions, assume that there is a BoundingBoxCube around it.
   registry->GetComponentsIter<Transform>()->Each([dt, &boundingBoxes, &quatCamera = quatCamera,
-                                                  &rayDirection](Transform& transform) {
+                                                  &rayDirection, this](Transform& transform) {
     if (transform.scale.x == 1.0f) {
       // Calculate the model matrix
       glm::mat4 matrixModel = glm::mat4(1.0f);
@@ -214,17 +214,7 @@ void RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
                                                              boundingBoxCubeVertices[i + 2], 1.0f));
       }
 
-      BoundingBox bb;
-      for (size_t i = 0; i < verticesCollection.size(); i++) {
-        bb.minX = glm::min(verticesCollection[i].x, bb.minX);
-        bb.maxX = glm::max(verticesCollection[i].x, bb.maxX);
-
-        bb.minY = glm::min(verticesCollection[i].y, bb.minY);
-        bb.maxY = glm::max(verticesCollection[i].y, bb.maxY);
-
-        bb.minZ = glm::min(verticesCollection[i].z, bb.minZ);
-        bb.maxZ = glm::max(verticesCollection[i].z, bb.maxZ);
-      }
+      BoundingBox bb = GetBoundingBox(verticesCollection);
       boundingBoxes.push_back(bb);
     }
   });
@@ -501,4 +491,19 @@ bool RenderSystem::RayBoundingBoxCollisionCheck(glm::vec3 origin, glm::vec3 ray,
   }
 
   return true;
+}
+
+BoundingBox RenderSystem::GetBoundingBox(std::vector<glm::vec4> vertices) {
+  BoundingBox bb;
+  for (size_t i = 0; i < vertices.size(); i++) {
+    bb.minX = glm::min(vertices[i].x, bb.minX);
+    bb.maxX = glm::max(vertices[i].x, bb.maxX);
+
+    bb.minY = glm::min(vertices[i].y, bb.minY);
+    bb.maxY = glm::max(vertices[i].y, bb.maxY);
+
+    bb.minZ = glm::min(vertices[i].z, bb.minZ);
+    bb.maxZ = glm::max(vertices[i].z, bb.maxZ);
+  }
+  return bb;
 }
