@@ -73,19 +73,20 @@ void Shader::SetUniformInt3(const std::string& name, int v1, int v2, int v3) {
   glUniform3i(glGetUniformLocation(id, &name[0]), v1, v2, v3);
 }
 
-void Shader::SetUniformFloat3(const std::string& name, float v1, float v2,
-                              float v3) {
+void Shader::SetUniformFloat3(const std::string& name, float v1, float v2, float v3) {
   glUniform3f(glGetUniformLocation(id, &name[0]), v1, v2, v3);
 }
 
-void Shader::SetUniformInt4(const std::string& name, int v1, int v2, int v3,
-                            int v4) {
+void Shader::SetUniformInt4(const std::string& name, int v1, int v2, int v3, int v4) {
   glUniform4i(glGetUniformLocation(id, &name[0]), v1, v2, v3, v4);
 }
 
-void Shader::SetUniformFloat4(const std::string& name, float v1, float v2,
-                              float v3, float v4) {
+void Shader::SetUniformFloat4(const std::string& name, float v1, float v2, float v3, float v4) {
   glUniform4f(glGetUniformLocation(id, &name[0]), v1, v2, v3, v4);
+}
+
+void Shader::SetUniformVecFloat3(const std::string& name, glm::vec3 v3) {
+  glUniform3fv(glGetUniformLocation(id, &name[0]), 1, &v3[0]);
 }
 
 void Shader::SetUniformMatFloat4(const std::string& name, glm::mat4 mat) {
@@ -118,8 +119,7 @@ Texture::Texture(const char imagePath[], int slot) {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
-               GL_UNSIGNED_BYTE, data);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
   glGenerateMipmap(GL_TEXTURE_2D);
 }
 
@@ -147,8 +147,7 @@ void Texture::Initialize(const char imagePath[], int slot) {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
-               GL_UNSIGNED_BYTE, data);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
   glGenerateMipmap(GL_TEXTURE_2D);
 }
 

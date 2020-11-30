@@ -1,5 +1,9 @@
 #include "input.h"
 
+// Mostly used for mock / tests
+Input::Input() {
+}
+
 Input::Input(GLFWwindow* window) {
   Input::window = window;
 
@@ -11,7 +15,8 @@ Input::Input(GLFWwindow* window) {
     mouseKey = false;
   }
 
-  activeWindow = WindowType::None;
+  // Note to change this back to none once done with debugging
+  activeWindow = WindowType::Scene;
 }
 
 Input::~Input() {
@@ -22,6 +27,8 @@ double Input::GetMouseX() {
 
 #if DEBUG
   if (activeWindow == WindowType::Scene) {
+    // When it is defined that it is in 'DEBUG' mode,
+    // the coordinates needs to be offseted
     return x;
   }
 #endif
@@ -39,6 +46,7 @@ double Input::GetMouseY() {
 #if DEBUG
   if (activeWindow == WindowType::Scene) {
     return std::abs(SCREEN_HEIGHT - y);
+    // return y;
   }
 #endif
 
@@ -48,6 +56,23 @@ double Input::GetMouseY() {
 
   // OpenGL uses inverse y values compared to glfw window values
   return std::abs(SCREEN_HEIGHT - y);
+}
+
+double Input::GetMouseYAbsolute() {
+  glfwGetCursorPos(window, &x, &y);
+
+#if DEBUG
+  if (activeWindow == WindowType::Scene) {
+    return y;
+  }
+#endif
+
+#if RELEASE
+  return y;
+#endif
+
+  // OpenGL uses inverse y values compared to glfw window values
+  return y;
 }
 
 int Input::GetScrollState() {
@@ -69,9 +94,11 @@ bool Input::IsKeyDown(int key) {
   // input->isKeyDown('L')
   // I guess in the future if we need to do mod keys, this will have to be
   // changed
-  if (key >= 97) {
-    key -= 32;
-  }
+
+  // Don't really need this anymore...?
+  // if (key >= 97) {
+  //   key -= 32;
+  // }
 
 #if DEBUG
   if (activeWindow == WindowType::Scene) {

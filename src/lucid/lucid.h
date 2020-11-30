@@ -1,12 +1,37 @@
 #pragma once
 
+#include <chrono>
 #include <functional>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string>
+#include <typeinfo>
+#include <vector>
 
 #include "gl.h"
 #include "ecs.h"
 #include "input.h"
-#include "model.h"
 #include "constants.h"
+#include "utils.h"
+
+#if DEBUG
+#include "devStructs.h"
+#endif
+
+#include "model.h"
+#include "line.h"
+#include "cube.h"
+#include "sphere.h"
+#include "shaderResource.h"
+
+// Demo imports
+#include "pong.h"
+#include "aiSystem.h"
+#include "movementSystem.h"
+#include "playerSystem.h"
+#include "pongSystem.h"
+// Demo imports end
+
 #include "glm.hpp"
 #include "gtx/string_cast.hpp"
 #include "gtc/matrix_transform.hpp"
@@ -19,12 +44,17 @@
 #include "lucidSystem.h"
 #include "audioSystem.h"
 #include "uiSystem.h"
+#include "physicsSystem.h"
 
 class Lucid {
  public:
   Registry* registry;
   Input* input;
   GLFWwindow* window;
+
+  std::chrono::high_resolution_clock::time_point timer;
+  double dt, secondDt = 0;
+  int frameCount = 0;
 
   std::function<void(GLFWwindow* window, int button, int action, int mods)> mouseCallback;
   std::function<void(GLFWwindow* window, int key, int scancode, int action, int mods)> keyCallback;
@@ -34,9 +64,17 @@ class Lucid {
   Lucid(Registry* registry, Input* input, GLFWwindow* window);
   ~Lucid();
 
-  void Update(double dt);
+  void Update();
+
+  void InitializeBulitInEntities();
+  void InitializeBuiltInSystems();
+
   void InitializeEntities();
   void InitializeSystems();
+
+  // Demo pong game
+  void InitializeDemoPongEntities();
+  void InitializeDemoPongSystems();
 
   void SetMouseCallback(
       std::function<void(GLFWwindow* window, int button, int action, int mods)> fn);

@@ -54,9 +54,9 @@ class Shader {
   void SetUniformFloat3(const std::string& name, float v1, float v2, float v3);
 
   void SetUniformInt4(const std::string& name, int v1, int v2, int v3, int v4);
-  void SetUniformFloat4(const std::string& name, float v1, float v2, float v3,
-                        float v4);
+  void SetUniformFloat4(const std::string& name, float v1, float v2, float v3, float v4);
 
+  void SetUniformVecFloat3(const std::string& name, glm::vec3 v3);
   void SetUniformMatFloat4(const std::string& name, glm::mat4 mat);
 };
 

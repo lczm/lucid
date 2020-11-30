@@ -1,13 +1,13 @@
 #include "renderer.h"
 
-Renderer::Renderer() {
-  glGenVertexArrays(1, &bbVAO);
-  glBindVertexArray(bbVAO);
+Renderer::Renderer(){
+    // glGenVertexArrays(1, &bbVAO);
+    // glBindVertexArray(bbVAO);
 
-  glGenBuffers(1, &bbVBO);
-  glBindBuffer(GL_ARRAY_BUFFER, bbVBO);
+    // glGenBuffers(1, &bbVBO);
+    // glBindBuffer(GL_ARRAY_BUFFER, bbVBO);
 
-  bbShader.CreateShader(TRIANGLE_VERTEX_SHADER, TRIANGLE_FRAGMENT_SHADER);
+    // bbShader.CreateShader(TRIANGLE_VERTEX_SHADER, TRIANGLE_FRAGMENT_SHADER);
 };
 
 Renderer::~Renderer() = default;
@@ -47,75 +47,64 @@ void Renderer::DrawModel(Model& model, Shader& shader) {
   for (Mesh& mesh : model.GetMeshes()) {
     DrawMesh(mesh, shader);
   }
-
-  DrawBoundingBox(model.GetBoundingBox());
 }
 
-void Renderer::DrawBoundingBox(BoundingBox& boundingBox) {
-  // TODO : This should be using index buffers...
-  float vertices[] = {
-      // x , y, z , r, g, b
-      boundingBox.minX, boundingBox.minY, boundingBox.minZ, 1.0f, 1.0f, 1.0f,  //
-      boundingBox.maxX, boundingBox.minY, boundingBox.minZ, 1.0f, 1.0f, 1.0f,  //
-      boundingBox.maxX, boundingBox.maxY, boundingBox.minZ, 1.0f, 1.0f, 1.0f,  //
-      boundingBox.maxX, boundingBox.maxY, boundingBox.minZ, 1.0f, 1.0f, 1.0f,  //
-      boundingBox.minX, boundingBox.maxY, boundingBox.minZ, 1.0f, 1.0f, 1.0f,  //
-      boundingBox.minX, boundingBox.minY, boundingBox.minZ, 1.0f, 1.0f, 1.0f,  //
+void Renderer::DrawCube(Cube& cube, Shader& shader) {
+  glBindVertexArray(cube.VAO);
+  // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cube.EBO);
+  glDrawElements(GL_TRIANGLES, cubeIndices.size(), GL_UNSIGNED_INT, 0);
+  glBindVertexArray(0);
+}
 
-      boundingBox.minX, boundingBox.minY, boundingBox.maxZ, 1.0f, 1.0f, 1.0f,  //
-      boundingBox.maxX, boundingBox.minY, boundingBox.maxZ, 1.0f, 1.0f, 1.0f,  //
-      boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ, 1.0f, 1.0f, 1.0f,  //
-      boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ, 1.0f, 1.0f, 1.0f,  //
-      boundingBox.minX, boundingBox.maxY, boundingBox.maxZ, 1.0f, 1.0f, 1.0f,  //
-      boundingBox.minX, boundingBox.minY, boundingBox.maxZ, 1.0f, 1.0f, 1.0f,  //
+void Renderer::DrawSphere(Sphere& sphere, Shader& shader) {
+  glBindVertexArray(sphere.VAO);
+  // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sphere.EBO);
+  glDrawElements(GL_TRIANGLES, sphere.indices.size(), GL_UNSIGNED_INT, 0);
+  glBindVertexArray(0);
+}
 
-      boundingBox.minX, boundingBox.maxY, boundingBox.maxZ, 1.0f, 1.0f, 1.0f,  //
-      boundingBox.minX, boundingBox.maxY, boundingBox.minZ, 1.0f, 1.0f, 1.0f,  //
-      boundingBox.minX, boundingBox.minY, boundingBox.minZ, 1.0f, 1.0f, 1.0f,  //
-      boundingBox.minX, boundingBox.minY, boundingBox.minZ, 1.0f, 1.0f, 1.0f,  //
-      boundingBox.minX, boundingBox.minY, boundingBox.maxZ, 1.0f, 1.0f, 1.0f,  //
-      boundingBox.minX, boundingBox.maxY, boundingBox.maxZ, 1.0f, 1.0f, 1.0f,  //
+void Renderer::DrawLine(Line& line, Shader& shader) {
+  glBindVertexArray(line.VAO);
+  glDrawArrays(GL_LINES, 0, 2);
+  glBindVertexArray(0);
+}
 
-      boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ, 1.0f, 1.0f, 1.0f,  //
-      boundingBox.maxX, boundingBox.maxY, boundingBox.minZ, 1.0f, 1.0f, 1.0f,  //
-      boundingBox.maxX, boundingBox.minY, boundingBox.minZ, 1.0f, 1.0f, 1.0f,  //
-      boundingBox.maxX, boundingBox.minY, boundingBox.minZ, 1.0f, 1.0f, 1.0f,  //
-      boundingBox.maxX, boundingBox.minY, boundingBox.maxZ, 1.0f, 1.0f, 1.0f,  //
-      boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ, 1.0f, 1.0f, 1.0f,  //
+void Renderer::DrawLine(glm::vec3 origin, glm::vec3 end, glm::vec3 color) {
+}
 
-      boundingBox.minX, boundingBox.minY, boundingBox.minZ, 1.0f, 1.0f, 1.0f,  //
-      boundingBox.maxX, boundingBox.minY, boundingBox.minZ, 1.0f, 1.0f, 1.0f,  //
-      boundingBox.maxX, boundingBox.minY, boundingBox.maxZ, 1.0f, 1.0f, 1.0f,  //
-      boundingBox.maxX, boundingBox.minY, boundingBox.maxZ, 1.0f, 1.0f, 1.0f,  //
-      boundingBox.minX, boundingBox.minY, boundingBox.maxZ, 1.0f, 1.0f, 1.0f,  //
-      boundingBox.minX, boundingBox.minY, boundingBox.minZ, 1.0f, 1.0f, 1.0f,  //
+void Renderer::DrawBoundingBox(Model& model, Shader& shader) {
+}
 
-      boundingBox.minX, boundingBox.maxY, boundingBox.minZ, 1.0f, 1.0f, 1.0f,  //
-      boundingBox.maxX, boundingBox.maxY, boundingBox.minZ, 1.0f, 1.0f, 1.0f,  //
-      boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ, 1.0f, 1.0f, 1.0f,  //
-      boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ, 1.0f, 1.0f, 1.0f,  //
-      boundingBox.minX, boundingBox.maxY, boundingBox.maxZ, 1.0f, 1.0f, 1.0f,  //
-      boundingBox.minX, boundingBox.maxY, boundingBox.minZ, 1.0f, 1.0f, 1.0f,  //
-  };
+void Renderer::DrawBoundingBox(Sphere& sphere, Shader& shader) {
+  // glGenVertexArrays(1, &VAO);
+  // glGenBuffers(1, &VBO);
+  // glGenBuffers(1, &EBO);
 
-  uint32_t indices[] = {
-      0, 1, 3,  // first triangle
-      1, 2, 3   // second triangle
-  };
+  // // Bind VAO & VBO
+  // glBindVertexArray(VAO);
+  // glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-  // bbShader.Bind();
-  glBindVertexArray(bbVAO);
-  glBindBuffer(GL_ARRAY_BUFFER, bbVBO);
+  // // Set VBO data
+  // glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
 
-  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+  // // Bind EBO
+  // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-  glEnableVertexAttribArray(0);
+  // // Set EBO data
+  // glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint32_t), &indices[0],
+  //              GL_STATIC_DRAW);
 
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-  glEnableVertexAttribArray(1);
+  // // Vertex positions
+  // glEnableVertexAttribArray(0);
+  // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
-  glLineWidth(1.0f);
-  glDrawArrays(GL_LINE_LOOP, 0, 24);
-  // bbShader.Unbind();
+  // glBindVertexArray(0);
+}
+
+void Renderer::DrawBoundingBox(BoundingBoxCube& boundingBoxCube, Shader& shader) {
+  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  glBindVertexArray(boundingBoxCube.VAO);
+  glDrawElements(GL_TRIANGLES, boundingBoxCubeIndices.size(), GL_UNSIGNED_INT, 0);
+  glBindVertexArray(0);
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }

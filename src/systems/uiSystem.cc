@@ -58,6 +58,21 @@ void UiSystem::InitializeGUI(double dt, Registry* registry, Input* input) {
       if (ImGui::BeginMenu("Edit")) {
         ImGui::EndMenu();
       }
+      if (ImGui::BeginMenu("Help")) {
+        ImGui::Text("WASD - Move the camera");
+        ImGui::Text("Arrow Left/Right/Up/Down - Rotate Left/Right/Up/Down");
+        ImGui::Text("J/L - [Demo] pong player movement");
+        ImGui::Text("Mouse left - Pan Camera / [Debug] Shoot rays");
+        ImGui::Text("Mouse right - Rotate Camera");
+        ImGui::EndMenu();
+      }
+
+      // TODO : Draw frametime
+      // Draw FPS
+      DevDebug& devDebug = registry->GetComponent<DevDebug>();
+      std::string fpsCount = "FPS : " + std::to_string(devDebug.fps);
+      ImGui::Text(fpsCount.c_str());
+
       ImGui::EndMainMenuBar();
     }
   }
@@ -97,6 +112,7 @@ void UiSystem::PresetLayout(ImGuiID dockSpaceID) {
   ImGui::DockBuilderDockWindow("Services", dockRightID);
   ImGui::DockBuilderDockWindow("Assets", dockBottomID);
   ImGui::DockBuilderDockWindow("Scene", dockTopID);
+  ImGui::DockBuilderDockWindow("DevDebug", dockRightID);
   ImGui::DockBuilderFinish(dockSpaceID);
 }
 
@@ -110,6 +126,7 @@ void UiSystem::InitializeImGuiWindows(double dt, Registry* registry, Input* inpu
   DrawAnimator(dt, registry, input);
   DrawInspector(dt, registry, input);
   DrawServices(dt, registry, input);
+  DrawDevDebug(dt, registry, input);
 }
 
 void UiSystem::DrawHierarchy(double dt, Registry* registry, Input* input) {
@@ -117,16 +134,44 @@ void UiSystem::DrawHierarchy(double dt, Registry* registry, Input* input) {
 
   UpdateInputActiveWindow(input, WindowType::Hierarchy);
 
-  // ImGui::ShowDemoWindow();
+  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  devDebug.leftWindowWidth = ImGui::GetWindowWidth();
 
   // TODO : This can be improved upon
   // For now just take anything that has a transform component attached to it
 
-  std::vector<void*> components = registry->GetComponents<Transform>();
-  auto* models = static_cast<ComponentVector<Transform>*>(components[0]);
+  // We will run into the same problem that AddComponent is facing right now
+  // If we wanted a way to 'get all components that can be drawn'
+
+  // Rather than that, we can define 'all components that can be drawn'
+  // as primitives & 3d models.
+
+  // TODO : The hierarchy is not drawn this way.
+
+  std::vector<void*> cubeComponents = registry->GetComponents<Cube>();
+  auto* cubes = static_cast<ComponentVector<Cube>*>(cubeComponents[0]);
+
+  std::vector<void*> sphereComponents = registry->GetComponents<Sphere>();
+  auto* spheres = static_cast<ComponentVector<Sphere>*>(sphereComponents[0]);
+
+  std::vector<void*> modelComponents = registry->GetComponents<Model>();
+  auto* models = static_cast<ComponentVector<Model>*>(modelComponents[0]);
+
+  // Draw the cubes
+  for (size_t i = 0; i < cubes->Size(); i++) {
+    std::string modelName = "Cube : " + std::to_string(i);
+    if (ImGui::CollapsingHeader(modelName.c_str())) {
+    }
+  }
+
+  for (size_t i = 0; i < spheres->Size(); i++) {
+    std::string modelName = "Sphere : " + std::to_string(i);
+    if (ImGui::CollapsingHeader(modelName.c_str())) {
+    }
+  }
 
   for (size_t i = 0; i < models->Size(); i++) {
-    std::string modelName = "Transform " + std::to_string(i);
+    std::string modelName = "Model : " + std::to_string(i);
     if (ImGui::CollapsingHeader(modelName.c_str())) {
     }
   }
@@ -137,15 +182,24 @@ void UiSystem::DrawHierarchy(double dt, Registry* registry, Input* input) {
 
 void UiSystem::DrawAssets(double dt, Registry* registry, Input* input) {
   ImGui::Begin("Assets");
-
   UpdateInputActiveWindow(input, WindowType::Assets);
+
+  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  ImVec2 wsize = ImGui::GetWindowSize();
+
+  devDebug.bottomWindowWidth = wsize.x;
+  devDebug.bottomWindowHeight = wsize.y;
 
   ImGui::Text("This is the assets");
   ImGui::End();
 }
 
 void UiSystem::DrawScene(double dt, Registry* registry, Input* input) {
+  // Set no padding, as for the scene, there isn't really a need for padding
+  ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
   ImGui::Begin("Scene");
+  // Pop it so that it applies to the entire window here.
+  ImGui::PopStyleVar();
 
   ImGui::BeginChild("SceneRender");
 
@@ -154,8 +208,15 @@ void UiSystem::DrawScene(double dt, Registry* registry, Input* input) {
   // Get the size of the current imgui window to draw in
   ImVec2 wsize = ImGui::GetWindowSize();
 
+  SceneRender sceneRender = registry->GetComponent<SceneRender>();
+  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+
+  devDebug.sceneWidth = wsize.x;
+  devDebug.sceneHeight = wsize.y;
+
   // Flip V in the UV
-  ImGui::Image((ImTextureID)5, wsize, ImVec2(0, 1), ImVec2(1, 0));
+  ImGui::Image((ImTextureID)sceneRender.textureID, wsize, ImVec2(0, 1), ImVec2(1, 0),
+               ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
 
   ImGui::EndChild();
 
@@ -203,7 +264,10 @@ void UiSystem::DrawInspector(double dt, Registry* registry, Input* input) {
 
   UpdateInputActiveWindow(input, WindowType::Inspector);
 
-  ImGui::Text("This is the inspector");
+  // Temporary : this will be useful when mouse picking works
+  // DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  // ImGui::ColorEdit3("Primitive", (float*)&devDebug.rgb);
+
   ImGui::End();
 }
 
@@ -213,6 +277,20 @@ void UiSystem::DrawServices(double dt, Registry* registry, Input* input) {
   UpdateInputActiveWindow(input, WindowType::Services);
 
   ImGui::Text("This is the services");
+  ImGui::End();
+}
+
+void UiSystem::DrawDevDebug(double dt, Registry* registry, Input* input) {
+  ImGui::Begin("DevDebug");
+
+  UpdateInputActiveWindow(input, WindowType::DevDebug);
+
+  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  devDebug.rightWindowWidth = ImGui::GetWindowWidth();
+
+  ImGui::Checkbox("Draw all with wireframe", &devDebug.drawWireframe);
+  ImGui::Checkbox("Draw all colliders", &devDebug.drawColliders);
+
   ImGui::End();
 }
 

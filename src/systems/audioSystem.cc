@@ -22,7 +22,7 @@ void AudioSystem::Update(double dt, Registry* registry, Input* input) {
   gruntCooldown += dt;
   if (gruntCooldown > 1) {
     for (size_t i = 0; i < soundEffects->Size(); i++) {
-      SoundEffect se = *(soundEffects->At(i));
+      SoundEffect& se = soundEffects->At(i);
       int sound = SoundEffectsLibrary::Get()->Load(se.filePath);
       AudioVariables::sePlayer.SetLooping(se.looping);
       AudioVariables::sePlayer.Play(sound);
@@ -32,7 +32,7 @@ void AudioSystem::Update(double dt, Registry* registry, Input* input) {
   }
 
   for (size_t i = 0; i < music->Size(); i++) {
-    Music m = *(music->At(i));
+    Music& m = music->At(i);
     static MusicBuffer musicToPlay(m.filePath);
     if (!musicToPlay.IsPlaying()) {
       musicToPlay.Play();

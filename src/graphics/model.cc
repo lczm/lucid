@@ -18,27 +18,11 @@ void Model::LoadModel(std::string path) {
   directory = path.substr(0, path.find_last_of('/'));
   ProcessNode(scene->mRootNode, scene);
 
-  CalculateModelBoundingBox();
-}
-
-void Model::SetTag(std::string tag) {
-  Model::tag = tag;
-}
-
-std::string Model::GetTag() {
-  return Model::tag;
+  // CalculateModelBoundingBox();
 }
 
 std::vector<Mesh> Model::GetMeshes() {
   return Model::meshes;
-}
-
-void Model::SetBoundingBox(BoundingBox& boundingBox) {
-  Model::boundingBox = boundingBox;
-}
-
-BoundingBox Model::GetBoundingBox() {
-  return boundingBox;
 }
 
 void Model::ProcessNode(aiNode* node, const aiScene* scene) {
@@ -172,22 +156,22 @@ uint32_t Model::TextureFromFile(const char* path, const std::string& directory, 
   return textureID;
 }
 
-void Model::CalculateModelBoundingBox() {
-  BoundingBox boundingBox;
-
-  for (size_t i = 0; i < meshes.size(); i++) {
-    std::vector<MeshVertex>& vertices = meshes[i].vertices;
-    for (size_t j = 0; j < vertices.size(); j++) {
-      boundingBox.minX = glm::min(boundingBox.minX, vertices[j].position.x);
-      boundingBox.maxX = glm::max(boundingBox.maxX, vertices[j].position.x);
-
-      boundingBox.minY = glm::min(boundingBox.minY, vertices[j].position.y);
-      boundingBox.maxY = glm::max(boundingBox.maxY, vertices[j].position.y);
-
-      boundingBox.minZ = glm::min(boundingBox.minZ, vertices[j].position.z);
-      boundingBox.maxZ = glm::max(boundingBox.maxZ, vertices[j].position.z);
-    }
-  }
-
-  SetBoundingBox(boundingBox);
-}
+// void Model::CalculateModelBoundingBox() {
+//   BoundingBox boundingBox;
+//
+//   for (size_t i = 0; i < meshes.size(); i++) {
+//     std::vector<MeshVertex>& vertices = meshes[i].vertices;
+//     for (size_t j = 0; j < vertices.size(); j++) {
+//       boundingBox.minX = glm::min(boundingBox.minX, vertices[j].position.x);
+//       boundingBox.maxX = glm::max(boundingBox.maxX, vertices[j].position.x);
+//
+//       boundingBox.minY = glm::min(boundingBox.minY, vertices[j].position.y);
+//       boundingBox.maxY = glm::max(boundingBox.maxY, vertices[j].position.y);
+//
+//       boundingBox.minZ = glm::min(boundingBox.minZ, vertices[j].position.z);
+//       boundingBox.maxZ = glm::max(boundingBox.maxZ, vertices[j].position.z);
+//     }
+//   }
+//
+//   Model::boundingBox = boundingBox;
+// }

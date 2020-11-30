@@ -13,7 +13,7 @@ const int MOUSE_MIDDLE = 2;
 
 const float CAMERA_SPEED = 5.0f;
 const float SCROLL_SPEED = 25.0f;
-const float CAMERA_SENSITIVITY = 0.05f;
+const float CAMERA_SENSITIVITY = 0.15f;
 
 // Screen values, can deal with resizing some other day
 const int SCREEN_WIDTH = 1440;
@@ -25,6 +25,9 @@ const char TRIANGLE_FRAGMENT_SHADER[] = "../src/shaders/triangle.frag";
 const char MODEL_VERTEX_SHADER[] = "../src/shaders/model.vert";
 const char MODEL_FRAGMENT_SHADER[] = "../src/shaders/model.frag";
 
+const char PRIMITIVE_VERTEX_SHADER[] = "../src/shaders/primitive.vert";
+const char PRIMITIVE_FRAGMENT_SHADER[] = "../src/shaders/primitive.frag";
+
 // Models
 const char MICROPHONE_MODEL[] = "../assets/microphone/scene.gltf";
 const char SCIFIHELMET_MODEL[] = "../assets/helmet/ScifiHelmet.gltf";
@@ -34,3 +37,9 @@ const char AVOCADO_MODEL[] = "../assets/avocado/Avocado.gltf";
 // Audio
 const char GRUNT_SOUND[] = "../audio/grunt.wav";
 const char PIANO_MUSIC[] = "../audio/piano.wav";
+
+// Pseudo standard values that will not change
+const float PI = 3.14159265359;
+
+// Pong demo
+const float PADDLE_MOVE_SPEED = 0.05f;

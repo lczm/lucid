@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 #include "constants.h"
 #include "glm.hpp"
 #include "gtx/string_cast.hpp"
@@ -31,4 +33,6 @@ class Camera {
 
   void UpdateView();
   void UpdateCameraVector(float xOffset, float yOffset);
+
+  void MoveCamera(glm::vec3 offset);
 };

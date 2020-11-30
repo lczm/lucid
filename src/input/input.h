@@ -25,12 +25,14 @@ class Input {
   WindowType activeWindow;
 
  public:
+  Input();
   Input(GLFWwindow* window);
   ~Input();
 
  public:
   double GetMouseX();
   double GetMouseY();
+  double GetMouseYAbsolute();
   int GetScrollState();
 
  public:

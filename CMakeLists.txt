@@ -9,7 +9,7 @@ endif()
 
 set(CMAKE_CXX_FLAGS "-Wall")
 set(CMAKE_CXX_FLAGS_RELEASE "-O2")
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     set(CMAKE_CXX_FLAGS "-Wall -Wpedantic -Wextra -Wshadow -Wno-unused-parameter -fdiagnostics-color -g")
@@ -53,6 +53,10 @@ set (STB_IMAGE_HEADERS
     lib/stb_image/stb_image.h
 )
 
+set (IMGUIZMO_HEADERS
+    lib/ImGuizmo/ImGuizmo.h
+)
+
 # Import directories
 include_directories(src/utils)
 include_directories(src/constants)
@@ -63,6 +67,7 @@ include_directories(src/entity)
 include_directories(src/lucid)
 include_directories(src/shaders)
 include_directories(src/systems)
+include_directories(src/systems/pong)
 
 # Setup stb_image
 include_directories(lib/stb_image)
@@ -92,6 +97,9 @@ include_directories(lib/libsndfile/CMakeBuild/include)
 # Setup assimp
 include_directories(lib/assimp/include)
 
+# Setup ImGuizmo
+include_directories(lib/ImGuizmo)
+
 # Setup glfw
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
@@ -103,8 +111,8 @@ include_directories(lib/glfw/deps)
 # Setup gtest
 add_subdirectory(lib/googletest)
 enable_testing()
-include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
 # Executable target
 add_executable(lucid
@@ -114,7 +122,8 @@ add_executable(lucid
     ${IMGUI_SOURCE_FILES}
     ${STB_IMAGE_HEADERS}
     ${GLAD_SOURCE_FILES}
-    ${GLM_HEADERS})
+    ${GLM_HEADERS}
+    ${IMGUIZMO_HEADERS})
 
 # Link the executable to glfw
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")

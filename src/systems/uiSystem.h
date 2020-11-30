@@ -8,6 +8,10 @@
 #include "renderer.h"
 #include "windowEnum.h"
 
+#if DEBUG
+#include "devStructs.h"
+#endif
+
 #include "imgui.h"
 #include "imgui_internal.h"
 #include "imgui_impl_glfw.h"
@@ -15,6 +19,8 @@
 
 class UiSystem : public System {
  private:
+  bool drawWireframe;
+
  public:
   UiSystem();
   ~UiSystem();
@@ -34,6 +40,7 @@ class UiSystem : public System {
   void DrawAnimator(double dt, Registry* registry, Input* input);
   void DrawInspector(double dt, Registry* registry, Input* input);
   void DrawServices(double dt, Registry* registry, Input* input);
+  void DrawDevDebug(double dt, Registry* registry, Input* input);
 
   void UpdateInputActiveWindow(Input* input, WindowType windowType);
 };
