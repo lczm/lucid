@@ -105,17 +105,50 @@ void Lucid::InitializeBulitInEntities() {
   Line* zLine = registry->GetComponent<Line>(zLineID);
 
   // TODO : Either define maximum limit for a scene or find a compile time number for this
+  // Note that if the number is too big, e.g. 100000.0f,
+  // opengl will start cutting off some numbers? the lines will not look
+  // the same size. Better to stick with a smaller number
+  const float MAX_WORLD_COORDINATE_LIMIT = 1000.0f;
+
   xLine->color = {0.8f, 0.0f, 0.0f};
-  xLine->origin.x = -1000000.0f;
-  xLine->destination.x = 1000000.0f;
+  xLine->origin.x = -MAX_WORLD_COORDINATE_LIMIT;
+  xLine->destination.x = MAX_WORLD_COORDINATE_LIMIT;
 
   yLine->color = {0.0f, 0.8f, 0.0f};
-  yLine->origin.y = -1000000.0f;
-  yLine->destination.y = 1000000.0f;
+  yLine->origin.y = -MAX_WORLD_COORDINATE_LIMIT;
+  yLine->destination.y = MAX_WORLD_COORDINATE_LIMIT;
 
   zLine->color = {0.0f, 0.0f, 0.8f};
-  zLine->origin.z = -1000000.0f;
-  zLine->destination.z = 1000000.0f;
+  zLine->origin.z = -MAX_WORLD_COORDINATE_LIMIT;
+  zLine->destination.z = MAX_WORLD_COORDINATE_LIMIT;
+
+  // Draw the x-z grid lines
+  for (int i = -100; i < 100; i++) {
+    Entity lineID = registry->GetAvailableEntityId();
+    registry->CreateEntity<Line, Transform>(lineID);
+
+    Line* line = registry->GetComponent<Line>(lineID);
+    line->color = {0.2f, 0.2f, 0.2f};
+
+    line->origin.x = static_cast<float>(i);
+    line->destination.x = static_cast<float>(i);
+    line->origin.z = -MAX_WORLD_COORDINATE_LIMIT;
+    line->destination.z = MAX_WORLD_COORDINATE_LIMIT;
+  }
+
+  // Draw the z-x grid lines
+  for (int i = -100; i < 100; i++) {
+    Entity lineID = registry->GetAvailableEntityId();
+    registry->CreateEntity<Line, Transform>(lineID);
+
+    Line* line = registry->GetComponent<Line>(lineID);
+    line->color = {0.2f, 0.2f, 0.2f};
+
+    line->origin.x = -MAX_WORLD_COORDINATE_LIMIT;
+    line->destination.x = MAX_WORLD_COORDINATE_LIMIT;
+    line->origin.z = static_cast<float>(i);
+    line->destination.z = static_cast<float>(i);
+  }
 }
 
 void Lucid::InitializeBuiltInSystems() {
