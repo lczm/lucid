@@ -1,10 +1,47 @@
+// #define GLFW_INCLUDE_NONE
+// #define GLAD_DEBUG
+//
+// #include <glad/gl.h>
+// #include <GLFW/glfw3.h>
+//
+// #include <vector>
+// #include "ecs.h"
+// #include "component.h"
+// #include "gtest/gtest.h"
+//
+// #include "renderSystem.h"
+// #include "physicsSystem.h"
+
 #include <vector>
-#include "ecs.h"
+#include <iostream>
+#include <glad/gl.h>
+
+#include "lucid.h"
 #include "component.h"
 #include "gtest/gtest.h"
+#include "constants.h"
+#include "errors.h"
+#include "ecs.h"
+#include "input.h"
+#include "utils.h"
+#include "test-utils.h"
 
 #include "renderSystem.h"
 #include "physicsSystem.h"
+
+class PhysicsCollisionGL : public testing::Test {
+ protected:
+  static GLFWwindow* window;
+  static void SetUpTestSuite() {
+    window = SetUpWindow();
+  }
+
+  static void TearDownTestSuite() {
+    TearDownWindow(window);
+  }
+};
+
+GLFWwindow* PhysicsCollisionGL::window = nullptr;
 
 TEST(PhysicsCollision, BoxBoxColliding) {
   Registry* registry = new Registry();
@@ -78,7 +115,7 @@ TEST(PhysicsCollision, BoxBoxNotColliding) {
 // The ray & box intersection current lies in the renderSystem, so the test will be
 // using renderSystem to do the testing, but in the future I think there should
 // be a centralised place that hosts the collision checks between the primitives
-TEST(PhysicsAndRenderCollision, RayBoxColliding) {
+TEST_F(PhysicsCollisionGL, RayBoxColliding) {
   Registry* registry = new Registry();
   RenderSystem* renderSystem = new RenderSystem();
 
@@ -94,8 +131,24 @@ TEST(PhysicsAndRenderCollision, RayBoxColliding) {
   // Ray goes towards the z-axis.
   auto ray = glm::vec3(0.0f, 0.0f, -1.0f);
 
-  // renderSystem->RayBoundingBoxCollisionCheck(origin, ray, );
+  glm::mat4 matrixModel = glm::mat4(1.0f);
+  matrixModel = glm::translate(matrixModel, transform->position);
+  matrixModel = glm::scale(matrixModel, transform->scale);
+
+  std::vector<glm::vec4> vertices;
+  vertices.reserve(boundingBoxCubeVertices.size() / 3);
+
+  for (size_t i = 0; i < boundingBoxCubeVertices.size(); i += 3) {
+    vertices.push_back(matrixModel * glm::vec4(boundingBoxCubeVertices[i],
+                                               boundingBoxCubeVertices[i + 1],
+                                               boundingBoxCubeVertices[i + 2], 1.0f));
+  }
+
+  BoundingBox bb = renderSystem->GetBoundingBox(vertices);
+  bool collided = renderSystem->RayBoundingBoxCollisionCheck(origin, ray, bb);
+
+  EXPECT_TRUE(collided);
 }
 
-TEST(PhysicsAndRenderCollision, RayBoxNotColliding) {
+TEST_F(PhysicsCollisionGL, RayBoxNotColliding) {
 }

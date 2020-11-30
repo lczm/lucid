@@ -2,6 +2,10 @@
 #define STB_IMAGE_IMPLEMENTATION
 #define GLAD_DEBUG
 
+#ifdef _WIN32
+#define APIENTRY __stdcall
+#endif
+
 #include <iostream>
 #include <glad/gl.h>
 
