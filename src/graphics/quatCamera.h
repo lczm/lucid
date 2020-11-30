@@ -27,14 +27,16 @@ class QuatCamera {
 
   glm::vec3 GetPosition();
   glm::vec3 GetPositionInWorld();
+
   glm::quat GetOrientation();
   glm::mat4 GetProjection();
   glm::mat4 GetView();
 
-  void Translate(const glm::vec3& vec);
+  void Translate(const glm::vec3 vec);
   void Translate(const float x, const float y, const float z);
+  void TranslateInWorld(const glm::vec3 vec);
 
-  void Rotate(const float angle, const glm::vec3& axis);
+  void Rotate(const float angle, const glm::vec3 axis);
   void Rotate(const float angle, const float x, const float y, const float z);
 
   void Pitch(const float angle);  // x-axis

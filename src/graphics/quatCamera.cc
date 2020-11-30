@@ -32,11 +32,15 @@ glm::mat4 QuatCamera::GetView() {
   return glm::translate(glm::mat4_cast(orientation), position);
 }
 
-void QuatCamera::Translate(const glm::vec3& vec) {
+void QuatCamera::Translate(const glm::vec3 vec) {
   position += vec * orientation;
 }
 
-void QuatCamera::Rotate(const float angle, const glm::vec3& axis) {
+void QuatCamera::TranslateInWorld(const glm::vec3 vec) {
+  position += -vec * orientation;
+}
+
+void QuatCamera::Rotate(const float angle, const glm::vec3 axis) {
   orientation *= glm::angleAxis(angle, axis * orientation);
 }
 

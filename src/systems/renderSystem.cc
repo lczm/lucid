@@ -6,7 +6,7 @@ RenderSystem::RenderSystem() {
   RenderSystem::quatCamera = new QuatCamera();
 
   // move back the camera a little bit.
-  quatCamera->Translate(glm::vec3(0.0f, 0.0f, -35.0f));
+  quatCamera->TranslateInWorld(glm::vec3(0.0f, 1.0f, 35.0f));
 
   glGenFramebuffers(1, &fbo);
   glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -189,9 +189,7 @@ void RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
 
   Line* line = registry->GetComponent<Line>(devDebug.rayID);
   line->origin = quatCamera->GetPositionInWorld();
-  // line->origin = {0.0f, 0.0f, 0.0f};
   line->destination = rayDirection;
-  // line->destination = {0.0f, 10.0f, 0.0f};
   line->color.r = 1.0f;
 
   std::vector<BoundingBox> boundingBoxes;
@@ -222,12 +220,28 @@ void RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
   // Calculate the distance between the ray origin and the bounding box?
   auto origin = quatCamera->GetPositionInWorld();
 
+  // Resolve the collision if there are more than one intersections / collisions
+  // TODO : Need a way to get the ID from registry->GetComponents<Iter>()
+  // Perhaps overload the GetComponents such that you can also take in
+  // Each([](uint32_t id, Transform& transform))
+  std::vector<float> lengths;
   for (size_t i = 0; i < boundingBoxes.size(); i++) {
-    // TODO Resolve collision based on length, which means that RayBoundingBoxCollisionCheck needs
-    // to return length.
-    auto collided = RayBoundingBoxCollisionCheck(origin, rayDirection, boundingBoxes[i]);
-    if (collided) {
-      lucid::Log("Collided");
+    std::tuple<bool, float> collisionAndLength =
+        RayBoundingBoxCollisionCheck(origin, rayDirection, boundingBoxes[i]);
+    if (std::get<bool>(collisionAndLength)) {
+      lengths.push_back(std::get<float>(collisionAndLength));
+    }
+  }
+
+  if (lengths.size() == 1) {
+    lucid::Log("Single collision!");
+  }
+
+  // If it has collided with more than one object
+  if (lengths.size() > 1) {
+    lucid::Log("Collided with more than one object, number of objects : ", lengths.size());
+    for (size_t i = 0; i < lengths.size(); i++) {
+      lucid::Log(i, " : ", lengths[i]);
     }
   }
 }
@@ -427,7 +441,7 @@ glm::vec3 RenderSystem::GetRayDirection(Registry* registry, Input* input) {
   float z = 1.0f;
 #endif
 
-  lucid::Log(x, " ", y, " ", z);
+  // lucid::Log(x, " ", y, " ", z);
 
   // normalized device coordinates
   glm::vec3 rayNds = glm::vec3(x, y, z);
@@ -444,7 +458,7 @@ glm::vec3 RenderSystem::GetRayDirection(Registry* registry, Input* input) {
   // 4d world coordinates
   // normalize the vector as well
   glm::vec3 rayWorld = glm::vec3(glm::normalize(glm::inverse(quatCamera->GetView()) * rayEye));
-  lucid::Log(glm::to_string(rayWorld));
+  // lucid::Log(glm::to_string(rayWorld));
 
   // Scale this by a fairly huge amount
   rayWorld *= 1000.0f;
@@ -459,8 +473,11 @@ glm::vec3 RenderSystem::GetRayDirection(Registry* registry, Input* input) {
   return rayWorld;
 }
 
-bool RenderSystem::RayBoundingBoxCollisionCheck(glm::vec3 origin, glm::vec3 ray,
-                                                BoundingBox boundingBox) {
+// bool : true if collided, false if not collided
+// float : length of the intersection from origin if it is intersected
+std::tuple<bool, float> RenderSystem::RayBoundingBoxCollisionCheck(glm::vec3 origin, glm::vec3 ray,
+                                                                   BoundingBox boundingBox) {
+  float length;
   glm::vec3 dirfrac = 1.0f / ray;
   // dirfrac.x = 1.0f / ray.x;
   // dirfrac.y = 1.0f / ray.y;
@@ -481,16 +498,20 @@ bool RenderSystem::RayBoundingBoxCollisionCheck(glm::vec3 origin, glm::vec3 ray,
   // AABB is behind
   if (tmax < 0) {
     // lucid::Log("AABB is behind");
-    return false;
+    // return false;
+    return std::tuple(false, 0.0f);
   }
 
   // Does not intersect
   if (tmin > tmax) {
     // lucid::Log("Does not intersect");
-    return false;
+    // return false;
+    return std::tuple(false, 0.0f);
   }
 
-  return true;
+  length = tmin;
+  return std::tuple(true, length);
+  // return true;
 }
 
 BoundingBox RenderSystem::GetBoundingBox(std::vector<glm::vec4> vertices) {

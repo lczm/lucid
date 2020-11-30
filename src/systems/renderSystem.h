@@ -56,7 +56,8 @@ class RenderSystem : public System {
   // TODO : Typedef glm::vec3 to a ray as it feels overly verbose to declare
   // a vector as input/output
   glm::vec3 GetRayDirection(Registry* registry, Input* input);
-  bool RayBoundingBoxCollisionCheck(glm::vec3 origin, glm::vec3 ray, BoundingBox boundingBox);
+  std::tuple<bool, float> RayBoundingBoxCollisionCheck(glm::vec3 origin, glm::vec3 ray,
+                                                       BoundingBox boundingBox);
 
   BoundingBox GetBoundingBox(std::vector<glm::vec4> vertices);
 };
