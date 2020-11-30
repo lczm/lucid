@@ -2,22 +2,13 @@
 #define STB_IMAGE_IMPLEMENTATION
 #define GLAD_DEBUG
 
-#include <chrono>
 #include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string>
-#include <typeinfo>
-#include <vector>
-
 #include <glad/gl.h>
 
 #include "lucid.h"
 #include "constants.h"
 #include "errors.h"
 #include "ecs.h"
-#include "glm.hpp"
-#include "gtc/matrix_transform.hpp"
 #include "input.h"
 #include "utils.h"
 #include <GLFW/glfw3.h>
@@ -103,7 +94,6 @@ int main(void) {
 
   Registry* registry = new Registry();
   Input* input = new Input(window);
-
   Lucid* lucid = new Lucid(registry, input, window);
 
   while (!glfwWindowShouldClose(window)) {
