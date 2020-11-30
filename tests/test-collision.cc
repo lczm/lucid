@@ -151,4 +151,36 @@ TEST_F(PhysicsCollisionGL, RayBoxColliding) {
 }
 
 TEST_F(PhysicsCollisionGL, RayBoxNotColliding) {
+  Registry* registry = new Registry();
+  RenderSystem* renderSystem = new RenderSystem();
+
+  registry->RegisterArchetype<Cube, Transform>();
+  Entity first = registry->GetAvailableEntityId();
+  registry->CreateEntity<Cube, Transform>(first);
+
+  Transform* transform = registry->GetComponent<Transform>(first);
+  transform->position = {0.0f, 0.0f, 0.0f};
+
+  // Origin faces towards the origin of the world but a little further back?
+  auto origin = glm::vec3(0.0f, 0.0f, 10.0f);
+  // Ray goes away the z-axis. (Unlike the above test, this will test for non colliding)
+  auto ray = glm::vec3(0.0f, 0.0f, 1.0f);
+
+  glm::mat4 matrixModel = glm::mat4(1.0f);
+  matrixModel = glm::translate(matrixModel, transform->position);
+  matrixModel = glm::scale(matrixModel, transform->scale);
+
+  std::vector<glm::vec4> vertices;
+  vertices.reserve(boundingBoxCubeVertices.size() / 3);
+
+  for (size_t i = 0; i < boundingBoxCubeVertices.size(); i += 3) {
+    vertices.push_back(matrixModel * glm::vec4(boundingBoxCubeVertices[i],
+                                               boundingBoxCubeVertices[i + 1],
+                                               boundingBoxCubeVertices[i + 2], 1.0f));
+  }
+
+  BoundingBox bb = renderSystem->GetBoundingBox(vertices);
+  bool collided = renderSystem->RayBoundingBoxCollisionCheck(origin, ray, bb);
+
+  EXPECT_FALSE(collided);
 }
