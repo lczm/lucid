@@ -185,7 +185,7 @@ void RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
   input->mouseKeys[MOUSE_LEFT] = false;
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
 
-  glm::vec3 rayDirection = GetRayDirection(input);
+  glm::vec3 rayDirection = GetRayDirection(registry, input);
 
   Line* line = registry->GetComponent<Line>(devDebug.rayID);
   line->origin = quatCamera->GetPositionInWorld();
@@ -236,6 +236,9 @@ void RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
     // TODO Resolve collision based on length, which means that RayBoundingBoxCollisionCheck needs
     // to return length.
     auto collided = RayBoundingBoxCollisionCheck(origin, rayDirection, boundingBoxes[i]);
+    if (collided) {
+      lucid::Log("Collided");
+    }
   }
 }
 
@@ -408,13 +411,33 @@ void RenderSystem::DrawAllBoundingBoxes(double dt, Registry* registry, Input* in
   shaderResource.primitiveShader.Unbind();
 }
 
-glm::vec3 RenderSystem::GetRayDirection(Input* input) {
+glm::vec3 RenderSystem::GetRayDirection(Registry* registry, Input* input) {
+  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+
+#if DEBUG
+  float mouseX = static_cast<float>(input->GetMouseX() - devDebug.leftWindowWidth);
+  float mouseY = static_cast<float>(input->GetMouseYAbsolute() - devDebug.menuBarHeight);
+
+  // lucid::Log("x : ", input->GetMouseX(), " y : ", input->GetMouseYAbsolute())
+
+  float x =
+      (2.0f * mouseX) / (SCREEN_WIDTH - devDebug.leftWindowWidth - devDebug.rightWindowWidth) -
+      1.0f;
+  float y = 1.0f - (2.0f * mouseY) /
+                       (SCREEN_HEIGHT - devDebug.bottomWindowHeight - devDebug.menuBarHeight);
+  float z = 1.0f;
+#endif
+
+#if RELEASE
   float mouseX = static_cast<float>(input->GetMouseX());
   float mouseY = static_cast<float>(input->GetMouseYAbsolute());
 
   float x = (2.0f * mouseX) / SCREEN_WIDTH - 1.0f;
   float y = 1.0f - (2.0f * mouseY) / SCREEN_HEIGHT;
   float z = 1.0f;
+#endif
+
+  lucid::Log(x, " ", y, " ", z);
 
   // normalized device coordinates
   glm::vec3 rayNds = glm::vec3(x, y, z);
@@ -434,7 +457,7 @@ glm::vec3 RenderSystem::GetRayDirection(Input* input) {
   lucid::Log(glm::to_string(rayWorld));
 
   // Scale this by a fairly huge amount
-  // rayWorld *= 1000.0f;
+  rayWorld *= 1000.0f;
 
   // Re-inverse the y-values since input->GetMouseY() {abs(SCREEN_HEIGHT - y)}
   // TODO : Find out why i have to invert this for whatever reason...
@@ -448,10 +471,10 @@ glm::vec3 RenderSystem::GetRayDirection(Input* input) {
 
 bool RenderSystem::RayBoundingBoxCollisionCheck(glm::vec3 origin, glm::vec3 ray,
                                                 BoundingBox boundingBox) {
-  glm::vec3 dirfrac;
-  dirfrac.x = 1.0f / ray.x;
-  dirfrac.y = 1.0f / ray.y;
-  dirfrac.z = 1.0f / ray.z;
+  glm::vec3 dirfrac = 1.0f / ray;
+  // dirfrac.x = 1.0f / ray.x;
+  // dirfrac.y = 1.0f / ray.y;
+  // dirfrac.z = 1.0f / ray.z;
 
   float t1 = (boundingBox.minX - origin.x) * dirfrac.x;
   float t2 = (boundingBox.maxX - origin.x) * dirfrac.x;

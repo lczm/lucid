@@ -182,15 +182,24 @@ void UiSystem::DrawHierarchy(double dt, Registry* registry, Input* input) {
 
 void UiSystem::DrawAssets(double dt, Registry* registry, Input* input) {
   ImGui::Begin("Assets");
-
   UpdateInputActiveWindow(input, WindowType::Assets);
+
+  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  ImVec2 wsize = ImGui::GetWindowSize();
+
+  devDebug.bottomWindowWidth = wsize.x;
+  devDebug.bottomWindowHeight = wsize.y;
 
   ImGui::Text("This is the assets");
   ImGui::End();
 }
 
 void UiSystem::DrawScene(double dt, Registry* registry, Input* input) {
+  // Set no padding, as for the scene, there isn't really a need for padding
+  ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
   ImGui::Begin("Scene");
+  // Pop it so that it applies to the entire window here.
+  ImGui::PopStyleVar();
 
   ImGui::BeginChild("SceneRender");
 
@@ -200,9 +209,14 @@ void UiSystem::DrawScene(double dt, Registry* registry, Input* input) {
   ImVec2 wsize = ImGui::GetWindowSize();
 
   SceneRender sceneRender = registry->GetComponent<SceneRender>();
+  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+
+  devDebug.sceneWidth = wsize.x;
+  devDebug.sceneHeight = wsize.y;
 
   // Flip V in the UV
-  ImGui::Image((ImTextureID)sceneRender.textureID, wsize, ImVec2(0, 1), ImVec2(1, 0));
+  ImGui::Image((ImTextureID)sceneRender.textureID, wsize, ImVec2(0, 1), ImVec2(1, 0),
+               ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
 
   ImGui::EndChild();
 

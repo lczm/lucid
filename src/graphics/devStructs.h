@@ -17,9 +17,18 @@ struct DevDebug {
   uint32_t fps = 0;
   uint32_t rayID = 0;
 
+  float sceneWidth = 0;
+  float sceneHeight = 0;
+
   float leftWindowWidth = 0;
   float leftWindowHeight = 0;
 
   float rightWindowWidth = 0;
   float rightWindowHeight = 0;
+
+  float bottomWindowWidth = 0;
+  float bottomWindowHeight = 0;
+
+  float menuBarWidth = 0;
+  float menuBarHeight = 19;
 };
