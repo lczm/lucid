@@ -729,6 +729,25 @@ class Registry {
     return &vectorPtr.at(entityIndex);
   }
 
+  // Given an archetype and the index that the user wants,
+  // Search for the entityID
+  template <typename... Components>
+  uint32_t GetEntityIDFromArchetype(uint32_t index) {
+    Archetype archetype = {(GetHashCode<Components>())...};
+
+    for (auto e : entityComponentMap) {
+      if (e.second == archetype) {
+        if (entityIndexMap[e.first] == index) {
+          return e.first;
+        }
+      }
+    }
+
+    // Cannot find the entity given the archetype
+    std::cout << "GetEntityIDFromArchetype cannot find entity given index of : " << index
+              << std::endl;
+  }
+
   void SortArchetype(Archetype& archetype) {
     std::sort(archetype.begin(), archetype.end());
   }

@@ -145,9 +145,9 @@ TEST_F(PhysicsCollisionGL, RayBoxColliding) {
   }
 
   BoundingBox bb = renderSystem->GetBoundingBox(vertices);
-  bool collided = renderSystem->RayBoundingBoxCollisionCheck(origin, ray, bb);
+  auto collidedAndLength = renderSystem->RayBoundingBoxCollisionCheck(origin, ray, bb);
 
-  EXPECT_TRUE(collided);
+  EXPECT_TRUE(std::get<bool>(collidedAndLength));
 }
 
 TEST_F(PhysicsCollisionGL, RayBoxNotColliding) {
@@ -180,7 +180,7 @@ TEST_F(PhysicsCollisionGL, RayBoxNotColliding) {
   }
 
   BoundingBox bb = renderSystem->GetBoundingBox(vertices);
-  bool collided = renderSystem->RayBoundingBoxCollisionCheck(origin, ray, bb);
+  auto collidedAndLength = renderSystem->RayBoundingBoxCollisionCheck(origin, ray, bb);
 
-  EXPECT_FALSE(collided);
+  EXPECT_FALSE(std::get<bool>(collidedAndLength));
 }

@@ -450,3 +450,60 @@ TEST(ECS, GetComponentsLambdaMultiIterationWithInitialDataModified) {
         EXPECT_EQ(testAddStruct3.f, 0);
       });
 }
+
+TEST(ECS, GetEntityIDFromArchetypeWithOneEntity) {
+  Registry* registry = new Registry();
+
+  // Register some archetypes
+  registry->RegisterArchetype<TestAddStruct1>();
+  registry->RegisterArchetype<TestAddStruct1, TestAddStruct2>();
+  registry->RegisterArchetype<TestAddStruct1, TestAddStruct2, TestAddStruct3>();
+
+  // Get some entityIDs
+  Entity entity1 = registry->GetAvailableEntityId();
+  Entity entity2 = registry->GetAvailableEntityId();
+  Entity entity3 = registry->GetAvailableEntityId();
+
+  // Create some entities
+  registry->CreateEntity<TestAddStruct1>(entity1);
+  registry->CreateEntity<TestAddStruct1, TestAddStruct2>(entity2);
+  registry->CreateEntity<TestAddStruct1, TestAddStruct2, TestAddStruct3>(entity3);
+
+  // Attempt to find entity1
+  // Since there is only one entity in the archetype, this should return entity1
+  Entity entityID1 = registry->GetEntityIDFromArchetype<TestAddStruct1>(0);
+  Entity entityID2 = registry->GetEntityIDFromArchetype<TestAddStruct1, TestAddStruct2>(0);
+  Entity entityID3 =
+      registry->GetEntityIDFromArchetype<TestAddStruct1, TestAddStruct2, TestAddStruct3>(0);
+
+  EXPECT_EQ(entity1, entityID1);
+  EXPECT_EQ(entity2, entityID2);
+  EXPECT_EQ(entity3, entityID3);
+}
+
+TEST(ECS, GetEntityIDFromArchetypeWithMoreThanOneEntity) {
+  Registry* registry = new Registry();
+
+  // Register some archetypes
+  registry->RegisterArchetype<TestAddStruct1>();
+
+  // Get some entityIDs
+  Entity entity1 = registry->GetAvailableEntityId();
+  Entity entity2 = registry->GetAvailableEntityId();
+  Entity entity3 = registry->GetAvailableEntityId();
+
+  // Create some entities
+  registry->CreateEntity<TestAddStruct1>(entity1);
+  registry->CreateEntity<TestAddStruct1>(entity2);
+  registry->CreateEntity<TestAddStruct1>(entity3);
+
+  // Attempt to find entity1
+  // Since there is only one entity in the archetype, this should return entity1
+  Entity entityID1 = registry->GetEntityIDFromArchetype<TestAddStruct1>(0);
+  Entity entityID2 = registry->GetEntityIDFromArchetype<TestAddStruct1>(1);
+  Entity entityID3 = registry->GetEntityIDFromArchetype<TestAddStruct1>(2);
+
+  EXPECT_EQ(entity1, entityID1);
+  EXPECT_EQ(entity2, entityID2);
+  EXPECT_EQ(entity3, entityID3);
+}

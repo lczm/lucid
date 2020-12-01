@@ -12,7 +12,7 @@ GLFWwindow* SetUpWindow() {
     glfwTerminate();
     exit(EXIT_FAILURE);
   }
-  int a = gladLoadGL(glfwGetProcAddress);
+  gladLoadGL(glfwGetProcAddress);
 
   glfwMakeContextCurrent(window);
   gladLoadGL(glfwGetProcAddress);
