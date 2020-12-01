@@ -308,12 +308,14 @@ void Lucid::InitializeDemoPongEntities() {
 
   // TODO : Need to scale the cubes to become 'paddles'
   // Audio Stuff Start
-  registry->RegisterArchetype<SoundEffect>();
+  registry->RegisterArchetype<SoundEffect, Transform>();
   registry->RegisterArchetype<Music>();
   Entity soundEffectID = registry->GetAvailableEntityId();
   Entity musicID = registry->GetAvailableEntityId();
-  registry->CreateEntity<SoundEffect>(soundEffectID);
+  registry->CreateEntity<SoundEffect, Transform>(soundEffectID);
   registry->CreateEntity<Music>(musicID);
+  Transform* soundEffectTransform = registry->GetComponent<Transform>(soundEffectID);
+  soundEffectTransform->position = {0, 0, 0};
   SoundEffect* soundEffect = registry->GetComponent<SoundEffect>(soundEffectID);
   soundEffect->filePath = GRUNT_SOUND;
   Music* music = registry->GetComponent<Music>(musicID);
