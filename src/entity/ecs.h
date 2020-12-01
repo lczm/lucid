@@ -5,8 +5,8 @@
 #include <cstdint>
 #include <iostream>
 #include <algorithm>
-#include <unordered_map>
 #include <type_traits>
+#include <unordered_map>
 
 #include "component.h"
 #include "input.h"
@@ -23,6 +23,12 @@
     - Systems priority queue
         Allow systems to register with a number so that we can control systems
         run order
+
+    - Archetype internally should hold the entity IDs as sparse sets
+        This is so that doing Each() with ids will be simpler and faster.
+        The current implementation of ids being stored with depth of 1 makes it
+        so that Each() with ids will have to iterate over all the entities,
+        this can make it very slow.
 */
 
 // Entities are inherently just ids
@@ -162,6 +168,31 @@ class ComponentVectorContainer {
       // Use apply to match arguments to function pointer
       std::apply(function, tuple);
       // function(std::get<decltype(GetComponentData<Components>(componentVectors, i))>(tuple)...);
+    }
+  }
+
+  // This one will be used as such :
+  // registry->GetComponents<T...>()->EachWithID([](uint32_t, T...){
+  // });
+  template <typename Func>
+  void EachWithID(Func function) {
+    componentVectors = registry->GetComponentsWithID<Components...>();
+
+    std::vector<uint32_t> hashCodes = {(registry->GetHashCode<Components>())...};
+    for (size_t i = 0; i < hashCodes.size(); i++) {
+      componentIndex[hashCodes[i]] = i;
+    }
+
+    uint32_t maxSize = GetSize<Components...>(componentVectors);
+
+    // For each of the components
+    for (size_t i = 0; i < maxSize; i++) {
+      // Make a tuple consisting of the component data
+      // this has to be forward_as_tuple and not make_tuple as GetComponentData returns a reference
+      auto tuple = std::forward_as_tuple(GetComponentData<Components>(componentVectors, i)...);
+
+      // Use apply to match arguments to function pointer
+      std::apply(function, tuple);
     }
   }
 
@@ -746,6 +777,20 @@ class Registry {
     // Cannot find the entity given the archetype
     std::cout << "GetEntityIDFromArchetype cannot find entity given index of : " << index
               << std::endl;
+  }
+
+  bool SubsetOfArchetype(Archetype& archetype, Archetype& archetypeOther) {
+    SortArchetype(archetype);
+    SortArchetype(archetypeOther);
+
+    size_t minLength = std::min(archetype.size(), archetypeOther.size());
+
+    for (size_t i = 0; i < minLength; i++) {
+      if (archetype[i] != archetypeOther[i]) {
+        return false;
+      }
+    }
+    return true;
   }
 
   void SortArchetype(Archetype& archetype) {

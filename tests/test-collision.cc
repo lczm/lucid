@@ -1,16 +1,5 @@
 // #define GLFW_INCLUDE_NONE
 // #define GLAD_DEBUG
-//
-// #include <glad/gl.h>
-// #include <GLFW/glfw3.h>
-//
-// #include <vector>
-// #include "ecs.h"
-// #include "component.h"
-// #include "gtest/gtest.h"
-//
-// #include "renderSystem.h"
-// #include "physicsSystem.h"
 
 #include <vector>
 #include <iostream>

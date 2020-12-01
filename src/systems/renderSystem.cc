@@ -225,11 +225,12 @@ void RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
   // Perhaps overload the GetComponents such that you can also take in
   // Each([](uint32_t id, Transform& transform))
   std::vector<float> lengths;
+  std::vector<uint32_t> lengthIndexs;
   for (size_t i = 0; i < boundingBoxes.size(); i++) {
-    std::tuple<bool, float> collisionAndLength =
-        RayBoundingBoxCollisionCheck(origin, rayDirection, boundingBoxes[i]);
+    auto collisionAndLength = RayBoundingBoxCollisionCheck(origin, rayDirection, boundingBoxes[i]);
     if (std::get<bool>(collisionAndLength)) {
       lengths.push_back(std::get<float>(collisionAndLength));
+      lengthIndexs.push_back(i);
     }
   }
 
@@ -238,12 +239,25 @@ void RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
   }
 
   // If it has collided with more than one object
-  if (lengths.size() > 1) {
-    lucid::Log("Collided with more than one object, number of objects : ", lengths.size());
-    for (size_t i = 0; i < lengths.size(); i++) {
-      lucid::Log(i, " : ", lengths[i]);
+  uint32_t shortestIndex = 0;
+  float shortestLength = std::numeric_limits<float>::max();
+  for (size_t i = 0; i < lengths.size(); i++) {
+    if (lengths[i] < shortestLength) {
+      shortestLength = lengths[i];
+      shortestIndex = lengthIndexs[i];
     }
   }
+
+  Entity id = registry->GetEntityIDFromArchetype<Transform>(shortestIndex);
+
+  lucid::Log("ID : ", id);
+
+  // if (lengths.size() > 1) {
+  //   lucid::Log("Collided with more than one object, number of objects : ", lengths.size());
+  //   for (size_t i = 0; i < lengths.size(); i++) {
+  //     lucid::Log(i, " : ", lengths[i]);
+  //   }
+  // }
 }
 
 void RenderSystem::DrawAllLines(double dt, Registry* registry, Input* input) {
