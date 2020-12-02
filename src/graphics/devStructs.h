@@ -17,6 +17,8 @@ struct DevDebug {
   uint32_t fps = 0;
   uint32_t rayID = 0;
 
+  uint32_t activeEntity = 0;
+
   float sceneWidth = 0;
   float sceneHeight = 0;
 

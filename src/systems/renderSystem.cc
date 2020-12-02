@@ -238,6 +238,7 @@ void RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
 
   if (lengths.size() == 1) {
     lucid::Log("Single collision! ID : ", entityIds[lengthIndexs[0]], " Length : ", lengths[0]);
+    devDebug.activeEntity = entityIds[lengthIndexs[0]];
     return;
   }
 
@@ -255,6 +256,7 @@ void RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
 
   lucid::Log("Multiple collision! Shortest ID : ", entityIds[shortestIndex],
              " Length : ", shortestLength);
+  devDebug.activeEntity = entityIds[shortestIndex];
 
   // if (lengths.size() > 1) {
   //   lucid::Log("Collided with more than one object, number of objects : ", lengths.size());
