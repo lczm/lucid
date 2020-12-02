@@ -69,13 +69,13 @@ TEST_F(EcsGL, ComponentVectorSize) {
   std::vector<void*> transformComponents = registry->GetComponents<TestAddStruct1>();
   ComponentVector<TestAddStruct1>* transformComponentVector =
       static_cast<ComponentVector<TestAddStruct1>*>(transformComponents[0]);
-  EXPECT_EQ(transformComponentVector->Size(), 2);
+  ASSERT_EQ(transformComponentVector->Size(), 2);
 
   // Test image component size
   std::vector<void*> imageComponents = registry->GetComponents<TestAddStruct2>();
   ComponentVector<TestAddStruct2>* imageComponentVector =
       static_cast<ComponentVector<TestAddStruct2>*>(imageComponents[0]);
-  EXPECT_EQ(imageComponentVector->Size(), 1);
+  ASSERT_EQ(imageComponentVector->Size(), 1);
 
   // Create another entity
   Entity entity3 = registry->GetAvailableEntityId();
@@ -84,7 +84,7 @@ TEST_F(EcsGL, ComponentVectorSize) {
   // Check that the size of the component vector for TestAddStruct1 is 3 now.
   transformComponents = registry->GetComponents<TestAddStruct1>();
   transformComponentVector = static_cast<ComponentVector<TestAddStruct1>*>(transformComponents[0]);
-  EXPECT_EQ(transformComponentVector->Size(), 3);
+  ASSERT_EQ(transformComponentVector->Size(), 3);
 }
 
 /*
@@ -115,16 +115,16 @@ TEST_F(EcsGL, ComponentVectorIteration) {
   std::vector<void*> transformComponents = registry->GetComponents<TestAddStruct1>();
   ComponentVector<TestAddStruct1>* transformComponentVector =
       static_cast<ComponentVector<TestAddStruct1>*>(transformComponents[0]);
-  EXPECT_EQ(transformComponentVector->Size(), 2);
+  ASSERT_EQ(transformComponentVector->Size(), 2);
 
   // Test component vector iteration
   for (size_t i = 0; i < transformComponentVector->Size(); i++) {
     if (i == 0) {  // The updated component data
-      EXPECT_EQ(transformComponentVector->At(i).a, 500);
-      EXPECT_EQ(transformComponentVector->At(i).b, 500);
+      ASSERT_EQ(transformComponentVector->At(i).a, 500);
+      ASSERT_EQ(transformComponentVector->At(i).b, 500);
     } else if (i == 1) {  // The default component values
-      EXPECT_EQ(transformComponentVector->At(i).a, 0);
-      EXPECT_EQ(transformComponentVector->At(i).b, 0);
+      ASSERT_EQ(transformComponentVector->At(i).a, 0);
+      ASSERT_EQ(transformComponentVector->At(i).b, 0);
     }
   }
 }
@@ -147,14 +147,14 @@ TEST_F(EcsGL, ComponentVectorIterationIndex) {
   std::vector<void*> components = registry->GetComponents<TestAddStruct1>();
   auto* testAddStructComponentVector = static_cast<ComponentVector<TestAddStruct1>*>(components[0]);
 
-  EXPECT_EQ(testAddStructComponentVector->Size(), 2);
+  ASSERT_EQ(testAddStructComponentVector->Size(), 2);
 
   ComponentVector<TestAddStruct1>& a = *(testAddStructComponentVector);
 
   for (size_t i = 0; i < testAddStructComponentVector->Size(); i++) {
     TestAddStruct1 testAddStruct = a[i];
-    EXPECT_EQ(testAddStruct.a, 0);
-    EXPECT_EQ(testAddStruct.b, 0);
+    ASSERT_EQ(testAddStruct.a, 0);
+    ASSERT_EQ(testAddStruct.b, 0);
   }
 }
 
@@ -178,8 +178,8 @@ TEST_F(EcsGL, DefaultValues) {
   TestAddStruct1* transformComponent = registry->GetComponent<TestAddStruct1>(entity1);
 
   // Do some assertions that of the default values.
-  EXPECT_EQ(transformComponent->a, 0);
-  EXPECT_EQ(transformComponent->b, 0);
+  ASSERT_EQ(transformComponent->a, 0);
+  ASSERT_EQ(transformComponent->b, 0);
 }
 
 /*
@@ -209,8 +209,8 @@ TEST_F(EcsGL, AddComponentData) {
   TestAddStruct1* transformComponent = registry->GetComponent<TestAddStruct1>(entity1);
 
   // Do some assertions that of the default values.
-  EXPECT_EQ(transformComponent->a, 500);
-  EXPECT_EQ(transformComponent->b, 500);
+  ASSERT_EQ(transformComponent->a, 500);
+  ASSERT_EQ(transformComponent->b, 500);
 }
 
 TEST_F(EcsGL, GetComponentExact) {
@@ -233,7 +233,7 @@ TEST_F(EcsGL, GetComponentExact) {
   std::vector<void*> transformComponents = registry->GetComponentsExact<TestAddStruct1>();
   ComponentVector<TestAddStruct1>* transformComponentVector =
       static_cast<ComponentVector<TestAddStruct1>*>(transformComponents[0]);
-  EXPECT_EQ(transformComponentVector->Size(), 2);
+  ASSERT_EQ(transformComponentVector->Size(), 2);
 
   std::vector<void*> transformTestAddStruct2Components =
       registry->GetComponentsExact<TestAddStruct1, TestAddStruct2>();
@@ -241,8 +241,8 @@ TEST_F(EcsGL, GetComponentExact) {
       static_cast<ComponentVector<TestAddStruct1>*>(transformTestAddStruct2Components[0]);
   ComponentVector<TestAddStruct2>* animationComponentVector =
       static_cast<ComponentVector<TestAddStruct2>*>(transformTestAddStruct2Components[1]);
-  EXPECT_EQ(transformImageComponentVector->Size(), 1);
-  EXPECT_EQ(animationComponentVector->Size(), 1);
+  ASSERT_EQ(transformImageComponentVector->Size(), 1);
+  ASSERT_EQ(animationComponentVector->Size(), 1);
 }
 
 TEST_F(EcsGL, GetComponentSingle) {
@@ -261,8 +261,8 @@ TEST_F(EcsGL, GetComponentSingle) {
   // Get the struct
   TestAddStruct1 testStruct = registry->GetComponent<TestAddStruct1>();
 
-  EXPECT_EQ(testStruct.a, 10);
-  EXPECT_EQ(testStruct.b, 20);
+  ASSERT_EQ(testStruct.a, 10);
+  ASSERT_EQ(testStruct.b, 20);
 }
 
 TEST_F(EcsGL, GetComponentSingleAndModify) {
@@ -281,16 +281,16 @@ TEST_F(EcsGL, GetComponentSingleAndModify) {
   // Get the struct
   TestAddStruct1 testStruct = registry->GetComponent<TestAddStruct1>();
 
-  EXPECT_EQ(testStruct.a, 10);
-  EXPECT_EQ(testStruct.b, 20);
+  ASSERT_EQ(testStruct.a, 10);
+  ASSERT_EQ(testStruct.b, 20);
 
   testStruct.a = 500;
   testStruct.b = 1000;
 
   TestAddStruct1 testStructModified = registry->GetComponent<TestAddStruct1>();
 
-  EXPECT_EQ(testStruct.a, 500);
-  EXPECT_EQ(testStruct.b, 1000);
+  ASSERT_EQ(testStruct.a, 500);
+  ASSERT_EQ(testStruct.b, 1000);
 }
 
 TEST_F(EcsGL, GetComponentsLambdaSingleIteration) {
@@ -325,9 +325,9 @@ TEST_F(EcsGL, GetComponentsLambdaSingleIteration) {
   uint32_t i = 0;
   registry->GetComponentsIter<TestAddStruct1>()->Each(
       [dt, &i, &testAData, &testBData](TestAddStruct1& testAddStruct) {
-        EXPECT_EQ(dt, 0.001);
-        EXPECT_EQ(testAddStruct.a, testAData[i]);
-        EXPECT_EQ(testAddStruct.b, testBData[i]);
+        ASSERT_EQ(dt, 0.001);
+        ASSERT_EQ(testAddStruct.a, testAData[i]);
+        ASSERT_EQ(testAddStruct.b, testBData[i]);
 
         i++;
 
@@ -338,9 +338,9 @@ TEST_F(EcsGL, GetComponentsLambdaSingleIteration) {
   i = 0;
   registry->GetComponentsIter<TestAddStruct1>()->Each(
       [dt, &i, &testAData2, &testBData2](TestAddStruct1& testAddStruct) {
-        EXPECT_EQ(dt, 0.001);
-        EXPECT_EQ(testAddStruct.a, testAData2[i]);
-        EXPECT_EQ(testAddStruct.b, testBData2[i]);
+        ASSERT_EQ(dt, 0.001);
+        ASSERT_EQ(testAddStruct.a, testAData2[i]);
+        ASSERT_EQ(testAddStruct.b, testBData2[i]);
 
         i++;
       });
@@ -392,11 +392,11 @@ TEST_F(EcsGL, GetComponentsLambdaMultiIteration) {
   registry->GetComponentsIter<TestAddStruct1, TestAddStruct2>()->Each(
       [dt, &i, &testAData, &testBData, &testCData, &testDData](TestAddStruct1& testAddStruct,
                                                                TestAddStruct2& testAddStruct2) {
-        EXPECT_EQ(dt, 0.001);
-        EXPECT_EQ(testAddStruct.a, testAData[i]);
-        EXPECT_EQ(testAddStruct.b, testBData[i]);
-        EXPECT_EQ(testAddStruct2.c, testCData[i]);
-        EXPECT_EQ(testAddStruct2.d, testDData[i]);
+        ASSERT_EQ(dt, 0.001);
+        ASSERT_EQ(testAddStruct.a, testAData[i]);
+        ASSERT_EQ(testAddStruct.b, testBData[i]);
+        ASSERT_EQ(testAddStruct2.c, testCData[i]);
+        ASSERT_EQ(testAddStruct2.d, testDData[i]);
 
         testAddStruct.a++;
         testAddStruct.b++;
@@ -410,11 +410,11 @@ TEST_F(EcsGL, GetComponentsLambdaMultiIteration) {
   registry->GetComponentsIter<TestAddStruct1, TestAddStruct2>()->Each(
       [dt, &i, &testAData2, &testBData2, &testCData2, &testDData2](TestAddStruct1& testAddStruct,
                                                                    TestAddStruct2& testAddStruct2) {
-        EXPECT_EQ(dt, 0.001);
-        EXPECT_EQ(testAddStruct.a, testAData2[i]);
-        EXPECT_EQ(testAddStruct.b, testBData2[i]);
-        EXPECT_EQ(testAddStruct2.c, testCData2[i]);
-        EXPECT_EQ(testAddStruct2.d, testDData2[i]);
+        ASSERT_EQ(dt, 0.001);
+        ASSERT_EQ(testAddStruct.a, testAData2[i]);
+        ASSERT_EQ(testAddStruct.b, testBData2[i]);
+        ASSERT_EQ(testAddStruct2.c, testCData2[i]);
+        ASSERT_EQ(testAddStruct2.d, testDData2[i]);
 
         i++;
       });
@@ -451,26 +451,26 @@ TEST_F(EcsGL, GetComponentsLambdaMultiIterationWithInitialDataModified) {
       static_cast<ComponentVector<TestAddStruct3>*>(components[2]);
 
   TestAddStruct1& data = test->At(0);
-  EXPECT_EQ(data.a, 10);
-  EXPECT_EQ(data.b, 10);
+  ASSERT_EQ(data.a, 10);
+  ASSERT_EQ(data.b, 10);
 
   TestAddStruct3& data2 = test2->At(0);
-  EXPECT_EQ(data2.e, 0);
-  EXPECT_EQ(data2.f, 0);
+  ASSERT_EQ(data2.e, 0);
+  ASSERT_EQ(data2.f, 0);
 
   registry->GetComponentsIter<TestAddStruct1, TestAddStruct2, TestAddStruct3>()->Each(
       [dt](TestAddStruct1& testAddStruct, TestAddStruct2& testAddStruct2,
            TestAddStruct3& testAddStruct3) {
-        EXPECT_EQ(dt, 0.001);
+        ASSERT_EQ(dt, 0.001);
 
-        EXPECT_EQ(testAddStruct.a, 10);
-        EXPECT_EQ(testAddStruct.b, 10);
+        ASSERT_EQ(testAddStruct.a, 10);
+        ASSERT_EQ(testAddStruct.b, 10);
 
-        EXPECT_EQ(testAddStruct2.c, 10);
-        EXPECT_EQ(testAddStruct2.d, 10);
+        ASSERT_EQ(testAddStruct2.c, 10);
+        ASSERT_EQ(testAddStruct2.d, 10);
 
-        EXPECT_EQ(testAddStruct3.e, 0);
-        EXPECT_EQ(testAddStruct3.f, 0);
+        ASSERT_EQ(testAddStruct3.e, 0);
+        ASSERT_EQ(testAddStruct3.f, 0);
       });
 }
 
@@ -495,7 +495,7 @@ TEST_F(EcsGL, ECS_GetComponentsLambdaMultiIterationWithEntityID) {
   int count = 0;
   registry->GetComponentsIter<TestAddStruct1>()->EachWithID(
       [&](Entity id, TestAddStruct1 testAddStruct) {
-        EXPECT_EQ(id, idCollection[count]);
+        ASSERT_EQ(id, idCollection[count]);
         count++;
       });
 }
@@ -525,9 +525,9 @@ TEST_F(EcsGL, GetEntityIDFromArchetypeWithOneEntity) {
   Entity entityID3 =
       registry->GetEntityIDFromArchetype<TestAddStruct1, TestAddStruct2, TestAddStruct3>(0);
 
-  EXPECT_EQ(entity1, entityID1);
-  EXPECT_EQ(entity2, entityID2);
-  EXPECT_EQ(entity3, entityID3);
+  ASSERT_EQ(entity1, entityID1);
+  ASSERT_EQ(entity2, entityID2);
+  ASSERT_EQ(entity3, entityID3);
 }
 
 TEST_F(EcsGL, GetEntityIDFromArchetypeWithMoreThanOneEntity) {
@@ -552,9 +552,9 @@ TEST_F(EcsGL, GetEntityIDFromArchetypeWithMoreThanOneEntity) {
   Entity entityID2 = registry->GetEntityIDFromArchetype<TestAddStruct1>(1);
   Entity entityID3 = registry->GetEntityIDFromArchetype<TestAddStruct1>(2);
 
-  EXPECT_EQ(entity1, entityID1);
-  EXPECT_EQ(entity2, entityID2);
-  EXPECT_EQ(entity3, entityID3);
+  ASSERT_EQ(entity1, entityID1);
+  ASSERT_EQ(entity2, entityID2);
+  ASSERT_EQ(entity3, entityID3);
 }
 
 TEST_F(EcsGL, AddComponent) {
@@ -576,8 +576,8 @@ TEST_F(EcsGL, AddComponent) {
   auto* transformCV = static_cast<ComponentVector<Transform>*>(components[0]);
   auto* testAddStructCV = static_cast<ComponentVector<TestAddStructDynamic1>*>(components[1]);
 
-  EXPECT_EQ(transformCV->Size(), 1);
-  EXPECT_EQ(testAddStructCV->Size(), 1);
+  ASSERT_EQ(transformCV->Size(), 1);
+  ASSERT_EQ(testAddStructCV->Size(), 1);
 
   // Add another component to entity1
   // registry->AddComponent<TestAddStructDynamic2>(entity1);
@@ -590,9 +590,9 @@ TEST_F(EcsGL, AddComponent) {
   // testAddStructCV = static_cast<ComponentVector<TestAddStructDynamic1>*>(components[1]);
   // auto* testAddStruct2CV = static_cast<ComponentVector<TestAddStructDynamic2>*>(components[2]);
 
-  // EXPECT_EQ(transformCV->Size(), 1);
-  // EXPECT_EQ(testAddStructCV->Size(), 1);
-  // EXPECT_EQ(testAddStruct2CV->Size(), 1);
+  // ASSERT_EQ(transformCV->Size(), 1);
+  // ASSERT_EQ(testAddStructCV->Size(), 1);
+  // ASSERT_EQ(testAddStruct2CV->Size(), 1);
 }
 
 TEST_F(EcsGL, RemoveComponent) {

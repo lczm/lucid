@@ -63,7 +63,7 @@ TEST_F(PhysicsCollisionGL, BoxBoxColliding) {
 
   // Check that both BoundingBoxCube(s) are colliding
   registry->GetComponentsIter<BoundingBoxCube>()->Each(
-      [](BoundingBoxCube& boundingBoxCube) { EXPECT_TRUE(boundingBoxCube.collided); });
+      [](BoundingBoxCube& boundingBoxCube) { ASSERT_TRUE(boundingBoxCube.collided); });
 }
 
 // Test that it detects that it is not colliding
@@ -98,7 +98,7 @@ TEST_F(PhysicsCollisionGL, BoxBoxNotColliding) {
 
   // Check that both BoundingBoxCube(s) are colliding
   registry->GetComponentsIter<BoundingBoxCube>()->Each(
-      [](BoundingBoxCube& boundingBoxCube) { EXPECT_FALSE(boundingBoxCube.collided); });
+      [](BoundingBoxCube& boundingBoxCube) { ASSERT_FALSE(boundingBoxCube.collided); });
 }
 
 // The ray & box intersection current lies in the renderSystem, so the test will be
@@ -136,7 +136,7 @@ TEST_F(PhysicsCollisionGL, RayBoxColliding) {
   BoundingBox bb = renderSystem->GetBoundingBox(vertices);
   auto collidedAndLength = renderSystem->RayBoundingBoxCollisionCheck(origin, ray, bb);
 
-  EXPECT_TRUE(std::get<bool>(collidedAndLength));
+  ASSERT_TRUE(std::get<bool>(collidedAndLength));
 }
 
 TEST_F(PhysicsCollisionGL, RayBoxNotColliding) {
@@ -171,5 +171,5 @@ TEST_F(PhysicsCollisionGL, RayBoxNotColliding) {
   BoundingBox bb = renderSystem->GetBoundingBox(vertices);
   auto collidedAndLength = renderSystem->RayBoundingBoxCollisionCheck(origin, ray, bb);
 
-  EXPECT_FALSE(std::get<bool>(collidedAndLength));
+  ASSERT_FALSE(std::get<bool>(collidedAndLength));
 }
