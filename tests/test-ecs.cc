@@ -451,6 +451,32 @@ TEST(ECS, GetComponentsLambdaMultiIterationWithInitialDataModified) {
       });
 }
 
+TEST(ECS, ECS_GetComponentsLambdaMultiIterationWithEntityID) {
+  Registry* registry = new Registry();
+
+  registry->RegisterArchetype<TestAddStruct1>();
+
+  Entity entity1 = registry->GetAvailableEntityId();
+  Entity entity2 = registry->GetAvailableEntityId();
+  Entity entity3 = registry->GetAvailableEntityId();
+
+  registry->CreateEntity<TestAddStruct1>(entity1);
+  registry->CreateEntity<TestAddStruct1>(entity2);
+  registry->CreateEntity<TestAddStruct1>(entity3);
+
+  std::vector<Entity> idCollection;
+  idCollection.push_back(entity1);
+  idCollection.push_back(entity2);
+  idCollection.push_back(entity3);
+
+  int count = 0;
+  registry->GetComponentsIter<TestAddStruct1>()->EachWithID(
+      [&](Entity id, TestAddStruct1 testAddStruct) {
+        EXPECT_EQ(id, idCollection[count]);
+        count++;
+      });
+}
+
 TEST(ECS, GetEntityIDFromArchetypeWithOneEntity) {
   Registry* registry = new Registry();
 

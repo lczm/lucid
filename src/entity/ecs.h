@@ -182,6 +182,8 @@ class ComponentVectorContainer {
     for (size_t i = 0; i < hashCodes.size(); i++) {
       componentIndex[hashCodes[i]] = i;
     }
+    // componentIndex[hashCodes.size() + 1] = registry->GetHashCode<uint32_t>();
+    componentIndex[registry->GetHashCode<uint32_t>()] = hashCodes.size();
 
     uint32_t maxSize = GetSize<Components...>(componentVectors);
 
@@ -189,9 +191,9 @@ class ComponentVectorContainer {
     for (size_t i = 0; i < maxSize; i++) {
       // Make a tuple consisting of the component data
       // this has to be forward_as_tuple and not make_tuple as GetComponentData returns a reference
-      auto tuple = std::forward_as_tuple(GetComponentData<Components>(componentVectors, i)...);
+      auto tuple = std::forward_as_tuple(GetComponentData<uint32_t>(componentVectors, i),
+                                         GetComponentData<Components>(componentVectors, i)...);
 
-      // Use apply to match arguments to function pointer
       std::apply(function, tuple);
     }
   }
@@ -706,6 +708,46 @@ class Registry {
         auto p = {
             (FillComponentVector<Components>(archetype, componentVectors, componentIndex), 0)...};
         (void)p;  // To silence the compiler warning about unused vars
+      }
+    }
+    return componentVectors;
+  }
+
+  template <typename... Components>
+  std::vector<void*> GetComponentsWithID() {
+    Archetype hashCodes = {(GetHashCode<Components>())...};
+    std::vector<void*> componentVectors = {(MakeComponentVector<Components>())...};
+
+    // For the entity IDs
+    componentVectors.push_back(new ComponentVector<uint32_t>());
+
+    // archetype : std::unordered_map<hashcode, void*>
+    for (auto& archetypePair : archetypeComponentMap) {
+      Archetype archetype = archetypePair.first;
+      // I don't think there is a way to do this in a fast way as
+      // iterators can only find one element at a time. So this has to be
+      // done in separate iterator find calls equal to the number of
+      // hashes that exist
+      // The flag will turn false if any of the elements dont match
+      bool archetypeMatch = true;
+      for (uint32_t hashCode : hashCodes) {
+        // If it is equals to the end of the iterator - not found
+        if (std::find(archetype.begin(), archetype.end(), hashCode) == archetype.end()) {
+          archetypeMatch = false;
+        }
+      }
+
+      // if correct is stil true, this current keypair archetype is
+      // matching the input components
+      if (archetypeMatch) {
+        // Auto fills in the 0 so that the compiler can deal with void
+        // returns from fillComponentVector
+        int componentIndex = 0;
+        auto p = {
+            (FillComponentVector<Components>(archetype, componentVectors, componentIndex), 0)...};
+        (void)p;  // To silence the compiler warning about unused vars
+        FillComponentVector<uint32_t>(archetype, componentVectors, componentIndex);
+        componentIndex++;
       }
     }
     return componentVectors;
