@@ -32,7 +32,7 @@ class PhysicsCollisionGL : public testing::Test {
 
 GLFWwindow* PhysicsCollisionGL::window = nullptr;
 
-TEST(PhysicsCollision, BoxBoxColliding) {
+TEST_F(PhysicsCollisionGL, BoxBoxColliding) {
   Registry* registry = new Registry();
   Input* input = new Input();
 
@@ -67,7 +67,7 @@ TEST(PhysicsCollision, BoxBoxColliding) {
 }
 
 // Test that it detects that it is not colliding
-TEST(PhysicsCollision, BoxBoxNotColliding) {
+TEST_F(PhysicsCollisionGL, BoxBoxNotColliding) {
   Registry* registry = new Registry();
   Input* input = new Input();
 

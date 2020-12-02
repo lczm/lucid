@@ -2,3 +2,8 @@
 	path = lib/googletest
 	url = https://github.com/google/googletest
         ignore = dirty
+
+[submodule "lib/ImGuizmo"]
+	path = lib/ImGuizmo
+	url = https://github.com/CedricGuillemet/ImGuizmo
+        ignore = dirty
