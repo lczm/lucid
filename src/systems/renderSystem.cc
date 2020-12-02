@@ -192,10 +192,10 @@ void RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
   line->destination = rayDirection;
   line->color.r = 1.0f;
 
+  std::vector<Entity> entityIds;
   std::vector<BoundingBox> boundingBoxes;
   // Calculate all the positions, assume that there is a BoundingBoxCube around it.
-  registry->GetComponentsIter<Transform>()->Each([dt, &boundingBoxes, &quatCamera = quatCamera,
-                                                  &rayDirection, this](Transform& transform) {
+  registry->GetComponentsIter<Transform>()->EachWithID([&](Entity id, Transform& transform) {
     if (transform.scale.x == 1.0f) {
       // Calculate the model matrix
       glm::mat4 matrixModel = glm::mat4(1.0f);
@@ -214,6 +214,8 @@ void RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
 
       BoundingBox bb = GetBoundingBox(verticesCollection);
       boundingBoxes.push_back(bb);
+
+      entityIds.push_back(id);
     }
   });
 
@@ -235,22 +237,22 @@ void RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
   }
 
   if (lengths.size() == 1) {
-    lucid::Log("Single collision!");
+    lucid::Log("Single collision! ID : ", entityIds[lengthIndexs[0]]);
   }
 
   // If it has collided with more than one object
-  uint32_t shortestIndex = 0;
-  float shortestLength = std::numeric_limits<float>::max();
-  for (size_t i = 0; i < lengths.size(); i++) {
-    if (lengths[i] < shortestLength) {
-      shortestLength = lengths[i];
-      shortestIndex = lengthIndexs[i];
-    }
-  }
+  // uint32_t shortestIndex = 0;
+  // float shortestLength = std::numeric_limits<float>::max();
+  // for (size_t i = 0; i < lengths.size(); i++) {
+  //   if (lengths[i] < shortestLength) {
+  //     shortestLength = lengths[i];
+  //     shortestIndex = lengthIndexs[i];
+  //   }
+  // }
 
-  Entity id = registry->GetEntityIDFromArchetype<Transform>(shortestIndex);
+  // Entity id = registry->GetEntityIDFromArchetype<Transform>(shortestIndex);
 
-  lucid::Log("ID : ", id);
+  // lucid::Log("ID : ", id);
 
   // if (lengths.size() > 1) {
   //   lucid::Log("Collided with more than one object, number of objects : ", lengths.size());
