@@ -3,7 +3,7 @@
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
 
-GLFWwindow* SetUpWindow() {
+static GLFWwindow* SetUpWindow() {
   if (!glfwInit()) {
     exit(EXIT_FAILURE);
   }
@@ -25,7 +25,7 @@ GLFWwindow* SetUpWindow() {
   return window;
 }
 
-void TearDownWindow(GLFWwindow* window) {
+static void TearDownWindow(GLFWwindow* window) {
   glfwDestroyWindow(window);
   glfwTerminate();
   exit(EXIT_SUCCESS);
