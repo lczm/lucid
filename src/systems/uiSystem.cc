@@ -79,10 +79,8 @@ void UiSystem::InitializeGUI(double dt, Registry* registry, Input* input) {
   }
 
   if (input->IsKeyDown('7')) {
-    drawSceneOnly = true;
-  }
-  if (input->IsKeyDown('8')) {
-    drawSceneOnly = false;
+    drawSceneOnly = !drawSceneOnly;
+    input->SetKeyOff('7');
   }
   // Keybind to maximize scene window
   if (!drawSceneOnly) {
