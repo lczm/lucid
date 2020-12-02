@@ -259,6 +259,10 @@ class Registry {
   std::unordered_map<uint32_t, Archetype> entityComponentMap;
 
   // EntityId to the index of the archetype it is currently holding
+  // this will hold the index to the entity index in each archetype
+  // {
+  //   1 : 2 (2 will be the index of the std::vector<uint32_t> in each archetype)
+  // }
   std::unordered_map<uint32_t, uint32_t> entityIndexMap;
 
   // This is to keep track of the entities that have been moved and needs to be flushed
@@ -380,11 +384,14 @@ class Registry {
 
     auto& keyPtr = GetArchetypeComponentMap(archetype);
     auto& vectorPtr = GetVectorFromArchetypeComponentMap<Component>(keyPtr, hashCode);
+    // auto& entityVectorPtr = GetVectorFromArchetypeComponentMap<uint32_t>(keyPtr, hashCode);
 
     // Note that even though this is for each vector component, this should
     // not matter as every component goes through this, resulting in the
     // size (i.e. index) being all the same.
-    entityIndexMap[id] = vectorPtr.size();
+    // entityVectorPtr.push_back(id);
+    // entityIndexMap[id] = entityVectorPtr.size();
+    // entityIndexMap[id] = vectorPtr.size();
 
     vectorPtr.push_back(Component());
   }
@@ -401,12 +408,22 @@ class Registry {
       return;
     }
 
-    // Assign the archetype to the entity
+    auto& keyPtr = GetArchetypeComponentMap(archetype);
+    auto& entityVectorPtr =
+        GetVectorFromArchetypeComponentMap<uint32_t>(keyPtr, GetHashCode<uint32_t>());
+
+    // Update the entity component to the archetype
     entityComponentMap[id] = archetype;
+
+    // Add entityID into vector that keeps track of the ids
+    entityVectorPtr.push_back(id);
 
     // Create empty default values for the entity
     auto p = {(CreateDefaultComponentValue<Components>(id, archetype), 0)...};
     (void)p;  // To silence the compiler warning about unused vars
+
+    // Update the size
+    entityIndexMap[id] = entityVectorPtr.size() - 1;
   }
 
   // General method to convert (Component) to an uint32_t
@@ -445,6 +462,9 @@ class Registry {
     // initializeArchetypeVector
     auto p = {(InitializeArchetypeVector<Components>(archetype), 0)...};
     (void)p;  // To silence the compiler warning about unused vars
+
+    // Create vector that holds entity ids
+    InitializeArchetypeVector<uint32_t>(archetype);
 
     return;
   }
@@ -615,8 +635,11 @@ class Registry {
 
     auto& keyPtr = GetArchetypeComponentMap(entityComponentMap[entity]);
     auto& vectorPtr = GetVectorFromArchetypeComponentMap<Component>(keyPtr, hashCode);
+    auto& entityVectorPtr =
+        GetVectorFromArchetypeComponentMap<uint32_t>(keyPtr, GetHashCode<uint32_t>());
 
     vectorPtr.at(entityIndexMap[entity]) = component;
+    // vectorPtr.at(entityVectorPtr[entityIndexMap[entity]]) = component;
   }
 
   template <typename Component>
@@ -754,10 +777,13 @@ class Registry {
 
     // Get a pointer to the vector of this type.
     auto& vectorPtr = GetVectorFromArchetypeComponentMap<Component>(keyPtr, hashCode);
+    // auto& entityVectorPtr =
+    //     GetVectorFromArchetypeComponentMap<uint32_t>(keyPtr, GetHashCode<uint32_t>());
 
     // Get entity index
     uint32_t entityIndex = entityIndexMap[id];
     return &vectorPtr.at(entityIndex);
+    // return &vectorPtr.at(entityVectorPtr[entityIndex]);
   }
 
   // Given an archetype and the index that the user wants,
