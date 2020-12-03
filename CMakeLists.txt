@@ -144,5 +144,5 @@ add_executable(tests
     ${GLM_HEADERS})
 
 # Link test executable against gtest & gtest_main
-target_link_libraries(tests gtest gtest_main glfw assimp*)
+target_link_libraries(tests gtest gtest_main glfw assimp* sndfile OpenAL32)
 add_test(tests tests)
