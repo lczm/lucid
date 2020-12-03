@@ -7,3 +7,18 @@
 	path = lib/ImGuizmo
 	url = https://github.com/CedricGuillemet/ImGuizmo
         ignore = dirty
+
+[submodule "lib/libsndfile"]
+	path = lib/libsndfile
+	url = https://github.com/libsndfile/libsndfile
+		ignore = dirty
+
+[submodule "lib/openal-soft"]
+	path = lib/openal-soft
+	url = https://github.com/kcat/openal-soft
+		ignore = dirty
+
+[submodule "lib/assimp"]
+	path = lib/assimp
+	url = https://github.com/assimp/assimp
+		ignore = dirty
