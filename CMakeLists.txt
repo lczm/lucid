@@ -61,6 +61,7 @@ set (IMGUIZMO_HEADERS
 include_directories(src/utils)
 include_directories(src/constants)
 include_directories(src/input)
+include_directories(src/audio)
 include_directories(src/graphics)
 include_directories(src/entity)
 include_directories(src/lucid)
@@ -86,6 +87,12 @@ include_directories(lib/glad/include)
 # Setup imgui
 include_directories(lib/imgui)
 include_directories(lib/imgui/backends)
+
+# Setup openal
+include_directories(lib/openal/include)
+
+# Setup libsndfile
+include_directories(lib/libsndfile/CMakeBuild/include)
 
 # Setup assimp
 include_directories(lib/assimp/include)
@@ -120,9 +127,9 @@ add_executable(lucid
 
 # Link the executable to glfw
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    target_link_libraries(lucid glfw assimp)
+    target_link_libraries(lucid glfw assimp sndfile OpenAL32)
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    target_link_libraries(lucid glfw assimp*)
+    target_link_libraries(lucid glfw assimp* sndfile OpenAL32)
 endif()
 
 # Tests

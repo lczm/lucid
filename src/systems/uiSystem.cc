@@ -5,6 +5,7 @@ UiSystem::UiSystem() {
   io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;  // Enable Docking
   io.IniFilename = NULL;                             // Disable imgui.ini
   io.ConfigWindowsMoveFromTitleBarOnly |= ImGuiWindowFlags_NoMove;
+  drawSceneOnly = false;
   (void)io;
 }
 
@@ -77,7 +78,16 @@ void UiSystem::InitializeGUI(double dt, Registry* registry, Input* input) {
     }
   }
 
-  InitializeImGuiWindows(dt, registry, input);
+  if (input->IsKeyDown('7')) {
+    drawSceneOnly = !drawSceneOnly;
+    input->SetKeyOff('7');
+  }
+  // Keybind to maximize scene window
+  if (!drawSceneOnly) {
+    InitializeImGuiWindows(dt, registry, input);
+  } else {
+    DrawScene(dt, registry, input);
+  }
 
   ImGui::Render();
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

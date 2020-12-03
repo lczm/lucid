@@ -21,6 +21,7 @@
 class UiSystem : public System {
  private:
   bool drawWireframe;
+  bool drawSceneOnly;
 
  public:
   UiSystem();
