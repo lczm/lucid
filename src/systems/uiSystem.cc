@@ -265,8 +265,25 @@ void UiSystem::DrawInspector(double dt, Registry* registry, Input* input) {
   UpdateInputActiveWindow(input, WindowType::Inspector);
 
   // Temporary : this will be useful when mouse picking works
-  // DevDebug& devDebug = registry->GetComponent<DevDebug>();
-  // ImGui::ColorEdit3("Primitive", (float*)&devDebug.rgb);
+  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+
+  if (devDebug.activeEntity == 0) {
+    ImGui::End();
+    return;
+  }
+
+  if (Cube* cube = dynamic_cast<Cube*>(registry->GetComponent<Cube>(devDebug.activeEntity))) {
+    // lucid::Log("active entity is a cube");
+    ImGui::ColorEdit3("Color", &(cube->color.x));
+  } else if (Sphere* sphere = dynamic_cast<Sphere*>(registry->GetComponent<Sphere>(devDebug.activeEntity))) {
+    // lucid::Log("active entity is a sphere");
+    ImGui::ColorEdit3("Color", &(sphere->color.x));
+  } else if (Model* model = dynamic_cast<Model*>(registry->GetComponent<Model>(devDebug.activeEntity))) {
+    // TODO 
+    // lucid::Log("active entity is a model");
+    return;
+  }
+
 
   ImGui::End();
 }

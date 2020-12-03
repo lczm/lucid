@@ -39,12 +39,11 @@ class RenderSystem : public System {
   void Update(double dt, Registry* registry, Input* input);
 
   void HandleMousePan(double dt, Input* input);
-  void HandleMousePicking(double dt, Input* input);
   void HandleKeyboardPan(double dt, Input* input);
   void HandleMouseScroll(double dt, Input* input);
 
   void HandleKeyboardInput(double dt, Registry* registry, Input* input);
-  void HandleMousePick(double dt, Registry* registry, Input* input);
+  bool HandleMousePick(double dt, Registry* registry, Input* input);
   void DrawAllLines(double dt, Registry* registry, Input* input);
   void DrawAllModels(double dt, Registry* registry, Input* input);
   void DrawAllCubes(double dt, Registry* registry, Input* input);

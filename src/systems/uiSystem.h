@@ -5,6 +5,7 @@
 
 #include "gl.h"
 #include "ecs.h"
+#include "utils.h"
 #include "renderer.h"
 #include "windowEnum.h"
 

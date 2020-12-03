@@ -42,11 +42,13 @@ RenderSystem::~RenderSystem() {
 }
 
 void RenderSystem::Update(double dt, Registry* registry, Input* input) {
-  HandleMousePan(dt, input);
-  HandleMouseScroll(dt, input);
+  // Temporary gateway for mouse picking 
+  if (!HandleMousePick(dt, registry, input)) {
+    HandleMousePan(dt, input);
+    HandleMouseScroll(dt, input);
+  };
   HandleKeyboardPan(dt, input);
   HandleKeyboardInput(dt, registry, input);
-  HandleMousePick(dt, registry, input);
 
   glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
@@ -176,9 +178,9 @@ void RenderSystem::HandleKeyboardInput(double dt, Registry* registry, Input* inp
   }
 }
 
-void RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) {
+bool RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) {
   if (!input->mouseKeys[MOUSE_LEFT]) {
-    return;
+    return false;
   }
 
   // Turn this off for this frame so that it doesn't generate hundreds of rays
@@ -239,7 +241,7 @@ void RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
   if (lengths.size() == 1) {
     lucid::Log("Single collision! ID : ", entityIds[lengthIndexs[0]], " Length : ", lengths[0]);
     devDebug.activeEntity = entityIds[lengthIndexs[0]];
-    return;
+    return true;
   }
 
   // If it has collided with more than one object
@@ -258,12 +260,7 @@ void RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
              " Length : ", shortestLength);
   devDebug.activeEntity = entityIds[shortestIndex];
 
-  // if (lengths.size() > 1) {
-  //   lucid::Log("Collided with more than one object, number of objects : ", lengths.size());
-  //   for (size_t i = 0; i < lengths.size(); i++) {
-  //     lucid::Log(i, " : ", lengths[i]);
-  //   }
-  // }
+  return true;
 }
 
 void RenderSystem::DrawAllLines(double dt, Registry* registry, Input* input) {
