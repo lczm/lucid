@@ -272,18 +272,13 @@ void UiSystem::DrawInspector(double dt, Registry* registry, Input* input) {
     return;
   }
 
-  if (Cube* cube = dynamic_cast<Cube*>(registry->GetComponent<Cube>(devDebug.activeEntity))) {
-    // lucid::Log("active entity is a cube");
+  if (registry->EntityHasComponent<Cube>(devDebug.activeEntity)) {
+    Cube* cube = registry->GetComponent<Cube>(devDebug.activeEntity);
     ImGui::ColorEdit3("Color", &(cube->color.x));
-  } else if (Sphere* sphere = dynamic_cast<Sphere*>(registry->GetComponent<Sphere>(devDebug.activeEntity))) {
-    // lucid::Log("active entity is a sphere");
+  } else if (registry->EntityHasComponent<Sphere>(devDebug.activeEntity)) {
+    Sphere* sphere = registry->GetComponent<Sphere>(devDebug.activeEntity);
     ImGui::ColorEdit3("Color", &(sphere->color.x));
-  } else if (Model* model = dynamic_cast<Model*>(registry->GetComponent<Model>(devDebug.activeEntity))) {
-    // TODO 
-    // lucid::Log("active entity is a model");
-    return;
   }
-
 
   ImGui::End();
 }

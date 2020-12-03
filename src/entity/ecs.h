@@ -809,7 +809,7 @@ class Registry {
 
     // Check that the entity has the said component in the first place.
     if (!EntityHasComponent<Component>(id)) {
-      std::cout << "Entity id : " << id << " does not have component!!" << std::endl;
+      // std::cout << "Entity id : " << id << " does not have component!!" << std::endl;
       return nullptr;
     }
 

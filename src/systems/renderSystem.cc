@@ -43,10 +43,10 @@ RenderSystem::~RenderSystem() {
 
 void RenderSystem::Update(double dt, Registry* registry, Input* input) {
   // Temporary gateway for mouse picking 
-  if (!HandleMousePick(dt, registry, input)) {
-    HandleMousePan(dt, input);
-    HandleMouseScroll(dt, input);
-  };
+  HandleMousePick(dt, registry, input);
+  HandleMousePan(dt, input);
+  HandleMouseScroll(dt, input);
+
   HandleKeyboardPan(dt, input);
   HandleKeyboardInput(dt, registry, input);
 
@@ -183,10 +183,14 @@ bool RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
     return false;
   }
 
+  if (input->activeWindow != WindowType::Scene) {
+    return false;
+  }
+
   // Turn this off for this frame so that it doesn't generate hundreds of rays
   input->mouseKeys[MOUSE_LEFT] = false;
-  DevDebug& devDebug = registry->GetComponent<DevDebug>();
 
+  DevDebug& devDebug = registry->GetComponent<DevDebug>();
   glm::vec3 rayDirection = GetRayDirection(registry, input);
 
   Line* line = registry->GetComponent<Line>(devDebug.rayID);
@@ -238,6 +242,11 @@ bool RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
     }
   }
 
+  // If there are none collided
+  if (lengths.size() == 0) {
+    return false;
+  }
+
   if (lengths.size() == 1) {
     lucid::Log("Single collision! ID : ", entityIds[lengthIndexs[0]], " Length : ", lengths[0]);
     devDebug.activeEntity = entityIds[lengthIndexs[0]];
@@ -257,7 +266,7 @@ bool RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
   // Entity id = registry->GetEntityIDFromArchetype<Transform>(shortestIndex);
 
   lucid::Log("Multiple collision! Shortest ID : ", entityIds[shortestIndex],
-             " Length : ", shortestLength);
+             " Length : ", shortestLength, " Amount : ", lengths.size());
   devDebug.activeEntity = entityIds[shortestIndex];
 
   return true;
