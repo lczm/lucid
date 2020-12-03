@@ -89,10 +89,10 @@ include_directories(lib/imgui)
 include_directories(lib/imgui/backends)
 
 # Setup openal
-include_directories(lib/openal/include)
+include_directories(lib/openal-soft/include)
 
 # Setup libsndfile
-include_directories(lib/libsndfile/CMakeBuild/include)
+include_directories(lib/libsndfile/build/include)
 
 # Setup assimp
 include_directories(lib/assimp/include)
