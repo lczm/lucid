@@ -38,8 +38,8 @@ const char AVOCADO_MODEL[] = "../assets/avocado/Avocado.gltf";
 const char AIRMAN_IMAGE[] = "../assets/images/air-man.png";
 
 // Audio
-const char GRUNT_SOUND[] = "../audio/grunt.wav";
-const char PIANO_MUSIC[] = "../audio/piano.wav";
+const char GRUNT_SOUND[] = "../assets/audio/grunt.wav";
+const char PIANO_MUSIC[] = "../assets/audio/piano.wav";
 
 // Pseudo standard values that will not change
 const float PI = 3.14159265359;
