@@ -264,7 +264,6 @@ void UiSystem::DrawInspector(double dt, Registry* registry, Input* input) {
 
   UpdateInputActiveWindow(input, WindowType::Inspector);
 
-  // Temporary : this will be useful when mouse picking works
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
 
   if (devDebug.activeEntity == 0) {
