@@ -12,6 +12,9 @@ UiSystem::UiSystem() {
 UiSystem::~UiSystem() = default;
 
 void UiSystem::Update(double dt, Registry* registry, Input* input) {
+  // Update the gizmo through input keys
+  UpdateGizmoType(registry, input);
+
   InitializeGUI(dt, registry, input);
 }
 
@@ -65,6 +68,10 @@ void UiSystem::InitializeGUI(double dt, Registry* registry, Input* input) {
         ImGui::Text("J/L - [Demo] pong player movement");
         ImGui::Text("Mouse left - Pan Camera / [Debug] Shoot rays");
         ImGui::Text("Mouse right - Rotate Camera");
+
+        ImGui::Text("1 : Translate Gizmo");
+        ImGui::Text("2 : Rotation Gizmo");
+        ImGui::Text("3 : Scale Gizmo");
         ImGui::EndMenu();
       }
 
@@ -263,7 +270,7 @@ void UiSystem::DrawScene(double dt, Registry* registry, Input* input) {
     matrixModel *= rotationMatrix;
 
     ImGuizmo::Manipulate(glm::value_ptr(devDebug.view), glm::value_ptr(devDebug.projection),
-                         ImGuizmo::OPERATION::SCALE, ImGuizmo::LOCAL, glm::value_ptr(matrixModel));
+                         devDebug.gizmoOperation, ImGuizmo::LOCAL, glm::value_ptr(matrixModel));
 
     if (ImGuizmo::IsUsing()) {
       devDebug.onGizmo = true;
@@ -396,6 +403,17 @@ void UiSystem::DrawDevDebug(double dt, Registry* registry, Input* input) {
   ImGui::Checkbox("Draw all colliders", &devDebug.drawColliders);
 
   ImGui::End();
+}
+
+void UiSystem::UpdateGizmoType(Registry* registry, Input* input) {
+  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+
+  if (input->IsKeyDown('1'))
+    devDebug.gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
+  else if (input->IsKeyDown('2'))
+    devDebug.gizmoOperation = ImGuizmo::OPERATION::ROTATE;
+  else if (input->IsKeyDown('3'))
+    devDebug.gizmoOperation = ImGuizmo::OPERATION::SCALE;
 }
 
 void UiSystem::UpdateInputActiveWindow(Input* input, WindowType windowType) {

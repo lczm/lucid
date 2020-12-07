@@ -151,16 +151,16 @@ void RenderSystem::HandleKeyboardPan(double dt, Input* input) {
 
 // Note : temporary
 void RenderSystem::HandleKeyboardInput(double dt, Registry* registry, Input* input) {
-  if (input->IsKeyDown('1')) {
-    Entity cubeID = registry->GetAvailableEntityId();
+  // if (input->IsKeyDown('1')) {
+  //   Entity cubeID = registry->GetAvailableEntityId();
 
-    registry->CreateEntity<Cube, Transform>(cubeID);
+  //   registry->CreateEntity<Cube, Transform>(cubeID);
 
-    Transform* transform = registry->GetComponent<Transform>(cubeID);
-    transform->position = camera->cameraPos;
+  //   Transform* transform = registry->GetComponent<Transform>(cubeID);
+  //   transform->position = camera->cameraPos;
 
-    input->SetKeyOff('1');
-  }
+  //   input->SetKeyOff('1');
+  // }
 }
 
 bool RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) {
@@ -229,6 +229,8 @@ bool RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
 
   // If there are none collided
   if (lengths.size() == 0) {
+    // If it does not collide, set activeEntity to be 0
+    devDebug.activeEntity = 0;
     return false;
   }
 

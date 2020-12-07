@@ -50,5 +50,6 @@ class UiSystem : public System {
   void DrawServices(double dt, Registry* registry, Input* input);
   void DrawDevDebug(double dt, Registry* registry, Input* input);
 
+  void UpdateGizmoType(Registry* registry, Input* input);
   void UpdateInputActiveWindow(Input* input, WindowType windowType);
 };

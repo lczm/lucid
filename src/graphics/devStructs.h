@@ -3,6 +3,12 @@
 #include "windowEnum.h"
 #include "glm.hpp"
 
+#include "imgui.h"
+#include "imgui_internal.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+#include "ImGuizmo.h"
+
 /*
  * This is mainly structs used to pass data around in the various systems.
  * These structs should not be included in the release builds but rather only for the debug builds
@@ -38,6 +44,7 @@ struct DevDebug {
   float menuBarHeight = 19;
 
   WindowType changeFocusWindow = WindowType::None;
+  ImGuizmo::OPERATION gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
 
   // Temporary, Need to move the camera into an entity
   glm::mat4 view = glm::mat4(1.0f);
