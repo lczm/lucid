@@ -167,7 +167,6 @@ void Lucid::InitializeBuiltInSystems() {
   // Demo start -- TODO : This should be separated, need a way of prioritising systems
   registry->RegisterSystem(new PlayerSystem());
   registry->RegisterSystem(new AiSystem());
-  registry->RegisterSystem(new MovementSystem());
   // Demo end
 
   registry->RegisterSystem(new PhysicsSystem());

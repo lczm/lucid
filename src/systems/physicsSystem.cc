@@ -8,7 +8,8 @@ PhysicsSystem::~PhysicsSystem() {
 }
 
 void PhysicsSystem::Update(double dt, Registry* registry, Input* input) {
-  // Debug Start
+  UpdateAllRigidbodies(dt, registry, input);
+
   std::vector<void*> components = registry->GetComponents<Transform, RigidBody, ColliderCube>();
 
   auto* transformComponents = static_cast<ComponentVector<Transform>*>(components[0]);
@@ -56,6 +57,13 @@ void PhysicsSystem::Update(double dt, Registry* registry, Input* input) {
       }
     }
   }
+}
+
+void PhysicsSystem::UpdateAllRigidbodies(double dt, Registry* registry, Input* input) {
+  registry->GetComponentsIter<Transform, RigidBody>()->Each(
+      [&](Transform& transform, RigidBody& rigidBody) {
+        transform.position += rigidBody.velocity;
+      });
 }
 
 bool PhysicsSystem::CheckCollision(ColliderCube colliderCube, Transform& transform,
@@ -128,10 +136,4 @@ bool PhysicsSystem::CheckCollisionBetweenBoundingBox(const BoundingBox boundingB
   return (boundingBox.minX <= boundingBoxOther.maxX && boundingBox.maxX >= boundingBoxOther.minX) &&
          (boundingBox.minY <= boundingBoxOther.maxY && boundingBox.maxY >= boundingBoxOther.minY) &&
          (boundingBox.minZ <= boundingBoxOther.maxZ && boundingBox.maxZ >= boundingBoxOther.minZ);
-}
-
-void PhysicsSystem::GetAxisAlignedBoundingBox(ColliderSphere& collider, Transform& transform) {
-}
-
-void PhysicsSystem::GetOrientedBoundingBox(ColliderSphere& collider, Transform& transform) {
 }

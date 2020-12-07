@@ -18,6 +18,8 @@ class PhysicsSystem : public System {
 
   void Update(double dt, Registry* registry, Input* input);
 
+  void UpdateAllRigidbodies(double dt, Registry* registry, Input* input);
+
   // Cube : { Rest of the colliders };
   bool CheckCollision(ColliderCube colliderCube, Transform& transform,
                       ColliderCube colliderCubeOther, Transform& transformOther);
@@ -44,7 +46,4 @@ class PhysicsSystem : public System {
 
   glm::mat4 ApplyTransformation(Transform& transform);
   bool CheckCollisionBetweenBoundingBox(BoundingBox boundingBox, BoundingBox boundingBoxOther);
-
-  void GetAxisAlignedBoundingBox(ColliderSphere& collider, Transform& transform);
-  void GetOrientedBoundingBox(ColliderSphere& collider, Transform& transform);
 };
