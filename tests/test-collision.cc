@@ -17,22 +17,11 @@
 
 #include "renderSystem.h"
 #include "physicsSystem.h"
+#include "test-utils.h"
 
-class PhysicsCollisionGL : public testing::Test {
- protected:
-  static GLFWwindow* window;
-  static void SetUpTestSuite() {
-    window = SetUpWindow();
-  }
+// GLFWwindow* TestsGL::window = nullptr;
 
-  static void TearDownTestSuite() {
-    TearDownWindow(window);
-  }
-};
-
-GLFWwindow* PhysicsCollisionGL::window = nullptr;
-
-TEST_F(PhysicsCollisionGL, BoxBoxColliding) {
+TEST_F(TestsGL, BoxBoxColliding) {
   Registry* registry = new Registry();
   Input* input = new Input();
 
@@ -67,7 +56,7 @@ TEST_F(PhysicsCollisionGL, BoxBoxColliding) {
 }
 
 // Test that it detects that it is not colliding
-TEST_F(PhysicsCollisionGL, BoxBoxNotColliding) {
+TEST_F(TestsGL, BoxBoxNotColliding) {
   Registry* registry = new Registry();
   Input* input = new Input();
 
@@ -104,7 +93,7 @@ TEST_F(PhysicsCollisionGL, BoxBoxNotColliding) {
 // The ray & box intersection current lies in the renderSystem, so the test will be
 // using renderSystem to do the testing, but in the future I think there should
 // be a centralised place that hosts the collision checks between the primitives
-TEST_F(PhysicsCollisionGL, RayBoxColliding) {
+TEST_F(TestsGL, RayBoxColliding) {
   Registry* registry = new Registry();
   RenderSystem* renderSystem = new RenderSystem();
 
@@ -139,7 +128,7 @@ TEST_F(PhysicsCollisionGL, RayBoxColliding) {
   ASSERT_TRUE(std::get<bool>(collidedAndLength));
 }
 
-TEST_F(PhysicsCollisionGL, RayBoxNotColliding) {
+TEST_F(TestsGL, RayBoxNotColliding) {
   Registry* registry = new Registry();
   RenderSystem* renderSystem = new RenderSystem();
 

@@ -36,21 +36,9 @@ struct TestAddStructDynamic2 {
   float b;
 };
 
-class EcsGL : public testing::Test {
- protected:
-  static GLFWwindow* window;
-  static void SetUpTestSuite() {
-    window = SetUpWindow();
-  }
+GLFWwindow* TestsGL::window = nullptr;
 
-  static void TearDownTestSuite() {
-    TearDownWindow(window);
-  }
-};
-
-GLFWwindow* EcsGL::window = nullptr;
-
-TEST_F(EcsGL, ComponentVectorSize) {
+TEST_F(TestsGL, ComponentVectorSize) {
   Registry* registry = new Registry();
 
   // Create some archetypes
@@ -90,7 +78,7 @@ TEST_F(EcsGL, ComponentVectorSize) {
 /*
    Test the iteration of the componentVector
  */
-TEST_F(EcsGL, ComponentVectorIteration) {
+TEST_F(TestsGL, ComponentVectorIteration) {
   Registry* registry = new Registry();
 
   // Create some archetypes
@@ -129,7 +117,7 @@ TEST_F(EcsGL, ComponentVectorIteration) {
   }
 }
 
-TEST_F(EcsGL, ComponentVectorIterationIndex) {
+TEST_F(TestsGL, ComponentVectorIterationIndex) {
   Registry* registry = new Registry();
 
   // Create some archetypes
@@ -162,7 +150,7 @@ TEST_F(EcsGL, ComponentVectorIterationIndex) {
    When creating entities, there the default values of the components are
    created. This test will test that the default values are created.
  */
-TEST_F(EcsGL, DefaultValues) {
+TEST_F(TestsGL, DefaultValues) {
   Registry* registry = new Registry();
 
   // Create some archetypes
@@ -186,7 +174,7 @@ TEST_F(EcsGL, DefaultValues) {
    More of a continuation of the DefaultValues test, this test checks that the
    component data is updated when new component data is added onto it.
  */
-TEST_F(EcsGL, AddComponentData) {
+TEST_F(TestsGL, AddComponentData) {
   Registry* registry = new Registry();
 
   // Create some archetypes
@@ -213,7 +201,7 @@ TEST_F(EcsGL, AddComponentData) {
   ASSERT_EQ(transformComponent->b, 500);
 }
 
-TEST_F(EcsGL, GetComponentExact) {
+TEST_F(TestsGL, GetComponentExact) {
   Registry* registry = new Registry();
 
   // Create some archetypes
@@ -245,7 +233,7 @@ TEST_F(EcsGL, GetComponentExact) {
   ASSERT_EQ(animationComponentVector->Size(), 1);
 }
 
-TEST_F(EcsGL, GetComponentSingle) {
+TEST_F(TestsGL, GetComponentSingle) {
   Registry* registry = new Registry();
 
   // Create one archetype
@@ -265,7 +253,7 @@ TEST_F(EcsGL, GetComponentSingle) {
   ASSERT_EQ(testStruct.b, 20);
 }
 
-TEST_F(EcsGL, GetComponentSingleAndModify) {
+TEST_F(TestsGL, GetComponentSingleAndModify) {
   Registry* registry = new Registry();
 
   // Create one archetype
@@ -293,7 +281,7 @@ TEST_F(EcsGL, GetComponentSingleAndModify) {
   ASSERT_EQ(testStruct.b, 1000);
 }
 
-TEST_F(EcsGL, GetComponentsLambdaSingleIteration) {
+TEST_F(TestsGL, GetComponentsLambdaSingleIteration) {
   Registry* registry = new Registry();
 
   // Create a few archetypes
@@ -346,7 +334,7 @@ TEST_F(EcsGL, GetComponentsLambdaSingleIteration) {
       });
 }
 
-TEST_F(EcsGL, GetComponentsLambdaMultiIteration) {
+TEST_F(TestsGL, GetComponentsLambdaMultiIteration) {
   Registry* registry = new Registry();
 
   // Create a few archetypes
@@ -420,7 +408,7 @@ TEST_F(EcsGL, GetComponentsLambdaMultiIteration) {
       });
 }
 
-TEST_F(EcsGL, GetComponentsLambdaMultiIterationWithInitialDataModified) {
+TEST_F(TestsGL, GetComponentsLambdaMultiIterationWithInitialDataModified) {
   Registry* registry = new Registry();
 
   // Create a few archetypes
@@ -474,7 +462,7 @@ TEST_F(EcsGL, GetComponentsLambdaMultiIterationWithInitialDataModified) {
       });
 }
 
-TEST_F(EcsGL, ECS_GetComponentsLambdaMultiIterationWithEntityID) {
+TEST_F(TestsGL, ECS_GetComponentsLambdaMultiIterationWithEntityID) {
   Registry* registry = new Registry();
 
   registry->RegisterArchetype<TestAddStruct1>();
@@ -500,7 +488,7 @@ TEST_F(EcsGL, ECS_GetComponentsLambdaMultiIterationWithEntityID) {
       });
 }
 
-TEST_F(EcsGL, GetEntityIDFromArchetypeWithOneEntity) {
+TEST_F(TestsGL, GetEntityIDFromArchetypeWithOneEntity) {
   Registry* registry = new Registry();
 
   // Register some archetypes
@@ -530,7 +518,7 @@ TEST_F(EcsGL, GetEntityIDFromArchetypeWithOneEntity) {
   ASSERT_EQ(entity3, entityID3);
 }
 
-TEST_F(EcsGL, GetEntityIDFromArchetypeWithMoreThanOneEntity) {
+TEST_F(TestsGL, GetEntityIDFromArchetypeWithMoreThanOneEntity) {
   Registry* registry = new Registry();
 
   // Register some archetypes
@@ -557,7 +545,7 @@ TEST_F(EcsGL, GetEntityIDFromArchetypeWithMoreThanOneEntity) {
   ASSERT_EQ(entity3, entityID3);
 }
 
-TEST_F(EcsGL, AddComponent) {
+TEST_F(TestsGL, AddComponent) {
   Registry* registry = new Registry();
 
   // Create some archetypes
@@ -595,8 +583,8 @@ TEST_F(EcsGL, AddComponent) {
   // ASSERT_EQ(testAddStruct2CV->Size(), 1);
 }
 
-TEST_F(EcsGL, RemoveComponent) {
+TEST_F(TestsGL, RemoveComponent) {
 }
 
-TEST_F(EcsGL, AddRemoveComponent) {
+TEST_F(TestsGL, AddRemoveComponent) {
 }

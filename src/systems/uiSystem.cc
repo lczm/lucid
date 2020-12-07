@@ -316,7 +316,7 @@ void UiSystem::DrawServices(double dt, Registry* registry, Input* input) {
 
   UpdateInputActiveWindow(input, WindowType::Services);
 
-  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  // DevDebug& devDebug = registry->GetComponent<DevDebug>();
   // if (devDebug.changeFocusWindow == WindowType::Services) ImGui::SetWindowFocus();
 
   ImGui::Text("This is the services");

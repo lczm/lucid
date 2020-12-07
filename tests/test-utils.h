@@ -1,5 +1,7 @@
 #pragma once
 
+#include "constants.h"
+#include "gtest/gtest.h"
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
 
@@ -30,3 +32,15 @@ static void TearDownWindow(GLFWwindow* window) {
   glfwTerminate();
   exit(EXIT_SUCCESS);
 }
+
+class TestsGL : public testing::Test {
+ protected:
+  static GLFWwindow* window;
+  static void SetUpTestSuite() {
+    window = SetUpWindow();
+  }
+
+  static void TearDownTestSuite() {
+    TearDownWindow(window);
+  }
+};
