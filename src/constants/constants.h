@@ -11,7 +11,7 @@ const int MOUSE_LEFT = 0;
 const int MOUSE_RIGHT = 1;
 const int MOUSE_MIDDLE = 2;
 
-const float CAMERA_SPEED = 5.0f;
+const float CAMERA_SPEED = 10.0f;
 const float SCROLL_SPEED = 25.0f;
 const float CAMERA_SENSITIVITY = 0.15f;
 

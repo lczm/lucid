@@ -42,7 +42,7 @@ RenderSystem::~RenderSystem() {
 }
 
 void RenderSystem::Update(double dt, Registry* registry, Input* input) {
-  // Temporary gateway for mouse picking 
+  // Temporary gateway for mouse picking
   HandleMousePick(dt, registry, input);
   HandleMousePan(dt, input);
   HandleMouseScroll(dt, input);
