@@ -263,13 +263,32 @@ void UiSystem::DrawScene(double dt, Registry* registry, Input* input) {
     matrixModel *= rotationMatrix;
 
     ImGuizmo::Manipulate(glm::value_ptr(devDebug.view), glm::value_ptr(devDebug.projection),
-                         ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL,
-                         glm::value_ptr(matrixModel));
+                         ImGuizmo::OPERATION::SCALE, ImGuizmo::LOCAL, glm::value_ptr(matrixModel));
 
     if (ImGuizmo::IsUsing()) {
       devDebug.onGizmo = true;
       // TODO : decompose the matrix model and find the transform, rotation, scale
-      transform.position = glm::vec3(matrixModel[3]);
+      glm::vec3 position, scale;
+      glm::quat rotation;
+
+      // These are not needed, but are there to fulfill the decompose parameters
+      glm::vec3 skew;
+      glm::vec4 perspective;
+
+      glm::decompose(matrixModel, scale, rotation, position, skew, perspective);
+
+      // Tell the compiler explicitly these are not used
+      (void)skew;
+      (void)perspective;
+
+      // TODO : These rotation computations can just stay as quats for simplicity and not have to
+      // be converted back into euler angles every time.
+      glm::vec3 newRotation = glm::eulerAngles(rotation);
+      glm::vec3 deltaRotation = newRotation - transform.rotation;
+
+      transform.position = position;
+      transform.rotation += deltaRotation;
+      transform.scale = scale;
     } else {
       devDebug.onGizmo = false;
     }

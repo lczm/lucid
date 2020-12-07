@@ -15,6 +15,8 @@
 
 #include "glm.hpp"
 #include "gtc/type_ptr.hpp"
+#include "gtx/quaternion.hpp"
+#include "gtx/matrix_decompose.hpp"
 
 #include "imgui.h"
 #include "imgui_internal.h"
