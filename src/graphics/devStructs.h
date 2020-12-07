@@ -14,6 +14,8 @@ struct DevDebug {
   bool drawWireframe = false;
   bool drawColliders = false;
 
+  bool onGizmo = false;
+
   // fps is updated per frame
   uint32_t fps = 0;
   uint32_t rayID = 0;
@@ -37,7 +39,7 @@ struct DevDebug {
 
   WindowType changeFocusWindow = WindowType::None;
 
-  // Temporary
+  // Temporary, Need to move the camera into an entity
   glm::mat4 view = glm::mat4(1.0f);
   glm::mat4 projection = glm::mat4(1.0f);
 };

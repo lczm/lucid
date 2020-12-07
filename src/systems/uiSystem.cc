@@ -267,7 +267,11 @@ void UiSystem::DrawScene(double dt, Registry* registry, Input* input) {
                          glm::value_ptr(matrixModel));
 
     if (ImGuizmo::IsUsing()) {
+      devDebug.onGizmo = true;
+      // TODO : decompose the matrix model and find the transform, rotation, scale
       transform.position = glm::vec3(matrixModel[3]);
+    } else {
+      devDebug.onGizmo = false;
     }
   }
   ImGui::EndChild();

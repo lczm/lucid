@@ -37,7 +37,7 @@ class RenderSystem : public System {
 
   void Update(double dt, Registry* registry, Input* input);
 
-  void HandleMousePan(double dt, Input* input);
+  void HandleMousePan(double dt, Registry* registry, Input* input);
   void HandleKeyboardPan(double dt, Input* input);
   void HandleMouseScroll(double dt, Input* input);
 

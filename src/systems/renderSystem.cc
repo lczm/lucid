@@ -44,7 +44,7 @@ RenderSystem::~RenderSystem() {
 void RenderSystem::Update(double dt, Registry* registry, Input* input) {
   // Temporary gateway for mouse picking
   HandleMousePick(dt, registry, input);
-  HandleMousePan(dt, input);
+  HandleMousePan(dt, registry, input);
   HandleMouseScroll(dt, input);
 
   HandleKeyboardPan(dt, input);
@@ -81,7 +81,10 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void RenderSystem::HandleMousePan(double dt, Input* input) {
+void RenderSystem::HandleMousePan(double dt, Registry* registry, Input* input) {
+  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  if (devDebug.onGizmo == true) return;
+
   if (input->IsMouseLDown() &&                //
       (input->lastX != input->GetMouseX() ||  //
        input->lastY != input->GetMouseY())) {
