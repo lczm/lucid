@@ -1,4 +1,5 @@
 #include "renderSystem.h"
+#include "utils.h"
 
 RenderSystem::RenderSystem() {
   RenderSystem::renderer = new Renderer();
@@ -248,7 +249,7 @@ bool RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
   }
 
   if (lengths.size() == 1) {
-    lucid::Log("Single collision! ID : ", entityIds[lengthIndexs[0]], " Length : ", lengths[0]);
+    // lucid::Log("Single collision! ID : ", entityIds[lengthIndexs[0]], " Length : ", lengths[0]);
     devDebug.activeEntity = entityIds[lengthIndexs[0]];
     return true;
   }
@@ -265,8 +266,8 @@ bool RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
 
   // Entity id = registry->GetEntityIDFromArchetype<Transform>(shortestIndex);
 
-  lucid::Log("Multiple collision! Shortest ID : ", entityIds[shortestIndex],
-             " Length : ", shortestLength, " Amount : ", lengths.size());
+  // lucid::Log("Multiple collision! Shortest ID : ", entityIds[shortestIndex],
+  //              " Length : ", shortestLength, " Amount : ", lengths.size());
   devDebug.activeEntity = entityIds[shortestIndex];
 
   return true;
@@ -274,15 +275,12 @@ bool RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
 
 void RenderSystem::DrawAllLines(double dt, Registry* registry, Input* input) {
   ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
-  DevDebug devDebug = registry->GetComponent<DevDebug>();
 
   shaderResource.primitiveShader.Bind();
   shaderResource.primitiveShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
   shaderResource.primitiveShader.SetUniformMatFloat4("view", quatCamera->GetView());
 
-  registry->GetComponentsIter<Line, Transform>()->Each([dt, &shaderResource, &renderer = renderer,
-                                                        &quatCamera = quatCamera](
-                                                           Line& line, Transform& transform) {
+  registry->GetComponentsIter<Line, Transform>()->Each([&](Line& line, Transform& transform) {
     // Update the position to the origin of the transform
     transform.position = line.origin;
     // The scale is the 'direction' on how far to move
@@ -301,10 +299,6 @@ void RenderSystem::DrawAllLines(double dt, Registry* registry, Input* input) {
 
     matrixModel *= rotationMatrix;
 
-    // Debug START
-    // matrixModel = quatCamera->GetPosition();
-    // Debug END
-
     shaderResource.primitiveShader.SetUniformMatFloat4("model", matrixModel);
     shaderResource.primitiveShader.SetUniformVecFloat3("uColor", line.color);
     renderer->DrawLine(line, shaderResource.primitiveShader);
@@ -320,8 +314,7 @@ void RenderSystem::DrawAllModels(double dt, Registry* registry, Input* input) {
   shaderResource.modelShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
   shaderResource.modelShader.SetUniformMatFloat4("view", quatCamera->GetView());
 
-  registry->GetComponentsIter<Model, Transform>()->Each([dt, &shaderResource, &renderer = renderer](
-                                                            Model& model, Transform& transform) {
+  registry->GetComponentsIter<Model, Transform>()->Each([&](Model& model, Transform& transform) {
     glm::mat4 matrixModel = glm::mat4(1.0f);
     glm::mat4 rotationMatrix = glm::mat4(1.0f);
 
@@ -344,15 +337,12 @@ void RenderSystem::DrawAllModels(double dt, Registry* registry, Input* input) {
 
 void RenderSystem::DrawAllCubes(double dt, Registry* registry, Input* input) {
   ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
-  DevDebug devDebug = registry->GetComponent<DevDebug>();
 
   shaderResource.primitiveShader.Bind();
   shaderResource.primitiveShader.SetUniformMatFloat4("projection", quatCamera->projection);
   shaderResource.primitiveShader.SetUniformMatFloat4("view", quatCamera->GetView());
 
-  registry->GetComponentsIter<Cube, Transform>()->Each([dt, &shaderResource, &devDebug,
-                                                        &renderer = renderer](
-                                                           Cube& cube, Transform& transform) {
+  registry->GetComponentsIter<Cube, Transform>()->Each([&](Cube& cube, Transform& transform) {
     glm::mat4 matrixModel = glm::mat4(1.0f);
     glm::mat4 rotationMatrix = glm::mat4(1.0f);
 
@@ -368,7 +358,7 @@ void RenderSystem::DrawAllCubes(double dt, Registry* registry, Input* input) {
 
     shaderResource.primitiveShader.SetUniformMatFloat4("model", matrixModel);
     shaderResource.primitiveShader.SetUniformVecFloat3("uColor", cube.color);
-    ;
+
     renderer->DrawCube(cube, shaderResource.primitiveShader);
   });
 
@@ -377,15 +367,12 @@ void RenderSystem::DrawAllCubes(double dt, Registry* registry, Input* input) {
 
 void RenderSystem::DrawAllSpheres(double dt, Registry* registry, Input* input) {
   ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
-  DevDebug devDebug = registry->GetComponent<DevDebug>();
 
   shaderResource.primitiveShader.Bind();
   shaderResource.primitiveShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
   shaderResource.primitiveShader.SetUniformMatFloat4("view", quatCamera->GetView());
 
-  registry->GetComponentsIter<Sphere, Transform>()->Each([dt, &shaderResource, &devDebug,
-                                                          &renderer = renderer](
-                                                             Sphere& sphere, Transform& transform) {
+  registry->GetComponentsIter<Sphere, Transform>()->Each([&](Sphere& sphere, Transform& transform) {
     glm::mat4 matrixModel = glm::mat4(1.0f);
     glm::mat4 rotationMatrix = glm::mat4(1.0f);
 
@@ -415,8 +402,7 @@ void RenderSystem::DrawAllBoundingBoxes(double dt, Registry* registry, Input* in
   shaderResource.primitiveShader.SetUniformMatFloat4("view", quatCamera->GetView());
 
   registry->GetComponentsIter<Transform, BoundingBoxCube>()->Each(
-      [dt, &shaderResource, &renderer = renderer](Transform& transform,
-                                                  BoundingBoxCube& boundingBoxCube) {
+      [&](Transform& transform, BoundingBoxCube& boundingBoxCube) {
         glm::mat4 matrixModel = glm::mat4(1.0f);
         glm::mat4 rotationMatrix = glm::mat4(1.0f);
 

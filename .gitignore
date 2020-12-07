@@ -26,6 +26,9 @@ gambit
 .idea/
 cmake-build-debug/
 
+# Clangd .cache files
+.cache/
+
 # Ignore asset files for now
 assets/avocado
 assets/bag
