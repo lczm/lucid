@@ -267,7 +267,7 @@ TEST_F(TestsGL, GetComponentSingleAndModify) {
   registry->AddComponentData<TestAddStruct1>(entity1, {10, 20});
 
   // Get the struct
-  TestAddStruct1 testStruct = registry->GetComponent<TestAddStruct1>();
+  TestAddStruct1& testStruct = registry->GetComponent<TestAddStruct1>();
 
   ASSERT_EQ(testStruct.a, 10);
   ASSERT_EQ(testStruct.b, 20);
@@ -275,10 +275,10 @@ TEST_F(TestsGL, GetComponentSingleAndModify) {
   testStruct.a = 500;
   testStruct.b = 1000;
 
-  TestAddStruct1 testStructModified = registry->GetComponent<TestAddStruct1>();
+  TestAddStruct1& testStructModified = registry->GetComponent<TestAddStruct1>();
 
-  ASSERT_EQ(testStruct.a, 500);
-  ASSERT_EQ(testStruct.b, 1000);
+  ASSERT_EQ(testStructModified.a, 500);
+  ASSERT_EQ(testStructModified.b, 1000);
 }
 
 TEST_F(TestsGL, GetComponentsLambdaSingleIteration) {
