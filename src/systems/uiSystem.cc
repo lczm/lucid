@@ -147,6 +147,8 @@ void UiSystem::DrawHierarchy(double dt, Registry* registry, Input* input) {
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
   devDebug.leftWindowWidth = ImGui::GetWindowWidth();
 
+  // if (devDebug.changeFocusWindow == WindowType::Hierarchy) ImGui::SetWindowFocus();
+
   // TODO : This can be improved upon
   // For now just take anything that has a transform component attached to it
 
@@ -195,6 +197,8 @@ void UiSystem::DrawAssets(double dt, Registry* registry, Input* input) {
   UpdateInputActiveWindow(input, WindowType::Assets);
 
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  // if (devDebug.changeFocusWindow == WindowType::Assets) ImGui::SetWindowFocus();
+
   ImVec2 wsize = ImGui::GetWindowSize();
 
   devDebug.bottomWindowWidth = wsize.x;
@@ -221,6 +225,8 @@ void UiSystem::DrawScene(double dt, Registry* registry, Input* input) {
   SceneRender sceneRender = registry->GetComponent<SceneRender>();
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
 
+  // if (devDebug.changeFocusWindow == WindowType::Scene) ImGui::SetWindowFocus();
+
   devDebug.sceneWidth = wsize.x;
   devDebug.sceneHeight = wsize.y;
 
@@ -238,6 +244,9 @@ void UiSystem::DrawProject(double dt, Registry* registry, Input* input) {
 
   UpdateInputActiveWindow(input, WindowType::Project);
 
+  // DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  // if (devDebug.changeFocusWindow == WindowType::Scene) ImGui::SetWindowFocus();
+
   ImGui::Text("This is the project");
   ImGui::End();
 }
@@ -246,6 +255,9 @@ void UiSystem::DrawConsole(double dt, Registry* registry, Input* input) {
   ImGui::Begin("Console");
 
   UpdateInputActiveWindow(input, WindowType::Console);
+
+  // DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  // if (devDebug.changeFocusWindow == WindowType::Console) ImGui::SetWindowFocus();
 
   ImGui::Text("This is the console");
   ImGui::End();
@@ -256,6 +268,9 @@ void UiSystem::DrawAnimation(double dt, Registry* registry, Input* input) {
 
   UpdateInputActiveWindow(input, WindowType::Animation);
 
+  // DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  // if (devDebug.changeFocusWindow == WindowType::Animation) ImGui::SetWindowFocus();
+
   ImGui::Text("This is the animations");
   ImGui::End();
 }
@@ -264,6 +279,9 @@ void UiSystem::DrawAnimator(double dt, Registry* registry, Input* input) {
   ImGui::Begin("Animator");
 
   UpdateInputActiveWindow(input, WindowType::Animator);
+
+  // DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  // if (devDebug.changeFocusWindow == WindowType::Animator) ImGui::SetWindowFocus();
 
   ImGui::Text("This is the animator");
   ImGui::End();
@@ -275,6 +293,7 @@ void UiSystem::DrawInspector(double dt, Registry* registry, Input* input) {
   UpdateInputActiveWindow(input, WindowType::Inspector);
 
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  // if (devDebug.changeFocusWindow == WindowType::Inspector) ImGui::SetWindowFocus();
 
   if (devDebug.activeEntity == 0) {
     ImGui::End();
@@ -297,6 +316,9 @@ void UiSystem::DrawServices(double dt, Registry* registry, Input* input) {
 
   UpdateInputActiveWindow(input, WindowType::Services);
 
+  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  // if (devDebug.changeFocusWindow == WindowType::Services) ImGui::SetWindowFocus();
+
   ImGui::Text("This is the services");
   ImGui::End();
 }
@@ -307,6 +329,8 @@ void UiSystem::DrawDevDebug(double dt, Registry* registry, Input* input) {
   UpdateInputActiveWindow(input, WindowType::DevDebug);
 
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  // if (devDebug.changeFocusWindow == WindowType::DevDebug) ImGui::SetWindowFocus();
+
   devDebug.rightWindowWidth = ImGui::GetWindowWidth();
 
   ImGui::Checkbox("Draw all with wireframe", &devDebug.drawWireframe);

@@ -1,5 +1,4 @@
 #include "renderSystem.h"
-#include "utils.h"
 
 RenderSystem::RenderSystem() {
   RenderSystem::renderer = new Renderer();
@@ -251,6 +250,9 @@ bool RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
   if (lengths.size() == 1) {
     // lucid::Log("Single collision! ID : ", entityIds[lengthIndexs[0]], " Length : ", lengths[0]);
     devDebug.activeEntity = entityIds[lengthIndexs[0]];
+
+    // Change the focus to the inspector window
+    devDebug.changeFocusWindow = WindowType::Inspector;
     return true;
   }
 
@@ -269,6 +271,9 @@ bool RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
   // lucid::Log("Multiple collision! Shortest ID : ", entityIds[shortestIndex],
   //              " Length : ", shortestLength, " Amount : ", lengths.size());
   devDebug.activeEntity = entityIds[shortestIndex];
+
+  // Change the focus to the inspector window
+  devDebug.changeFocusWindow = WindowType::Inspector;
 
   return true;
 }
@@ -523,7 +528,6 @@ std::tuple<bool, float> RenderSystem::RayBoundingBoxCollisionCheck(glm::vec3 ori
 
   length = tmin;
   return std::tuple(true, length);
-  // return true;
 }
 
 BoundingBox RenderSystem::GetBoundingBox(std::vector<glm::vec4> vertices) {

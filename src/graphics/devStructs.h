@@ -1,5 +1,6 @@
 #pragma once
 
+#include "windowEnum.h"
 #include "glm.hpp"
 
 /*
@@ -33,4 +34,6 @@ struct DevDebug {
 
   float menuBarWidth = 0;
   float menuBarHeight = 19;
+
+  WindowType changeFocusWindow = WindowType::None;
 };
