@@ -1,5 +1,4 @@
 #include "physicsSystem.h"
-#include "component.h"
 
 PhysicsSystem::PhysicsSystem() {
 }

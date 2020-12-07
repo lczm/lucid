@@ -56,7 +56,7 @@ TEST_F(TestsGL, BoxBoxNotColliding) {
   registry->RegisterSystem(new PhysicsSystem());
 
   // Register systems and archetypes
-  registry->RegisterArchetype < Cube, Transform, RigidBody, ColliderCube;
+  registry->RegisterArchetype<Cube, Transform, RigidBody, ColliderCube>();
 
   // Get the entities
   Entity first = registry->GetAvailableEntityId();
@@ -79,9 +79,8 @@ TEST_F(TestsGL, BoxBoxNotColliding) {
   registry->UpdateSystems(dt, input);
 
   // Check that both BoundingBoxCube(s) are colliding
-  registry->GetComponentsIter < ColliderCube>()->Each([](ColliderCube& colliderCube) {
-    ASSERT_FALSE(colliderCube.collided);
-  });
+  registry->GetComponentsIter<ColliderCube>()->Each(
+      [](ColliderCube& colliderCube) { ASSERT_FALSE(colliderCube.collided); });
 }
 
 // The ray & box intersection current lies in the renderSystem, so the test will be

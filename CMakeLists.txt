@@ -147,7 +147,8 @@ add_executable(tests
     ${IMGUI_SOURCE_FILES}
     ${STB_IMAGE_HEADERS}
     ${GLAD_SOURCE_FILES}
-    ${GLM_HEADERS})
+    ${GLM_HEADERS}
+    ${IMGUIZMO_HEADERS})
 
 # Link test executable against gtest & gtest_main
 target_link_libraries(tests gtest gtest_main glfw assimp* sndfile OpenAL32)
