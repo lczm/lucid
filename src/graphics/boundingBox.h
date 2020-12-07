@@ -50,7 +50,7 @@ const std::vector<uint32_t> boundingBoxCubeIndices = {
     6, 7, 3,  //
 };
 
-class BoundingBoxCube {
+class ColliderCube {
  public:
   uint32_t VAO, VBO, EBO;
 
@@ -58,13 +58,13 @@ class BoundingBoxCube {
   glm::vec3 color = {1.0f, 1.0f, 1.0f};
 
  public:
-  BoundingBoxCube();
-  ~BoundingBoxCube();
+  ColliderCube();
+  ~ColliderCube();
 
   void Build();
 };
 
-class BoundingBoxSphere {
+class ColliderSphere {
  public:
   uint32_t VAO, VBO, EBO;
 
@@ -72,11 +72,11 @@ class BoundingBoxSphere {
   glm::vec3 color = {1.0f, 1.0f, 1.0f};
 
  public:
-  BoundingBoxSphere();
-  ~BoundingBoxSphere();
+  ColliderSphere();
+  ~ColliderSphere();
 };
 
-class BoundingBoxPolygon {
+class ColliderPolygon {
  public:
   uint32_t VAO, VBO, EBO;
 
@@ -84,6 +84,6 @@ class BoundingBoxPolygon {
   glm::vec3 color = {1.0f, 1.0f, 1.0f};
 
  public:
-  BoundingBoxPolygon();
-  ~BoundingBoxPolygon();
+  ColliderPolygon();
+  ~ColliderPolygon();
 };

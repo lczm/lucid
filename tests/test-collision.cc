@@ -21,15 +21,15 @@ TEST_F(TestsGL, BoxBoxColliding) {
   registry->RegisterSystem(new PhysicsSystem());
 
   // Register systems and archetypes
-  registry->RegisterArchetype<Cube, Transform, RigidBody, BoundingBoxCube>();
+  registry->RegisterArchetype<Cube, Transform, RigidBody, ColliderCube>();
 
   // Get the entities
   Entity first = registry->GetAvailableEntityId();
   Entity second = registry->GetAvailableEntityId();
 
   // Create the entities
-  registry->CreateEntity<Cube, Transform, RigidBody, BoundingBoxCube>(first);
-  registry->CreateEntity<Cube, Transform, RigidBody, BoundingBoxCube>(second);
+  registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(first);
+  registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(second);
 
   Transform* firstTransform = registry->GetComponent<Transform>(first);
   Transform* secondTransform = registry->GetComponent<Transform>(second);
@@ -44,8 +44,8 @@ TEST_F(TestsGL, BoxBoxColliding) {
   registry->UpdateSystems(dt, input);
 
   // Check that both BoundingBoxCube(s) are colliding
-  registry->GetComponentsIter<BoundingBoxCube>()->Each(
-      [](BoundingBoxCube& boundingBoxCube) { ASSERT_TRUE(boundingBoxCube.collided); });
+  registry->GetComponentsIter<ColliderCube>()->Each(
+      [](ColliderCube& colliderCube) { ASSERT_TRUE(colliderCube.collided); });
 }
 
 // Test that it detects that it is not colliding
@@ -56,15 +56,15 @@ TEST_F(TestsGL, BoxBoxNotColliding) {
   registry->RegisterSystem(new PhysicsSystem());
 
   // Register systems and archetypes
-  registry->RegisterArchetype<Cube, Transform, RigidBody, BoundingBoxCube>();
+  registry->RegisterArchetype < Cube, Transform, RigidBody, ColliderCube;
 
   // Get the entities
   Entity first = registry->GetAvailableEntityId();
   Entity second = registry->GetAvailableEntityId();
 
   // Create the entities
-  registry->CreateEntity<Cube, Transform, RigidBody, BoundingBoxCube>(first);
-  registry->CreateEntity<Cube, Transform, RigidBody, BoundingBoxCube>(second);
+  registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(first);
+  registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(second);
 
   Transform* firstTransform = registry->GetComponent<Transform>(first);
   Transform* secondTransform = registry->GetComponent<Transform>(second);
@@ -79,8 +79,9 @@ TEST_F(TestsGL, BoxBoxNotColliding) {
   registry->UpdateSystems(dt, input);
 
   // Check that both BoundingBoxCube(s) are colliding
-  registry->GetComponentsIter<BoundingBoxCube>()->Each(
-      [](BoundingBoxCube& boundingBoxCube) { ASSERT_FALSE(boundingBoxCube.collided); });
+  registry->GetComponentsIter < ColliderCube>()->Each([](ColliderCube& colliderCube) {
+    ASSERT_FALSE(colliderCube.collided);
+  });
 }
 
 // The ray & box intersection current lies in the renderSystem, so the test will be

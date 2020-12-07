@@ -1,12 +1,12 @@
 #include "boundingBox.h"
 
-BoundingBoxCube::BoundingBoxCube() {
+ColliderCube::ColliderCube() {
 }
 
-BoundingBoxCube::~BoundingBoxCube() {
+ColliderCube::~ColliderCube() {
 }
 
-void BoundingBoxCube::Build() {
+void ColliderCube::Build() {
   // Generate the appropriate buffers
   glGenVertexArrays(1, &VAO);
   glGenBuffers(1, &VBO);

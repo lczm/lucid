@@ -1,4 +1,5 @@
 #include "renderSystem.h"
+#include "component.h"
 
 RenderSystem::RenderSystem() {
   RenderSystem::renderer = new Renderer();
@@ -406,28 +407,25 @@ void RenderSystem::DrawAllBoundingBoxes(double dt, Registry* registry, Input* in
   shaderResource.primitiveShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
   shaderResource.primitiveShader.SetUniformMatFloat4("view", quatCamera->GetView());
 
-  registry->GetComponentsIter<Transform, BoundingBoxCube>()->Each(
-      [&](Transform& transform, BoundingBoxCube& boundingBoxCube) {
-        glm::mat4 matrixModel = glm::mat4(1.0f);
-        glm::mat4 rotationMatrix = glm::mat4(1.0f);
+  registry->GetComponentsIter<Transform, ColliderCube>()->Each([&](Transform& transform,
+                                                                   ColliderCube& colliderCube) {
+    glm::mat4 matrixModel = glm::mat4(1.0f);
+    glm::mat4 rotationMatrix = glm::mat4(1.0f);
 
-        matrixModel = glm::translate(matrixModel, transform.position);
-        matrixModel = glm::scale(matrixModel, transform.scale);
+    matrixModel = glm::translate(matrixModel, transform.position);
+    matrixModel = glm::scale(matrixModel, transform.scale);
 
-        // Rotation matrix
-        rotationMatrix =
-            glm::rotate(rotationMatrix, transform.rotation[0], glm::vec3(1.0, 0.0, 0.0));
-        rotationMatrix =
-            glm::rotate(rotationMatrix, transform.rotation[1], glm::vec3(0.0, 1.0, 0.0));
-        rotationMatrix =
-            glm::rotate(rotationMatrix, transform.rotation[2], glm::vec3(0.0, 0.0, 1.0));
+    // Rotation matrix
+    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[0], glm::vec3(1.0, 0.0, 0.0));
+    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[1], glm::vec3(0.0, 1.0, 0.0));
+    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[2], glm::vec3(0.0, 0.0, 1.0));
 
-        matrixModel *= rotationMatrix;
+    matrixModel *= rotationMatrix;
 
-        shaderResource.primitiveShader.SetUniformMatFloat4("model", matrixModel);
-        shaderResource.primitiveShader.SetUniformVecFloat3("uColor", boundingBoxCube.color);
-        renderer->DrawBoundingBox(boundingBoxCube, shaderResource.primitiveShader);
-      });
+    shaderResource.primitiveShader.SetUniformMatFloat4("model", matrixModel);
+    shaderResource.primitiveShader.SetUniformVecFloat3("uColor", colliderCube.color);
+    renderer->DrawBoundingBox(colliderCube, shaderResource.primitiveShader);
+  });
 
   shaderResource.primitiveShader.Unbind();
 }

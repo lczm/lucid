@@ -27,26 +27,10 @@ struct RigidBody {
   glm::vec3 velocity = glm::vec3(0.0f);
 };
 
-enum class ColliderType {
-  Cube,
-  Sphere,
-  Model,
-  None,
-};
-
-struct Collider {
-  ColliderType type = ColliderType::Sphere;
-  BoundingBox oobb;  // Oriented Bounding Box
-};
-
-struct ColliderSphere {
-  // There is no need for a center as that is the under position...?
-  uint32_t radius = 5;  // Default...?
-};
-
-struct ColliderCube {};
-
-struct ColliderModel {};
+// struct Collider {};
+// struct ColliderSphere {};
+// struct ColliderCube {};
+// struct ColliderModel {};
 
 struct Animation {
   float animCounter = 0;   // Counter on time passed

@@ -101,9 +101,9 @@ void Renderer::DrawBoundingBox(Sphere& sphere, Shader& shader) {
   // glBindVertexArray(0);
 }
 
-void Renderer::DrawBoundingBox(BoundingBoxCube& boundingBoxCube, Shader& shader) {
+void Renderer::DrawBoundingBox(ColliderCube colliderCube, Shader& shader) {
   glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-  glBindVertexArray(boundingBoxCube.VAO);
+  glBindVertexArray(colliderCube.VAO);
   glDrawElements(GL_TRIANGLES, boundingBoxCubeIndices.size(), GL_UNSIGNED_INT, 0);
   glBindVertexArray(0);
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

@@ -244,8 +244,8 @@ void Lucid::InitializeSystems() {
 void Lucid::InitializeDemoPongEntities() {
   // Register the necessary archetypes
   // Note that this should be using `ColliderCube` but it is hardcoded like this for now.
-  registry->RegisterArchetype<Cube, Transform, RigidBody, BoundingBoxCube>();
-  registry->RegisterArchetype<Sphere, Transform, RigidBody, BoundingBoxCube>();
+  registry->RegisterArchetype<Cube, Transform, RigidBody, ColliderCube>();
+  registry->RegisterArchetype<Sphere, Transform, RigidBody, ColliderCube>();
   registry->RegisterArchetype<PongRules>();
 
   // This archetype is used for ray casting
@@ -265,9 +265,9 @@ void Lucid::InitializeDemoPongEntities() {
   Entity ballID = registry->GetAvailableEntityId();
   Entity pongRulesID = registry->GetAvailableEntityId();
 
-  registry->CreateEntity<Cube, Transform, RigidBody, BoundingBoxCube>(playerPaddleID);
-  registry->CreateEntity<Cube, Transform, RigidBody, BoundingBoxCube>(aiPaddleID);
-  registry->CreateEntity<Sphere, Transform, RigidBody, BoundingBoxCube>(ballID);
+  registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(playerPaddleID);
+  registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(aiPaddleID);
+  registry->CreateEntity<Sphere, Transform, RigidBody, ColliderCube>(ballID);
   registry->CreateEntity<PongRules>(pongRulesID);
 
   PongRules& pongRules = registry->GetComponent<PongRules>();
@@ -294,8 +294,8 @@ void Lucid::InitializeDemoPongEntities() {
   registry->GetComponentsIter<Cube>()->Each([](Cube& cube) { cube.Build(); });
 
   // TODO : This can be ismplified
-  registry->GetComponentsIter<BoundingBoxCube>()->Each(
-      [](BoundingBoxCube& boundingBoxCube) { boundingBoxCube.Build(); });
+  registry->GetComponentsIter<ColliderCube>()->Each(
+      [](ColliderCube colliderCube) { colliderCube.Build(); });
 
   // TODO : This can be simplified
   registry->GetComponentsIter<Sphere>()->Each([](Sphere& sphere) {

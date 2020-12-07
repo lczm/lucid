@@ -18,28 +18,31 @@ class PhysicsSystem : public System {
 
   void Update(double dt, Registry* registry, Input* input);
 
-  bool CheckCollision(BoundingBoxCube& boundingBoxCube, Transform& transform,
-                      BoundingBoxCube& boundingBoxCubeOther, Transform& transformOther);
-  bool CheckCollision(BoundingBoxCube& boundingBoxCube, Transform& transform,
-                      BoundingBoxSphere& boundingBoxSphereOther, Transform& transformOther);
-  bool CheckCollision(BoundingBoxCube& boundingBoxCube, Transform& transform,
-                      BoundingBoxPolygon& boundingBoxPolygonOther, Transform& transformOther);
+  // Cube : { Rest of the colliders };
+  bool CheckCollision(ColliderCube colliderCube, Transform& transform,
+                      ColliderCube colliderCubeOther, Transform& transformOther);
+  bool CheckCollision(ColliderCube colliderCube, Transform& transform,
+                      ColliderSphere colliderSphereOther, Transform& transformOther);
+  bool CheckCollision(ColliderCube colliderCube, Transform& transform,
+                      ColliderPolygon colliderPolygonOther, Transform& transformOther);
 
-  bool CheckCollision(BoundingBoxSphere& boundingBoxSphere, Transform& transform,
-                      BoundingBoxSphere& boundingBoxSphereOther, Transform& transformOther);
-  bool CheckCollision(BoundingBoxSphere& boundingBoxSphere, Transform& transform,
-                      BoundingBoxCube& boundingBoxCubeOther, Transform& transformOther);
-  bool CheckCollision(BoundingBoxSphere& boundingBoxSphere, Transform& transform,
-                      BoundingBoxPolygon& boundingBoxPolygonOther, Transform& transformOther);
+  // Sphere : { Rest of the colliders }
+  bool CheckCollision(ColliderSphere colliderSphere, Transform& transform,
+                      ColliderSphere colliderSphereOther, Transform& transformOther);
+  bool CheckCollision(ColliderSphere colliderSphere, Transform& transform,
+                      ColliderCube colliderCubeOther, Transform& transformOther);
+  bool CheckCollision(ColliderSphere colliderSphere, Transform& transform,
+                      ColliderPolygon colliderPolygonOther, Transform& transformOther);
 
-  bool CheckCollision(BoundingBoxPolygon& boundingBoxPolygon, Transform& transform,
-                      BoundingBoxPolygon& boundingBoxPolygonOther, Transform& transformOther);
-  bool CheckCollision(BoundingBoxPolygon& boundingBoxPolygon, Transform& transform,
-                      BoundingBoxCube& boundingBoxCubeOther, Transform& transformOther);
-  bool CheckCollision(BoundingBoxPolygon& boundingBoxPolygon, Transform& transform,
-                      BoundingBoxSphere& boundingBoxSphereOther, Transform& transformOther);
+  // Polygon : { Rest of the colliders }
+  bool CheckCollision(ColliderPolygon colliderPolygon, Transform& transform,
+                      ColliderPolygon colliderPolygonOther, Transform& transformOther);
+  bool CheckCollision(ColliderPolygon colliderPolygon, Transform& transform,
+                      ColliderCube colliderCubeOther, Transform& transformOther);
+  bool CheckCollision(ColliderPolygon colliderPolygon, Transform& transform,
+                      ColliderSphere colliderSphereOther, Transform& transformOther);
 
-  glm::mat4 PhysicsSystem::ApplyTransformation(Transform& transform);
+  glm::mat4 ApplyTransformation(Transform& transform);
   bool CheckCollisionBetweenBoundingBox(BoundingBox boundingBox, BoundingBox boundingBoxOther);
 
   void GetAxisAlignedBoundingBox(ColliderSphere& collider, Transform& transform);
