@@ -27,6 +27,7 @@ set (MAIN
 # Source files
 file(GLOB_RECURSE HEADER_FILES src/*.h)
 file(GLOB_RECURSE SOURCE_FILES src/*.cc)
+
 list(FILTER SOURCE_FILES EXCLUDE REGEX "main.cc")
 
 file(GLOB_RECURSE TEST_SOURCE_FILES tests/*.cc)
@@ -69,7 +70,9 @@ include_directories(src/entity)
 include_directories(src/lucid)
 include_directories(src/shaders)
 include_directories(src/systems)
-include_directories(src/systems/pong)
+
+# Example directories
+include_directories(src/examples/pong)
 
 # Setup stb_image
 include_directories(lib/stb_image)
