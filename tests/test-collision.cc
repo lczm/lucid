@@ -1,9 +1,5 @@
-// #define GLFW_INCLUDE_NONE
-// #define GLAD_DEBUG
-
 #include <vector>
 #include <iostream>
-#include <glad/gl.h>
 
 #include "lucid.h"
 #include "component.h"
@@ -13,13 +9,10 @@
 #include "ecs.h"
 #include "input.h"
 #include "utils.h"
-#include "test-utils.h"
 
 #include "renderSystem.h"
 #include "physicsSystem.h"
 #include "test-utils.h"
-
-// GLFWwindow* TestsGL::window = nullptr;
 
 TEST_F(TestsGL, BoxBoxColliding) {
   Registry* registry = new Registry();
