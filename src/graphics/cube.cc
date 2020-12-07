@@ -1,12 +1,6 @@
 #include "cube.h"
 
 Cube::Cube() {
-}
-
-Cube::~Cube() {
-}
-
-void Cube::Build() {
   // Generate the appropriate buffers
   glGenVertexArrays(1, &VAO);
   glGenBuffers(1, &VBO);
@@ -35,4 +29,7 @@ void Cube::Build() {
   // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 
   glBindVertexArray(0);
+}
+
+Cube::~Cube() {
 }

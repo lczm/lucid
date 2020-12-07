@@ -202,8 +202,6 @@ void Lucid::InitializeEntities() {
   registry->AddComponentData<Model>(modelID2, Model(SCIFIHELMET_MODEL));
   registry->AddComponentData<Model>(modelID3, Model(AVOCADO_MODEL));
 
-  registry->GetComponentsIter<Cube>()->Each([](Cube& cube) { cube.Build(); });
-
   registry->GetComponentsIter<Sphere, Transform>()->Each([](Sphere& sphere, Transform& transform) {
     sphere.radius = 1.0f;
     sphere.sectors = 36;
@@ -291,13 +289,6 @@ void Lucid::InitializeDemoPongEntities() {
       glm::normalize(playerTransform->position - ballTransform->position) * 0.020f;
 
   // TODO : This can be simplified
-  registry->GetComponentsIter<Cube>()->Each([](Cube& cube) { cube.Build(); });
-
-  // TODO : This can be ismplified
-  registry->GetComponentsIter<ColliderCube>()->Each(
-      [](ColliderCube colliderCube) { colliderCube.Build(); });
-
-  // TODO : This can be simplified
   registry->GetComponentsIter<Sphere>()->Each([](Sphere& sphere) {
     sphere.radius = 1.0f;
     sphere.sectors = 36;
@@ -307,17 +298,23 @@ void Lucid::InitializeDemoPongEntities() {
   });
 
   // TODO : Need to scale the cubes to become 'paddles'
+
   // Audio Stuff Start
   registry->RegisterArchetype<SoundEffect, Transform>();
   registry->RegisterArchetype<Music>();
+
   Entity soundEffectID = registry->GetAvailableEntityId();
   Entity musicID = registry->GetAvailableEntityId();
+
   registry->CreateEntity<SoundEffect, Transform>(soundEffectID);
   registry->CreateEntity<Music>(musicID);
+
   Transform* soundEffectTransform = registry->GetComponent<Transform>(soundEffectID);
   soundEffectTransform->position = {0, 0, 0};
+
   SoundEffect* soundEffect = registry->GetComponent<SoundEffect>(soundEffectID);
   soundEffect->filePath = GRUNT_SOUND;
+
   Music* music = registry->GetComponent<Music>(musicID);
   music->filePath = PIANO_MUSIC;
   // Audio Stuff End

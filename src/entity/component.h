@@ -3,7 +3,6 @@
 #include "constants.h"
 #include "gl.h"
 #include "glm.hpp"
-
 #include "boundingBox.h"
 
 /*

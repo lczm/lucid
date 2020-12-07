@@ -49,6 +49,4 @@ class Cube {
  public:
   Cube();
   ~Cube();
-
-  void Build();
 };
