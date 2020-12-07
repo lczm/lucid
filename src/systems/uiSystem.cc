@@ -234,6 +234,42 @@ void UiSystem::DrawScene(double dt, Registry* registry, Input* input) {
   ImGui::Image((ImTextureID)sceneRender.textureID, wsize, ImVec2(0, 1), ImVec2(1, 0),
                ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
 
+  if (devDebug.activeEntity != 0) {
+    ImGuizmo::BeginFrame();
+    // ImGuizmo::EndFrame();
+
+    ImGuizmo::SetOrthographic(false);
+    ImGuizmo::SetDrawlist();
+
+    float windowWidth = static_cast<float>(ImGui::GetWindowWidth());
+    float windowHeight = static_cast<float>(ImGui::GetWindowHeight());
+
+    ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+
+    Transform& transform = *(registry->GetComponent<Transform>(devDebug.activeEntity));
+
+    // TODO Create a utility method to compute this
+    glm::mat4 matrixModel = glm::mat4(1.0f);
+    glm::mat4 rotationMatrix = glm::mat4(1.0f);
+
+    matrixModel = glm::translate(matrixModel, transform.position);
+    matrixModel = glm::scale(matrixModel, transform.scale);
+
+    // Rotation matrix
+    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[0], glm::vec3(1.0, 0.0, 0.0));
+    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[1], glm::vec3(0.0, 1.0, 0.0));
+    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[2], glm::vec3(0.0, 0.0, 1.0));
+
+    matrixModel *= rotationMatrix;
+
+    ImGuizmo::Manipulate(glm::value_ptr(devDebug.view), glm::value_ptr(devDebug.projection),
+                         ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL,
+                         glm::value_ptr(matrixModel));
+
+    if (ImGuizmo::IsUsing()) {
+      transform.position = glm::vec3(matrixModel[3]);
+    }
+  }
   ImGui::EndChild();
 
   ImGui::End();

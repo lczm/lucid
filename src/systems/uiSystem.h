@@ -13,10 +13,14 @@
 #include "devStructs.h"
 #endif
 
+#include "glm.hpp"
+#include "gtc/type_ptr.hpp"
+
 #include "imgui.h"
 #include "imgui_internal.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
+#include "ImGuizmo.h"
 
 class UiSystem : public System {
  private:

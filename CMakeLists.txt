@@ -58,6 +58,7 @@ set (STB_IMAGE_HEADERS
 
 set (IMGUIZMO_HEADERS
     lib/ImGuizmo/ImGuizmo.h
+    lib/ImGuizmo/ImGuizmo.cpp
 )
 
 # Import directories
