@@ -31,6 +31,9 @@ class RenderSystem : public System {
   uint32_t fbo, rbo;
   uint32_t texture;
 
+  uint32_t batchIndexCount;
+  std::vector<glm::mat4> modelMatrices;
+
  public:
   RenderSystem();
   ~RenderSystem();

@@ -108,3 +108,19 @@ void Renderer::DrawBoundingBox(ColliderCube colliderCube, Shader& shader) {
   glBindVertexArray(0);
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
+
+void Renderer::Start() {
+  // batchIndexCount = 0;
+}
+
+// TODO : This assumes that it is only batch drawing lines
+void Renderer::Flush() {
+  // uint32_t buffer;
+  // glGenBuffers(1, &buffer);
+  // glBindBuffer(GL_ARRAY_BUFFER, buffer);
+  // glBufferData(GL_ARRAY_BUFFER, batchIndexCount * sizeof(glm::mat4), &modelMatrices[0],
+  //              GL_STATIC_DRAW);
+
+  // for (size_t i = 0; i < batchIndexCount; i++) {
+  // }
+}

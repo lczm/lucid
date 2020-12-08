@@ -268,14 +268,47 @@ bool RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
 void RenderSystem::DrawAllLines(double dt, Registry* registry, Input* input) {
   ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
 
-  shaderResource.primitiveShader.Bind();
-  shaderResource.primitiveShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
-  shaderResource.primitiveShader.SetUniformMatFloat4("view", quatCamera->GetView());
+  // shaderResource.primitiveShader.Bind();
+  // shaderResource.primitiveShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
+  // shaderResource.primitiveShader.SetUniformMatFloat4("view", quatCamera->GetView());
+
+  // registry->GetComponentsIter<Line, Transform>()->Each([&](Line& line, Transform& transform) {
+  //   // Update the position to the origin of the transform
+  //   transform.position = line.origin;
+  //   // The scale is the 'direction' on how far to move
+  //   transform.scale = line.destination - line.origin;
+
+  //   glm::mat4 matrixModel = glm::mat4(1.0f);
+  //   glm::mat4 rotationMatrix = glm::mat4(1.0f);
+
+  //   matrixModel = glm::translate(matrixModel, transform.position);
+  //   matrixModel = glm::scale(matrixModel, transform.scale);
+
+  //   // Rotation matrix
+  //   rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[0], glm::vec3(1.0, 0.0,
+  //   0.0)); rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[1],
+  //   glm::vec3(0.0, 1.0, 0.0)); rotationMatrix = glm::rotate(rotationMatrix,
+  //   transform.rotation[2], glm::vec3(0.0, 0.0, 1.0));
+
+  //   matrixModel *= rotationMatrix;
+
+  //   shaderResource.primitiveShader.SetUniformMatFloat4("model", matrixModel);
+  //   shaderResource.primitiveShader.SetUniformVecFloat3("uColor", line.color);
+  //   renderer->DrawLine(line, shaderResource.primitiveShader);
+  // });
+
+  // shaderResource.primitiveShader.Unbind();
+
+  shaderResource.primitiveShaderBatch.Bind();
+  shaderResource.primitiveShaderBatch.SetUniformMatFloat4("projection",
+                                                          quatCamera->GetProjection());
+  shaderResource.primitiveShaderBatch.SetUniformMatFloat4("view", quatCamera->GetView());
+
+  uint32_t batchIndexCount = 0;
+  std::vector<glm::mat4> modelMatrices;
 
   registry->GetComponentsIter<Line, Transform>()->Each([&](Line& line, Transform& transform) {
-    // Update the position to the origin of the transform
     transform.position = line.origin;
-    // The scale is the 'direction' on how far to move
     transform.scale = line.destination - line.origin;
 
     glm::mat4 matrixModel = glm::mat4(1.0f);
@@ -284,19 +317,53 @@ void RenderSystem::DrawAllLines(double dt, Registry* registry, Input* input) {
     matrixModel = glm::translate(matrixModel, transform.position);
     matrixModel = glm::scale(matrixModel, transform.scale);
 
-    // Rotation matrix
     rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[0], glm::vec3(1.0, 0.0, 0.0));
     rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[1], glm::vec3(0.0, 1.0, 0.0));
     rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[2], glm::vec3(0.0, 0.0, 1.0));
 
     matrixModel *= rotationMatrix;
+    modelMatrices.push_back(matrixModel);
 
-    shaderResource.primitiveShader.SetUniformMatFloat4("model", matrixModel);
-    shaderResource.primitiveShader.SetUniformVecFloat3("uColor", line.color);
-    renderer->DrawLine(line, shaderResource.primitiveShader);
+    batchIndexCount++;
+
+    // Update opengl vertx attribs
+    glBindVertexArray(line.VAO);
+
+    std::size_t vec4Size = sizeof(glm::vec4);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
+
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(1 * vec4Size));
+
+    glEnableVertexAttribArray(3);
+    glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size));
+
+    glEnableVertexAttribArray(4);
+    glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size));
+
+    glVertexAttribDivisor(1, 1);
+    glVertexAttribDivisor(2, 1);
+    glVertexAttribDivisor(3, 1);
+    glVertexAttribDivisor(4, 1);
+
+    glBindVertexArray(0);
+
+    // shaderResource.primitiveShaderBatch.SetUniformVecFloat3("uColor", line.color);
   });
 
-  shaderResource.primitiveShader.Unbind();
+  uint32_t buffer;
+  glGenBuffers(1, &buffer);
+  glBindBuffer(GL_ARRAY_BUFFER, buffer);
+  glBufferData(GL_ARRAY_BUFFER, batchIndexCount * sizeof(glm::mat4), &modelMatrices[0],
+               GL_STATIC_DRAW);
+
+  registry->GetComponentsIter<Line, Transform>()->Each([&](Line& line, Transform& transform) {
+    glBindVertexArray(line.VAO);
+    glDrawArraysInstanced(GL_LINES, 0, 2, batchIndexCount);
+  });
+
+  shaderResource.primitiveShaderBatch.Unbind();
 }
 
 void RenderSystem::DrawAllModels(double dt, Registry* registry, Input* input) {
