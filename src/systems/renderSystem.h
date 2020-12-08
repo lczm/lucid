@@ -22,6 +22,10 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
+// TODO : Organize this
+// Maximum amount of matrices that can be sent over at any point in time
+// any more than maximum, restart another batch
+
 class RenderSystem : public System {
  private:
   Renderer* renderer;
@@ -31,6 +35,9 @@ class RenderSystem : public System {
   uint32_t fbo, rbo;
   uint32_t texture;
 
+  bool setOnce = false;
+
+ public:
   uint32_t batchIndexCount;
   std::vector<glm::mat4> modelMatrices;
 

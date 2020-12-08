@@ -30,3 +30,12 @@ class Line {
   Line();
   ~Line();
 };
+
+class DevLine {
+ public:
+  uint32_t VAO, VBO;
+
+ public:
+  DevLine();
+  ~DevLine();
+};

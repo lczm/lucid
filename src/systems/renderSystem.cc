@@ -1,9 +1,12 @@
 #include "renderSystem.h"
 
-RenderSystem::RenderSystem() {
+RenderSystem::RenderSystem() : modelMatrices(10000) {
   RenderSystem::renderer = new Renderer();
   // RenderSystem::camera = new Camera();
   RenderSystem::quatCamera = new QuatCamera();
+
+  // const uint32_t MAX_MATRICES = 100000;
+  // RenderSystem::modelMatrices.reserve(MAX_MATRICES);
 
   // move back the camera a little bit.
   quatCamera->TranslateInWorld(glm::vec3(0.0f, 1.0f, 35.0f));
@@ -14,7 +17,7 @@ RenderSystem::RenderSystem() {
   glGenTextures(1, &texture);
   glBindTexture(GL_TEXTURE_2D, texture);
 
-  // TODO : The SCREEN_WIDTH and SCREEN_HEIGHT here has to be changed
+  // TODO : The SCREEN_WIDTH and SCREEN_HEIGHT here has to bechanged
   // whenever the game is resized
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SCREEN_WIDTH, SCREEN_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE,
                NULL);
@@ -178,10 +181,11 @@ bool RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
   glm::vec3 rayDirection = GetRayDirection(registry, input);
 
-  Line* line = registry->GetComponent<Line>(devDebug.rayID);
-  line->origin = quatCamera->GetPositionInWorld();
-  line->destination = rayDirection;
-  line->color.r = 1.0f;
+  // Don't really need this for now
+  // Line* line = registry->GetComponent<Line>(devDebug.rayID);
+  // line->origin = quatCamera->GetPositionInWorld();
+  // line->destination = rayDirection;
+  // line->color.r = 1.0f;
 
   std::vector<Entity> entityIds;
   std::vector<BoundingBox> boundingBoxes;
@@ -306,7 +310,6 @@ void RenderSystem::DrawAllLines(double dt, Registry* registry, Input* input) {
 
   uint32_t batchIndexCount = 0;
   std::vector<glm::mat4> modelMatrices;
-
   registry->GetComponentsIter<Line, Transform>()->Each([&](Line& line, Transform& transform) {
     transform.position = line.origin;
     transform.scale = line.destination - line.origin;
@@ -322,46 +325,53 @@ void RenderSystem::DrawAllLines(double dt, Registry* registry, Input* input) {
     rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[2], glm::vec3(0.0, 0.0, 1.0));
 
     matrixModel *= rotationMatrix;
+
+    // modelMatrices[batchIndexCount] = matrixModel;
     modelMatrices.push_back(matrixModel);
 
     batchIndexCount++;
 
-    // Update opengl vertx attribs
-    glBindVertexArray(line.VAO);
-
-    std::size_t vec4Size = sizeof(glm::vec4);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
-
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(1 * vec4Size));
-
-    glEnableVertexAttribArray(3);
-    glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size));
-
-    glEnableVertexAttribArray(4);
-    glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size));
-
-    glVertexAttribDivisor(1, 1);
-    glVertexAttribDivisor(2, 1);
-    glVertexAttribDivisor(3, 1);
-    glVertexAttribDivisor(4, 1);
-
-    glBindVertexArray(0);
-
     // shaderResource.primitiveShaderBatch.SetUniformVecFloat3("uColor", line.color);
   });
 
+  DevLine& devLine = registry->GetComponent<DevLine>();
+  glBindVertexArray(devLine.VAO);
+  // glBindBuffer(GL_ARRAY_BUFFER, devLine.VBO);
+  // glBufferData(GL_ARRAY_BUFFER, modelMatrices.size() * sizeof(glm::mat4), &modelMatrices[0],
+  //              GL_STATIC_DRAW);
+
+  // TODO : The reason why this can't work is because VBOs the memory allocated is static ->
+  // GL_STATIC_DRAW
+  // https://stackoverflow.com/questions/15821969/what-is-the-proper-way-to-modify-opengl-vertex-buffer
   uint32_t buffer;
   glGenBuffers(1, &buffer);
   glBindBuffer(GL_ARRAY_BUFFER, buffer);
   glBufferData(GL_ARRAY_BUFFER, batchIndexCount * sizeof(glm::mat4), &modelMatrices[0],
                GL_STATIC_DRAW);
 
-  registry->GetComponentsIter<Line, Transform>()->Each([&](Line& line, Transform& transform) {
-    glBindVertexArray(line.VAO);
-    glDrawArraysInstanced(GL_LINES, 0, 2, batchIndexCount);
-  });
+  // Bind a line vao and batch draw them
+  // Line& line = *(registry->GetComponent<Line>(sampleLineID));
+  // glBindVertexArray(line.VAO);
+  // glDrawArraysInstanced(GL_LINES, 0, 2, batchIndexCount);
+
+  std::size_t vec4Size = sizeof(glm::vec4);
+  glEnableVertexAttribArray(1);
+  glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
+
+  glEnableVertexAttribArray(2);
+  glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(1 * vec4Size));
+
+  glEnableVertexAttribArray(3);
+  glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size));
+
+  glEnableVertexAttribArray(4);
+  glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size));
+
+  glVertexAttribDivisor(1, 1);
+  glVertexAttribDivisor(2, 1);
+  glVertexAttribDivisor(3, 1);
+  glVertexAttribDivisor(4, 1);
+  glDrawArraysInstanced(GL_LINES, 0, 2, batchIndexCount);
 
   shaderResource.primitiveShaderBatch.Unbind();
 }

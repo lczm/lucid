@@ -76,14 +76,17 @@ void Lucid::InitializeBulitInEntities() {
   registry->RegisterArchetype<ShaderResource>();
   registry->RegisterArchetype<SceneRender>();
   registry->RegisterArchetype<DevDebug>();
+  registry->RegisterArchetype<DevLine>();
 
   Entity shaderResourceID = registry->GetAvailableEntityId();
   Entity sceneRenderID = registry->GetAvailableEntityId();
   Entity devDebugID = registry->GetAvailableEntityId();
+  Entity devLineID = registry->GetAvailableEntityId();
 
   registry->CreateEntity<ShaderResource>(shaderResourceID);
   registry->CreateEntity<SceneRender>(sceneRenderID);
   registry->CreateEntity<DevDebug>(devDebugID);
+  registry->CreateEntity<DevLine>(devLineID);
 
   ShaderResource& shaderResource = registry->GetComponent<ShaderResource>();
   shaderResource.modelShader.CreateShader(MODEL_VERTEX_SHADER, MODEL_FRAGMENT_SHADER);
@@ -110,7 +113,7 @@ void Lucid::InitializeBulitInEntities() {
   // Note that if the number is too big, e.g. 100000.0f,
   // opengl will start cutting off some numbers? the lines will not look
   // the same size. Better to stick with a smaller number
-  const float MAX_WORLD_COORDINATE_LIMIT = 1000.0f;
+  const float MAX_WORLD_COORDINATE_LIMIT = 100.0f;
 
   xLine->color = {0.8f, 0.0f, 0.0f};
   xLine->origin.x = -MAX_WORLD_COORDINATE_LIMIT;
@@ -133,8 +136,9 @@ void Lucid::InitializeBulitInEntities() {
     line->color = {0.2f, 0.2f, 0.2f};
 
     line->origin.x = static_cast<float>(i);
-    line->destination.x = static_cast<float>(i);
     line->origin.z = -MAX_WORLD_COORDINATE_LIMIT;
+
+    line->destination.x = static_cast<float>(i);
     line->destination.z = MAX_WORLD_COORDINATE_LIMIT;
   }
 
@@ -147,8 +151,9 @@ void Lucid::InitializeBulitInEntities() {
     line->color = {0.2f, 0.2f, 0.2f};
 
     line->origin.x = -MAX_WORLD_COORDINATE_LIMIT;
-    line->destination.x = MAX_WORLD_COORDINATE_LIMIT;
     line->origin.z = static_cast<float>(i);
+
+    line->destination.x = MAX_WORLD_COORDINATE_LIMIT;
     line->destination.z = static_cast<float>(i);
   }
 }
@@ -251,11 +256,11 @@ void Lucid::InitializeDemoPongEntities() {
   // Don't have to register again as it is already registered once.
   // registry->RegisterArchetype<Line, Transform>();
 
-  Entity rayID = registry->GetAvailableEntityId();
-  registry->CreateEntity<Line, Transform>(rayID);
+  // Entity rayID = registry->GetAvailableEntityId();
+  // registry->CreateEntity<Line, Transform>(rayID);
 
-  DevDebug& devDebug = registry->GetComponent<DevDebug>();
-  devDebug.rayID = rayID;
+  // DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  // devDebug.rayID = rayID;
 
   // Cube / rectangle entities
   Entity playerPaddleID = registry->GetAvailableEntityId();
