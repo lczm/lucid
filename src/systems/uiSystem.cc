@@ -85,11 +85,8 @@ void UiSystem::InitializeGUI(double dt, Registry* registry, Input* input) {
     }
   }
 
-  if (input->IsKeyDown('7')) {
-    drawSceneOnly = !drawSceneOnly;
-    input->SetKeyOff('7');
-  }
-  // Keybind to maximize scene window
+  // Check whether to draw maximized scene
+  UpdateSceneWindow(registry, input);
   if (!drawSceneOnly) {
     InitializeImGuiWindows(dt, registry, input);
   } else {
@@ -129,6 +126,7 @@ void UiSystem::PresetLayout(ImGuiID dockSpaceID) {
   ImGui::DockBuilderDockWindow("Services", dockRightID);
   ImGui::DockBuilderDockWindow("Assets", dockBottomID);
   ImGui::DockBuilderDockWindow("Scene", dockTopID);
+  ImGui::DockBuilderDockWindow("ToolBar", dockTopID);
   ImGui::DockBuilderDockWindow("DevDebug", dockRightID);
   ImGui::DockBuilderFinish(dockSpaceID);
 }
@@ -144,6 +142,7 @@ void UiSystem::InitializeImGuiWindows(double dt, Registry* registry, Input* inpu
   DrawInspector(dt, registry, input);
   DrawServices(dt, registry, input);
   DrawDevDebug(dt, registry, input);
+  DrawToolBar(dt, registry, input);
 }
 
 void UiSystem::DrawHierarchy(double dt, Registry* registry, Input* input) {
@@ -403,6 +402,27 @@ void UiSystem::DrawDevDebug(double dt, Registry* registry, Input* input) {
   ImGui::Checkbox("Draw all colliders", &devDebug.drawColliders);
 
   ImGui::End();
+}
+
+void UiSystem::DrawToolBar(double dt, Registry* registry, Input* input) {
+}
+
+void UiSystem::UpdateSceneWindow(Registry* registry, Input* input) {
+  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+
+
+  if (input->IsKeyDown('7')) {
+    drawSceneOnly = !drawSceneOnly;
+    input->SetKeyOff('7');
+    if (drawSceneOnly) {
+      devDebug.bottomWindowHeight = 0;
+      devDebug.bottomWindowWidth = 0;
+      devDebug.leftWindowHeight = 0;
+      devDebug.leftWindowWidth = 0;
+      devDebug.rightWindowHeight = 0;
+      devDebug.rightWindowWidth = 0;
+	}
+  }
 }
 
 void UiSystem::UpdateGizmoType(Registry* registry, Input* input) {

@@ -49,7 +49,9 @@ class UiSystem : public System {
   void DrawInspector(double dt, Registry* registry, Input* input);
   void DrawServices(double dt, Registry* registry, Input* input);
   void DrawDevDebug(double dt, Registry* registry, Input* input);
+  void DrawToolBar(double dt, Registry* registry, Input* input);
 
+  void UpdateSceneWindow(Registry* registry, Input* input);
   void UpdateGizmoType(Registry* registry, Input* input);
   void UpdateInputActiveWindow(Input* input, WindowType windowType);
 };
