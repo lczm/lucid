@@ -1,6 +1,6 @@
 #include "renderSystem.h"
 
-RenderSystem::RenderSystem(Registry* registry) : modelMatrices(1000) {
+RenderSystem::RenderSystem(Registry* registry) : modelMatrices(MAX_BUFFER) {
   RenderSystem::renderer = new Renderer();
   // RenderSystem::camera = new Camera();
   RenderSystem::quatCamera = new QuatCamera();
@@ -96,7 +96,8 @@ void RenderSystem::InitPrimitiveBuffers(Registry* registry) {
   glBindBuffer(GL_ARRAY_BUFFER, primitiveBatchIds.lineVBO);
 
   // Line : Set the BufferData to a max size with dynamic draw
-  glBufferData(GL_ARRAY_BUFFER, MAX_BUFFER * sizeof(glm::mat4), nullptr, GL_DYNAMIC_DRAW);
+  // glBufferData(GL_ARRAY_BUFFER, (MAX_BUFFER * sizeof(glm::mat4)) + (line_vertices.size() * sizeof(float)), nullptr, GL_DYNAMIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, (line_vertices.size() * sizeof(float)) + (MAX_BUFFER * sizeof(glm::mat4)), nullptr, GL_STATIC_DRAW);
 
   // Line : Update the vertex attributes
   std::size_t vec4Size = sizeof(glm::vec4);
@@ -353,7 +354,6 @@ void RenderSystem::DrawAllLines(double dt, Registry* registry, Input* input) {
   shaderResource.primitiveShaderBatch.SetUniformMatFloat4("view", quatCamera->GetView());
 
   uint32_t batchIndexCount = 0;
-  std::vector<glm::mat4> modelMatrices;
   registry->GetComponentsIter<Line, Transform>()->Each([&](Line& line, Transform& transform) {
     transform.position = line.origin;
     transform.scale = line.destination - line.origin;
@@ -370,34 +370,55 @@ void RenderSystem::DrawAllLines(double dt, Registry* registry, Input* input) {
 
     matrixModel *= rotationMatrix;
 
-    // modelMatrices[batchIndexCount] = matrixModel;
-    modelMatrices.push_back(matrixModel);
+    modelMatrices[batchIndexCount] = matrixModel;
 
     batchIndexCount++;
     // shaderResource.primitiveShaderBatch.SetUniformVecFloat3("uColor", line.color);
   });
 
-  // DevLine& devLine = registry->GetComponent<DevLine>();
-  // glBindVertexArray(devLine.VAO);
-
   PrimitiveBatchIds& primitiveBatchIds = registry->GetComponent<PrimitiveBatchIds>();
   glBindVertexArray(primitiveBatchIds.lineVAO);
+
   glBindBuffer(GL_ARRAY_BUFFER, primitiveBatchIds.lineVBO);
-  glBufferData(GL_ARRAY_BUFFER, modelMatrices.size() * sizeof(glm::mat4), &modelMatrices[0], GL_DYNAMIC_DRAW);
+  // glBufferData(GL_ARRAY_BUFFER, modelMatrices.size() * sizeof(glm::mat4), &modelMatrices[0], GL_DYNAMIC_DRAW);
+  // glBufferSubData(GL_ARRAY_BUFFER, 0, modelMatrices.size() * sizeof(glm::mat4), &modelMatrices[0]);
+
+  // uint32_t dataSize = (uint32_t)((uint8_t*)modelMatrices.size() - (uint8_t*)line_vertices);
+  glBufferSubData(GL_ARRAY_BUFFER, 0, line_vertices.size() * sizeof(float), &line_vertices[0]);
+  glBufferSubData(GL_ARRAY_BUFFER, line_vertices.size() * sizeof(float), batchIndexCount * sizeof(glm::mat4), &modelMatrices[0]);
 
   // TODO : The reason why this can't work is because VBOs the memory allocated is static ->
   // GL_STATIC_DRAW
   // https://stackoverflow.com/questions/15821969/what-is-the-proper-way-to-modify-opengl-vertex-buffer
+
   // uint32_t buffer;
   // glGenBuffers(1, &buffer);
   // glBindBuffer(GL_ARRAY_BUFFER, buffer);
-  // glBufferData(GL_ARRAY_BUFFER, batchIndexCount * sizeof(glm::mat4), &modelMatrices[0],
+  // glBufferData(GL_ARRAY_BUFFER, modelMatrices * sizeof(glm::mat4), &modelMatrices[0],
   //              GL_STATIC_DRAW);
 
-  // Bind a line vao and batch draw them
-  // Line& line = *(registry->GetComponent<Line>(sampleLineID));
-  // glBindVertexArray(line.VAO);
-  // glDrawArraysInstanced(GL_LINES, 0, 2, batchIndexCount);
+  // std::size_t vec4Size = sizeof(glm::vec4);
+  // glEnableVertexAttribArray(0);
+  // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+
+  // glEnableVertexAttribArray(1);
+  // glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
+
+  // glEnableVertexAttribArray(2);
+  // glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(1 * vec4Size));
+
+  // glEnableVertexAttribArray(3);
+  // glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size));
+
+  // glEnableVertexAttribArray(4);
+  // glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size));
+
+  // // Line : Set the matrix 4 divisors
+  // glVertexAttribDivisor(1, 1);
+  // glVertexAttribDivisor(2, 1);
+  // glVertexAttribDivisor(3, 1);
+  // glVertexAttribDivisor(4, 1);
+
   glDrawArraysInstanced(GL_LINES, 0, 2, batchIndexCount);
 
   shaderResource.primitiveShaderBatch.Unbind();

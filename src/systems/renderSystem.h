@@ -12,6 +12,7 @@
 #include "shaderResource.h"
 #include "cube.h"
 #include "sphere.h"
+#include "line.h"
 #include "devStructs.h"
 #include "quatCamera.h"
 
