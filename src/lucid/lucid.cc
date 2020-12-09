@@ -76,17 +76,17 @@ void Lucid::InitializeBulitInEntities() {
   registry->RegisterArchetype<ShaderResource>();
   registry->RegisterArchetype<SceneRender>();
   registry->RegisterArchetype<DevDebug>();
-  registry->RegisterArchetype<DevLine>();
+  registry->RegisterArchetype<PrimitiveBatchIds>();
 
   Entity shaderResourceID = registry->GetAvailableEntityId();
   Entity sceneRenderID = registry->GetAvailableEntityId();
   Entity devDebugID = registry->GetAvailableEntityId();
-  Entity devLineID = registry->GetAvailableEntityId();
+  Entity primitiveBatchID = registry->GetAvailableEntityId();
 
   registry->CreateEntity<ShaderResource>(shaderResourceID);
   registry->CreateEntity<SceneRender>(sceneRenderID);
   registry->CreateEntity<DevDebug>(devDebugID);
-  registry->CreateEntity<DevLine>(devLineID);
+  registry->CreateEntity<PrimitiveBatchIds>(primitiveBatchID);
 
   ShaderResource& shaderResource = registry->GetComponent<ShaderResource>();
   shaderResource.modelShader.CreateShader(MODEL_VERTEX_SHADER, MODEL_FRAGMENT_SHADER);
@@ -182,7 +182,7 @@ void Lucid::InitializeBuiltInSystems() {
   registry->RegisterSystem(new PongSystem());
   // Demo end
 
-  registry->RegisterSystem(new RenderSystem());
+  registry->RegisterSystem(new RenderSystem(registry));
   registry->RegisterSystem(new AudioSystem());
 }
 

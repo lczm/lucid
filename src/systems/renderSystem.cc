@@ -1,16 +1,61 @@
 #include "renderSystem.h"
 
-RenderSystem::RenderSystem() : modelMatrices(10000) {
+RenderSystem::RenderSystem(Registry* registry) : modelMatrices(1000) {
   RenderSystem::renderer = new Renderer();
   // RenderSystem::camera = new Camera();
   RenderSystem::quatCamera = new QuatCamera();
 
-  // const uint32_t MAX_MATRICES = 100000;
-  // RenderSystem::modelMatrices.reserve(MAX_MATRICES);
-
   // move back the camera a little bit.
   quatCamera->TranslateInWorld(glm::vec3(0.0f, 1.0f, 35.0f));
 
+  InitRenderBuffers();
+  InitPrimitiveBuffers(registry);
+}
+
+RenderSystem::~RenderSystem() {
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  glDeleteFramebuffers(1, &fbo);
+}
+
+void RenderSystem::Update(double dt, Registry* registry, Input* input) {
+  // Temporary gateway for mouse picking
+  HandleMousePick(dt, registry, input);
+  HandleMousePan(dt, registry, input);
+  HandleMouseScroll(dt, input);
+
+  HandleKeyboardPan(dt, input);
+  HandleKeyboardInput(dt, registry, input);
+
+  glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
+  glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  SceneRender& sceneRender = registry->GetComponent<SceneRender>();
+  sceneRender.textureID = texture;
+
+  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+
+  devDebug.projection = quatCamera->GetProjection();
+  devDebug.view = quatCamera->GetView();
+
+  // TODO : wireframe drawing should have its own shaders
+  // Draw wireframe
+  // glLineWidth(3.0f);
+  if (devDebug.drawWireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+  DrawAllLines(dt, registry, input);
+  DrawAllModels(dt, registry, input);
+  DrawAllCubes(dt, registry, input);
+  DrawAllSpheres(dt, registry, input);
+
+  if (devDebug.drawColliders) DrawAllBoundingBoxes(dt, registry, input);
+  if (devDebug.drawWireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void RenderSystem::InitRenderBuffers() {
   glGenFramebuffers(1, &fbo);
   glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
@@ -39,49 +84,48 @@ RenderSystem::RenderSystem() : modelMatrices(10000) {
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-RenderSystem::~RenderSystem() {
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
-  glDeleteFramebuffers(1, &fbo);
-}
+void RenderSystem::InitPrimitiveBuffers(Registry* registry) {
+  PrimitiveBatchIds& primitiveBatchIds = registry->GetComponent<PrimitiveBatchIds>();
 
-void RenderSystem::Update(double dt, Registry* registry, Input* input) {
-  // Temporary gateway for mouse picking
-  HandleMousePick(dt, registry, input);
-  HandleMousePan(dt, registry, input);
-  HandleMouseScroll(dt, input);
+  // Line : Generate VAO and VBO
+  glGenVertexArrays(1, &primitiveBatchIds.lineVAO);
+  glGenBuffers(1, &primitiveBatchIds.lineVBO);
 
-  HandleKeyboardPan(dt, input);
-  HandleKeyboardInput(dt, registry, input);
+  // Line : Bind VAO and VBO
+  glBindVertexArray(primitiveBatchIds.lineVAO);
+  glBindBuffer(GL_ARRAY_BUFFER, primitiveBatchIds.lineVBO);
 
-  glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+  // Line : Set the BufferData to a max size with dynamic draw
+  glBufferData(GL_ARRAY_BUFFER, MAX_BUFFER * sizeof(glm::mat4), nullptr, GL_DYNAMIC_DRAW);
 
-  glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  // Line : Update the vertex attributes
+  std::size_t vec4Size = sizeof(glm::vec4);
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
-  // ShaderResource& shaderResource = registry->GetComponent<ShaderResource>();
+  glEnableVertexAttribArray(1);
+  glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
 
-  SceneRender& sceneRender = registry->GetComponent<SceneRender>();
-  sceneRender.textureID = texture;
+  glEnableVertexAttribArray(2);
+  glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(1 * vec4Size));
 
-  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  glEnableVertexAttribArray(3);
+  glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size));
 
-  devDebug.projection = quatCamera->GetProjection();
-  devDebug.view = quatCamera->GetView();
+  glEnableVertexAttribArray(4);
+  glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size));
 
-  // TODO : wireframe drawing should have its own shaders
-  // Draw wireframe
-  // glLineWidth(3.0f);
-  if (devDebug.drawWireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  // Line : Set the matrix 4 divisors
+  glVertexAttribDivisor(1, 1);
+  glVertexAttribDivisor(2, 1);
+  glVertexAttribDivisor(3, 1);
+  glVertexAttribDivisor(4, 1);
 
-  DrawAllLines(dt, registry, input);
-  DrawAllModels(dt, registry, input);
-  DrawAllCubes(dt, registry, input);
-  DrawAllSpheres(dt, registry, input);
+  // Line : Un-Bind the Line VAO
+  glBindVertexArray(0);
 
-  if (devDebug.drawColliders) DrawAllBoundingBoxes(dt, registry, input);
-  if (devDebug.drawWireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  // TODO : Generate Sphere Buffers
+  // TODO : Generate Cube Buffers
 }
 
 void RenderSystem::HandleMousePan(double dt, Registry* registry, Input* input) {
@@ -330,47 +374,30 @@ void RenderSystem::DrawAllLines(double dt, Registry* registry, Input* input) {
     modelMatrices.push_back(matrixModel);
 
     batchIndexCount++;
-
     // shaderResource.primitiveShaderBatch.SetUniformVecFloat3("uColor", line.color);
   });
 
-  DevLine& devLine = registry->GetComponent<DevLine>();
-  glBindVertexArray(devLine.VAO);
-  // glBindBuffer(GL_ARRAY_BUFFER, devLine.VBO);
-  // glBufferData(GL_ARRAY_BUFFER, modelMatrices.size() * sizeof(glm::mat4), &modelMatrices[0],
-  //              GL_STATIC_DRAW);
+  // DevLine& devLine = registry->GetComponent<DevLine>();
+  // glBindVertexArray(devLine.VAO);
+
+  PrimitiveBatchIds& primitiveBatchIds = registry->GetComponent<PrimitiveBatchIds>();
+  glBindVertexArray(primitiveBatchIds.lineVAO);
+  glBindBuffer(GL_ARRAY_BUFFER, primitiveBatchIds.lineVBO);
+  glBufferData(GL_ARRAY_BUFFER, modelMatrices.size() * sizeof(glm::mat4), &modelMatrices[0], GL_DYNAMIC_DRAW);
 
   // TODO : The reason why this can't work is because VBOs the memory allocated is static ->
   // GL_STATIC_DRAW
   // https://stackoverflow.com/questions/15821969/what-is-the-proper-way-to-modify-opengl-vertex-buffer
-  uint32_t buffer;
-  glGenBuffers(1, &buffer);
-  glBindBuffer(GL_ARRAY_BUFFER, buffer);
-  glBufferData(GL_ARRAY_BUFFER, batchIndexCount * sizeof(glm::mat4), &modelMatrices[0],
-               GL_STATIC_DRAW);
+  // uint32_t buffer;
+  // glGenBuffers(1, &buffer);
+  // glBindBuffer(GL_ARRAY_BUFFER, buffer);
+  // glBufferData(GL_ARRAY_BUFFER, batchIndexCount * sizeof(glm::mat4), &modelMatrices[0],
+  //              GL_STATIC_DRAW);
 
   // Bind a line vao and batch draw them
   // Line& line = *(registry->GetComponent<Line>(sampleLineID));
   // glBindVertexArray(line.VAO);
   // glDrawArraysInstanced(GL_LINES, 0, 2, batchIndexCount);
-
-  std::size_t vec4Size = sizeof(glm::vec4);
-  glEnableVertexAttribArray(1);
-  glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
-
-  glEnableVertexAttribArray(2);
-  glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(1 * vec4Size));
-
-  glEnableVertexAttribArray(3);
-  glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size));
-
-  glEnableVertexAttribArray(4);
-  glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size));
-
-  glVertexAttribDivisor(1, 1);
-  glVertexAttribDivisor(2, 1);
-  glVertexAttribDivisor(3, 1);
-  glVertexAttribDivisor(4, 1);
   glDrawArraysInstanced(GL_LINES, 0, 2, batchIndexCount);
 
   shaderResource.primitiveShaderBatch.Unbind();

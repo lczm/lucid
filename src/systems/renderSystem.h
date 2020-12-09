@@ -26,26 +26,29 @@
 // Maximum amount of matrices that can be sent over at any point in time
 // any more than maximum, restart another batch
 
+const float MAX_BUFFER = 1000;
+
 class RenderSystem : public System {
  private:
   Renderer* renderer;
-  Camera* camera;
+  // Camera* camera;
   QuatCamera* quatCamera;
 
   uint32_t fbo, rbo;
   uint32_t texture;
-
-  bool setOnce = false;
 
  public:
   uint32_t batchIndexCount;
   std::vector<glm::mat4> modelMatrices;
 
  public:
-  RenderSystem();
+  RenderSystem(Registry* registry);
   ~RenderSystem();
 
   void Update(double dt, Registry* registry, Input* input);
+
+  void InitRenderBuffers();
+  void InitPrimitiveBuffers(Registry* registry);
 
   void HandleMousePan(double dt, Registry* registry, Input* input);
   void HandleKeyboardPan(double dt, Input* input);

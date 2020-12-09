@@ -14,11 +14,8 @@
 
 class Renderer {
  private:
-  // TODO : Check if this is needed, this does not seem to be needed
-  // uint32_t VAO, VBO, EBO;
-
-  uint32_t batchIndexCount = 0;
-  std::vector<glm::mat4> modelMatrices;
+  // uint32_t batchIndexCount = 0;
+  // std::vector<glm::mat4> modelMatrices;
 
  public:
   Renderer();
