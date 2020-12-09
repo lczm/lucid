@@ -113,7 +113,9 @@ void UiSystem::PresetLayout(ImGuiID dockSpaceID) {
       ImGui::DockBuilderSplitNode(dockMainID, ImGuiDir_Right, 0.2f, NULL, &dockMainID);
   ImGuiID dockBottomID =
       ImGui::DockBuilderSplitNode(dockMainID, ImGuiDir_Down, 0.3f, NULL, &dockMainID);
-  ImGuiID dockTopID = ImGui::DockBuilderSplitNode(dockMainID, ImGuiDir_Up, 0.2f, NULL, &dockMainID);
+  ImGuiID dockTopID = ImGui::DockBuilderSplitNode(dockMainID, ImGuiDir_Up, 0.05f, NULL, &dockMainID);
+  ImGuiID dockMiddleID =
+      ImGui::DockBuilderSplitNode(dockTopID, ImGuiDir_Down, 0.95f, NULL, &dockTopID);
   ImGuiID dockBottomLeftID =
       ImGui::DockBuilderSplitNode(dockLeftID, ImGuiDir_Down, 0.3f, NULL, &dockLeftID);
 
@@ -125,7 +127,7 @@ void UiSystem::PresetLayout(ImGuiID dockSpaceID) {
   ImGui::DockBuilderDockWindow("Inspector", dockRightID);
   ImGui::DockBuilderDockWindow("Services", dockRightID);
   ImGui::DockBuilderDockWindow("Assets", dockBottomID);
-  ImGui::DockBuilderDockWindow("Scene", dockTopID);
+  ImGui::DockBuilderDockWindow("Scene", dockMiddleID);
   ImGui::DockBuilderDockWindow("ToolBar", dockTopID);
   ImGui::DockBuilderDockWindow("DevDebug", dockRightID);
   ImGui::DockBuilderFinish(dockSpaceID);
@@ -405,11 +407,37 @@ void UiSystem::DrawDevDebug(double dt, Registry* registry, Input* input) {
 }
 
 void UiSystem::DrawToolBar(double dt, Registry* registry, Input* input) {
+  ImGuiWindowClass* window_class = new ImGuiWindowClass();
+  window_class->DockNodeFlagsOverrideSet = ImGuiDockNodeFlags_NoTabBar;
+  ImGui::SetNextWindowClass(window_class);
+  ImGui::Begin("ToolBar");
+  ImVec2 wSize = ImGui::GetWindowSize();
+  float buttonWidth = 60.0f;
+  float totalPadding = 16;
+
+  UpdateInputActiveWindow(input, WindowType::ToolBar);
+
+  ImGui::SameLine((wSize.x - ((buttonWidth * 3) + totalPadding)) * 0.5);
+  if (ImGui::Button("Play", ImVec2(buttonWidth, 0.0f))) {
+  
+  }
+  ImGui::SameLine();
+  if (ImGui::Button("Pause", ImVec2(buttonWidth, 0.0f))) {
+  
+  }
+  ImGui::SameLine();
+  if (ImGui::Button("Resume", ImVec2(buttonWidth, 0.0f))) {
+  
+  }
+
+  // DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  // if (devDebug.changeFocusWindow == WindowType::Animator) ImGui::SetWindowFocus();
+
+  ImGui::End();
 }
 
 void UiSystem::UpdateSceneWindow(Registry* registry, Input* input) {
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
-
 
   if (input->IsKeyDown('7')) {
     drawSceneOnly = !drawSceneOnly;
