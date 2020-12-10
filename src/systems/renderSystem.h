@@ -75,4 +75,11 @@ class RenderSystem : public System {
                                                        BoundingBox boundingBox);
 
   BoundingBox GetBoundingBox(std::vector<glm::vec4> vertices);
+
+ // TODO : Should these be in the renderer.cc ?
+ public:
+  void PushLineBuffer(glm::mat4 modelMatrix, Line line);
+  void PushSphereBuffer(glm::mat4 modelMatrix, Sphere sphere);
+  void PushCubeBuffer(glm::mat4 modelMatrix, Cube cube);
+  void PushModelBuffer(glm::mat4 modelMatrix, Model model);
 };

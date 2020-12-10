@@ -327,17 +327,13 @@ void RenderSystem::DrawAllLines(double dt, Registry* registry, Input* input) {
                                                           quatCamera->GetProjection());
   shaderResource.primitiveShaderBatch.SetUniformMatFloat4("view", quatCamera->GetView());
 
-  uint32_t batchIndexCount = 0;
+  batchIndexCount = 0;
   registry->GetComponentsIter<Line, Transform>()->Each([&](Line& line, Transform& transform) {
     transform.position = line.origin;
     transform.scale = line.destination - line.origin;
 
     auto modelMatrix = GetModelMatrix(transform);
-
-    linePrimitiveBuffer[batchIndexCount].modelMatrix = modelMatrix;
-    linePrimitiveBuffer[batchIndexCount].color = line.color;
-
-    batchIndexCount++;
+    PushLineBuffer(modelMatrix, line);
   });
 
   PrimitiveBatchIds& primitiveBatchIds = registry->GetComponent<PrimitiveBatchIds>();
@@ -488,9 +484,6 @@ std::tuple<bool, float> RenderSystem::RayBoundingBoxCollisionCheck(glm::vec3 ori
                                                                    BoundingBox boundingBox) {
   float length;
   glm::vec3 dirfrac = 1.0f / ray;
-  // dirfrac.x = 1.0f / ray.x;
-  // dirfrac.y = 1.0f / ray.y;
-  // dirfrac.z = 1.0f / ray.z;
 
   float t1 = (boundingBox.minX - origin.x) * dirfrac.x;
   float t2 = (boundingBox.maxX - origin.x) * dirfrac.x;
@@ -506,15 +499,11 @@ std::tuple<bool, float> RenderSystem::RayBoundingBoxCollisionCheck(glm::vec3 ori
 
   // AABB is behind
   if (tmax < 0) {
-    // lucid::Log("AABB is behind");
-    // return false;
     return std::tuple(false, 0.0f);
   }
 
   // Does not intersect
   if (tmin > tmax) {
-    // lucid::Log("Does not intersect");
-    // return false;
     return std::tuple(false, 0.0f);
   }
 
@@ -535,4 +524,19 @@ BoundingBox RenderSystem::GetBoundingBox(std::vector<glm::vec4> vertices) {
     bb.maxZ = glm::max(vertices[i].z, bb.maxZ);
   }
   return bb;
+}
+
+void RenderSystem::PushLineBuffer(glm::mat4 modelMatrix, Line line) {
+  linePrimitiveBuffer[batchIndexCount].modelMatrix = modelMatrix;
+  linePrimitiveBuffer[batchIndexCount].color = line.color;
+  batchIndexCount++;
+}
+
+void RenderSystem::PushSphereBuffer(glm::mat4 modelMatrix, Sphere sphere) {
+}
+
+void RenderSystem::PushCubeBuffer(glm::mat4 modelMatrix, Cube cube) {
+}
+
+void RenderSystem::PushModelBuffer(glm::mat4 modelMatrix, Model model) {
 }
