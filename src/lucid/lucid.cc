@@ -252,16 +252,6 @@ void Lucid::InitializeDemoPongEntities() {
   registry->RegisterArchetype<Sphere, Transform, RigidBody, ColliderCube>();
   registry->RegisterArchetype<PongRules>();
 
-  // This archetype is used for ray casting
-  // Don't have to register again as it is already registered once.
-  // registry->RegisterArchetype<Line, Transform>();
-
-  // Entity rayID = registry->GetAvailableEntityId();
-  // registry->CreateEntity<Line, Transform>(rayID);
-
-  // DevDebug& devDebug = registry->GetComponent<DevDebug>();
-  // devDebug.rayID = rayID;
-
   // Cube / rectangle entities
   Entity playerPaddleID = registry->GetAvailableEntityId();
   Entity aiPaddleID = registry->GetAvailableEntityId();

@@ -1,6 +1,6 @@
 #include "renderSystem.h"
 
-RenderSystem::RenderSystem(Registry* registry) : linePrimitiveBuffer(MAX_BUFFER) {
+RenderSystem::RenderSystem(Registry* registry) {
   RenderSystem::renderer = new Renderer();
   // RenderSystem::camera = new Camera();
   RenderSystem::quatCamera = new QuatCamera();
@@ -96,8 +96,9 @@ void RenderSystem::InitPrimitiveBuffers(Registry* registry) {
   glBindBuffer(GL_ARRAY_BUFFER, primitiveBatchIds.lineVBO);
 
   // Line : Set the BufferData to a max size with dynamic draw
-  // glBufferData(GL_ARRAY_BUFFER, (MAX_BUFFER * sizeof(glm::mat4)) + (line_vertices.size() * sizeof(float)), nullptr, GL_DYNAMIC_DRAW);
-  // glBufferData(GL_ARRAY_BUFFER, (line_vertices.size() * sizeof(float)) + (MAX_BUFFER * sizeof(glm::mat4)), nullptr, GL_STATIC_DRAW);
+  // glBufferData(GL_ARRAY_BUFFER, (MAX_BUFFER * sizeof(glm::mat4)) + (line_vertices.size() *
+  // sizeof(float)), nullptr, GL_DYNAMIC_DRAW); glBufferData(GL_ARRAY_BUFFER, (line_vertices.size()
+  // * sizeof(float)) + (MAX_BUFFER * sizeof(glm::mat4)), nullptr, GL_STATIC_DRAW);
   glBufferData(GL_ARRAY_BUFFER, MAX_BUFFER * sizeof(LineVertex), nullptr, GL_DYNAMIC_DRAW);
 
   // Line : Update the vertex attributes
@@ -109,16 +110,20 @@ void RenderSystem::InitPrimitiveBuffers(Registry* registry) {
   glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)), (void*)0);
 
   glEnableVertexAttribArray(1);
-  glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)), (void*)(1 * vec4Size));
+  glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)),
+                        (void*)(1 * vec4Size));
 
   glEnableVertexAttribArray(2);
-  glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)), (void*)(2 * vec4Size));
+  glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)),
+                        (void*)(2 * vec4Size));
 
   glEnableVertexAttribArray(3);
-  glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)), (void*)(3 * vec4Size));
+  glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)),
+                        (void*)(3 * vec4Size));
 
   glEnableVertexAttribArray(4);
-  glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)), (void*)(4 * vec4Size));
+  glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)),
+                        (void*)(4 * vec4Size));
 
   // Line : Set the matrix 4 divisors
   glVertexAttribDivisor(0, 1);
@@ -327,22 +332,18 @@ void RenderSystem::DrawAllLines(double dt, Registry* registry, Input* input) {
                                                           quatCamera->GetProjection());
   shaderResource.primitiveShaderBatch.SetUniformMatFloat4("view", quatCamera->GetView());
 
-  batchIndexCount = 0;
+  renderer->StartBatch();
+
   registry->GetComponentsIter<Line, Transform>()->Each([&](Line& line, Transform& transform) {
     transform.position = line.origin;
     transform.scale = line.destination - line.origin;
 
     auto modelMatrix = GetModelMatrix(transform);
-    PushLineBuffer(modelMatrix, line);
+    renderer->PushLineBuffer(modelMatrix, line);
   });
 
   PrimitiveBatchIds& primitiveBatchIds = registry->GetComponent<PrimitiveBatchIds>();
-
-  glBindVertexArray(primitiveBatchIds.lineVAO);
-  glBindBuffer(GL_ARRAY_BUFFER, primitiveBatchIds.lineVBO);
-  glBufferSubData(GL_ARRAY_BUFFER, 0, batchIndexCount * sizeof(LineVertex), &linePrimitiveBuffer[0]);
-
-  glDrawArraysInstanced(GL_LINES, 0, 2, batchIndexCount);
+  renderer->FlushBatch(primitiveBatchIds);
 
   shaderResource.primitiveShaderBatch.Unbind();
 }
@@ -408,14 +409,14 @@ void RenderSystem::DrawAllBoundingBoxes(double dt, Registry* registry, Input* in
   shaderResource.primitiveShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
   shaderResource.primitiveShader.SetUniformMatFloat4("view", quatCamera->GetView());
 
-  registry->GetComponentsIter<Transform, ColliderCube>()->Each([&](Transform& transform,
-                                                                   ColliderCube& colliderCube) {
-    auto modelMatrix = GetModelMatrix(transform);
+  registry->GetComponentsIter<Transform, ColliderCube>()->Each(
+      [&](Transform& transform, ColliderCube& colliderCube) {
+        auto modelMatrix = GetModelMatrix(transform);
 
-    shaderResource.primitiveShader.SetUniformMatFloat4("model", modelMatrix);
-    shaderResource.primitiveShader.SetUniformVecFloat3("uColor", colliderCube.color);
-    renderer->DrawBoundingBox(colliderCube, shaderResource.primitiveShader);
-  });
+        shaderResource.primitiveShader.SetUniformMatFloat4("model", modelMatrix);
+        shaderResource.primitiveShader.SetUniformVecFloat3("uColor", colliderCube.color);
+        renderer->DrawBoundingBox(colliderCube, shaderResource.primitiveShader);
+      });
 
   shaderResource.primitiveShader.Unbind();
 }
@@ -524,19 +525,4 @@ BoundingBox RenderSystem::GetBoundingBox(std::vector<glm::vec4> vertices) {
     bb.maxZ = glm::max(vertices[i].z, bb.maxZ);
   }
   return bb;
-}
-
-void RenderSystem::PushLineBuffer(glm::mat4 modelMatrix, Line line) {
-  linePrimitiveBuffer[batchIndexCount].modelMatrix = modelMatrix;
-  linePrimitiveBuffer[batchIndexCount].color = line.color;
-  batchIndexCount++;
-}
-
-void RenderSystem::PushSphereBuffer(glm::mat4 modelMatrix, Sphere sphere) {
-}
-
-void RenderSystem::PushCubeBuffer(glm::mat4 modelMatrix, Cube cube) {
-}
-
-void RenderSystem::PushModelBuffer(glm::mat4 modelMatrix, Model model) {
 }

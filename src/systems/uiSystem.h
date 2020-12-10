@@ -8,6 +8,7 @@
 #include "utils.h"
 #include "renderer.h"
 #include "windowEnum.h"
+#include "renderUtils.h"
 
 #if DEBUG
 #include "devStructs.h"

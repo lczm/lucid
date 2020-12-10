@@ -25,12 +25,6 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
-// TODO : Organize this
-// Maximum amount of matrices that can be sent over at any point in time
-// any more than maximum, restart another batch
-
-const float MAX_BUFFER = 1000;
-
 class RenderSystem : public System {
  private:
   Renderer* renderer;
@@ -39,10 +33,6 @@ class RenderSystem : public System {
 
   uint32_t fbo, rbo;
   uint32_t texture;
-
- public:
-  uint32_t batchIndexCount;
-  std::vector<LineVertex> linePrimitiveBuffer;
 
  public:
   RenderSystem(Registry* registry);
@@ -75,11 +65,4 @@ class RenderSystem : public System {
                                                        BoundingBox boundingBox);
 
   BoundingBox GetBoundingBox(std::vector<glm::vec4> vertices);
-
- // TODO : Should these be in the renderer.cc ?
- public:
-  void PushLineBuffer(glm::mat4 modelMatrix, Line line);
-  void PushSphereBuffer(glm::mat4 modelMatrix, Sphere sphere);
-  void PushCubeBuffer(glm::mat4 modelMatrix, Cube cube);
-  void PushModelBuffer(glm::mat4 modelMatrix, Model model);
 };

@@ -113,7 +113,8 @@ void UiSystem::PresetLayout(ImGuiID dockSpaceID) {
       ImGui::DockBuilderSplitNode(dockMainID, ImGuiDir_Right, 0.2f, NULL, &dockMainID);
   ImGuiID dockBottomID =
       ImGui::DockBuilderSplitNode(dockMainID, ImGuiDir_Down, 0.3f, NULL, &dockMainID);
-  ImGuiID dockTopID = ImGui::DockBuilderSplitNode(dockMainID, ImGuiDir_Up, 0.05f, NULL, &dockMainID);
+  ImGuiID dockTopID =
+      ImGui::DockBuilderSplitNode(dockMainID, ImGuiDir_Up, 0.05f, NULL, &dockMainID);
   ImGuiID dockMiddleID =
       ImGui::DockBuilderSplitNode(dockTopID, ImGuiDir_Down, 0.95f, NULL, &dockTopID);
   ImGuiID dockBottomLeftID =
@@ -257,21 +258,9 @@ void UiSystem::DrawScene(double dt, Registry* registry, Input* input) {
     Transform& transform = *(registry->GetComponent<Transform>(devDebug.activeEntity));
 
     // TODO Create a utility method to compute this
-    glm::mat4 matrixModel = glm::mat4(1.0f);
-    glm::mat4 rotationMatrix = glm::mat4(1.0f);
-
-    matrixModel = glm::translate(matrixModel, transform.position);
-    matrixModel = glm::scale(matrixModel, transform.scale);
-
-    // Rotation matrix
-    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[0], glm::vec3(1.0, 0.0, 0.0));
-    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[1], glm::vec3(0.0, 1.0, 0.0));
-    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[2], glm::vec3(0.0, 0.0, 1.0));
-
-    matrixModel *= rotationMatrix;
-
+    auto modelMatrix = GetModelMatrix(transform);
     ImGuizmo::Manipulate(glm::value_ptr(devDebug.view), glm::value_ptr(devDebug.projection),
-                         devDebug.gizmoOperation, ImGuizmo::LOCAL, glm::value_ptr(matrixModel));
+                         devDebug.gizmoOperation, ImGuizmo::LOCAL, glm::value_ptr(modelMatrix));
 
     if (ImGuizmo::IsUsing()) {
       devDebug.onGizmo = true;
@@ -283,7 +272,7 @@ void UiSystem::DrawScene(double dt, Registry* registry, Input* input) {
       glm::vec3 skew;
       glm::vec4 perspective;
 
-      glm::decompose(matrixModel, scale, rotation, position, skew, perspective);
+      glm::decompose(modelMatrix, scale, rotation, position, skew, perspective);
 
       // Tell the compiler explicitly these are not used
       (void)skew;
@@ -419,15 +408,12 @@ void UiSystem::DrawToolBar(double dt, Registry* registry, Input* input) {
 
   ImGui::SameLine((wSize.x - ((buttonWidth * 3) + totalPadding)) * 0.5);
   if (ImGui::Button("Play", ImVec2(buttonWidth, 0.0f))) {
-  
   }
   ImGui::SameLine();
   if (ImGui::Button("Pause", ImVec2(buttonWidth, 0.0f))) {
-  
   }
   ImGui::SameLine();
   if (ImGui::Button("Resume", ImVec2(buttonWidth, 0.0f))) {
-  
   }
 
   // DevDebug& devDebug = registry->GetComponent<DevDebug>();
@@ -449,7 +435,7 @@ void UiSystem::UpdateSceneWindow(Registry* registry, Input* input) {
       devDebug.leftWindowWidth = 0;
       devDebug.rightWindowHeight = 0;
       devDebug.rightWindowWidth = 0;
-	}
+    }
   }
 }
 
