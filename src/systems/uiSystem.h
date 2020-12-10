@@ -28,6 +28,7 @@ class UiSystem : public System {
  private:
   bool drawWireframe;
   bool drawSceneOnly;
+  bool test = false;
 
  public:
   UiSystem();
@@ -42,6 +43,7 @@ class UiSystem : public System {
   void DrawHierarchy(double dt, Registry* registry, Input* input);
   void DrawAssets(double dt, Registry* registry, Input* input);
   void DrawScene(double dt, Registry* registry, Input* input);
+  void DrawGameCamera(double dt, Registry* registry, Input* input);
   void DrawProject(double dt, Registry* registry, Input* input);
   void DrawConsole(double dt, Registry* registry, Input* input);
   void DrawAnimation(double dt, Registry* registry, Input* input);
@@ -50,6 +52,7 @@ class UiSystem : public System {
   void DrawServices(double dt, Registry* registry, Input* input);
   void DrawDevDebug(double dt, Registry* registry, Input* input);
   void DrawToolBar(double dt, Registry* registry, Input* input);
+  void DrawShapes(double dt, Registry* registry, Input* input);
 
   void UpdateSceneWindow(Registry* registry, Input* input);
   void UpdateGizmoType(Registry* registry, Input* input);

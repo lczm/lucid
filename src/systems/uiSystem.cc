@@ -119,17 +119,25 @@ void UiSystem::PresetLayout(ImGuiID dockSpaceID) {
   ImGuiID dockBottomLeftID =
       ImGui::DockBuilderSplitNode(dockLeftID, ImGuiDir_Down, 0.3f, NULL, &dockLeftID);
 
+  // Windows on left
   ImGui::DockBuilderDockWindow("Hierarchy", dockLeftID);
+  // Windows on bottom left
   ImGui::DockBuilderDockWindow("Project", dockBottomLeftID);
   ImGui::DockBuilderDockWindow("Console", dockBottomLeftID);
   ImGui::DockBuilderDockWindow("Animation", dockBottomLeftID);
   ImGui::DockBuilderDockWindow("Animator", dockBottomLeftID);
+  // Windows on right
   ImGui::DockBuilderDockWindow("Inspector", dockRightID);
   ImGui::DockBuilderDockWindow("Services", dockRightID);
-  ImGui::DockBuilderDockWindow("Assets", dockBottomID);
-  ImGui::DockBuilderDockWindow("Scene", dockMiddleID);
-  ImGui::DockBuilderDockWindow("ToolBar", dockTopID);
   ImGui::DockBuilderDockWindow("DevDebug", dockRightID);
+  // Windows in the middle
+  ImGui::DockBuilderDockWindow("Scene", dockMiddleID);
+  ImGui::DockBuilderDockWindow("Game Camera", dockMiddleID);
+  // Windows on the top
+  ImGui::DockBuilderDockWindow("ToolBar", dockTopID);
+  // Windows on the bottom
+  ImGui::DockBuilderDockWindow("Assets", dockBottomID);
+  ImGui::DockBuilderDockWindow("Default Assets", dockBottomID);
   ImGui::DockBuilderFinish(dockSpaceID);
 }
 
@@ -145,6 +153,8 @@ void UiSystem::InitializeImGuiWindows(double dt, Registry* registry, Input* inpu
   DrawServices(dt, registry, input);
   DrawDevDebug(dt, registry, input);
   DrawToolBar(dt, registry, input);
+  DrawShapes(dt, registry, input);
+  DrawGameCamera(dt, registry, input);
 }
 
 void UiSystem::DrawHierarchy(double dt, Registry* registry, Input* input) {
@@ -224,6 +234,96 @@ void UiSystem::DrawScene(double dt, Registry* registry, Input* input) {
   ImGui::PopStyleVar();
 
   ImGui::BeginChild("SceneRender");
+
+  UpdateInputActiveWindow(input, WindowType::Scene);
+
+  // Get the size of the current imgui window to draw in
+  ImVec2 wsize = ImGui::GetWindowSize();
+
+  SceneRender sceneRender = registry->GetComponent<SceneRender>();
+  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+
+  // if (devDebug.changeFocusWindow == WindowType::Scene) ImGui::SetWindowFocus();
+
+  devDebug.sceneWidth = wsize.x;
+  devDebug.sceneHeight = wsize.y;
+
+  // Flip V in the UV
+  ImGui::Image((ImTextureID)sceneRender.textureID, wsize, ImVec2(0, 1), ImVec2(1, 0),
+               ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
+
+  if (devDebug.activeEntity != 0) {
+    ImGuizmo::BeginFrame();
+    // ImGuizmo::EndFrame();
+
+    ImGuizmo::SetOrthographic(false);
+    ImGuizmo::SetDrawlist();
+
+    float windowWidth = static_cast<float>(ImGui::GetWindowWidth());
+    float windowHeight = static_cast<float>(ImGui::GetWindowHeight());
+
+    ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+
+    Transform& transform = *(registry->GetComponent<Transform>(devDebug.activeEntity));
+
+    // TODO Create a utility method to compute this
+    glm::mat4 matrixModel = glm::mat4(1.0f);
+    glm::mat4 rotationMatrix = glm::mat4(1.0f);
+
+    matrixModel = glm::translate(matrixModel, transform.position);
+    matrixModel = glm::scale(matrixModel, transform.scale);
+
+    // Rotation matrix
+    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[0], glm::vec3(1.0, 0.0, 0.0));
+    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[1], glm::vec3(0.0, 1.0, 0.0));
+    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[2], glm::vec3(0.0, 0.0, 1.0));
+
+    matrixModel *= rotationMatrix;
+
+    ImGuizmo::Manipulate(glm::value_ptr(devDebug.view), glm::value_ptr(devDebug.projection),
+                         devDebug.gizmoOperation, ImGuizmo::LOCAL, glm::value_ptr(matrixModel));
+
+    if (ImGuizmo::IsUsing()) {
+      devDebug.onGizmo = true;
+      // TODO : decompose the matrix model and find the transform, rotation, scale
+      glm::vec3 position, scale;
+      glm::quat rotation;
+
+      // These are not needed, but are there to fulfill the decompose parameters
+      glm::vec3 skew;
+      glm::vec4 perspective;
+
+      glm::decompose(matrixModel, scale, rotation, position, skew, perspective);
+
+      // Tell the compiler explicitly these are not used
+      (void)skew;
+      (void)perspective;
+
+      // TODO : These rotation computations can just stay as quats for simplicity and not have to
+      // be converted back into euler angles every time.
+      glm::vec3 newRotation = glm::eulerAngles(rotation);
+      glm::vec3 deltaRotation = newRotation - transform.rotation;
+
+      transform.position = position;
+      transform.rotation += deltaRotation;
+      transform.scale = scale;
+    } else {
+      devDebug.onGizmo = false;
+    }
+  }
+  ImGui::EndChild();
+
+  ImGui::End();
+}
+
+void UiSystem::DrawGameCamera(double dt, Registry* registry, Input* input) {
+  // Set no padding, as for the scene, there isn't really a need for padding
+  ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+  ImGui::Begin("Game Camera");
+  // Pop it so that it applies to the entire window here.
+  ImGui::PopStyleVar();
+
+  ImGui::BeginChild("SceneRender2");
 
   UpdateInputActiveWindow(input, WindowType::Scene);
 
@@ -403,6 +503,44 @@ void UiSystem::DrawDevDebug(double dt, Registry* registry, Input* input) {
   ImGui::Checkbox("Draw all with wireframe", &devDebug.drawWireframe);
   ImGui::Checkbox("Draw all colliders", &devDebug.drawColliders);
 
+  ImGui::End();
+}
+
+void UiSystem::DrawShapes(double dt, Registry* registry, Input* input) {
+  ImGui::Begin("Default Assets");
+  static const char* assets[3] =
+  {"Sphere", "Cube", "Camera"
+  };
+  for (int n = 0; n < IM_ARRAYSIZE(assets); n++)
+  {
+      ImGui::PushID(n);
+      if ((n % 3) != 0)
+          ImGui::SameLine();
+      ImGui::Button(assets[n], ImVec2(60, 60));
+
+      // Our buttons are both drag sources and drag targets here!
+      if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
+      {
+          // Set payload to carry the index of our item (could be anything)
+          ImGui::SetDragDropPayload("Default Assets", &n, sizeof(int));
+          ImGui::Text(assets[n], assets[n]);
+          ImGui::EndDragDropSource();
+      }
+      if (ImGui::BeginDragDropTarget())
+      {
+          if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Default Assets"))
+          {
+              IM_ASSERT(payload->DataSize == sizeof(int));
+              int payload_n = *(const int*)payload->Data;
+			  assets[n] = assets[payload_n];
+          }
+          ImGui::EndDragDropTarget();
+      }
+      ImGui::PopID();
+  }
+  if (!test) {
+    ImGui::Text("Hi");
+  }
   ImGui::End();
 }
 
