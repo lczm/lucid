@@ -3,6 +3,6 @@
 #include "glm.hpp"
 
 struct LineVertex {
-    glm::mat4 matrixModel;
+    glm::mat4 modelMatrix;
     glm::vec3 color;
 };

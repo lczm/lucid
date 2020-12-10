@@ -15,6 +15,7 @@
 #include "line.h"
 #include "devStructs.h"
 #include "quatCamera.h"
+#include "renderUtils.h"
 #include "primitiveVertex.h"
 
 #include "gtx/string_cast.hpp"
