@@ -15,6 +15,7 @@
 #include "line.h"
 #include "devStructs.h"
 #include "quatCamera.h"
+#include "primitiveVertex.h"
 
 #include "gtx/string_cast.hpp"
 
@@ -40,7 +41,7 @@ class RenderSystem : public System {
 
  public:
   uint32_t batchIndexCount;
-  std::vector<glm::mat4> modelMatrices;
+  std::vector<LineVertex> linePrimitiveBuffer;
 
  public:
   RenderSystem(Registry* registry);
