@@ -343,7 +343,7 @@ void RenderSystem::DrawAllLines(double dt, Registry* registry, Input* input) {
   });
 
   PrimitiveBatchIds& primitiveBatchIds = registry->GetComponent<PrimitiveBatchIds>();
-  renderer->FlushBatch(primitiveBatchIds);
+  renderer->FlushBatch(primitiveBatchIds, DrawType::Line);
 
   shaderResource.primitiveShaderBatch.Unbind();
 }

@@ -11,6 +11,7 @@
 #include "sphere.h"
 #include "boundingBox.h"
 #include "primitiveVertex.h"
+#include "renderUtils.h"
 #include "devStructs.h"
 
 #include "gtx/string_cast.hpp"
@@ -55,7 +56,7 @@ class Renderer {
    * together so that it is more performant.
    */
   void StartBatch();
-  void FlushBatch(PrimitiveBatchIds primitiveBatchIds);
+  void FlushBatch(PrimitiveBatchIds primitiveBatchIds, DrawType drawType);
 
  public:
   void PushLineBuffer(glm::mat4 modelMatrix, Line line);

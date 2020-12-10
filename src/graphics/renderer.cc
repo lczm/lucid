@@ -96,8 +96,18 @@ void Renderer::StartBatch() {
 }
 
 // TODO : This assumes its all lines
-void Renderer::FlushBatch(PrimitiveBatchIds primitiveBatchIds) {
-  DrawLineIndexed(primitiveBatchIds);
+void Renderer::FlushBatch(PrimitiveBatchIds primitiveBatchIds, DrawType drawType) {
+  switch (drawType) {
+    case DrawType::Line:
+      DrawLineIndexed(primitiveBatchIds);
+      break;
+    case DrawType::Sphere:
+      break;
+    case DrawType::Cube:
+      break;
+    case DrawType::Model:
+      break;
+  }
   batchIndexCount = 0;
 }
 
