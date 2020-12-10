@@ -128,34 +128,34 @@ void Lucid::InitializeBulitInEntities() {
   zLine->destination.z = MAX_WORLD_COORDINATE_LIMIT;
 
   // Draw the x-z grid lines
-  // for (int i = -100; i < 100; i++) {
-  //   Entity lineID = registry->GetAvailableEntityId();
-  //   registry->CreateEntity<Line, Transform>(lineID);
+  for (int i = -100; i < 100; i++) {
+    Entity lineID = registry->GetAvailableEntityId();
+    registry->CreateEntity<Line, Transform>(lineID);
 
-  //   Line* line = registry->GetComponent<Line>(lineID);
-  //   line->color = {0.2f, 0.2f, 0.2f};
+    Line* line = registry->GetComponent<Line>(lineID);
+    line->color = {0.2f, 0.2f, 0.2f};
 
-  //   line->origin.x = static_cast<float>(i);
-  //   line->origin.z = -MAX_WORLD_COORDINATE_LIMIT;
+    line->origin.x = static_cast<float>(i);
+    line->origin.z = -MAX_WORLD_COORDINATE_LIMIT;
 
-  //   line->destination.x = static_cast<float>(i);
-  //   line->destination.z = MAX_WORLD_COORDINATE_LIMIT;
-  // }
+    line->destination.x = static_cast<float>(i);
+    line->destination.z = MAX_WORLD_COORDINATE_LIMIT;
+  }
 
   // Draw the z-x grid lines
-  // for (int i = -100; i < 100; i++) {
-  //   Entity lineID = registry->GetAvailableEntityId();
-  //   registry->CreateEntity<Line, Transform>(lineID);
+  for (int i = -100; i < 100; i++) {
+    Entity lineID = registry->GetAvailableEntityId();
+    registry->CreateEntity<Line, Transform>(lineID);
 
-  //   Line* line = registry->GetComponent<Line>(lineID);
-  //   line->color = {0.2f, 0.2f, 0.2f};
+    Line* line = registry->GetComponent<Line>(lineID);
+    line->color = {0.2f, 0.2f, 0.2f};
 
-  //   line->origin.x = -MAX_WORLD_COORDINATE_LIMIT;
-  //   line->origin.z = static_cast<float>(i);
+    line->origin.x = -MAX_WORLD_COORDINATE_LIMIT;
+    line->origin.z = static_cast<float>(i);
 
-  //   line->destination.x = MAX_WORLD_COORDINATE_LIMIT;
-  //   line->destination.z = static_cast<float>(i);
-  // }
+    line->destination.x = MAX_WORLD_COORDINATE_LIMIT;
+    line->destination.z = static_cast<float>(i);
+  }
 }
 
 void Lucid::InitializeBuiltInSystems() {
