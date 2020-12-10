@@ -5,11 +5,6 @@
 #include "gl.h"
 #include "glm.hpp"
 
-// const std::vector<float> line_vertices = {
-//     -1.0, -1.0, -1.0,  //
-//     1.0,  1.0,  1.0,   //
-// };
-
 const std::vector<float> line_vertices = {
     0.0f, 0.0f, 0.0f,  //
     1.0f, 1.0f, 1.0f,  //
@@ -29,13 +24,4 @@ class Line {
  public:
   Line();
   ~Line();
-};
-
-class DevLine {
- public:
-  uint32_t VAO, VBO;
-
- public:
-  DevLine();
-  ~DevLine();
 };

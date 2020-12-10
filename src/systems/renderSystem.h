@@ -12,8 +12,11 @@
 #include "shaderResource.h"
 #include "cube.h"
 #include "sphere.h"
+#include "line.h"
 #include "devStructs.h"
 #include "quatCamera.h"
+#include "renderUtils.h"
+#include "primitiveVertex.h"
 
 #include "gtx/string_cast.hpp"
 
@@ -26,26 +29,29 @@
 // Maximum amount of matrices that can be sent over at any point in time
 // any more than maximum, restart another batch
 
+const float MAX_BUFFER = 1000;
+
 class RenderSystem : public System {
  private:
   Renderer* renderer;
-  Camera* camera;
+  // Camera* camera;
   QuatCamera* quatCamera;
 
   uint32_t fbo, rbo;
   uint32_t texture;
 
-  bool setOnce = false;
-
  public:
   uint32_t batchIndexCount;
-  std::vector<glm::mat4> modelMatrices;
+  std::vector<LineVertex> linePrimitiveBuffer;
 
  public:
-  RenderSystem();
+  RenderSystem(Registry* registry);
   ~RenderSystem();
 
   void Update(double dt, Registry* registry, Input* input);
+
+  void InitRenderBuffers();
+  void InitPrimitiveBuffers(Registry* registry);
 
   void HandleMousePan(double dt, Registry* registry, Input* input);
   void HandleKeyboardPan(double dt, Input* input);
@@ -69,4 +75,11 @@ class RenderSystem : public System {
                                                        BoundingBox boundingBox);
 
   BoundingBox GetBoundingBox(std::vector<glm::vec4> vertices);
+
+ // TODO : Should these be in the renderer.cc ?
+ public:
+  void PushLineBuffer(glm::mat4 modelMatrix, Line line);
+  void PushSphereBuffer(glm::mat4 modelMatrix, Sphere sphere);
+  void PushCubeBuffer(glm::mat4 modelMatrix, Cube cube);
+  void PushModelBuffer(glm::mat4 modelMatrix, Model model);
 };
