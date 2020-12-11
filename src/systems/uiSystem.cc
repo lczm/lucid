@@ -1,6 +1,7 @@
 #include "uiSystem.h"
 
-UiSystem::UiSystem() {
+UiSystem::UiSystem()
+{
   ImGuiIO& io = ImGui::GetIO();
   io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;  // Enable Docking
   io.IniFilename = NULL;                             // Disable imgui.ini
@@ -11,20 +12,23 @@ UiSystem::UiSystem() {
 
 UiSystem::~UiSystem() = default;
 
-void UiSystem::Update(double dt, Registry* registry, Input* input) {
+void UiSystem::Update(double dt, Registry* registry, Input* input)
+{
   // Update the gizmo through input keys
   UpdateGizmoType(registry, input);
 
   InitializeGUI(dt, registry, input);
 }
 
-void UiSystem::InitializeGUI(double dt, Registry* registry, Input* input) {
+void UiSystem::InitializeGUI(double dt, Registry* registry, Input* input)
+{
   ImGui_ImplOpenGL3_NewFrame();
   ImGui_ImplGlfw_NewFrame();
   ImGui::NewFrame();
 
   ImGuiIO& io = ImGui::GetIO();
-  if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable) {
+  if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
+  {
     ImGuiViewport* viewport = ImGui::GetMainViewport();
     ImGuiDockNodeFlags dockSpaceFlags = ImGuiDockNodeFlags_None;
 
@@ -48,21 +52,26 @@ void UiSystem::InitializeGUI(double dt, Registry* registry, Input* input) {
     ImGui::PopStyleVar(3);
 
     ImGuiID dockSpaceID = ImGui::GetID("DockSpace");
-    if (!ImGui::DockBuilderGetNode(dockSpaceID)) {
+    if (!ImGui::DockBuilderGetNode(dockSpaceID))
+    {
       PresetLayout(dockSpaceID);
     }
 
     ImGui::DockSpace(dockSpaceID, ImVec2(0.0f, 0.0f), dockSpaceFlags);
     ImGui::End();
 
-    if (ImGui::BeginMainMenuBar()) {
-      if (ImGui::BeginMenu("File")) {
+    if (ImGui::BeginMainMenuBar())
+    {
+      if (ImGui::BeginMenu("File"))
+      {
         ImGui::EndMenu();
       }
-      if (ImGui::BeginMenu("Edit")) {
+      if (ImGui::BeginMenu("Edit"))
+      {
         ImGui::EndMenu();
       }
-      if (ImGui::BeginMenu("Help")) {
+      if (ImGui::BeginMenu("Help"))
+      {
         ImGui::Text("WASD - Move the camera");
         ImGui::Text("Arrow Left/Right/Up/Down - Rotate Left/Right/Up/Down");
         ImGui::Text("J/L - [Demo] pong player movement");
@@ -87,9 +96,12 @@ void UiSystem::InitializeGUI(double dt, Registry* registry, Input* input) {
 
   // Check whether to draw maximized scene
   UpdateSceneWindow(registry, input);
-  if (!drawSceneOnly) {
+  if (!drawSceneOnly)
+  {
     InitializeImGuiWindows(dt, registry, input);
-  } else {
+  }
+  else
+  {
     DrawScene(dt, registry, input);
   }
 
@@ -97,7 +109,8 @@ void UiSystem::InitializeGUI(double dt, Registry* registry, Input* input) {
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-void UiSystem::PresetLayout(ImGuiID dockSpaceID) {
+void UiSystem::PresetLayout(ImGuiID dockSpaceID)
+{
   ImVec2 viewport_size = ImGui::GetMainViewport()->Size;
   ImVec2 viewport_pos = ImGui::GetMainViewport()->Pos;
   ImGui::DockBuilderRemoveNode(dockSpaceID);
@@ -134,7 +147,8 @@ void UiSystem::PresetLayout(ImGuiID dockSpaceID) {
   ImGui::DockBuilderFinish(dockSpaceID);
 }
 
-void UiSystem::InitializeImGuiWindows(double dt, Registry* registry, Input* input) {
+void UiSystem::InitializeImGuiWindows(double dt, Registry* registry, Input* input)
+{
   DrawHierarchy(dt, registry, input);
   DrawAssets(dt, registry, input);
   DrawScene(dt, registry, input);
@@ -148,7 +162,8 @@ void UiSystem::InitializeImGuiWindows(double dt, Registry* registry, Input* inpu
   DrawToolBar(dt, registry, input);
 }
 
-void UiSystem::DrawHierarchy(double dt, Registry* registry, Input* input) {
+void UiSystem::DrawHierarchy(double dt, Registry* registry, Input* input)
+{
   ImGui::Begin("Hierarchy");
 
   UpdateInputActiveWindow(input, WindowType::Hierarchy);
@@ -179,21 +194,27 @@ void UiSystem::DrawHierarchy(double dt, Registry* registry, Input* input) {
   auto* models = static_cast<ComponentVector<Model>*>(modelComponents[0]);
 
   // Draw the cubes
-  for (size_t i = 0; i < cubes->Size(); i++) {
+  for (size_t i = 0; i < cubes->Size(); i++)
+  {
     std::string modelName = "Cube : " + std::to_string(i);
-    if (ImGui::CollapsingHeader(modelName.c_str())) {
+    if (ImGui::CollapsingHeader(modelName.c_str()))
+    {
     }
   }
 
-  for (size_t i = 0; i < spheres->Size(); i++) {
+  for (size_t i = 0; i < spheres->Size(); i++)
+  {
     std::string modelName = "Sphere : " + std::to_string(i);
-    if (ImGui::CollapsingHeader(modelName.c_str())) {
+    if (ImGui::CollapsingHeader(modelName.c_str()))
+    {
     }
   }
 
-  for (size_t i = 0; i < models->Size(); i++) {
+  for (size_t i = 0; i < models->Size(); i++)
+  {
     std::string modelName = "Model : " + std::to_string(i);
-    if (ImGui::CollapsingHeader(modelName.c_str())) {
+    if (ImGui::CollapsingHeader(modelName.c_str()))
+    {
     }
   }
 
@@ -201,7 +222,8 @@ void UiSystem::DrawHierarchy(double dt, Registry* registry, Input* input) {
   ImGui::End();
 }
 
-void UiSystem::DrawAssets(double dt, Registry* registry, Input* input) {
+void UiSystem::DrawAssets(double dt, Registry* registry, Input* input)
+{
   ImGui::Begin("Assets");
   UpdateInputActiveWindow(input, WindowType::Assets);
 
@@ -217,7 +239,8 @@ void UiSystem::DrawAssets(double dt, Registry* registry, Input* input) {
   ImGui::End();
 }
 
-void UiSystem::DrawScene(double dt, Registry* registry, Input* input) {
+void UiSystem::DrawScene(double dt, Registry* registry, Input* input)
+{
   // Set no padding, as for the scene, there isn't really a need for padding
   ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
   ImGui::Begin("Scene");
@@ -243,7 +266,8 @@ void UiSystem::DrawScene(double dt, Registry* registry, Input* input) {
   ImGui::Image((ImTextureID)sceneRender.textureID, wsize, ImVec2(0, 1), ImVec2(1, 0),
                ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
 
-  if (devDebug.activeEntity != 0) {
+  if (devDebug.activeEntity != 0)
+  {
     ImGuizmo::BeginFrame();
     // ImGuizmo::EndFrame();
 
@@ -262,7 +286,8 @@ void UiSystem::DrawScene(double dt, Registry* registry, Input* input) {
     ImGuizmo::Manipulate(glm::value_ptr(devDebug.view), glm::value_ptr(devDebug.projection),
                          devDebug.gizmoOperation, ImGuizmo::LOCAL, glm::value_ptr(modelMatrix));
 
-    if (ImGuizmo::IsUsing()) {
+    if (ImGuizmo::IsUsing())
+    {
       devDebug.onGizmo = true;
       // TODO : decompose the matrix model and find the transform, rotation, scale
       glm::vec3 position, scale;
@@ -286,7 +311,9 @@ void UiSystem::DrawScene(double dt, Registry* registry, Input* input) {
       transform.position = position;
       transform.rotation += deltaRotation;
       transform.scale = scale;
-    } else {
+    }
+    else
+    {
       devDebug.onGizmo = false;
     }
   }
@@ -295,7 +322,8 @@ void UiSystem::DrawScene(double dt, Registry* registry, Input* input) {
   ImGui::End();
 }
 
-void UiSystem::DrawProject(double dt, Registry* registry, Input* input) {
+void UiSystem::DrawProject(double dt, Registry* registry, Input* input)
+{
   ImGui::Begin("Project");
 
   UpdateInputActiveWindow(input, WindowType::Project);
@@ -307,7 +335,8 @@ void UiSystem::DrawProject(double dt, Registry* registry, Input* input) {
   ImGui::End();
 }
 
-void UiSystem::DrawConsole(double dt, Registry* registry, Input* input) {
+void UiSystem::DrawConsole(double dt, Registry* registry, Input* input)
+{
   ImGui::Begin("Console");
 
   UpdateInputActiveWindow(input, WindowType::Console);
@@ -319,7 +348,8 @@ void UiSystem::DrawConsole(double dt, Registry* registry, Input* input) {
   ImGui::End();
 }
 
-void UiSystem::DrawAnimation(double dt, Registry* registry, Input* input) {
+void UiSystem::DrawAnimation(double dt, Registry* registry, Input* input)
+{
   ImGui::Begin("Animation");
 
   UpdateInputActiveWindow(input, WindowType::Animation);
@@ -331,7 +361,8 @@ void UiSystem::DrawAnimation(double dt, Registry* registry, Input* input) {
   ImGui::End();
 }
 
-void UiSystem::DrawAnimator(double dt, Registry* registry, Input* input) {
+void UiSystem::DrawAnimator(double dt, Registry* registry, Input* input)
+{
   ImGui::Begin("Animator");
 
   UpdateInputActiveWindow(input, WindowType::Animator);
@@ -343,7 +374,8 @@ void UiSystem::DrawAnimator(double dt, Registry* registry, Input* input) {
   ImGui::End();
 }
 
-void UiSystem::DrawInspector(double dt, Registry* registry, Input* input) {
+void UiSystem::DrawInspector(double dt, Registry* registry, Input* input)
+{
   ImGui::Begin("Inspector");
 
   UpdateInputActiveWindow(input, WindowType::Inspector);
@@ -351,15 +383,19 @@ void UiSystem::DrawInspector(double dt, Registry* registry, Input* input) {
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
   // if (devDebug.changeFocusWindow == WindowType::Inspector) ImGui::SetWindowFocus();
 
-  if (devDebug.activeEntity == 0) {
+  if (devDebug.activeEntity == 0)
+  {
     ImGui::End();
     return;
   }
 
-  if (registry->EntityHasComponent<Cube>(devDebug.activeEntity)) {
+  if (registry->EntityHasComponent<Cube>(devDebug.activeEntity))
+  {
     Cube* cube = registry->GetComponent<Cube>(devDebug.activeEntity);
     ImGui::ColorEdit3("Color", &(cube->color.x));
-  } else if (registry->EntityHasComponent<Sphere>(devDebug.activeEntity)) {
+  }
+  else if (registry->EntityHasComponent<Sphere>(devDebug.activeEntity))
+  {
     Sphere* sphere = registry->GetComponent<Sphere>(devDebug.activeEntity);
     ImGui::ColorEdit3("Color", &(sphere->color.x));
   }
@@ -367,7 +403,8 @@ void UiSystem::DrawInspector(double dt, Registry* registry, Input* input) {
   ImGui::End();
 }
 
-void UiSystem::DrawServices(double dt, Registry* registry, Input* input) {
+void UiSystem::DrawServices(double dt, Registry* registry, Input* input)
+{
   ImGui::Begin("Services");
 
   UpdateInputActiveWindow(input, WindowType::Services);
@@ -379,7 +416,8 @@ void UiSystem::DrawServices(double dt, Registry* registry, Input* input) {
   ImGui::End();
 }
 
-void UiSystem::DrawDevDebug(double dt, Registry* registry, Input* input) {
+void UiSystem::DrawDevDebug(double dt, Registry* registry, Input* input)
+{
   ImGui::Begin("DevDebug");
 
   UpdateInputActiveWindow(input, WindowType::DevDebug);
@@ -395,7 +433,8 @@ void UiSystem::DrawDevDebug(double dt, Registry* registry, Input* input) {
   ImGui::End();
 }
 
-void UiSystem::DrawToolBar(double dt, Registry* registry, Input* input) {
+void UiSystem::DrawToolBar(double dt, Registry* registry, Input* input)
+{
   ImGuiWindowClass* window_class = new ImGuiWindowClass();
   window_class->DockNodeFlagsOverrideSet = ImGuiDockNodeFlags_NoTabBar;
   ImGui::SetNextWindowClass(window_class);
@@ -407,13 +446,16 @@ void UiSystem::DrawToolBar(double dt, Registry* registry, Input* input) {
   UpdateInputActiveWindow(input, WindowType::ToolBar);
 
   ImGui::SameLine((wSize.x - ((buttonWidth * 3) + totalPadding)) * 0.5);
-  if (ImGui::Button("Play", ImVec2(buttonWidth, 0.0f))) {
+  if (ImGui::Button("Play", ImVec2(buttonWidth, 0.0f)))
+  {
   }
   ImGui::SameLine();
-  if (ImGui::Button("Pause", ImVec2(buttonWidth, 0.0f))) {
+  if (ImGui::Button("Pause", ImVec2(buttonWidth, 0.0f)))
+  {
   }
   ImGui::SameLine();
-  if (ImGui::Button("Resume", ImVec2(buttonWidth, 0.0f))) {
+  if (ImGui::Button("Resume", ImVec2(buttonWidth, 0.0f)))
+  {
   }
 
   // DevDebug& devDebug = registry->GetComponent<DevDebug>();
@@ -422,13 +464,16 @@ void UiSystem::DrawToolBar(double dt, Registry* registry, Input* input) {
   ImGui::End();
 }
 
-void UiSystem::UpdateSceneWindow(Registry* registry, Input* input) {
+void UiSystem::UpdateSceneWindow(Registry* registry, Input* input)
+{
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
 
-  if (input->IsKeyDown('7')) {
+  if (input->IsKeyDown('7'))
+  {
     drawSceneOnly = !drawSceneOnly;
     input->SetKeyOff('7');
-    if (drawSceneOnly) {
+    if (drawSceneOnly)
+    {
       devDebug.bottomWindowHeight = 0;
       devDebug.bottomWindowWidth = 0;
       devDebug.leftWindowHeight = 0;
@@ -439,7 +484,8 @@ void UiSystem::UpdateSceneWindow(Registry* registry, Input* input) {
   }
 }
 
-void UiSystem::UpdateGizmoType(Registry* registry, Input* input) {
+void UiSystem::UpdateGizmoType(Registry* registry, Input* input)
+{
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
 
   if (input->IsKeyDown('1'))
@@ -450,8 +496,10 @@ void UiSystem::UpdateGizmoType(Registry* registry, Input* input) {
     devDebug.gizmoOperation = ImGuizmo::OPERATION::SCALE;
 }
 
-void UiSystem::UpdateInputActiveWindow(Input* input, WindowType windowType) {
-  if (ImGui::IsWindowFocused() && input->activeWindow != windowType) {
+void UiSystem::UpdateInputActiveWindow(Input* input, WindowType windowType)
+{
+  if (ImGui::IsWindowFocused() && input->activeWindow != windowType)
+  {
     input->activeWindow = windowType;
   }
 }

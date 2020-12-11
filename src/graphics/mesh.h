@@ -6,19 +6,22 @@
 #include "gl.h"
 #include "glm.hpp"
 
-struct MeshVertex {
+struct MeshVertex
+{
   glm::vec3 position;
   glm::vec3 normal;
   glm::vec2 texCoords;
 };
 
-struct MeshTexture {
+struct MeshTexture
+{
   uint32_t id;
   std::string type;
   std::string path;
 };
 
-class Mesh {
+class Mesh
+{
  public:
   uint32_t VAO, VBO, EBO;
   std::vector<MeshVertex> vertices;

@@ -1,12 +1,15 @@
 #include "physicsSystem.h"
 
-PhysicsSystem::PhysicsSystem() {
+PhysicsSystem::PhysicsSystem()
+{
 }
 
-PhysicsSystem::~PhysicsSystem() {
+PhysicsSystem::~PhysicsSystem()
+{
 }
 
-void PhysicsSystem::Update(double dt, Registry* registry, Input* input) {
+void PhysicsSystem::Update(double dt, Registry* registry, Input* input)
+{
   UpdateAllRigidbodies(dt, registry, input);
 
   std::vector<void*> components = registry->GetComponents<Transform, RigidBody, ColliderCube>();
@@ -16,14 +19,17 @@ void PhysicsSystem::Update(double dt, Registry* registry, Input* input) {
   auto* colliderCubeComponents = static_cast<ComponentVector<ColliderCube>*>(components[2]);
 
   // If there are less than two components, can ignore checking for collisions
-  if (colliderCubeComponents->Size() < 2) {
+  if (colliderCubeComponents->Size() < 2)
+  {
     return;
   }
 
   std::unordered_map<uint32_t, bool> collidedCache;
 
-  for (size_t i = 0; i < colliderCubeComponents->Size(); i++) {
-    for (size_t j = 0; j < colliderCubeComponents->Size(); j++) {
+  for (size_t i = 0; i < colliderCubeComponents->Size(); i++)
+  {
+    for (size_t j = 0; j < colliderCubeComponents->Size(); j++)
+    {
       // TODO can cache results,
       // i.e. if A collides with B, there is no need to check if
       // B collides with A
@@ -37,7 +43,8 @@ void PhysicsSystem::Update(double dt, Registry* registry, Input* input) {
 
       if (collidedCache[i] || collidedCache[j]) continue;
 
-      if (CheckCollision(collider1, transform1, collider2, transform2)) {
+      if (CheckCollision(collider1, transform1, collider2, transform2))
+      {
         collider1.color = glm::vec3(1.0f, 0.0f, 0.0f);
         collider2.color = glm::vec3(1.0f, 0.0f, 0.0f);
 
@@ -45,7 +52,9 @@ void PhysicsSystem::Update(double dt, Registry* registry, Input* input) {
         collidedCache[j] = true;
         collider1.collided = true;
         collider2.collided = true;
-      } else {
+      }
+      else
+      {
         collider1.color = glm::vec3(1.0f, 1.0f, 1.0f);
         collider2.color = glm::vec3(1.0f, 1.0f, 1.0f);
 
@@ -58,7 +67,8 @@ void PhysicsSystem::Update(double dt, Registry* registry, Input* input) {
   }
 }
 
-void PhysicsSystem::UpdateAllRigidbodies(double dt, Registry* registry, Input* input) {
+void PhysicsSystem::UpdateAllRigidbodies(double dt, Registry* registry, Input* input)
+{
   registry->GetComponentsIter<Transform, RigidBody>()->Each(
       [&](Transform& transform, RigidBody& rigidBody) {
         transform.position += rigidBody.velocity;
@@ -66,7 +76,8 @@ void PhysicsSystem::UpdateAllRigidbodies(double dt, Registry* registry, Input* i
 }
 
 bool PhysicsSystem::CheckCollision(ColliderCube colliderCube, Transform& transform,
-                                   ColliderCube colliderCubeOther, Transform& transformOther) {
+                                   ColliderCube colliderCubeOther, Transform& transformOther)
+{
   // Assume that it is a box/cube...
   // Get both the model transforms
   glm::mat4 boundingBoxModelMatrix = ApplyTransformation(transform);
@@ -75,7 +86,8 @@ bool PhysicsSystem::CheckCollision(ColliderCube colliderCube, Transform& transfo
   std::vector<glm::vec4> bbVertices;
   std::vector<glm::vec4> bbVerticesOther;
 
-  for (size_t i = 0; i < boundingBoxCubeVertices.size(); i += 3) {
+  for (size_t i = 0; i < boundingBoxCubeVertices.size(); i += 3)
+  {
     bbVertices.push_back(boundingBoxModelMatrix * glm::vec4(boundingBoxCubeVertices[i],
                                                             boundingBoxCubeVertices[i + 1],
                                                             boundingBoxCubeVertices[i + 2], 1.0f));
@@ -89,7 +101,8 @@ bool PhysicsSystem::CheckCollision(ColliderCube colliderCube, Transform& transfo
   BoundingBox bb;
   BoundingBox bbOther;
 
-  for (size_t i = 0; i < bbVertices.size(); i++) {
+  for (size_t i = 0; i < bbVertices.size(); i++)
+  {
     // Min-Max x-values
     bb.minX = glm::min(bbVertices[i].x, bb.minX);
     bb.maxX = glm::max(bbVertices[i].x, bb.maxX);
@@ -109,12 +122,14 @@ bool PhysicsSystem::CheckCollision(ColliderCube colliderCube, Transform& transfo
     bbOther.maxZ = glm::max(bbVerticesOther[i].z, bbOther.maxZ);
   }
 
-  if (CheckCollisionBetweenBoundingBox(bb, bbOther)) {
+  if (CheckCollisionBetweenBoundingBox(bb, bbOther))
+  {
     return true;
   }
 }
 
-glm::mat4 PhysicsSystem::ApplyTransformation(Transform& transform) {
+glm::mat4 PhysicsSystem::ApplyTransformation(Transform& transform)
+{
   glm::mat4 matrixModel = glm::mat4(1.0f);
   glm::mat4 rotationMatrix = glm::mat4(1.0f);
 
@@ -131,7 +146,8 @@ glm::mat4 PhysicsSystem::ApplyTransformation(Transform& transform) {
 }
 
 bool PhysicsSystem::CheckCollisionBetweenBoundingBox(const BoundingBox boundingBox,
-                                                     const BoundingBox boundingBoxOther) {
+                                                     const BoundingBox boundingBoxOther)
+{
   return (boundingBox.minX <= boundingBoxOther.maxX && boundingBox.maxX >= boundingBoxOther.minX) &&
          (boundingBox.minY <= boundingBoxOther.maxY && boundingBox.maxY >= boundingBoxOther.minY) &&
          (boundingBox.minZ <= boundingBoxOther.maxZ && boundingBox.maxZ >= boundingBoxOther.minZ);

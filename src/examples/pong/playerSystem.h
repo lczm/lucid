@@ -5,7 +5,8 @@
 #include "pong.h"
 #include "gtx/string_cast.hpp"
 
-class PlayerSystem : public System {
+class PlayerSystem : public System
+{
  private:
  public:
   PlayerSystem();

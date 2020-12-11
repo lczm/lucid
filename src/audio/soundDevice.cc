@@ -2,7 +2,8 @@
 
 static SoundDevice* _instance = nullptr;
 
-SoundDevice::SoundDevice() {
+SoundDevice::SoundDevice()
+{
   p_ALCDevice = alcOpenDevice(nullptr);  // nullptr = get default device
   if (!p_ALCDevice) throw("Failed to get sound device");
 
@@ -21,43 +22,52 @@ SoundDevice::SoundDevice() {
   printf("Opened \"%s\"\n", name);
 }
 
-SoundDevice::~SoundDevice() {
+SoundDevice::~SoundDevice()
+{
   alcMakeContextCurrent(nullptr);
   alcDestroyContext(p_ALCContext);
   alcCloseDevice(p_ALCDevice);
 }
 
-SoundDevice* SoundDevice::Get() {
+SoundDevice* SoundDevice::Get()
+{
   Init();
   return _instance;
 }
 
-void SoundDevice::Init() {
-  if (_instance == nullptr) {
+void SoundDevice::Init()
+{
+  if (_instance == nullptr)
+  {
     _instance = new SoundDevice();
   }
 }
 
-void SoundDevice::GetLocation(float& x, float& y, float& z) {
+void SoundDevice::GetLocation(float& x, float& y, float& z)
+{
   alGetListener3f(AL_POSITION, &x, &y, &z);
 }
 
-void SoundDevice::GetOrientation(float& ori) {
+void SoundDevice::GetOrientation(float& ori)
+{
   alGetListenerfv(AL_ORIENTATION, &ori);
 }
 
-float SoundDevice::GetGain() {
+float SoundDevice::GetGain()
+{
   float curr_gain;
   alGetListenerf(AL_GAIN, &curr_gain);
   return curr_gain;
 }
 
-void SoundDevice::SetLocation(const float& x, const float& y, const float& z) {
+void SoundDevice::SetLocation(const float& x, const float& y, const float& z)
+{
   alListener3f(AL_POSITION, x, y, z);
 }
 
 void SoundDevice::SetOrientation(const float& atx, const float& aty, const float& atz,
-                                 const float& upx, const float& upy, const float& upz) {
+                                 const float& upx, const float& upy, const float& upz)
+{
   std::vector<float> orientation;
   orientation.push_back(atx);
   orientation.push_back(aty);
@@ -68,7 +78,8 @@ void SoundDevice::SetOrientation(const float& atx, const float& aty, const float
   alListenerfv(AL_ORIENTATION, orientation.data());
 }
 
-void SoundDevice::SetGain(const float& val) {
+void SoundDevice::SetGain(const float& val)
+{
   // clamp between 0 and 5
   float newVol = val;
   if (newVol < 0.f)
@@ -85,7 +96,8 @@ void SoundDevice::SetGain(const float& val) {
 ///#define AL_LINEAR_DISTANCE_CLAMPED               0xD004
 ///#define AL_EXPONENT_DISTANCE                     0xD005
 ///#define AL_EXPONENT_DISTANCE_CLAMPED             0xD006
-void SoundDevice::SetAttunation(int key) {
+void SoundDevice::SetAttunation(int key)
+{
   if (key < 0xD001 || key > 0xD006) throw("bad attunation key");
 
   alListeneri(AL_DISTANCE_MODEL, key);

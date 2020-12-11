@@ -7,10 +7,15 @@
 #include "model.h"
 #include "gtx/string_cast.hpp"
 
-struct AxisAlignedBoundingBox {};
-struct OrientedBoundingBox {};
+struct AxisAlignedBoundingBox
+{
+};
+struct OrientedBoundingBox
+{
+};
 
-class PhysicsSystem : public System {
+class PhysicsSystem : public System
+{
  private:
  public:
   PhysicsSystem();

@@ -1,12 +1,15 @@
 #include "playerSystem.h"
 
-PlayerSystem::PlayerSystem() {
+PlayerSystem::PlayerSystem()
+{
 }
 
-PlayerSystem::~PlayerSystem() {
+PlayerSystem::~PlayerSystem()
+{
 }
 
-void PlayerSystem::Update(double dt, Registry* registry, Input* input) {
+void PlayerSystem::Update(double dt, Registry* registry, Input* input)
+{
   PongRules& pongRules = registry->GetComponent<PongRules>();
   RigidBody* playerRigidBody = registry->GetComponent<RigidBody>(pongRules.playerPaddleID);
 

@@ -1,6 +1,7 @@
 #include "lucid.h"
 
-Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window) {
+Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window)
+{
   Lucid::registry = registry;
   Lucid::input = input;
   Lucid::window = window;
@@ -42,13 +43,15 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window) {
   InitializeDemoPongSystems();
 }
 
-Lucid::~Lucid() {
+Lucid::~Lucid()
+{
   ImGui_ImplOpenGL3_Shutdown();
   ImGui_ImplGlfw_Shutdown();
   ImGui::DestroyContext();
 };
 
-void Lucid::Update() {
+void Lucid::Update()
+{
   auto now = std::chrono::high_resolution_clock::now();
   std::chrono::duration<double> elapsed = now - timer;
   dt = elapsed.count();
@@ -58,7 +61,8 @@ void Lucid::Update() {
   frameCount++;
 
   // If it has been a second
-  if (secondDt >= 1.0f) {
+  if (secondDt >= 1.0f)
+  {
     // Update the internal fps counter before resetting it back to 0
     DevDebug& devDebug = registry->GetComponent<DevDebug>();
     devDebug.fps = frameCount;
@@ -70,7 +74,8 @@ void Lucid::Update() {
   registry->UpdateSystems(dt, input);
 }
 
-void Lucid::InitializeBulitInEntities() {
+void Lucid::InitializeBulitInEntities()
+{
   // Builtin usage, not for the user
   // Singletons single struct usage
   registry->RegisterArchetype<ShaderResource>();
@@ -128,7 +133,8 @@ void Lucid::InitializeBulitInEntities() {
   zLine->destination.z = MAX_WORLD_COORDINATE_LIMIT;
 
   // Draw the x-z grid lines
-  for (int i = -100; i < 100; i++) {
+  for (int i = -100; i < 100; i++)
+  {
     Entity lineID = registry->GetAvailableEntityId();
     registry->CreateEntity<Line, Transform>(lineID);
 
@@ -143,7 +149,8 @@ void Lucid::InitializeBulitInEntities() {
   }
 
   // Draw the z-x grid lines
-  for (int i = -100; i < 100; i++) {
+  for (int i = -100; i < 100; i++)
+  {
     Entity lineID = registry->GetAvailableEntityId();
     registry->CreateEntity<Line, Transform>(lineID);
 
@@ -158,7 +165,8 @@ void Lucid::InitializeBulitInEntities() {
   }
 }
 
-void Lucid::InitializeBuiltInSystems() {
+void Lucid::InitializeBuiltInSystems()
+{
   // LucidSystem needs to be first, as this will be what 'calls' the other systems.
   registry->RegisterSystem(new LucidSystem());
 
@@ -186,7 +194,8 @@ void Lucid::InitializeBuiltInSystems() {
   registry->RegisterSystem(new AudioSystem());
 }
 
-void Lucid::InitializeEntities() {
+void Lucid::InitializeEntities()
+{
   registry->RegisterArchetype<Model, Transform>();
   registry->RegisterArchetype<Cube, Transform>();
   registry->RegisterArchetype<Sphere, Transform>();
@@ -242,10 +251,12 @@ void Lucid::InitializeEntities() {
                                                 });
 }
 
-void Lucid::InitializeSystems() {
+void Lucid::InitializeSystems()
+{
 }
 
-void Lucid::InitializeDemoPongEntities() {
+void Lucid::InitializeDemoPongEntities()
+{
   // Register the necessary archetypes
   // Note that this should be using `ColliderCube` but it is hardcoded like this for now.
   registry->RegisterArchetype<Cube, Transform, RigidBody, ColliderCube>();
@@ -316,49 +327,63 @@ void Lucid::InitializeDemoPongEntities() {
   // Audio Stuff End
 }
 
-void Lucid::InitializeDemoPongSystems() {
+void Lucid::InitializeDemoPongSystems()
+{
 }
 
-void Lucid::SetMouseCallback(std::function<void(GLFWwindow*, int, int, int)> fn) {
+void Lucid::SetMouseCallback(std::function<void(GLFWwindow*, int, int, int)> fn)
+{
   mouseCallback = fn;
 }
 
-void Lucid::SetKeyCallback(std::function<void(GLFWwindow*, int, int, int, int)> fn) {
+void Lucid::SetKeyCallback(std::function<void(GLFWwindow*, int, int, int, int)> fn)
+{
   keyCallback = fn;
 }
 
-void Lucid::SetScrollCallback(std::function<void(GLFWwindow*, double, double)> fn) {
+void Lucid::SetScrollCallback(std::function<void(GLFWwindow*, double, double)> fn)
+{
   scrollCallback = fn;
 }
 
-void Lucid::HandleKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+void Lucid::HandleKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
   Lucid* lucid = (Lucid*)glfwGetWindowUserPointer(window);
 
   // Dont handle unknown keys
   if (key == GLFW_KEY_UNKNOWN) return;
 
-  if (action == GLFW_PRESS || action == GLFW_REPEAT) {
+  if (action == GLFW_PRESS || action == GLFW_REPEAT)
+  {
     lucid->input->keys[key] = true;
-  } else if (action == GLFW_RELEASE) {
+  }
+  else if (action == GLFW_RELEASE)
+  {
     lucid->input->keys[key] = false;
   }
 }
 
-void Lucid::HandleMouseCallback(GLFWwindow* window, int button, int action, int mods) {
+void Lucid::HandleMouseCallback(GLFWwindow* window, int button, int action, int mods)
+{
   Lucid* lucid = (Lucid*)glfwGetWindowUserPointer(window);
 
-  if (action == GLFW_PRESS) {
-    if (lucid->input->mouseKeys[button] == false) {
+  if (action == GLFW_PRESS)
+  {
+    if (lucid->input->mouseKeys[button] == false)
+    {
       lucid->input->mouseKeys[button] = true;
       lucid->input->lastX = lucid->input->GetMouseX();
       lucid->input->lastY = lucid->input->GetMouseY();
     }
-  } else if (action == GLFW_RELEASE) {
+  }
+  else if (action == GLFW_RELEASE)
+  {
     lucid->input->mouseKeys[button] = false;
   }
 }
 
-void Lucid::HandleScrollCallback(GLFWwindow* window, double xOffset, double yOffset) {
+void Lucid::HandleScrollCallback(GLFWwindow* window, double xOffset, double yOffset)
+{
   /*
    * Only have to care about the yOffset
    *  1 : scrolled up
@@ -368,14 +393,17 @@ void Lucid::HandleScrollCallback(GLFWwindow* window, double xOffset, double yOff
   lucid->input->scroll = yOffset;
 }
 
-void Lucid::MouseCallback(GLFWwindow* window, int button, int action, int mods) {
+void Lucid::MouseCallback(GLFWwindow* window, int button, int action, int mods)
+{
   Lucid* lucid = (Lucid*)glfwGetWindowUserPointer(window);
   lucid->mouseCallback(window, button, action, mods);
 }
 
-void Lucid::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+void Lucid::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
   // Note that this is basically just a debugging function
-  if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+  if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+  {
     glfwSetWindowShouldClose(window, GLFW_TRUE);
   }
 
@@ -383,7 +411,8 @@ void Lucid::KeyCallback(GLFWwindow* window, int key, int scancode, int action, i
   lucid->keyCallback(window, key, scancode, action, mods);
 }
 
-void Lucid::ScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
+void Lucid::ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
+{
   Lucid* lucid = (Lucid*)glfwGetWindowUserPointer(window);
   lucid->HandleScrollCallback(window, xoffset, yoffset);
 }

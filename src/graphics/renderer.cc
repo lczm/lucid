@@ -4,12 +4,14 @@ Renderer::Renderer() : linePrimitiveBuffer(MAX_BUFFER){};
 
 Renderer::~Renderer() = default;
 
-void Renderer::DrawMesh(Mesh& mesh, Shader& shader) {
+void Renderer::DrawMesh(Mesh& mesh, Shader& shader)
+{
   shader.Bind();
   uint32_t diffuseNr = 1;
   uint32_t specularNr = 1;
 
-  for (size_t i = 0; i < mesh.textures.size(); i++) {
+  for (size_t i = 0; i < mesh.textures.size(); i++)
+  {
     // Activate texture unit before binding
     glActiveTexture(GL_TEXTURE0 + i);
 
@@ -35,36 +37,43 @@ void Renderer::DrawMesh(Mesh& mesh, Shader& shader) {
   glActiveTexture(GL_TEXTURE0);
 }
 
-void Renderer::DrawModel(Model& model, Shader& shader) {
-  for (Mesh& mesh : model.GetMeshes()) {
+void Renderer::DrawModel(Model& model, Shader& shader)
+{
+  for (Mesh& mesh : model.GetMeshes())
+  {
     DrawMesh(mesh, shader);
   }
 }
 
-void Renderer::DrawCube(Cube& cube, Shader& shader) {
+void Renderer::DrawCube(Cube& cube, Shader& shader)
+{
   glBindVertexArray(cube.VAO);
   // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cube.EBO);
   glDrawElements(GL_TRIANGLES, cubeIndices.size(), GL_UNSIGNED_INT, 0);
   glBindVertexArray(0);
 }
 
-void Renderer::DrawSphere(Sphere& sphere, Shader& shader) {
+void Renderer::DrawSphere(Sphere& sphere, Shader& shader)
+{
   glBindVertexArray(sphere.VAO);
   // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sphere.EBO);
   glDrawElements(GL_TRIANGLES, sphere.indices.size(), GL_UNSIGNED_INT, 0);
   glBindVertexArray(0);
 }
 
-void Renderer::DrawLine(Line& line, Shader& shader) {
+void Renderer::DrawLine(Line& line, Shader& shader)
+{
   glBindVertexArray(line.VAO);
   glDrawArrays(GL_LINES, 0, 2);
   glBindVertexArray(0);
 }
 
-void Renderer::DrawLine(glm::vec3 origin, glm::vec3 end, glm::vec3 color) {
+void Renderer::DrawLine(glm::vec3 origin, glm::vec3 end, glm::vec3 color)
+{
 }
 
-void Renderer::DrawLineIndexed(PrimitiveBatchIds primitiveBatchIds) {
+void Renderer::DrawLineIndexed(PrimitiveBatchIds primitiveBatchIds)
+{
   glBindVertexArray(primitiveBatchIds.lineVAO);
   glBindBuffer(GL_ARRAY_BUFFER, primitiveBatchIds.lineVBO);
 
@@ -76,13 +85,16 @@ void Renderer::DrawLineIndexed(PrimitiveBatchIds primitiveBatchIds) {
   glBindVertexArray(0);
 }
 
-void Renderer::DrawBoundingBox(Model& model, Shader& shader) {
+void Renderer::DrawBoundingBox(Model& model, Shader& shader)
+{
 }
 
-void Renderer::DrawBoundingBox(Sphere& sphere, Shader& shader) {
+void Renderer::DrawBoundingBox(Sphere& sphere, Shader& shader)
+{
 }
 
-void Renderer::DrawBoundingBox(ColliderCube colliderCube, Shader& shader) {
+void Renderer::DrawBoundingBox(ColliderCube colliderCube, Shader& shader)
+{
   glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
   glBindVertexArray(colliderCube.VAO);
   glDrawElements(GL_TRIANGLES, boundingBoxCubeIndices.size(), GL_UNSIGNED_INT, 0);
@@ -90,14 +102,17 @@ void Renderer::DrawBoundingBox(ColliderCube colliderCube, Shader& shader) {
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-void Renderer::StartBatch() {
+void Renderer::StartBatch()
+{
   // Reset the batch counter
   batchIndexCount = 0;
 }
 
 // TODO : This assumes its all lines
-void Renderer::FlushBatch(PrimitiveBatchIds primitiveBatchIds, DrawType drawType) {
-  switch (drawType) {
+void Renderer::FlushBatch(PrimitiveBatchIds primitiveBatchIds, DrawType drawType)
+{
+  switch (drawType)
+  {
     case DrawType::Line:
       DrawLineIndexed(primitiveBatchIds);
       break;
@@ -111,7 +126,8 @@ void Renderer::FlushBatch(PrimitiveBatchIds primitiveBatchIds, DrawType drawType
   batchIndexCount = 0;
 }
 
-void Renderer::PushLineBuffer(glm::mat4 modelMatrix, Line line) {
+void Renderer::PushLineBuffer(glm::mat4 modelMatrix, Line line)
+{
   linePrimitiveBuffer[batchIndexCount].modelMatrix = modelMatrix;
   linePrimitiveBuffer[batchIndexCount].color = line.color;
   batchIndexCount++;

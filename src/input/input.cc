@@ -1,17 +1,21 @@
 #include "input.h"
 
 // Mostly used for mock / tests
-Input::Input() {
+Input::Input()
+{
 }
 
-Input::Input(GLFWwindow* window) {
+Input::Input(GLFWwindow* window)
+{
   Input::window = window;
 
-  for (bool& key : keys) {
+  for (bool& key : keys)
+  {
     key = false;
   }
 
-  for (bool& mouseKey : mouseKeys) {
+  for (bool& mouseKey : mouseKeys)
+  {
     mouseKey = false;
   }
 
@@ -19,14 +23,17 @@ Input::Input(GLFWwindow* window) {
   activeWindow = WindowType::Scene;
 }
 
-Input::~Input() {
+Input::~Input()
+{
 }
 
-double Input::GetMouseX() {
+double Input::GetMouseX()
+{
   glfwGetCursorPos(window, &x, &y);
 
 #if DEBUG
-  if (activeWindow == WindowType::Scene) {
+  if (activeWindow == WindowType::Scene)
+  {
     // When it is defined that it is in 'DEBUG' mode,
     // the coordinates needs to be offseted
     return x;
@@ -40,11 +47,13 @@ double Input::GetMouseX() {
   return x;
 }
 
-double Input::GetMouseY() {
+double Input::GetMouseY()
+{
   glfwGetCursorPos(window, &x, &y);
 
 #if DEBUG
-  if (activeWindow == WindowType::Scene) {
+  if (activeWindow == WindowType::Scene)
+  {
     return std::abs(SCREEN_HEIGHT - y);
     // return y;
   }
@@ -58,11 +67,13 @@ double Input::GetMouseY() {
   return std::abs(SCREEN_HEIGHT - y);
 }
 
-double Input::GetMouseYAbsolute() {
+double Input::GetMouseYAbsolute()
+{
   glfwGetCursorPos(window, &x, &y);
 
 #if DEBUG
-  if (activeWindow == WindowType::Scene) {
+  if (activeWindow == WindowType::Scene)
+  {
     return y;
   }
 #endif
@@ -75,9 +86,11 @@ double Input::GetMouseYAbsolute() {
   return y;
 }
 
-int Input::GetScrollState() {
+int Input::GetScrollState()
+{
 #if DEBUG
-  if (activeWindow == WindowType::Scene) {
+  if (activeWindow == WindowType::Scene)
+  {
     return scroll;
   }
 #endif
@@ -87,7 +100,8 @@ int Input::GetScrollState() {
 #endif
 }
 
-bool Input::IsKeyDown(int key) {
+bool Input::IsKeyDown(int key)
+{
   // This sets everything to capitalised ascii numbers
   // lets us use something like
   // input->isKeyDown('l')
@@ -101,7 +115,8 @@ bool Input::IsKeyDown(int key) {
   // }
 
 #if DEBUG
-  if (activeWindow == WindowType::Scene) {
+  if (activeWindow == WindowType::Scene)
+  {
     return keys[key];
   }
 #endif
@@ -113,25 +128,32 @@ bool Input::IsKeyDown(int key) {
   return false;
 }
 
-void Input::SetKeyOn(int key) {
-  if (key >= 97) {
+void Input::SetKeyOn(int key)
+{
+  if (key >= 97)
+  {
     key -= 32;
   }
   keys[key] = true;
 }
 
-void Input::SetKeyOff(int key) {
-  if (key >= 97) {
+void Input::SetKeyOff(int key)
+{
+  if (key >= 97)
+  {
     key -= 32;
   }
   keys[key] = false;
 }
 
-bool Input::IsMouseLDown() {
-  if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT)) {
+bool Input::IsMouseLDown()
+{
+  if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT))
+  {
 #if DEBUG
     // Handle imgui windows
-    if (activeWindow == WindowType::Scene) {
+    if (activeWindow == WindowType::Scene)
+    {
       return true;
     }
 #endif
@@ -146,11 +168,14 @@ bool Input::IsMouseLDown() {
   return false;
 }
 
-bool Input::IsMouseRDown() {
-  if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT)) {
+bool Input::IsMouseRDown()
+{
+  if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT))
+  {
 #if DEBUG
     // Handle imgui windows
-    if (activeWindow == WindowType::Scene) {
+    if (activeWindow == WindowType::Scene)
+    {
       return true;
     }
 #endif
@@ -165,8 +190,10 @@ bool Input::IsMouseRDown() {
   return false;
 }
 
-bool Input::IsMouseMDown() {
-  if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE)) {
+bool Input::IsMouseMDown()
+{
+  if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE))
+  {
     return true;
   }
   return false;

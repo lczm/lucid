@@ -25,7 +25,8 @@
 #include "imgui_impl_opengl3.h"
 #include "ImGuizmo.h"
 
-class UiSystem : public System {
+class UiSystem : public System
+{
  private:
   bool drawWireframe;
   bool drawSceneOnly;

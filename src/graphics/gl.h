@@ -10,14 +10,16 @@
 #include "constants.h"
 #include "glm.hpp"
 
-typedef struct Vertex {
+typedef struct Vertex
+{
   glm::vec2 position;
   glm::vec3 color;
   glm::vec2 texCoord;
 } Vertex;
 
 // Shader class
-class Shader {
+class Shader
+{
  private:
   unsigned int id;
 
@@ -39,7 +41,8 @@ class Shader {
   void Bind();
   void Unbind();
   void CreateShader(std::string vertexPath, std::string fragmentPath);
-  unsigned int GetId() {
+  unsigned int GetId()
+  {
     return id;
   };
 
@@ -61,7 +64,8 @@ class Shader {
 };
 
 // Texture
-class Texture {
+class Texture
+{
  private:
   unsigned int id = 8;
 
@@ -88,36 +92,46 @@ class Texture {
   void Bind();
   void Unbind();
 
-  int GetWidth() {
+  int GetWidth()
+  {
     return width;
   };
-  int GetHeight() {
+  int GetHeight()
+  {
     return height;
   };
 
-  int GetSsTotal() {
+  int GetSsTotal()
+  {
     return ssTotal;
   };
-  int GetSsRow() {
+  int GetSsRow()
+  {
     return ssRow;
   };
-  int GetSsCol() {
+  int GetSsCol()
+  {
     return ssCol;
   };
-  int GetSsIter() {
+  int GetSsIter()
+  {
     return ssIter;
   };
-  int GetSsWidth() {
+  int GetSsWidth()
+  {
     return ssWidth;
   };
-  int GetSsHeight() {
+  int GetSsHeight()
+  {
     return ssHeight;
   };
 
-  unsigned int GetId() {
+  unsigned int GetId()
+  {
     return id;
   };
-  void Generate() {
+  void Generate()
+  {
     glGenTextures(1, &id);
   };
 };

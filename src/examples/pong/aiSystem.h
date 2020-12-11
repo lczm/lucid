@@ -4,7 +4,8 @@
 #include "ecs.h"
 #include "pong.h"
 
-class AiSystem : public System {
+class AiSystem : public System
+{
  private:
  public:
   AiSystem();

@@ -5,7 +5,8 @@
 #include "gl.h"
 #include "glm.hpp"
 
-class Sphere {
+class Sphere
+{
  public:
   uint32_t VAO, VBO, EBO;
 

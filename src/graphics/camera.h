@@ -7,7 +7,8 @@
 #include "gtx/string_cast.hpp"
 #include "gtc/matrix_transform.hpp"
 
-class Camera {
+class Camera
+{
  public:
   glm::vec3 cameraPos;
   glm::vec3 cameraUp;

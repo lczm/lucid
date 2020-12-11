@@ -8,7 +8,8 @@
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
 
-class Input {
+class Input
+{
  public:
   GLFWwindow* window;
   double x;

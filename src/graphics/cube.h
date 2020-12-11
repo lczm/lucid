@@ -39,7 +39,8 @@ const std::vector<uint32_t> cubeIndices = {
     6, 7, 3,  //
 };
 
-class Cube {
+class Cube
+{
  public:
   uint32_t VAO, VBO, EBO;
 

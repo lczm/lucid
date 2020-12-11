@@ -10,7 +10,8 @@ const std::vector<float> line_vertices = {
     1.0f, 1.0f, 1.0f,  //
 };
 
-class Line {
+class Line
+{
  public:
   // Line does not need index buffer
   uint32_t VAO, VBO;

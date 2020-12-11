@@ -18,7 +18,8 @@
 
 const uint32_t MAX_BUFFER = 1000;
 
-class Renderer {
+class Renderer
+{
  private:
   uint32_t batchIndexCount = 0;
   std::vector<glm::mat4> modelMatrices;

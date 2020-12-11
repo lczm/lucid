@@ -1,6 +1,7 @@
 #include "boundingBox.h"
 
-ColliderCube::ColliderCube() {
+ColliderCube::ColliderCube()
+{
   // Generate the appropriate buffers
   glGenVertexArrays(1, &VAO);
   glGenBuffers(1, &VBO);
@@ -31,8 +32,10 @@ ColliderCube::ColliderCube() {
   glBindVertexArray(0);
 }
 
-ColliderCube::~ColliderCube() {
+ColliderCube::~ColliderCube()
+{
 }
 
-void ColliderCube::Build() {
+void ColliderCube::Build()
+{
 }

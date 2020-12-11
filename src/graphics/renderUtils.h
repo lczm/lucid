@@ -8,14 +8,16 @@
  * TODO : Update this to the quaternion based representation
  */
 
-enum class DrawType {
+enum class DrawType
+{
   Line,    //
   Sphere,  //
   Cube,    //
   Model,   //
 };
 
-static glm::mat4 GetModelMatrix(Transform transform) {
+static glm::mat4 GetModelMatrix(Transform transform)
+{
   glm::mat4 matrixModel = glm::mat4(1.0f);
   glm::mat4 rotationMatrix = glm::mat4(1.0f);
 

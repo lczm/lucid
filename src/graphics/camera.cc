@@ -1,6 +1,7 @@
 #include "camera.h"
 
-Camera::Camera() {
+Camera::Camera()
+{
   yaw = 0.0f;
   pitch = 0.0f;
   lastX = 0;
@@ -24,26 +25,32 @@ Camera::Camera() {
       far);
 }
 
-Camera::~Camera() {
+Camera::~Camera()
+{
 }
 
-glm::mat4 Camera::GetView() {
+glm::mat4 Camera::GetView()
+{
   return view;
 }
 
-glm::mat4 Camera::GetProjection() {
+glm::mat4 Camera::GetProjection()
+{
   return projection;
 }
 
-glm::vec3 Camera::GetCameraPos() {
+glm::vec3 Camera::GetCameraPos()
+{
   return cameraPos;
 }
 
-void Camera::UpdateView() {
+void Camera::UpdateView()
+{
   view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 }
 
-void Camera::UpdateCameraVector(float xOffset, float yOffset) {
+void Camera::UpdateCameraVector(float xOffset, float yOffset)
+{
   xOffset *= CAMERA_SENSITIVITY;
   yOffset *= CAMERA_SENSITIVITY;
 
@@ -65,6 +72,7 @@ void Camera::UpdateCameraVector(float xOffset, float yOffset) {
   cameraUp = glm::normalize(glm::cross(cameraRight, cameraFront));
 }
 
-void Camera::MoveCamera(glm::vec3 offset) {
+void Camera::MoveCamera(glm::vec3 offset)
+{
   cameraPos += offset;
 }

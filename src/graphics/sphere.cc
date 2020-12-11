@@ -1,9 +1,11 @@
 #include "sphere.h"
 
-Sphere::Sphere() {
+Sphere::Sphere()
+{
 }
 
-Sphere::Sphere(float radius, int sectors, int stacks) {
+Sphere::Sphere(float radius, int sectors, int stacks)
+{
   Sphere::radius = radius;
   Sphere::sectors = sectors;
   Sphere::stacks = stacks;
@@ -11,7 +13,8 @@ Sphere::Sphere(float radius, int sectors, int stacks) {
 
 Sphere::~Sphere() = default;
 
-void Sphere::Build() {
+void Sphere::Build()
+{
   glGenVertexArrays(1, &VAO);
   glGenBuffers(1, &VBO);
   glGenBuffers(1, &EBO);
@@ -43,7 +46,8 @@ void Sphere::Build() {
   glBindVertexArray(0);
 }
 
-void Sphere::BuildSphere() {
+void Sphere::BuildSphere()
+{
   // vertex positions
   float x, y, z, xy;
 
@@ -56,7 +60,8 @@ void Sphere::BuildSphere() {
   float stackStep = PI / stacks;
   float sectorAngle, stackAngle;
 
-  for (int i = 0; i <= stacks; i++) {
+  for (int i = 0; i <= stacks; i++)
+  {
     stackAngle = PI / 2 - i * stackStep;
 
     xy = radius * cosf(stackAngle);
@@ -64,7 +69,8 @@ void Sphere::BuildSphere() {
 
     // add (sectorCount+1) vertices per stack
     // the first and last vertices have same position and normal, but different texCoord
-    for (int j = 0; j <= sectors; j++) {
+    for (int j = 0; j <= sectors; j++)
+    {
       sectorAngle = j * sectorStep;
 
       // vertex position (x, y, z)
@@ -101,21 +107,25 @@ void Sphere::BuildSphere() {
   }
 
   int k1, k2;
-  for (int i = 0; i < stacks; ++i) {
+  for (int i = 0; i < stacks; ++i)
+  {
     k1 = i * (sectors + 1);  // beginning of current stack
     k2 = k1 + sectors + 1;   // beginning of next stack
 
-    for (int j = 0; j < sectors; ++j, ++k1, ++k2) {
+    for (int j = 0; j < sectors; ++j, ++k1, ++k2)
+    {
       // 2 triangles per sector excluding first and last stacks
       // k1 => k2 => k1+1
-      if (i != 0) {
+      if (i != 0)
+      {
         indices.push_back(k1);
         indices.push_back(k2);
         indices.push_back(k1 + 1);
       }
 
       // k1+1 => k2 => k2+1
-      if (i != (stacks - 1)) {
+      if (i != (stacks - 1))
+      {
         indices.push_back(k1 + 1);
         indices.push_back(k2);
         indices.push_back(k2 + 1);

@@ -1,6 +1,7 @@
 #include "renderSystem.h"
 
-RenderSystem::RenderSystem(Registry* registry) {
+RenderSystem::RenderSystem(Registry* registry)
+{
   RenderSystem::renderer = new Renderer();
   // RenderSystem::camera = new Camera();
   RenderSystem::quatCamera = new QuatCamera();
@@ -12,12 +13,14 @@ RenderSystem::RenderSystem(Registry* registry) {
   InitPrimitiveBuffers(registry);
 }
 
-RenderSystem::~RenderSystem() {
+RenderSystem::~RenderSystem()
+{
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
   glDeleteFramebuffers(1, &fbo);
 }
 
-void RenderSystem::Update(double dt, Registry* registry, Input* input) {
+void RenderSystem::Update(double dt, Registry* registry, Input* input)
+{
   // Temporary gateway for mouse picking
   HandleMousePick(dt, registry, input);
   HandleMousePan(dt, registry, input);
@@ -55,7 +58,8 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input) {
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void RenderSystem::InitRenderBuffers() {
+void RenderSystem::InitRenderBuffers()
+{
   glGenFramebuffers(1, &fbo);
   glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
@@ -84,7 +88,8 @@ void RenderSystem::InitRenderBuffers() {
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void RenderSystem::InitPrimitiveBuffers(Registry* registry) {
+void RenderSystem::InitPrimitiveBuffers(Registry* registry)
+{
   PrimitiveBatchIds& primitiveBatchIds = registry->GetComponent<PrimitiveBatchIds>();
 
   // Line : Generate VAO and VBO
@@ -139,13 +144,15 @@ void RenderSystem::InitPrimitiveBuffers(Registry* registry) {
   // TODO : Generate Cube Buffers
 }
 
-void RenderSystem::HandleMousePan(double dt, Registry* registry, Input* input) {
+void RenderSystem::HandleMousePan(double dt, Registry* registry, Input* input)
+{
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
   if (devDebug.onGizmo == true) return;
 
   if (input->IsMouseLDown() &&                //
       (input->lastX != input->GetMouseX() ||  //
-       input->lastY != input->GetMouseY())) {
+       input->lastY != input->GetMouseY()))
+  {
     float offsetX = input->GetMouseX() - input->lastX;
     float offsetY = input->GetMouseY() - input->lastY;
 
@@ -163,7 +170,8 @@ void RenderSystem::HandleMousePan(double dt, Registry* registry, Input* input) {
 
   if (input->IsMouseRDown() &&                //
       (input->lastX != input->GetMouseX() ||  //
-       input->lastY != input->GetMouseY())) {
+       input->lastY != input->GetMouseY()))
+  {
     float offsetX = input->GetMouseX() - input->lastX;
     float offsetY = input->GetMouseY() - input->lastY;
 
@@ -176,14 +184,17 @@ void RenderSystem::HandleMousePan(double dt, Registry* registry, Input* input) {
   }
 }
 
-void RenderSystem::HandleMouseScroll(double dt, Input* input) {
+void RenderSystem::HandleMouseScroll(double dt, Input* input)
+{
   // Scroll up
-  if (input->GetScrollState() == 1) {
+  if (input->GetScrollState() == 1)
+  {
     quatCamera->Translate(glm::vec3(0.0f, 0.0f, SCROLL_SPEED * dt));
   }
 
   // Scroll down
-  if (input->GetScrollState() == -1) {
+  if (input->GetScrollState() == -1)
+  {
     quatCamera->Translate(glm::vec3(0.0f, 0.0f, -(SCROLL_SPEED * dt)));
   }
 
@@ -192,7 +203,8 @@ void RenderSystem::HandleMouseScroll(double dt, Input* input) {
   return;
 }
 
-void RenderSystem::HandleKeyboardPan(double dt, Input* input) {
+void RenderSystem::HandleKeyboardPan(double dt, Input* input)
+{
   if (input->IsKeyDown('W')) quatCamera->Translate(glm::vec3(0.0f, 0.0f, CAMERA_SPEED * dt));
   if (input->IsKeyDown('S')) quatCamera->Translate(glm::vec3(0.0f, 0.0f, -(CAMERA_SPEED * dt)));
   if (input->IsKeyDown('A')) quatCamera->Translate(glm::vec3(CAMERA_SPEED * dt, 0.0f, 0.0f));
@@ -208,7 +220,8 @@ void RenderSystem::HandleKeyboardPan(double dt, Input* input) {
 }
 
 // Note : temporary
-void RenderSystem::HandleKeyboardInput(double dt, Registry* registry, Input* input) {
+void RenderSystem::HandleKeyboardInput(double dt, Registry* registry, Input* input)
+{
   // if (input->IsKeyDown('1')) {
   //   Entity cubeID = registry->GetAvailableEntityId();
 
@@ -221,12 +234,15 @@ void RenderSystem::HandleKeyboardInput(double dt, Registry* registry, Input* inp
   // }
 }
 
-bool RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) {
-  if (!input->mouseKeys[MOUSE_LEFT]) {
+bool RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input)
+{
+  if (!input->mouseKeys[MOUSE_LEFT])
+  {
     return false;
   }
 
-  if (input->activeWindow != WindowType::Scene) {
+  if (input->activeWindow != WindowType::Scene)
+  {
     return false;
   }
 
@@ -246,7 +262,8 @@ bool RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
   std::vector<BoundingBox> boundingBoxes;
   // Calculate all the positions, assume that there is a BoundingBoxCube around it.
   registry->GetComponentsIter<Transform>()->EachWithID([&](Entity id, Transform& transform) {
-    if (transform.scale.x == 1.0f) {
+    if (transform.scale.x == 1.0f)
+    {
       // Calculate the model matrix
       glm::mat4 matrixModel = glm::mat4(1.0f);
 
@@ -256,7 +273,8 @@ bool RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
       std::vector<glm::vec4> verticesCollection;
       verticesCollection.reserve(boundingBoxCubeVertices.size() / 3);
 
-      for (size_t i = 0; i < boundingBoxCubeVertices.size(); i += 3) {
+      for (size_t i = 0; i < boundingBoxCubeVertices.size(); i += 3)
+      {
         verticesCollection.push_back(matrixModel * glm::vec4(boundingBoxCubeVertices[i],
                                                              boundingBoxCubeVertices[i + 1],
                                                              boundingBoxCubeVertices[i + 2], 1.0f));
@@ -278,22 +296,26 @@ bool RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
   // Each([](uint32_t id, Transform& transform))
   std::vector<float> lengths;
   std::vector<uint32_t> lengthIndexs;
-  for (size_t i = 0; i < boundingBoxes.size(); i++) {
+  for (size_t i = 0; i < boundingBoxes.size(); i++)
+  {
     auto collisionAndLength = RayBoundingBoxCollisionCheck(origin, rayDirection, boundingBoxes[i]);
-    if (std::get<bool>(collisionAndLength)) {
+    if (std::get<bool>(collisionAndLength))
+    {
       lengths.push_back(std::get<float>(collisionAndLength));
       lengthIndexs.push_back(i);
     }
   }
 
   // If there are none collided
-  if (lengths.size() == 0) {
+  if (lengths.size() == 0)
+  {
     // If it does not collide, set activeEntity to be 0
     devDebug.activeEntity = 0;
     return false;
   }
 
-  if (lengths.size() == 1) {
+  if (lengths.size() == 1)
+  {
     // lucid::Log("Single collision! ID : ", entityIds[lengthIndexs[0]], " Length : ", lengths[0]);
     devDebug.activeEntity = entityIds[lengthIndexs[0]];
 
@@ -305,8 +327,10 @@ bool RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
   // If it has collided with more than one object
   uint32_t shortestIndex = 0;
   float shortestLength = std::numeric_limits<float>::max();
-  for (size_t i = 0; i < lengths.size(); i++) {
-    if (lengths[i] < shortestLength) {
+  for (size_t i = 0; i < lengths.size(); i++)
+  {
+    if (lengths[i] < shortestLength)
+    {
       shortestLength = lengths[i];
       shortestIndex = lengthIndexs[i];
     }
@@ -324,7 +348,8 @@ bool RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
   return true;
 }
 
-void RenderSystem::DrawAllLines(double dt, Registry* registry, Input* input) {
+void RenderSystem::DrawAllLines(double dt, Registry* registry, Input* input)
+{
   ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
 
   shaderResource.primitiveShaderBatch.Bind();
@@ -348,7 +373,8 @@ void RenderSystem::DrawAllLines(double dt, Registry* registry, Input* input) {
   shaderResource.primitiveShaderBatch.Unbind();
 }
 
-void RenderSystem::DrawAllModels(double dt, Registry* registry, Input* input) {
+void RenderSystem::DrawAllModels(double dt, Registry* registry, Input* input)
+{
   ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
 
   shaderResource.modelShader.Bind();
@@ -365,7 +391,8 @@ void RenderSystem::DrawAllModels(double dt, Registry* registry, Input* input) {
   shaderResource.modelShader.Unbind();
 }
 
-void RenderSystem::DrawAllCubes(double dt, Registry* registry, Input* input) {
+void RenderSystem::DrawAllCubes(double dt, Registry* registry, Input* input)
+{
   ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
 
   shaderResource.primitiveShader.Bind();
@@ -384,7 +411,8 @@ void RenderSystem::DrawAllCubes(double dt, Registry* registry, Input* input) {
   shaderResource.primitiveShader.Unbind();
 }
 
-void RenderSystem::DrawAllSpheres(double dt, Registry* registry, Input* input) {
+void RenderSystem::DrawAllSpheres(double dt, Registry* registry, Input* input)
+{
   ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
 
   shaderResource.primitiveShader.Bind();
@@ -402,7 +430,8 @@ void RenderSystem::DrawAllSpheres(double dt, Registry* registry, Input* input) {
   shaderResource.primitiveShader.Unbind();
 }
 
-void RenderSystem::DrawAllBoundingBoxes(double dt, Registry* registry, Input* input) {
+void RenderSystem::DrawAllBoundingBoxes(double dt, Registry* registry, Input* input)
+{
   ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
 
   shaderResource.primitiveShader.Bind();
@@ -421,7 +450,8 @@ void RenderSystem::DrawAllBoundingBoxes(double dt, Registry* registry, Input* in
   shaderResource.primitiveShader.Unbind();
 }
 
-glm::vec3 RenderSystem::GetRayDirection(Registry* registry, Input* input) {
+glm::vec3 RenderSystem::GetRayDirection(Registry* registry, Input* input)
+{
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
 
 #if DEBUG
@@ -482,7 +512,8 @@ glm::vec3 RenderSystem::GetRayDirection(Registry* registry, Input* input) {
 // bool : true if collided, false if not collided
 // float : length of the intersection from origin if it is intersected
 std::tuple<bool, float> RenderSystem::RayBoundingBoxCollisionCheck(glm::vec3 origin, glm::vec3 ray,
-                                                                   BoundingBox boundingBox) {
+                                                                   BoundingBox boundingBox)
+{
   float length;
   glm::vec3 dirfrac = 1.0f / ray;
 
@@ -499,12 +530,14 @@ std::tuple<bool, float> RenderSystem::RayBoundingBoxCollisionCheck(glm::vec3 ori
   float tmax = glm::min(glm::min(glm::max(t1, t2), glm::max(t3, t4)), glm::max(t5, t6));
 
   // AABB is behind
-  if (tmax < 0) {
+  if (tmax < 0)
+  {
     return std::tuple(false, 0.0f);
   }
 
   // Does not intersect
-  if (tmin > tmax) {
+  if (tmin > tmax)
+  {
     return std::tuple(false, 0.0f);
   }
 
@@ -512,9 +545,11 @@ std::tuple<bool, float> RenderSystem::RayBoundingBoxCollisionCheck(glm::vec3 ori
   return std::tuple(true, length);
 }
 
-BoundingBox RenderSystem::GetBoundingBox(std::vector<glm::vec4> vertices) {
+BoundingBox RenderSystem::GetBoundingBox(std::vector<glm::vec4> vertices)
+{
   BoundingBox bb;
-  for (size_t i = 0; i < vertices.size(); i++) {
+  for (size_t i = 0; i < vertices.size(); i++)
+  {
     bb.minX = glm::min(vertices[i].x, bb.minX);
     bb.maxX = glm::max(vertices[i].x, bb.maxX);
 

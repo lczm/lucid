@@ -16,7 +16,8 @@
  * is where the structs are stored.
  */
 
-struct DevDebug {
+struct DevDebug
+{
   bool drawWireframe = false;
   bool drawColliders = false;
 
@@ -51,7 +52,8 @@ struct DevDebug {
   glm::mat4 projection = glm::mat4(1.0f);
 };
 
-struct PrimitiveBatchIds {
+struct PrimitiveBatchIds
+{
   // Lines
   uint32_t lineVAO, lineVBO = 0;
 
