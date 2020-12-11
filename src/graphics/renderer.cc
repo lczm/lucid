@@ -128,11 +128,26 @@ void Renderer::PushLineBuffer(glm::mat4 modelMatrix, Line line)
   // If there is too much to add on, flush it down before adding
   if (batchIndexCount == MAX_BUFFER)
   {
-    PrimitiveBatchIds& primitiveBatchIds = registry->GetComponent<PrimitiveBatchIds>();
+    PrimitiveBatchIds primitiveBatchIds = registry->GetComponent<PrimitiveBatchIds>();
     FlushBatch(primitiveBatchIds, DrawType::Line);
   }
+
   linePrimitiveBuffer[batchIndexCount].color = line.color;
   linePrimitiveBuffer[batchIndexCount].modelMatrix = modelMatrix;
+  batchIndexCount++;
+}
+
+void Renderer::PushCubeBuffer(glm::mat4 modelMatrix, Cube cube)
+{
+  // If there is too much to add on, flush it down before adding
+  if (batchIndexCount == MAX_BUFFER)
+  {
+    PrimitiveBatchIds primitiveBatchIds = registry->GetComponent<PrimitiveBatchIds>();
+    FlushBatch(primitiveBatchIds, DrawType::Cube);
+  }
+
+  cubePrimititiveBuffer[batchIndexCount].color = cube.color;
+  cubePrimititiveBuffer[batchIndexCount].modelMatrix = modelMatrix;
   batchIndexCount++;
 }
 
@@ -147,6 +162,7 @@ void Renderer::FlushBatch(PrimitiveBatchIds primitiveBatchIds, DrawType drawType
     case DrawType::Sphere:
       break;
     case DrawType::Cube:
+      DrawCubeIndexed(primitiveBatchIds);
       break;
     case DrawType::Model:
       break;
