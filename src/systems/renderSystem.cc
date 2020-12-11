@@ -146,7 +146,47 @@ void RenderSystem::InitPrimitiveBuffers(Registry* registry)
   glBindVertexArray(0);
 
   // TODO : Generate Sphere Buffers
+
   // TODO : Generate Cube Buffers
+  // Sphere : Generate VAO and VBO
+  glGenVertexArrays(1, &primitiveBatchIds.cubeVAO);
+  glGenBuffers(1, &primitiveBatchIds.cubeVBO);
+
+  // Sphere : Bind VAO and VBO
+  glBindVertexArray(primitiveBatchIds.cubeVAO);
+  glBindBuffer(GL_ARRAY_BUFFER, primitiveBatchIds.cubeVBO);
+
+  std::size_t cubeSize = (cubeVertices.size() * sizeof(float)) + (MAX_BUFFER * sizeof(CubeVertex));
+
+  // Set buffer data size, set to DYNAMIC_DRAW
+  glBufferData(GL_ARRAY_BUFFER, cubeSize, nullptr, GL_DYNAMIC_DRAW);
+
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, cubeSize, (void*)0);
+
+  glEnableVertexAttribArray(1);
+  glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, cubeSize, (void*)(3 * sizeof(float)));
+
+  glEnableVertexAttribArray(2);
+  glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, cubeSize,
+                        (void*)(3 * sizeof(float) + (1 * vec4Size)));
+
+  glEnableVertexAttribArray(3);
+  glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, cubeSize,
+                        (void*)(3 * sizeof(float) + (2 * vec4Size)));
+
+  glEnableVertexAttribArray(4);
+  glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)),
+                        (void*)(3 * sizeof(float) + (3 * vec4Size)));
+
+  // Sphere : Set the matrix 4 divisors
+  glVertexAttribDivisor(0, 1);
+  glVertexAttribDivisor(1, 1);
+  glVertexAttribDivisor(2, 1);
+  glVertexAttribDivisor(3, 1);
+  glVertexAttribDivisor(4, 1);
+
+  glBindVertexArray(0);
 }
 
 void RenderSystem::HandleMousePan(double dt, Registry* registry, Input* input)

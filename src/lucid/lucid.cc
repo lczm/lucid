@@ -93,6 +93,7 @@ void Lucid::InitializeBulitInEntities()
   shaderResource.primitiveShader.CreateShader(PRIMITIVE_VERTEX_SHADER, PRIMITIVE_FRAGMENT_SHADER);
   shaderResource.primitiveShaderBatch.CreateShader(PRIMITIVE_LINE_SHADER,
                                                    PRIMITIVE_FRAGMENT_SHADER);
+  shaderResource.cubeShaderBatch.CreateShader(PRIMITIVE_CUBE_SHADER, PRIMITIVE_FRAGMENT_SHADER);
 
   registry->RegisterArchetype<Line, Transform>();
 

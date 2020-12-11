@@ -9,5 +9,6 @@ struct ShaderResource
   Shader triangleShader;
   Shader primitiveShader;
   Shader primitiveShaderBatch;
+  Shader cubeShaderBatch;
   Shader boundingBoxShader;
 };

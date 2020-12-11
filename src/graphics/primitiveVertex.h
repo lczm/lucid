@@ -14,4 +14,6 @@ struct SphereVertex
 
 struct CubeVertex
 {
+  glm::vec3 color;
+  glm::mat4 modelMatrix;
 };
