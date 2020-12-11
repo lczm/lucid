@@ -332,7 +332,8 @@ void UiSystem::DrawScene(double dt, Registry* registry, Input* input)
   ImGui::End();
 }
 
-void UiSystem::DrawGameCamera(double dt, Registry* registry, Input* input) {
+void UiSystem::DrawGameCamera(double dt, Registry* registry, Input* input)
+{
   // Set no padding, as for the scene, there isn't really a need for padding
   ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
   ImGui::Begin("Game Camera");
@@ -358,7 +359,8 @@ void UiSystem::DrawGameCamera(double dt, Registry* registry, Input* input) {
   ImGui::Image((ImTextureID)sceneRender.textureID, wsize, ImVec2(0, 1), ImVec2(1, 0),
                ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
 
-  if (devDebug.activeEntity != 0) {
+  if (devDebug.activeEntity != 0)
+  {
     ImGuizmo::BeginFrame();
     // ImGuizmo::EndFrame();
 
@@ -389,7 +391,8 @@ void UiSystem::DrawGameCamera(double dt, Registry* registry, Input* input) {
     ImGuizmo::Manipulate(glm::value_ptr(devDebug.view), glm::value_ptr(devDebug.projection),
                          devDebug.gizmoOperation, ImGuizmo::LOCAL, glm::value_ptr(matrixModel));
 
-    if (ImGuizmo::IsUsing()) {
+    if (ImGuizmo::IsUsing())
+    {
       devDebug.onGizmo = true;
       // TODO : decompose the matrix model and find the transform, rotation, scale
       glm::vec3 position, scale;
@@ -413,7 +416,9 @@ void UiSystem::DrawGameCamera(double dt, Registry* registry, Input* input) {
       transform.position = position;
       transform.rotation += deltaRotation;
       transform.scale = scale;
-    } else {
+    }
+    else
+    {
       devDebug.onGizmo = false;
     }
   }
@@ -533,41 +538,38 @@ void UiSystem::DrawDevDebug(double dt, Registry* registry, Input* input)
   ImGui::End();
 }
 
-void UiSystem::DrawShapes(double dt, Registry* registry, Input* input) 
+void UiSystem::DrawShapes(double dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Default Assets");
-  static const char* assets[3] =
-  {
-	"Sphere", "Cube", "Camera"
-  };
+  static const char* assets[3] = {"Sphere", "Cube", "Camera"};
   for (int n = 0; n < IM_ARRAYSIZE(assets); n++)
   {
-      ImGui::PushID(n);
-      if ((n % 3) != 0)
-          ImGui::SameLine();
-      ImGui::Button(assets[n], ImVec2(60, 60));
+    ImGui::PushID(n);
+    if ((n % 3) != 0) ImGui::SameLine();
+    ImGui::Button(assets[n], ImVec2(60, 60));
 
-      // Our buttons are both drag sources and drag targets here!
-      if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
+    // Our buttons are both drag sources and drag targets here!
+    if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
+    {
+      // Set payload to carry the index of our item (could be anything)
+      ImGui::SetDragDropPayload("Default Assets", &n, sizeof(int));
+      ImGui::Text(assets[n], assets[n]);
+      ImGui::EndDragDropSource();
+    }
+    if (ImGui::BeginDragDropTarget())
+    {
+      if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Default Assets"))
       {
-          // Set payload to carry the index of our item (could be anything)
-          ImGui::SetDragDropPayload("Default Assets", &n, sizeof(int));
-          ImGui::Text(assets[n], assets[n]);
-          ImGui::EndDragDropSource();
+        IM_ASSERT(payload->DataSize == sizeof(int));
+        int payload_n = *(const int*)payload->Data;
+        assets[n] = assets[payload_n];
       }
-      if (ImGui::BeginDragDropTarget())
-      {
-          if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Default Assets"))
-          {
-              IM_ASSERT(payload->DataSize == sizeof(int));
-              int payload_n = *(const int*)payload->Data;
-			  assets[n] = assets[payload_n];
-          }
-          ImGui::EndDragDropTarget();
-      }
-      ImGui::PopID();
+      ImGui::EndDragDropTarget();
+    }
+    ImGui::PopID();
   }
-  if (!test) {
+  if (!test)
+  {
     ImGui::Text("Hi");
   }
   ImGui::End();
