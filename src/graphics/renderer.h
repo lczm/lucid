@@ -40,10 +40,9 @@ class Renderer
   void DrawModel(Model& model, Shader& shader);
 
   void DrawCube(Cube& cube, Shader& shader);
-  void DrawSphere(Sphere& sphere, Shader& shader);
+  void DrawCubeIndexed(PrimitiveBatchIds primitiveBatchIds);
 
-  void DrawTexturedCube(Cube& cube, Shader& shader);
-  void DrawTexturedSphere(Sphere& sphere, Shader& shader);
+  void DrawSphere(Sphere& sphere, Shader& shader);
 
   void DrawLine(Line& line, Shader& shader);
   void DrawLineIndexed(PrimitiveBatchIds primitiveBatchIds);

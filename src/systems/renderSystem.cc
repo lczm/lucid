@@ -165,26 +165,31 @@ void RenderSystem::InitPrimitiveBuffers(Registry* registry)
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, cubeSize, (void*)0);
 
   glEnableVertexAttribArray(1);
-  glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, cubeSize, (void*)(3 * sizeof(float)));
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, cubeSize, (void*)(3 * sizeof(float)));
 
   glEnableVertexAttribArray(2);
-  glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, cubeSize,
-                        (void*)(3 * sizeof(float) + (1 * vec4Size)));
+  glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, cubeSize, (void*)(6 * sizeof(float)));
 
   glEnableVertexAttribArray(3);
   glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, cubeSize,
-                        (void*)(3 * sizeof(float) + (2 * vec4Size)));
+                        (void*)(6 * sizeof(float) + (1 * vec4Size)));
 
   glEnableVertexAttribArray(4);
-  glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)),
-                        (void*)(3 * sizeof(float) + (3 * vec4Size)));
+  glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, cubeSize,
+                        (void*)(6 * sizeof(float) + (2 * vec4Size)));
+
+  glEnableVertexAttribArray(5);
+  glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, cubeSize,
+                        (void*)(6 * sizeof(float) + (3 * vec4Size)));
 
   // Sphere : Set the matrix 4 divisors
-  glVertexAttribDivisor(0, 1);
-  glVertexAttribDivisor(1, 1);
-  glVertexAttribDivisor(2, 1);
-  glVertexAttribDivisor(3, 1);
-  glVertexAttribDivisor(4, 1);
+  glVertexAttribDivisor(1, 1);  // colors
+  glVertexAttribDivisor(2, 1);  // mat4 : vec1
+  glVertexAttribDivisor(3, 1);  // mat4 : vec2
+  glVertexAttribDivisor(4, 1);  // mat4 : vec3
+  glVertexAttribDivisor(5, 1);  // mat4 : vec4
+
+  glBufferSubData(GL_ARRAY_BUFFER, 0, cubeVertices.size() * sizeof(float), &cubeVertices[0]);
 
   glBindVertexArray(0);
 }

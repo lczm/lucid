@@ -1,6 +1,9 @@
 #include "renderer.h"
 
-Renderer::Renderer(Registry* registry) : linePrimitiveBuffer(MAX_BUFFER)
+Renderer::Renderer(Registry* registry)
+    : linePrimitiveBuffer(MAX_BUFFER),
+      cubePrimititiveBuffer(MAX_BUFFER),
+      spherePrimitiveBuffer(MAX_BUFFER)
 {
   Renderer::registry = registry;
 };
@@ -53,6 +56,19 @@ void Renderer::DrawCube(Cube& cube, Shader& shader)
   glBindVertexArray(cube.VAO);
   // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cube.EBO);
   glDrawElements(GL_TRIANGLES, cubeIndices.size(), GL_UNSIGNED_INT, 0);
+  glBindVertexArray(0);
+}
+
+void Renderer::DrawCubeIndexed(PrimitiveBatchIds primitiveBatchIds)
+{
+  glBindVertexArray(primitiveBatchIds.cubeVAO);
+  glBindBuffer(GL_ARRAY_BUFFER, primitiveBatchIds.cubeVBO);
+
+  glBufferSubData(GL_ARRAY_BUFFER, cubeVertices.size() * sizeof(float),
+                  batchIndexCount * sizeof(CubeVertex), &cubePrimititiveBuffer[0]);
+
+  glDrawArraysInstanced(GL_TRIANGLES, 0, 3, batchIndexCount);
+
   glBindVertexArray(0);
 }
 
