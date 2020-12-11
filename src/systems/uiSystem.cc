@@ -329,6 +329,12 @@ void UiSystem::DrawScene(double dt, Registry* registry, Input* input)
   }
   ImGui::EndChild();
 
+  if (devDebug.changeFocusWindow == WindowType::Inspector)
+  {
+    ImGui::SetWindowFocus("Inspector");
+    devDebug.changeFocusWindow = WindowType::None;
+  }
+
   ImGui::End();
 }
 
@@ -340,9 +346,9 @@ void UiSystem::DrawGameCamera(double dt, Registry* registry, Input* input)
   // Pop it so that it applies to the entire window here.
   ImGui::PopStyleVar();
 
-  ImGui::BeginChild("SceneRender2");
+  ImGui::BeginChild("SceneRender");
 
-  UpdateInputActiveWindow(input, WindowType::Scene);
+  UpdateInputActiveWindow(input, WindowType::GameCamera);
 
   // Get the size of the current imgui window to draw in
   ImVec2 wsize = ImGui::GetWindowSize();
