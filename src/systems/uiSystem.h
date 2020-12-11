@@ -59,4 +59,5 @@ class UiSystem : public System
   void UpdateSceneWindow(Registry* registry, Input* input);
   void UpdateGizmoType(Registry* registry, Input* input);
   void UpdateInputActiveWindow(Input* input, WindowType windowType);
+  void UpdateWindowFocus(Registry* registry, WindowType windowType, const char* focusWindow);
 };
