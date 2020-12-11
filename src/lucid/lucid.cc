@@ -79,18 +79,12 @@ void Lucid::InitializeBulitInEntities()
   // Builtin usage, not for the user
   // Singletons single struct usage
   registry->RegisterArchetype<ShaderResource>();
-  registry->RegisterArchetype<SceneRender>();
-  registry->RegisterArchetype<DevDebug>();
   registry->RegisterArchetype<PrimitiveBatchIds>();
 
-  Entity shaderResourceID = registry->GetAvailableEntityId();
-  Entity sceneRenderID = registry->GetAvailableEntityId();
-  Entity devDebugID = registry->GetAvailableEntityId();
   Entity primitiveBatchID = registry->GetAvailableEntityId();
+  Entity shaderResourceID = registry->GetAvailableEntityId();
 
   registry->CreateEntity<ShaderResource>(shaderResourceID);
-  registry->CreateEntity<SceneRender>(sceneRenderID);
-  registry->CreateEntity<DevDebug>(devDebugID);
   registry->CreateEntity<PrimitiveBatchIds>(primitiveBatchID);
 
   ShaderResource& shaderResource = registry->GetComponent<ShaderResource>();
@@ -99,6 +93,7 @@ void Lucid::InitializeBulitInEntities()
   shaderResource.primitiveShader.CreateShader(PRIMITIVE_VERTEX_SHADER, PRIMITIVE_FRAGMENT_SHADER);
   shaderResource.primitiveShaderBatch.CreateShader(PRIMITIVE_LINE_SHADER,
                                                    PRIMITIVE_FRAGMENT_SHADER);
+  shaderResource.cubeShaderBatch.CreateShader(PRIMITIVE_CUBE_SHADER, PRIMITIVE_FRAGMENT_SHADER);
 
   registry->RegisterArchetype<Line, Transform>();
 
@@ -163,6 +158,20 @@ void Lucid::InitializeBulitInEntities()
     line->destination.x = MAX_WORLD_COORDINATE_LIMIT;
     line->destination.z = static_cast<float>(i);
   }
+
+#if DEBUG
+  registry->RegisterArchetype<SceneRender>();
+  registry->RegisterArchetype<DevDebug>();
+  registry->RegisterArchetype<WidgetLayout>();
+
+  Entity sceneRenderID = registry->GetAvailableEntityId();
+  Entity devDebugID = registry->GetAvailableEntityId();
+  Entity widgetLayoutID = registry->GetAvailableEntityId();
+
+  registry->CreateEntity<SceneRender>(sceneRenderID);
+  registry->CreateEntity<DevDebug>(devDebugID);
+  registry->CreateEntity<WidgetLayout>(widgetLayoutID);
+#endif
 }
 
 void Lucid::InitializeBuiltInSystems()

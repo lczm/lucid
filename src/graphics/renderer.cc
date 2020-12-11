@@ -1,6 +1,9 @@
 #include "renderer.h"
 
-Renderer::Renderer() : linePrimitiveBuffer(MAX_BUFFER){};
+Renderer::Renderer(Registry* registry) : linePrimitiveBuffer(MAX_BUFFER)
+{
+  Renderer::registry = registry;
+};
 
 Renderer::~Renderer() = default;
 
@@ -68,10 +71,6 @@ void Renderer::DrawLine(Line& line, Shader& shader)
   glBindVertexArray(0);
 }
 
-void Renderer::DrawLine(glm::vec3 origin, glm::vec3 end, glm::vec3 color)
-{
-}
-
 void Renderer::DrawLineIndexed(PrimitiveBatchIds primitiveBatchIds)
 {
   glBindVertexArray(primitiveBatchIds.lineVAO);
@@ -108,6 +107,19 @@ void Renderer::StartBatch()
   batchIndexCount = 0;
 }
 
+void Renderer::PushLineBuffer(glm::mat4 modelMatrix, Line line)
+{
+  // If there is too much to add on, flush it down before adding
+  if (batchIndexCount == MAX_BUFFER)
+  {
+    PrimitiveBatchIds& primitiveBatchIds = registry->GetComponent<PrimitiveBatchIds>();
+    FlushBatch(primitiveBatchIds, DrawType::Line);
+  }
+  linePrimitiveBuffer[batchIndexCount].color = line.color;
+  linePrimitiveBuffer[batchIndexCount].modelMatrix = modelMatrix;
+  batchIndexCount++;
+}
+
 // TODO : This assumes its all lines
 void Renderer::FlushBatch(PrimitiveBatchIds primitiveBatchIds, DrawType drawType)
 {
@@ -124,11 +136,4 @@ void Renderer::FlushBatch(PrimitiveBatchIds primitiveBatchIds, DrawType drawType
       break;
   }
   batchIndexCount = 0;
-}
-
-void Renderer::PushLineBuffer(glm::mat4 modelMatrix, Line line)
-{
-  linePrimitiveBuffer[batchIndexCount].modelMatrix = modelMatrix;
-  linePrimitiveBuffer[batchIndexCount].color = line.color;
-  batchIndexCount++;
 }

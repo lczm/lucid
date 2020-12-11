@@ -2,15 +2,11 @@
 
 RenderSystem::RenderSystem(Registry* registry)
 {
-  RenderSystem::renderer = new Renderer();
-  // RenderSystem::camera = new Camera();
-  RenderSystem::quatCamera = new QuatCamera();
-
-  // move back the camera a little bit.
-  quatCamera->TranslateInWorld(glm::vec3(0.0f, 1.0f, 35.0f));
+  RenderSystem::renderer = new Renderer(registry);
 
   InitRenderBuffers();
   InitPrimitiveBuffers(registry);
+  InitSceneCameraComponent(registry);
 }
 
 RenderSystem::~RenderSystem()
@@ -38,9 +34,6 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input)
   sceneRender.textureID = texture;
 
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
-
-  devDebug.projection = quatCamera->GetProjection();
-  devDebug.view = quatCamera->GetView();
 
   // TODO : wireframe drawing should have its own shaders
   // Draw wireframe
@@ -88,6 +81,18 @@ void RenderSystem::InitRenderBuffers()
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+void RenderSystem::InitSceneCameraComponent(Registry* registry)
+{
+  Entity cameraID = registry->GetAvailableEntityId();
+  registry->RegisterArchetype<QuatCamera>();
+  registry->CreateEntity<QuatCamera>(cameraID);
+
+  // Just store a pointer to it as it is used very often
+  // Translate the camera back a little bit so it makes more sense
+  RenderSystem::quatCamera = registry->GetComponent<QuatCamera>(cameraID);
+  quatCamera->TranslateInWorld({0.0f, 1.0f, 35.0f});
+}
+
 void RenderSystem::InitPrimitiveBuffers(Registry* registry)
 {
   PrimitiveBatchIds& primitiveBatchIds = registry->GetComponent<PrimitiveBatchIds>();
@@ -112,23 +117,23 @@ void RenderSystem::InitPrimitiveBuffers(Registry* registry)
   // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
   glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)), (void*)0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)), (void*)0);
 
   glEnableVertexAttribArray(1);
   glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)),
-                        (void*)(1 * vec4Size));
+                        (void*)(3 * sizeof(float)));
 
   glEnableVertexAttribArray(2);
   glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)),
-                        (void*)(2 * vec4Size));
+                        (void*)(3 * sizeof(float) + (1 * vec4Size)));
 
   glEnableVertexAttribArray(3);
   glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)),
-                        (void*)(3 * vec4Size));
+                        (void*)(3 * sizeof(float) + (2 * vec4Size)));
 
   glEnableVertexAttribArray(4);
-  glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)),
-                        (void*)(4 * vec4Size));
+  glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)),
+                        (void*)(3 * sizeof(float) + (3 * vec4Size)));
 
   // Line : Set the matrix 4 divisors
   glVertexAttribDivisor(0, 1);
@@ -141,7 +146,47 @@ void RenderSystem::InitPrimitiveBuffers(Registry* registry)
   glBindVertexArray(0);
 
   // TODO : Generate Sphere Buffers
+
   // TODO : Generate Cube Buffers
+  // Sphere : Generate VAO and VBO
+  glGenVertexArrays(1, &primitiveBatchIds.cubeVAO);
+  glGenBuffers(1, &primitiveBatchIds.cubeVBO);
+
+  // Sphere : Bind VAO and VBO
+  glBindVertexArray(primitiveBatchIds.cubeVAO);
+  glBindBuffer(GL_ARRAY_BUFFER, primitiveBatchIds.cubeVBO);
+
+  std::size_t cubeSize = (cubeVertices.size() * sizeof(float)) + (MAX_BUFFER * sizeof(CubeVertex));
+
+  // Set buffer data size, set to DYNAMIC_DRAW
+  glBufferData(GL_ARRAY_BUFFER, cubeSize, nullptr, GL_DYNAMIC_DRAW);
+
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, cubeSize, (void*)0);
+
+  glEnableVertexAttribArray(1);
+  glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, cubeSize, (void*)(3 * sizeof(float)));
+
+  glEnableVertexAttribArray(2);
+  glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, cubeSize,
+                        (void*)(3 * sizeof(float) + (1 * vec4Size)));
+
+  glEnableVertexAttribArray(3);
+  glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, cubeSize,
+                        (void*)(3 * sizeof(float) + (2 * vec4Size)));
+
+  glEnableVertexAttribArray(4);
+  glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)),
+                        (void*)(3 * sizeof(float) + (3 * vec4Size)));
+
+  // Sphere : Set the matrix 4 divisors
+  glVertexAttribDivisor(0, 1);
+  glVertexAttribDivisor(1, 1);
+  glVertexAttribDivisor(2, 1);
+  glVertexAttribDivisor(3, 1);
+  glVertexAttribDivisor(4, 1);
+
+  glBindVertexArray(0);
 }
 
 void RenderSystem::HandleMousePan(double dt, Registry* registry, Input* input)
@@ -452,19 +497,19 @@ void RenderSystem::DrawAllBoundingBoxes(double dt, Registry* registry, Input* in
 
 glm::vec3 RenderSystem::GetRayDirection(Registry* registry, Input* input)
 {
-  DevDebug& devDebug = registry->GetComponent<DevDebug>();
-
 #if DEBUG
-  float mouseX = static_cast<float>(input->GetMouseX() - devDebug.leftWindowWidth);
-  float mouseY = static_cast<float>(input->GetMouseYAbsolute() - devDebug.menuBarHeight);
+  WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
+  float mouseX = static_cast<float>(input->GetMouseX() - widgetLayout.leftWindowWidth);
+  float mouseY = static_cast<float>(input->GetMouseYAbsolute() - widgetLayout.menuBarHeight -
+                                    widgetLayout.topWindowHeight);
 
   // lucid::Log("x : ", input->GetMouseX(), " y : ", input->GetMouseYAbsolute())
 
-  float x =
-      (2.0f * mouseX) / (SCREEN_WIDTH - devDebug.leftWindowWidth - devDebug.rightWindowWidth) -
-      1.0f;
-  float y = 1.0f - (2.0f * mouseY) /
-                       (SCREEN_HEIGHT - devDebug.bottomWindowHeight - devDebug.menuBarHeight);
+  float x = (2.0f * mouseX) /
+                (SCREEN_WIDTH - widgetLayout.leftWindowWidth - widgetLayout.rightWindowWidth) -
+            1.0f;
+  float y = 1.0f - (2.0f * mouseY) / (SCREEN_HEIGHT - widgetLayout.bottomWindowHeight -
+                                      widgetLayout.menuBarHeight - widgetLayout.topWindowHeight);
   float z = 1.0f;
 #endif
 

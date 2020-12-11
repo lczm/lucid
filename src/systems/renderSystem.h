@@ -13,10 +13,10 @@
 #include "cube.h"
 #include "sphere.h"
 #include "line.h"
-#include "devStructs.h"
 #include "quatCamera.h"
 #include "renderUtils.h"
 #include "primitiveVertex.h"
+#include "engineComponents.h"
 
 #include "gtx/string_cast.hpp"
 
@@ -29,8 +29,10 @@ class RenderSystem : public System
 {
  private:
   Renderer* renderer;
-  // Camera* camera;
+
+#if DEBUG
   QuatCamera* quatCamera;
+#endif
 
   uint32_t fbo, rbo;
   uint32_t texture;
@@ -42,6 +44,7 @@ class RenderSystem : public System
   void Update(double dt, Registry* registry, Input* input);
 
   void InitRenderBuffers();
+  void InitSceneCameraComponent(Registry* registry);
   void InitPrimitiveBuffers(Registry* registry);
 
   void HandleMousePan(double dt, Registry* registry, Input* input);

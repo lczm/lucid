@@ -5,6 +5,7 @@
 #include <chrono>
 
 #include "gl.h"
+#include "ecs.h"
 #include "model.h"
 #include "cube.h"
 #include "line.h"
@@ -12,7 +13,7 @@
 #include "boundingBox.h"
 #include "primitiveVertex.h"
 #include "renderUtils.h"
-#include "devStructs.h"
+#include "engineComponents.h"
 
 #include "gtx/string_cast.hpp"
 
@@ -21,6 +22,8 @@ const uint32_t MAX_BUFFER = 1000;
 class Renderer
 {
  private:
+  Registry* registry;
+
   uint32_t batchIndexCount = 0;
   std::vector<glm::mat4> modelMatrices;
   std::vector<LineVertex> linePrimitiveBuffer;
@@ -28,7 +31,7 @@ class Renderer
   std::vector<SphereVertex> spherePrimitiveBuffer;
 
  public:
-  Renderer();
+  Renderer(Registry* registry);
   ~Renderer();
 
   // Public draw methods
@@ -43,7 +46,6 @@ class Renderer
   void DrawTexturedSphere(Sphere& sphere, Shader& shader);
 
   void DrawLine(Line& line, Shader& shader);
-  void DrawLine(glm::vec3 origin, glm::vec3 end, glm::vec3 color);
   void DrawLineIndexed(PrimitiveBatchIds primitiveBatchIds);
 
   void DrawBoundingBox(Model& model, Shader& shader);
