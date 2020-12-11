@@ -2,8 +2,7 @@
 
 RenderSystem::RenderSystem(Registry* registry)
 {
-  RenderSystem::renderer = new Renderer();
-  // RenderSystem::camera = new Camera();
+  RenderSystem::renderer = new Renderer(registry);
   RenderSystem::quatCamera = new QuatCamera();
 
   // move back the camera a little bit.

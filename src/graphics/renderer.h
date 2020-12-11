@@ -5,6 +5,7 @@
 #include <chrono>
 
 #include "gl.h"
+#include "ecs.h"
 #include "model.h"
 #include "cube.h"
 #include "line.h"
@@ -21,6 +22,8 @@ const uint32_t MAX_BUFFER = 1000;
 class Renderer
 {
  private:
+  Registry* registry;
+
   uint32_t batchIndexCount = 0;
   std::vector<glm::mat4> modelMatrices;
   std::vector<LineVertex> linePrimitiveBuffer;
@@ -28,7 +31,7 @@ class Renderer
   std::vector<SphereVertex> spherePrimitiveBuffer;
 
  public:
-  Renderer();
+  Renderer(Registry* registry);
   ~Renderer();
 
   // Public draw methods
