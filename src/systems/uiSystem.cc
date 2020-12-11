@@ -332,8 +332,7 @@ void UiSystem::DrawScene(double dt, Registry* registry, Input* input)
   }
   ImGui::EndChild();
 
-  UpdateWindowFocus(registry, WindowType::Inspector, "Inspector");
-  devDebug.changeFocusWindow = WindowType::Scene;
+  UpdateWindowFocus(registry, WindowType::Inspector, "Inspector", WindowType::Scene);
   UpdateWindowFocus(registry, WindowType::Scene, "Scene");
 
   ImGui::End();
@@ -649,13 +648,13 @@ void UiSystem::UpdateInputActiveWindow(Input* input, WindowType windowType)
   }
 }
 
-void UiSystem::UpdateWindowFocus(Registry* registry, WindowType windowType, const char* focusWindow)
+void UiSystem::UpdateWindowFocus(Registry* registry, WindowType windowType, const char* focusWindow, WindowType changeFocusWindow)
 {
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
 
   if (devDebug.changeFocusWindow == windowType)
   {
     ImGui::SetWindowFocus(focusWindow);
-    devDebug.changeFocusWindow = WindowType::None;
+    devDebug.changeFocusWindow = changeFocusWindow;
   }
 }
