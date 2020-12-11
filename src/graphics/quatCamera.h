@@ -7,7 +7,8 @@
 #include "gtx/string_cast.hpp"
 #include "gtc/matrix_transform.hpp"
 
-class QuatCamera {
+class QuatCamera
+{
  public:
   glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
   glm::quat orientation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);

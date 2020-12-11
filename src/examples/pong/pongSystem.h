@@ -4,7 +4,8 @@
 #include "ecs.h"
 #include "sphere.h"
 
-class PongSystem : public System {
+class PongSystem : public System
+{
  private:
  public:
   PongSystem();

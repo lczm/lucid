@@ -88,7 +88,7 @@ TEST_F(TestsGL, BoxBoxNotColliding) {
 // be a centralised place that hosts the collision checks between the primitives
 TEST_F(TestsGL, RayBoxColliding) {
   Registry* registry = new Registry();
-  RenderSystem* renderSystem = new RenderSystem();
+  RenderSystem* renderSystem = new RenderSystem(registry);
 
   registry->RegisterArchetype<Cube, Transform>();
   Entity first = registry->GetAvailableEntityId();
@@ -123,7 +123,7 @@ TEST_F(TestsGL, RayBoxColliding) {
 
 TEST_F(TestsGL, RayBoxNotColliding) {
   Registry* registry = new Registry();
-  RenderSystem* renderSystem = new RenderSystem();
+  RenderSystem* renderSystem = new RenderSystem(registry);
 
   registry->RegisterArchetype<Cube, Transform>();
   Entity first = registry->GetAvailableEntityId();

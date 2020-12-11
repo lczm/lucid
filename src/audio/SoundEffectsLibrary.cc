@@ -1,11 +1,13 @@
 #include "soundEffectsLibrary.h"
 
-SoundEffectsLibrary* SoundEffectsLibrary::Get() {
+SoundEffectsLibrary* SoundEffectsLibrary::Get()
+{
   static SoundEffectsLibrary* sndbuf = new SoundEffectsLibrary();
   return sndbuf;
 }
 
-ALuint SoundEffectsLibrary::Load(const char* filename) {
+ALuint SoundEffectsLibrary::Load(const char* filename)
+{
   ALenum err, format;
   ALuint buffer;
   SNDFILE* sndfile;
@@ -16,12 +18,13 @@ ALuint SoundEffectsLibrary::Load(const char* filename) {
 
   /* Open the audio file and check that it's usable. */
   sndfile = sf_open(filename, SFM_READ, &sfinfo);
-  if (!sndfile) {
+  if (!sndfile)
+  {
     fprintf(stderr, "Could not open audio in %s: %s\n", filename, sf_strerror(sndfile));
     return 0;
   }
-  if (sfinfo.frames < 1 ||
-      sfinfo.frames > (sf_count_t)(INT_MAX / sizeof(short)) / sfinfo.channels) {
+  if (sfinfo.frames < 1 || sfinfo.frames > (sf_count_t)(INT_MAX / sizeof(short)) / sfinfo.channels)
+  {
     fprintf(stderr, "Bad sample count in %s (%" PRId64 ")\n", filename, sfinfo.frames);
     sf_close(sndfile);
     return 0;
@@ -33,14 +36,18 @@ ALuint SoundEffectsLibrary::Load(const char* filename) {
     format = AL_FORMAT_MONO16;
   else if (sfinfo.channels == 2)
     format = AL_FORMAT_STEREO16;
-  else if (sfinfo.channels == 3) {
+  else if (sfinfo.channels == 3)
+  {
     if (sf_command(sndfile, SFC_WAVEX_GET_AMBISONIC, NULL, 0) == SF_AMBISONIC_B_FORMAT)
       format = AL_FORMAT_BFORMAT2D_16;
-  } else if (sfinfo.channels == 4) {
+  }
+  else if (sfinfo.channels == 4)
+  {
     if (sf_command(sndfile, SFC_WAVEX_GET_AMBISONIC, NULL, 0) == SF_AMBISONIC_B_FORMAT)
       format = AL_FORMAT_BFORMAT3D_16;
   }
-  if (!format) {
+  if (!format)
+  {
     fprintf(stderr, "Unsupported channel count: %d\n", sfinfo.channels);
     sf_close(sndfile);
     return 0;
@@ -50,7 +57,8 @@ ALuint SoundEffectsLibrary::Load(const char* filename) {
   membuf = static_cast<short*>(malloc((size_t)(sfinfo.frames * sfinfo.channels) * sizeof(short)));
 
   num_frames = sf_readf_short(sndfile, membuf, sfinfo.frames);
-  if (num_frames < 1) {
+  if (num_frames < 1)
+  {
     free(membuf);
     sf_close(sndfile);
     fprintf(stderr, "Failed to read samples in %s (%" PRId64 ")\n", filename, num_frames);
@@ -70,7 +78,8 @@ ALuint SoundEffectsLibrary::Load(const char* filename) {
 
   /* Check if an error occured, and clean up if so. */
   err = alGetError();
-  if (err != AL_NO_ERROR) {
+  if (err != AL_NO_ERROR)
+  {
     fprintf(stderr, "OpenAL Error: %s\n", alGetString(err));
     if (buffer && alIsBuffer(buffer)) alDeleteBuffers(1, &buffer);
     return 0;
@@ -81,27 +90,34 @@ ALuint SoundEffectsLibrary::Load(const char* filename) {
   return buffer;
 }
 
-bool SoundEffectsLibrary::UnLoad(const ALuint& buffer) {
+bool SoundEffectsLibrary::UnLoad(const ALuint& buffer)
+{
   auto it = p_SoundEffectBuffers.begin();
-  while (it != p_SoundEffectBuffers.end()) {
-    if (*it == buffer) {
+  while (it != p_SoundEffectBuffers.end())
+  {
+    if (*it == buffer)
+    {
       alDeleteBuffers(1, &*it);
 
       it = p_SoundEffectBuffers.erase(it);
 
       return true;
-    } else {
+    }
+    else
+    {
       ++it;
     }
   }
   return false;  // couldn't find to remove
 }
 
-SoundEffectsLibrary::SoundEffectsLibrary() {
+SoundEffectsLibrary::SoundEffectsLibrary()
+{
   p_SoundEffectBuffers.clear();
 }
 
-SoundEffectsLibrary::~SoundEffectsLibrary() {
+SoundEffectsLibrary::~SoundEffectsLibrary()
+{
   alDeleteBuffers(p_SoundEffectBuffers.size(), p_SoundEffectBuffers.data());
 
   p_SoundEffectBuffers.clear();

@@ -2,7 +2,8 @@
 #include <al/al.h>
 #include <iostream>
 
-class SoundEffectsPlayer {
+class SoundEffectsPlayer
+{
  private:
   ALuint source;
   ALuint buffer = 0;

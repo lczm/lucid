@@ -1,6 +1,7 @@
 #pragma once
 
-enum class WindowType {
+enum class WindowType
+{
   Hierarchy,
   Project,
   Console,

@@ -14,7 +14,8 @@
    value.
 */
 
-struct Transform {
+struct Transform
+{
   glm::vec3 position = glm::vec3(0.0f);
   glm::vec3 rotation = glm::vec3(0.0f);
   glm::vec3 scale = glm::vec3(1.0f);
@@ -22,7 +23,8 @@ struct Transform {
 
 // For now, RigidBody will also act as a collider
 // as it is simpler this way
-struct RigidBody {
+struct RigidBody
+{
   glm::vec3 velocity = glm::vec3(0.0f);
 };
 
@@ -31,7 +33,8 @@ struct RigidBody {
 // struct ColliderCube {};
 // struct ColliderModel {};
 
-struct Animation {
+struct Animation
+{
   float animCounter = 0;   // Counter on time passed
   float animInterval = 1;  // Counter on the threshold of each animation
 
@@ -40,13 +43,15 @@ struct Animation {
   int spriteEnd = 0;
 };
 
-struct SoundEffect {
+struct SoundEffect
+{
   const char* filePath;
   bool looping = false;
   int gain = 1;
 };
 
-struct Music {
+struct Music
+{
   const char* filePath;
   int gain = 1;
 };

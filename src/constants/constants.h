@@ -26,7 +26,7 @@ const char MODEL_VERTEX_SHADER[] = "../src/shaders/model.vert";
 const char MODEL_FRAGMENT_SHADER[] = "../src/shaders/model.frag";
 
 const char PRIMITIVE_VERTEX_SHADER[] = "../src/shaders/primitive.vert";
-const char PRIMITIVE_BATCH_VERTEX_SHADER[] = "../src/shaders/primitiveBatch.vert";
+const char PRIMITIVE_LINE_SHADER[] = "../src/shaders/line.vert";
 
 const char PRIMITIVE_FRAGMENT_SHADER[] = "../src/shaders/primitive.frag";
 

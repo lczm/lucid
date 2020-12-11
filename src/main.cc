@@ -79,7 +79,7 @@ int main(void) {
   // this here, this sets the current window as the context current
   glfwMakeContextCurrent(window);
 
-  EnableVSync();
+  // EnableVSync();
 
   // Load gl with glad
   gladLoadGL(glfwGetProcAddress);

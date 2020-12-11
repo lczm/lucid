@@ -8,6 +8,7 @@
 #include "utils.h"
 #include "renderer.h"
 #include "windowEnum.h"
+#include "renderUtils.h"
 
 #if DEBUG
 #include "devStructs.h"
@@ -24,7 +25,8 @@
 #include "imgui_impl_opengl3.h"
 #include "ImGuizmo.h"
 
-class UiSystem : public System {
+class UiSystem : public System
+{
  private:
   bool drawWireframe;
   bool drawSceneOnly;

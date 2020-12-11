@@ -5,7 +5,8 @@
 #include <cstddef>
 #include <malloc.h>
 
-class MusicBuffer {
+class MusicBuffer
+{
  public:
   void Play();
   void Pause();

@@ -5,7 +5,8 @@
 #include "constants.h"
 #include "musicBuffer.h"
 
-class AudioSystem : public System {
+class AudioSystem : public System
+{
  private:
   float gruntCooldown;
 

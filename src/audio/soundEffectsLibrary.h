@@ -5,7 +5,8 @@
 #include <inttypes.h>
 #include <vector>
 
-class SoundEffectsLibrary {
+class SoundEffectsLibrary
+{
  private:
   SoundEffectsLibrary();
   ~SoundEffectsLibrary();

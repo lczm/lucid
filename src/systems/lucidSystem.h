@@ -9,9 +9,9 @@
  * for debugging and a relatively easy sandbox to use when trying out new
  * stuff.
  */
-class LucidSystem : public System {
+class LucidSystem : public System
+{
  private:
-
  public:
   LucidSystem();
   ~LucidSystem();

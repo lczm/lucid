@@ -12,8 +12,11 @@
 #include "shaderResource.h"
 #include "cube.h"
 #include "sphere.h"
+#include "line.h"
 #include "devStructs.h"
 #include "quatCamera.h"
+#include "renderUtils.h"
+#include "primitiveVertex.h"
 
 #include "gtx/string_cast.hpp"
 
@@ -22,30 +25,24 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
-// TODO : Organize this
-// Maximum amount of matrices that can be sent over at any point in time
-// any more than maximum, restart another batch
-
-class RenderSystem : public System {
+class RenderSystem : public System
+{
  private:
   Renderer* renderer;
-  Camera* camera;
+  // Camera* camera;
   QuatCamera* quatCamera;
 
   uint32_t fbo, rbo;
   uint32_t texture;
 
-  bool setOnce = false;
-
  public:
-  uint32_t batchIndexCount;
-  std::vector<glm::mat4> modelMatrices;
-
- public:
-  RenderSystem();
+  RenderSystem(Registry* registry);
   ~RenderSystem();
 
   void Update(double dt, Registry* registry, Input* input);
+
+  void InitRenderBuffers();
+  void InitPrimitiveBuffers(Registry* registry);
 
   void HandleMousePan(double dt, Registry* registry, Input* input);
   void HandleKeyboardPan(double dt, Input* input);

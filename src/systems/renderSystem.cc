@@ -1,16 +1,65 @@
 #include "renderSystem.h"
 
-RenderSystem::RenderSystem() : modelMatrices(10000) {
+RenderSystem::RenderSystem(Registry* registry)
+{
   RenderSystem::renderer = new Renderer();
   // RenderSystem::camera = new Camera();
   RenderSystem::quatCamera = new QuatCamera();
 
-  // const uint32_t MAX_MATRICES = 100000;
-  // RenderSystem::modelMatrices.reserve(MAX_MATRICES);
-
   // move back the camera a little bit.
   quatCamera->TranslateInWorld(glm::vec3(0.0f, 1.0f, 35.0f));
 
+  InitRenderBuffers();
+  InitPrimitiveBuffers(registry);
+}
+
+RenderSystem::~RenderSystem()
+{
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  glDeleteFramebuffers(1, &fbo);
+}
+
+void RenderSystem::Update(double dt, Registry* registry, Input* input)
+{
+  // Temporary gateway for mouse picking
+  HandleMousePick(dt, registry, input);
+  HandleMousePan(dt, registry, input);
+  HandleMouseScroll(dt, input);
+
+  HandleKeyboardPan(dt, input);
+  HandleKeyboardInput(dt, registry, input);
+
+  glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
+  glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  SceneRender& sceneRender = registry->GetComponent<SceneRender>();
+  sceneRender.textureID = texture;
+
+  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+
+  devDebug.projection = quatCamera->GetProjection();
+  devDebug.view = quatCamera->GetView();
+
+  // TODO : wireframe drawing should have its own shaders
+  // Draw wireframe
+  // glLineWidth(3.0f);
+  if (devDebug.drawWireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+  DrawAllLines(dt, registry, input);
+  DrawAllModels(dt, registry, input);
+  DrawAllCubes(dt, registry, input);
+  DrawAllSpheres(dt, registry, input);
+
+  if (devDebug.drawColliders) DrawAllBoundingBoxes(dt, registry, input);
+  if (devDebug.drawWireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void RenderSystem::InitRenderBuffers()
+{
   glGenFramebuffers(1, &fbo);
   glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
@@ -39,58 +88,71 @@ RenderSystem::RenderSystem() : modelMatrices(10000) {
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-RenderSystem::~RenderSystem() {
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
-  glDeleteFramebuffers(1, &fbo);
+void RenderSystem::InitPrimitiveBuffers(Registry* registry)
+{
+  PrimitiveBatchIds& primitiveBatchIds = registry->GetComponent<PrimitiveBatchIds>();
+
+  // Line : Generate VAO and VBO
+  glGenVertexArrays(1, &primitiveBatchIds.lineVAO);
+  glGenBuffers(1, &primitiveBatchIds.lineVBO);
+
+  // Line : Bind VAO and VBO
+  glBindVertexArray(primitiveBatchIds.lineVAO);
+  glBindBuffer(GL_ARRAY_BUFFER, primitiveBatchIds.lineVBO);
+
+  // Line : Set the BufferData to a max size with dynamic draw
+  // glBufferData(GL_ARRAY_BUFFER, (MAX_BUFFER * sizeof(glm::mat4)) + (line_vertices.size() *
+  // sizeof(float)), nullptr, GL_DYNAMIC_DRAW); glBufferData(GL_ARRAY_BUFFER, (line_vertices.size()
+  // * sizeof(float)) + (MAX_BUFFER * sizeof(glm::mat4)), nullptr, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, MAX_BUFFER * sizeof(LineVertex), nullptr, GL_DYNAMIC_DRAW);
+
+  // Line : Update the vertex attributes
+  std::size_t vec4Size = sizeof(glm::vec4);
+  // glEnableVertexAttribArray(0);
+  // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)), (void*)0);
+
+  glEnableVertexAttribArray(1);
+  glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)),
+                        (void*)(1 * vec4Size));
+
+  glEnableVertexAttribArray(2);
+  glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)),
+                        (void*)(2 * vec4Size));
+
+  glEnableVertexAttribArray(3);
+  glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)),
+                        (void*)(3 * vec4Size));
+
+  glEnableVertexAttribArray(4);
+  glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)),
+                        (void*)(4 * vec4Size));
+
+  // Line : Set the matrix 4 divisors
+  glVertexAttribDivisor(0, 1);
+  glVertexAttribDivisor(1, 1);
+  glVertexAttribDivisor(2, 1);
+  glVertexAttribDivisor(3, 1);
+  glVertexAttribDivisor(4, 1);
+
+  // Line : Un-Bind the Line VAO
+  glBindVertexArray(0);
+
+  // TODO : Generate Sphere Buffers
+  // TODO : Generate Cube Buffers
 }
 
-void RenderSystem::Update(double dt, Registry* registry, Input* input) {
-  // Temporary gateway for mouse picking
-  HandleMousePick(dt, registry, input);
-  HandleMousePan(dt, registry, input);
-  HandleMouseScroll(dt, input);
-
-  HandleKeyboardPan(dt, input);
-  HandleKeyboardInput(dt, registry, input);
-
-  glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-
-  glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-  // ShaderResource& shaderResource = registry->GetComponent<ShaderResource>();
-
-  SceneRender& sceneRender = registry->GetComponent<SceneRender>();
-  sceneRender.textureID = texture;
-
-  DevDebug& devDebug = registry->GetComponent<DevDebug>();
-
-  devDebug.projection = quatCamera->GetProjection();
-  devDebug.view = quatCamera->GetView();
-
-  // TODO : wireframe drawing should have its own shaders
-  // Draw wireframe
-  // glLineWidth(3.0f);
-  if (devDebug.drawWireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-  DrawAllLines(dt, registry, input);
-  DrawAllModels(dt, registry, input);
-  DrawAllCubes(dt, registry, input);
-  DrawAllSpheres(dt, registry, input);
-
-  if (devDebug.drawColliders) DrawAllBoundingBoxes(dt, registry, input);
-  if (devDebug.drawWireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-
-void RenderSystem::HandleMousePan(double dt, Registry* registry, Input* input) {
+void RenderSystem::HandleMousePan(double dt, Registry* registry, Input* input)
+{
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
   if (devDebug.onGizmo == true) return;
 
   if (input->IsMouseLDown() &&                //
       (input->lastX != input->GetMouseX() ||  //
-       input->lastY != input->GetMouseY())) {
+       input->lastY != input->GetMouseY()))
+  {
     float offsetX = input->GetMouseX() - input->lastX;
     float offsetY = input->GetMouseY() - input->lastY;
 
@@ -108,7 +170,8 @@ void RenderSystem::HandleMousePan(double dt, Registry* registry, Input* input) {
 
   if (input->IsMouseRDown() &&                //
       (input->lastX != input->GetMouseX() ||  //
-       input->lastY != input->GetMouseY())) {
+       input->lastY != input->GetMouseY()))
+  {
     float offsetX = input->GetMouseX() - input->lastX;
     float offsetY = input->GetMouseY() - input->lastY;
 
@@ -121,14 +184,17 @@ void RenderSystem::HandleMousePan(double dt, Registry* registry, Input* input) {
   }
 }
 
-void RenderSystem::HandleMouseScroll(double dt, Input* input) {
+void RenderSystem::HandleMouseScroll(double dt, Input* input)
+{
   // Scroll up
-  if (input->GetScrollState() == 1) {
+  if (input->GetScrollState() == 1)
+  {
     quatCamera->Translate(glm::vec3(0.0f, 0.0f, SCROLL_SPEED * dt));
   }
 
   // Scroll down
-  if (input->GetScrollState() == -1) {
+  if (input->GetScrollState() == -1)
+  {
     quatCamera->Translate(glm::vec3(0.0f, 0.0f, -(SCROLL_SPEED * dt)));
   }
 
@@ -137,7 +203,8 @@ void RenderSystem::HandleMouseScroll(double dt, Input* input) {
   return;
 }
 
-void RenderSystem::HandleKeyboardPan(double dt, Input* input) {
+void RenderSystem::HandleKeyboardPan(double dt, Input* input)
+{
   if (input->IsKeyDown('W')) quatCamera->Translate(glm::vec3(0.0f, 0.0f, CAMERA_SPEED * dt));
   if (input->IsKeyDown('S')) quatCamera->Translate(glm::vec3(0.0f, 0.0f, -(CAMERA_SPEED * dt)));
   if (input->IsKeyDown('A')) quatCamera->Translate(glm::vec3(CAMERA_SPEED * dt, 0.0f, 0.0f));
@@ -153,7 +220,8 @@ void RenderSystem::HandleKeyboardPan(double dt, Input* input) {
 }
 
 // Note : temporary
-void RenderSystem::HandleKeyboardInput(double dt, Registry* registry, Input* input) {
+void RenderSystem::HandleKeyboardInput(double dt, Registry* registry, Input* input)
+{
   // if (input->IsKeyDown('1')) {
   //   Entity cubeID = registry->GetAvailableEntityId();
 
@@ -166,12 +234,15 @@ void RenderSystem::HandleKeyboardInput(double dt, Registry* registry, Input* inp
   // }
 }
 
-bool RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) {
-  if (!input->mouseKeys[MOUSE_LEFT]) {
+bool RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input)
+{
+  if (!input->mouseKeys[MOUSE_LEFT])
+  {
     return false;
   }
 
-  if (input->activeWindow != WindowType::Scene) {
+  if (input->activeWindow != WindowType::Scene)
+  {
     return false;
   }
 
@@ -191,7 +262,8 @@ bool RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
   std::vector<BoundingBox> boundingBoxes;
   // Calculate all the positions, assume that there is a BoundingBoxCube around it.
   registry->GetComponentsIter<Transform>()->EachWithID([&](Entity id, Transform& transform) {
-    if (transform.scale.x == 1.0f) {
+    if (transform.scale.x == 1.0f)
+    {
       // Calculate the model matrix
       glm::mat4 matrixModel = glm::mat4(1.0f);
 
@@ -201,7 +273,8 @@ bool RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
       std::vector<glm::vec4> verticesCollection;
       verticesCollection.reserve(boundingBoxCubeVertices.size() / 3);
 
-      for (size_t i = 0; i < boundingBoxCubeVertices.size(); i += 3) {
+      for (size_t i = 0; i < boundingBoxCubeVertices.size(); i += 3)
+      {
         verticesCollection.push_back(matrixModel * glm::vec4(boundingBoxCubeVertices[i],
                                                              boundingBoxCubeVertices[i + 1],
                                                              boundingBoxCubeVertices[i + 2], 1.0f));
@@ -223,22 +296,26 @@ bool RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
   // Each([](uint32_t id, Transform& transform))
   std::vector<float> lengths;
   std::vector<uint32_t> lengthIndexs;
-  for (size_t i = 0; i < boundingBoxes.size(); i++) {
+  for (size_t i = 0; i < boundingBoxes.size(); i++)
+  {
     auto collisionAndLength = RayBoundingBoxCollisionCheck(origin, rayDirection, boundingBoxes[i]);
-    if (std::get<bool>(collisionAndLength)) {
+    if (std::get<bool>(collisionAndLength))
+    {
       lengths.push_back(std::get<float>(collisionAndLength));
       lengthIndexs.push_back(i);
     }
   }
 
   // If there are none collided
-  if (lengths.size() == 0) {
+  if (lengths.size() == 0)
+  {
     // If it does not collide, set activeEntity to be 0
     devDebug.activeEntity = 0;
     return false;
   }
 
-  if (lengths.size() == 1) {
+  if (lengths.size() == 1)
+  {
     // lucid::Log("Single collision! ID : ", entityIds[lengthIndexs[0]], " Length : ", lengths[0]);
     devDebug.activeEntity = entityIds[lengthIndexs[0]];
 
@@ -250,8 +327,10 @@ bool RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
   // If it has collided with more than one object
   uint32_t shortestIndex = 0;
   float shortestLength = std::numeric_limits<float>::max();
-  for (size_t i = 0; i < lengths.size(); i++) {
-    if (lengths[i] < shortestLength) {
+  for (size_t i = 0; i < lengths.size(); i++)
+  {
+    if (lengths[i] < shortestLength)
+    {
       shortestLength = lengths[i];
       shortestIndex = lengthIndexs[i];
     }
@@ -269,114 +348,33 @@ bool RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input) 
   return true;
 }
 
-void RenderSystem::DrawAllLines(double dt, Registry* registry, Input* input) {
+void RenderSystem::DrawAllLines(double dt, Registry* registry, Input* input)
+{
   ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
-
-  // shaderResource.primitiveShader.Bind();
-  // shaderResource.primitiveShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
-  // shaderResource.primitiveShader.SetUniformMatFloat4("view", quatCamera->GetView());
-
-  // registry->GetComponentsIter<Line, Transform>()->Each([&](Line& line, Transform& transform) {
-  //   // Update the position to the origin of the transform
-  //   transform.position = line.origin;
-  //   // The scale is the 'direction' on how far to move
-  //   transform.scale = line.destination - line.origin;
-
-  //   glm::mat4 matrixModel = glm::mat4(1.0f);
-  //   glm::mat4 rotationMatrix = glm::mat4(1.0f);
-
-  //   matrixModel = glm::translate(matrixModel, transform.position);
-  //   matrixModel = glm::scale(matrixModel, transform.scale);
-
-  //   // Rotation matrix
-  //   rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[0], glm::vec3(1.0, 0.0,
-  //   0.0)); rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[1],
-  //   glm::vec3(0.0, 1.0, 0.0)); rotationMatrix = glm::rotate(rotationMatrix,
-  //   transform.rotation[2], glm::vec3(0.0, 0.0, 1.0));
-
-  //   matrixModel *= rotationMatrix;
-
-  //   shaderResource.primitiveShader.SetUniformMatFloat4("model", matrixModel);
-  //   shaderResource.primitiveShader.SetUniformVecFloat3("uColor", line.color);
-  //   renderer->DrawLine(line, shaderResource.primitiveShader);
-  // });
-
-  // shaderResource.primitiveShader.Unbind();
 
   shaderResource.primitiveShaderBatch.Bind();
   shaderResource.primitiveShaderBatch.SetUniformMatFloat4("projection",
                                                           quatCamera->GetProjection());
   shaderResource.primitiveShaderBatch.SetUniformMatFloat4("view", quatCamera->GetView());
 
-  uint32_t batchIndexCount = 0;
-  std::vector<glm::mat4> modelMatrices;
+  renderer->StartBatch();
+
   registry->GetComponentsIter<Line, Transform>()->Each([&](Line& line, Transform& transform) {
     transform.position = line.origin;
     transform.scale = line.destination - line.origin;
 
-    glm::mat4 matrixModel = glm::mat4(1.0f);
-    glm::mat4 rotationMatrix = glm::mat4(1.0f);
-
-    matrixModel = glm::translate(matrixModel, transform.position);
-    matrixModel = glm::scale(matrixModel, transform.scale);
-
-    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[0], glm::vec3(1.0, 0.0, 0.0));
-    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[1], glm::vec3(0.0, 1.0, 0.0));
-    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[2], glm::vec3(0.0, 0.0, 1.0));
-
-    matrixModel *= rotationMatrix;
-
-    // modelMatrices[batchIndexCount] = matrixModel;
-    modelMatrices.push_back(matrixModel);
-
-    batchIndexCount++;
-
-    // shaderResource.primitiveShaderBatch.SetUniformVecFloat3("uColor", line.color);
+    auto modelMatrix = GetModelMatrix(transform);
+    renderer->PushLineBuffer(modelMatrix, line);
   });
 
-  DevLine& devLine = registry->GetComponent<DevLine>();
-  glBindVertexArray(devLine.VAO);
-  // glBindBuffer(GL_ARRAY_BUFFER, devLine.VBO);
-  // glBufferData(GL_ARRAY_BUFFER, modelMatrices.size() * sizeof(glm::mat4), &modelMatrices[0],
-  //              GL_STATIC_DRAW);
-
-  // TODO : The reason why this can't work is because VBOs the memory allocated is static ->
-  // GL_STATIC_DRAW
-  // https://stackoverflow.com/questions/15821969/what-is-the-proper-way-to-modify-opengl-vertex-buffer
-  uint32_t buffer;
-  glGenBuffers(1, &buffer);
-  glBindBuffer(GL_ARRAY_BUFFER, buffer);
-  glBufferData(GL_ARRAY_BUFFER, batchIndexCount * sizeof(glm::mat4), &modelMatrices[0],
-               GL_STATIC_DRAW);
-
-  // Bind a line vao and batch draw them
-  // Line& line = *(registry->GetComponent<Line>(sampleLineID));
-  // glBindVertexArray(line.VAO);
-  // glDrawArraysInstanced(GL_LINES, 0, 2, batchIndexCount);
-
-  std::size_t vec4Size = sizeof(glm::vec4);
-  glEnableVertexAttribArray(1);
-  glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
-
-  glEnableVertexAttribArray(2);
-  glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(1 * vec4Size));
-
-  glEnableVertexAttribArray(3);
-  glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size));
-
-  glEnableVertexAttribArray(4);
-  glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size));
-
-  glVertexAttribDivisor(1, 1);
-  glVertexAttribDivisor(2, 1);
-  glVertexAttribDivisor(3, 1);
-  glVertexAttribDivisor(4, 1);
-  glDrawArraysInstanced(GL_LINES, 0, 2, batchIndexCount);
+  PrimitiveBatchIds& primitiveBatchIds = registry->GetComponent<PrimitiveBatchIds>();
+  renderer->FlushBatch(primitiveBatchIds, DrawType::Line);
 
   shaderResource.primitiveShaderBatch.Unbind();
 }
 
-void RenderSystem::DrawAllModels(double dt, Registry* registry, Input* input) {
+void RenderSystem::DrawAllModels(double dt, Registry* registry, Input* input)
+{
   ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
 
   shaderResource.modelShader.Bind();
@@ -384,27 +382,17 @@ void RenderSystem::DrawAllModels(double dt, Registry* registry, Input* input) {
   shaderResource.modelShader.SetUniformMatFloat4("view", quatCamera->GetView());
 
   registry->GetComponentsIter<Model, Transform>()->Each([&](Model& model, Transform& transform) {
-    glm::mat4 matrixModel = glm::mat4(1.0f);
-    glm::mat4 rotationMatrix = glm::mat4(1.0f);
+    auto modelMatrix = GetModelMatrix(transform);
 
-    matrixModel = glm::translate(matrixModel, transform.position);
-    matrixModel = glm::scale(matrixModel, transform.scale);
-
-    // Rotation matrix
-    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[0], glm::vec3(1.0, 0.0, 0.0));
-    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[1], glm::vec3(0.0, 1.0, 0.0));
-    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[2], glm::vec3(0.0, 0.0, 1.0));
-
-    matrixModel *= rotationMatrix;
-
-    shaderResource.modelShader.SetUniformMatFloat4("model", matrixModel);
+    shaderResource.modelShader.SetUniformMatFloat4("model", modelMatrix);
     renderer->DrawModel(model, shaderResource.modelShader);
   });
 
   shaderResource.modelShader.Unbind();
 }
 
-void RenderSystem::DrawAllCubes(double dt, Registry* registry, Input* input) {
+void RenderSystem::DrawAllCubes(double dt, Registry* registry, Input* input)
+{
   ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
 
   shaderResource.primitiveShader.Bind();
@@ -412,20 +400,9 @@ void RenderSystem::DrawAllCubes(double dt, Registry* registry, Input* input) {
   shaderResource.primitiveShader.SetUniformMatFloat4("view", quatCamera->GetView());
 
   registry->GetComponentsIter<Cube, Transform>()->Each([&](Cube& cube, Transform& transform) {
-    glm::mat4 matrixModel = glm::mat4(1.0f);
-    glm::mat4 rotationMatrix = glm::mat4(1.0f);
+    auto modelMatrix = GetModelMatrix(transform);
 
-    matrixModel = glm::translate(matrixModel, transform.position);
-    matrixModel = glm::scale(matrixModel, transform.scale);
-
-    // Rotation matrix
-    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[0], glm::vec3(1.0, 0.0, 0.0));
-    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[1], glm::vec3(0.0, 1.0, 0.0));
-    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[2], glm::vec3(0.0, 0.0, 1.0));
-
-    matrixModel *= rotationMatrix;
-
-    shaderResource.primitiveShader.SetUniformMatFloat4("model", matrixModel);
+    shaderResource.primitiveShader.SetUniformMatFloat4("model", modelMatrix);
     shaderResource.primitiveShader.SetUniformVecFloat3("uColor", cube.color);
 
     renderer->DrawCube(cube, shaderResource.primitiveShader);
@@ -434,7 +411,8 @@ void RenderSystem::DrawAllCubes(double dt, Registry* registry, Input* input) {
   shaderResource.primitiveShader.Unbind();
 }
 
-void RenderSystem::DrawAllSpheres(double dt, Registry* registry, Input* input) {
+void RenderSystem::DrawAllSpheres(double dt, Registry* registry, Input* input)
+{
   ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
 
   shaderResource.primitiveShader.Bind();
@@ -442,20 +420,9 @@ void RenderSystem::DrawAllSpheres(double dt, Registry* registry, Input* input) {
   shaderResource.primitiveShader.SetUniformMatFloat4("view", quatCamera->GetView());
 
   registry->GetComponentsIter<Sphere, Transform>()->Each([&](Sphere& sphere, Transform& transform) {
-    glm::mat4 matrixModel = glm::mat4(1.0f);
-    glm::mat4 rotationMatrix = glm::mat4(1.0f);
+    auto modelMatrix = GetModelMatrix(transform);
 
-    matrixModel = glm::translate(matrixModel, transform.position);
-    matrixModel = glm::scale(matrixModel, transform.scale);
-
-    // Rotation matrix
-    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[0], glm::vec3(1.0, 0.0, 0.0));
-    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[1], glm::vec3(0.0, 1.0, 0.0));
-    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[2], glm::vec3(0.0, 0.0, 1.0));
-
-    matrixModel *= rotationMatrix;
-
-    shaderResource.primitiveShader.SetUniformMatFloat4("model", matrixModel);
+    shaderResource.primitiveShader.SetUniformMatFloat4("model", modelMatrix);
     shaderResource.primitiveShader.SetUniformVecFloat3("uColor", sphere.color);
     renderer->DrawSphere(sphere, shaderResource.primitiveShader);
   });
@@ -463,37 +430,28 @@ void RenderSystem::DrawAllSpheres(double dt, Registry* registry, Input* input) {
   shaderResource.primitiveShader.Unbind();
 }
 
-void RenderSystem::DrawAllBoundingBoxes(double dt, Registry* registry, Input* input) {
+void RenderSystem::DrawAllBoundingBoxes(double dt, Registry* registry, Input* input)
+{
   ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
 
   shaderResource.primitiveShader.Bind();
   shaderResource.primitiveShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
   shaderResource.primitiveShader.SetUniformMatFloat4("view", quatCamera->GetView());
 
-  registry->GetComponentsIter<Transform, ColliderCube>()->Each([&](Transform& transform,
-                                                                   ColliderCube& colliderCube) {
-    glm::mat4 matrixModel = glm::mat4(1.0f);
-    glm::mat4 rotationMatrix = glm::mat4(1.0f);
+  registry->GetComponentsIter<Transform, ColliderCube>()->Each(
+      [&](Transform& transform, ColliderCube& colliderCube) {
+        auto modelMatrix = GetModelMatrix(transform);
 
-    matrixModel = glm::translate(matrixModel, transform.position);
-    matrixModel = glm::scale(matrixModel, transform.scale);
-
-    // Rotation matrix
-    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[0], glm::vec3(1.0, 0.0, 0.0));
-    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[1], glm::vec3(0.0, 1.0, 0.0));
-    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[2], glm::vec3(0.0, 0.0, 1.0));
-
-    matrixModel *= rotationMatrix;
-
-    shaderResource.primitiveShader.SetUniformMatFloat4("model", matrixModel);
-    shaderResource.primitiveShader.SetUniformVecFloat3("uColor", colliderCube.color);
-    renderer->DrawBoundingBox(colliderCube, shaderResource.primitiveShader);
-  });
+        shaderResource.primitiveShader.SetUniformMatFloat4("model", modelMatrix);
+        shaderResource.primitiveShader.SetUniformVecFloat3("uColor", colliderCube.color);
+        renderer->DrawBoundingBox(colliderCube, shaderResource.primitiveShader);
+      });
 
   shaderResource.primitiveShader.Unbind();
 }
 
-glm::vec3 RenderSystem::GetRayDirection(Registry* registry, Input* input) {
+glm::vec3 RenderSystem::GetRayDirection(Registry* registry, Input* input)
+{
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
 
 #if DEBUG
@@ -554,12 +512,10 @@ glm::vec3 RenderSystem::GetRayDirection(Registry* registry, Input* input) {
 // bool : true if collided, false if not collided
 // float : length of the intersection from origin if it is intersected
 std::tuple<bool, float> RenderSystem::RayBoundingBoxCollisionCheck(glm::vec3 origin, glm::vec3 ray,
-                                                                   BoundingBox boundingBox) {
+                                                                   BoundingBox boundingBox)
+{
   float length;
   glm::vec3 dirfrac = 1.0f / ray;
-  // dirfrac.x = 1.0f / ray.x;
-  // dirfrac.y = 1.0f / ray.y;
-  // dirfrac.z = 1.0f / ray.z;
 
   float t1 = (boundingBox.minX - origin.x) * dirfrac.x;
   float t2 = (boundingBox.maxX - origin.x) * dirfrac.x;
@@ -574,16 +530,14 @@ std::tuple<bool, float> RenderSystem::RayBoundingBoxCollisionCheck(glm::vec3 ori
   float tmax = glm::min(glm::min(glm::max(t1, t2), glm::max(t3, t4)), glm::max(t5, t6));
 
   // AABB is behind
-  if (tmax < 0) {
-    // lucid::Log("AABB is behind");
-    // return false;
+  if (tmax < 0)
+  {
     return std::tuple(false, 0.0f);
   }
 
   // Does not intersect
-  if (tmin > tmax) {
-    // lucid::Log("Does not intersect");
-    // return false;
+  if (tmin > tmax)
+  {
     return std::tuple(false, 0.0f);
   }
 
@@ -591,9 +545,11 @@ std::tuple<bool, float> RenderSystem::RayBoundingBoxCollisionCheck(glm::vec3 ori
   return std::tuple(true, length);
 }
 
-BoundingBox RenderSystem::GetBoundingBox(std::vector<glm::vec4> vertices) {
+BoundingBox RenderSystem::GetBoundingBox(std::vector<glm::vec4> vertices)
+{
   BoundingBox bb;
-  for (size_t i = 0; i < vertices.size(); i++) {
+  for (size_t i = 0; i < vertices.size(); i++)
+  {
     bb.minX = glm::min(vertices[i].x, bb.minX);
     bb.maxX = glm::max(vertices[i].x, bb.maxX);
 

@@ -45,7 +45,8 @@
 #include "uiSystem.h"
 #include "physicsSystem.h"
 
-class Lucid {
+class Lucid
+{
  public:
   Registry* registry;
   Input* input;

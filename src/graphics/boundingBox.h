@@ -5,7 +5,8 @@
 #include "gl.h"
 #include "glm.hpp"
 
-struct BoundingBox {
+struct BoundingBox
+{
   float minX = std::numeric_limits<float>::max();
   float maxX = std::numeric_limits<float>::lowest();
 
@@ -50,7 +51,8 @@ const std::vector<uint32_t> boundingBoxCubeIndices = {
     6, 7, 3,  //
 };
 
-class ColliderCube {
+class ColliderCube
+{
  public:
   uint32_t VAO, VBO, EBO;
 
@@ -64,7 +66,8 @@ class ColliderCube {
   void Build();
 };
 
-class ColliderSphere {
+class ColliderSphere
+{
  public:
   uint32_t VAO, VBO, EBO;
 
@@ -76,7 +79,8 @@ class ColliderSphere {
   ~ColliderSphere();
 };
 
-class ColliderPolygon {
+class ColliderPolygon
+{
  public:
   uint32_t VAO, VBO, EBO;
 

@@ -10,15 +10,22 @@
 #include "line.h"
 #include "sphere.h"
 #include "boundingBox.h"
+#include "primitiveVertex.h"
+#include "renderUtils.h"
+#include "devStructs.h"
+
 #include "gtx/string_cast.hpp"
 
-class Renderer {
- private:
-  // TODO : Check if this is needed, this does not seem to be needed
-  // uint32_t VAO, VBO, EBO;
+const uint32_t MAX_BUFFER = 1000;
 
+class Renderer
+{
+ private:
   uint32_t batchIndexCount = 0;
   std::vector<glm::mat4> modelMatrices;
+  std::vector<LineVertex> linePrimitiveBuffer;
+  std::vector<CubeVertex> cubePrimititiveBuffer;
+  std::vector<SphereVertex> spherePrimitiveBuffer;
 
  public:
   Renderer();
@@ -37,10 +44,7 @@ class Renderer {
 
   void DrawLine(Line& line, Shader& shader);
   void DrawLine(glm::vec3 origin, glm::vec3 end, glm::vec3 color);
-
-  // Potential skeleton methods that needs to be implemented.
-  void DrawQuad();
-  void DrawTexturedQuad();
+  void DrawLineIndexed(PrimitiveBatchIds primitiveBatchIds);
 
   void DrawBoundingBox(Model& model, Shader& shader);
   void DrawBoundingBox(Sphere& sphere, Shader& shader);
@@ -52,6 +56,12 @@ class Renderer {
    * This is to start and end draw calls, this is mostly to help batch calls
    * together so that it is more performant.
    */
-  void Start();
-  void Flush();
+  void StartBatch();
+  void FlushBatch(PrimitiveBatchIds primitiveBatchIds, DrawType drawType);
+
+ public:
+  void PushLineBuffer(glm::mat4 modelMatrix, Line line);
+  void PushSphereBuffer(glm::mat4 modelMatrix, Sphere sphere);
+  void PushCubeBuffer(glm::mat4 modelMatrix, Cube cube);
+  void PushModelBuffer(glm::mat4 modelMatrix, Model model);
 };

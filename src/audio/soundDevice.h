@@ -4,7 +4,8 @@
 #include <stdio.h>
 #include <vector>
 
-class SoundDevice {
+class SoundDevice
+{
  private:
   SoundDevice();
   ~SoundDevice();

@@ -10,7 +10,8 @@
 #include "mesh.h"
 #include "boundingBox.h"
 
-class Model {
+class Model
+{
  public:
   std::vector<MeshTexture> loadedTextures;
   std::vector<Mesh> meshes;

@@ -33,10 +33,11 @@
 //   return shaderId;
 // }
 
-namespace lucid {
-
+namespace lucid
+{
 template <typename... Args>
-void Log(Args&&... args) {
+void Log(Args&&... args)
+{
   (std::cout << ... << args) << std::endl;
 }
 
