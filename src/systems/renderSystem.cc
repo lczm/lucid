@@ -457,19 +457,19 @@ void RenderSystem::DrawAllBoundingBoxes(double dt, Registry* registry, Input* in
 
 glm::vec3 RenderSystem::GetRayDirection(Registry* registry, Input* input)
 {
-  DevDebug& devDebug = registry->GetComponent<DevDebug>();
-
 #if DEBUG
-  float mouseX = static_cast<float>(input->GetMouseX() - devDebug.leftWindowWidth);
-  float mouseY = static_cast<float>(input->GetMouseYAbsolute() - devDebug.menuBarHeight);
+  WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
+  float mouseX = static_cast<float>(input->GetMouseX() - widgetLayout.leftWindowWidth);
+  float mouseY = static_cast<float>(input->GetMouseYAbsolute() - widgetLayout.menuBarHeight -
+                                    widgetLayout.topWindowHeight);
 
   // lucid::Log("x : ", input->GetMouseX(), " y : ", input->GetMouseYAbsolute())
 
-  float x =
-      (2.0f * mouseX) / (SCREEN_WIDTH - devDebug.leftWindowWidth - devDebug.rightWindowWidth) -
-      1.0f;
-  float y = 1.0f - (2.0f * mouseY) /
-                       (SCREEN_HEIGHT - devDebug.bottomWindowHeight - devDebug.menuBarHeight);
+  float x = (2.0f * mouseX) /
+                (SCREEN_WIDTH - widgetLayout.leftWindowWidth - widgetLayout.rightWindowWidth) -
+            1.0f;
+  float y = 1.0f - (2.0f * mouseY) / (SCREEN_HEIGHT - widgetLayout.bottomWindowHeight -
+                                      widgetLayout.menuBarHeight - widgetLayout.topWindowHeight);
   float z = 1.0f;
 #endif
 

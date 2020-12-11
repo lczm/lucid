@@ -21,14 +21,18 @@ struct DevDebug
   bool drawWireframe = false;
   bool drawColliders = false;
 
-  bool onGizmo = false;
-
   // fps is updated per frame
   uint32_t fps = 0;
   uint32_t rayID = 0;
-
   uint32_t activeEntity = 0;
 
+  bool onGizmo = false;
+  WindowType changeFocusWindow = WindowType::None;
+  ImGuizmo::OPERATION gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
+};
+
+struct WidgetLayout
+{
   float sceneWidth = 0;
   float sceneHeight = 0;
 
@@ -41,11 +45,11 @@ struct DevDebug
   float bottomWindowWidth = 0;
   float bottomWindowHeight = 0;
 
+  float topWindowWidth = 0;
+  float topWindowHeight = 0;
+
   float menuBarWidth = 0;
   float menuBarHeight = 19;
-
-  WindowType changeFocusWindow = WindowType::None;
-  ImGuizmo::OPERATION gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
 };
 
 struct PrimitiveBatchIds

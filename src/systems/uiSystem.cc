@@ -168,8 +168,8 @@ void UiSystem::DrawHierarchy(double dt, Registry* registry, Input* input)
 
   UpdateInputActiveWindow(input, WindowType::Hierarchy);
 
-  DevDebug& devDebug = registry->GetComponent<DevDebug>();
-  devDebug.leftWindowWidth = ImGui::GetWindowWidth();
+  WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
+  widgetLayout.leftWindowWidth = ImGui::GetWindowWidth();
 
   // if (devDebug.changeFocusWindow == WindowType::Hierarchy) ImGui::SetWindowFocus();
 
@@ -227,13 +227,13 @@ void UiSystem::DrawAssets(double dt, Registry* registry, Input* input)
   ImGui::Begin("Assets");
   UpdateInputActiveWindow(input, WindowType::Assets);
 
-  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
   // if (devDebug.changeFocusWindow == WindowType::Assets) ImGui::SetWindowFocus();
 
   ImVec2 wsize = ImGui::GetWindowSize();
 
-  devDebug.bottomWindowWidth = wsize.x;
-  devDebug.bottomWindowHeight = wsize.y;
+  widgetLayout.bottomWindowWidth = wsize.x;
+  widgetLayout.bottomWindowHeight = wsize.y;
 
   ImGui::Text("This is the assets");
   ImGui::End();
@@ -256,11 +256,12 @@ void UiSystem::DrawScene(double dt, Registry* registry, Input* input)
 
   SceneRender sceneRender = registry->GetComponent<SceneRender>();
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
 
   // if (devDebug.changeFocusWindow == WindowType::Scene) ImGui::SetWindowFocus();
 
-  devDebug.sceneWidth = wsize.x;
-  devDebug.sceneHeight = wsize.y;
+  widgetLayout.sceneWidth = wsize.x;
+  widgetLayout.sceneHeight = wsize.y;
 
   // Flip V in the UV
   ImGui::Image((ImTextureID)sceneRender.textureID, wsize, ImVec2(0, 1), ImVec2(1, 0),
@@ -425,9 +426,9 @@ void UiSystem::DrawDevDebug(double dt, Registry* registry, Input* input)
   UpdateInputActiveWindow(input, WindowType::DevDebug);
 
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
+  widgetLayout.rightWindowWidth = ImGui::GetWindowWidth();
   // if (devDebug.changeFocusWindow == WindowType::DevDebug) ImGui::SetWindowFocus();
-
-  devDebug.rightWindowWidth = ImGui::GetWindowWidth();
 
   ImGui::Checkbox("Draw all with wireframe", &devDebug.drawWireframe);
   ImGui::Checkbox("Draw all colliders", &devDebug.drawColliders);
@@ -451,14 +452,20 @@ void UiSystem::DrawToolBar(double dt, Registry* registry, Input* input)
   if (ImGui::Button("Play", ImVec2(buttonWidth, 0.0f)))
   {
   }
+
   ImGui::SameLine();
   if (ImGui::Button("Pause", ImVec2(buttonWidth, 0.0f)))
   {
   }
+
   ImGui::SameLine();
   if (ImGui::Button("Resume", ImVec2(buttonWidth, 0.0f)))
   {
   }
+
+  WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
+  widgetLayout.topWindowHeight = ImGui::GetWindowWidth();
+  widgetLayout.topWindowHeight = ImGui::GetWindowHeight();
 
   // DevDebug& devDebug = registry->GetComponent<DevDebug>();
   // if (devDebug.changeFocusWindow == WindowType::Animator) ImGui::SetWindowFocus();
@@ -468,7 +475,7 @@ void UiSystem::DrawToolBar(double dt, Registry* registry, Input* input)
 
 void UiSystem::UpdateSceneWindow(Registry* registry, Input* input)
 {
-  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
 
   if (input->IsKeyDown('7'))
   {
@@ -476,12 +483,12 @@ void UiSystem::UpdateSceneWindow(Registry* registry, Input* input)
     input->SetKeyOff('7');
     if (drawSceneOnly)
     {
-      devDebug.bottomWindowHeight = 0;
-      devDebug.bottomWindowWidth = 0;
-      devDebug.leftWindowHeight = 0;
-      devDebug.leftWindowWidth = 0;
-      devDebug.rightWindowHeight = 0;
-      devDebug.rightWindowWidth = 0;
+      widgetLayout.bottomWindowHeight = 0;
+      widgetLayout.bottomWindowWidth = 0;
+      widgetLayout.leftWindowHeight = 0;
+      widgetLayout.leftWindowWidth = 0;
+      widgetLayout.rightWindowHeight = 0;
+      widgetLayout.rightWindowWidth = 0;
     }
   }
 }
