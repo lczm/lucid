@@ -293,8 +293,8 @@ void UiSystem::DrawScene(double dt, Registry* registry, Input* input)
     Transform& transform = *(registry->GetComponent<Transform>(devDebug.activeEntity));
 
     // TODO Create a utility method to compute this
-    QuatCamera& quatCamera = registry->GetComponent<QuatCamera>();
     auto modelMatrix = GetModelMatrix(transform);
+    QuatCamera& quatCamera = registry->GetComponent<QuatCamera>();
     ImGuizmo::Manipulate(glm::value_ptr(quatCamera.GetView()),
                          glm::value_ptr(quatCamera.GetProjection()), devDebug.gizmoOperation,
                          ImGuizmo::LOCAL, glm::value_ptr(modelMatrix));
@@ -358,11 +358,12 @@ void UiSystem::DrawGameCamera(double dt, Registry* registry, Input* input)
 
   SceneRender sceneRender = registry->GetComponent<SceneRender>();
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
 
   // if (devDebug.changeFocusWindow == WindowType::Scene) ImGui::SetWindowFocus();
 
-  devDebug.sceneWidth = wsize.x;
-  devDebug.sceneHeight = wsize.y;
+  widgetLayout.sceneWidth = wsize.x;
+  widgetLayout.sceneHeight = wsize.y;
 
   // Flip V in the UV
   ImGui::Image((ImTextureID)sceneRender.textureID, wsize, ImVec2(0, 1), ImVec2(1, 0),
@@ -383,22 +384,11 @@ void UiSystem::DrawGameCamera(double dt, Registry* registry, Input* input)
 
     Transform& transform = *(registry->GetComponent<Transform>(devDebug.activeEntity));
 
-    // TODO Create a utility method to compute this
-    glm::mat4 matrixModel = glm::mat4(1.0f);
-    glm::mat4 rotationMatrix = glm::mat4(1.0f);
-
-    matrixModel = glm::translate(matrixModel, transform.position);
-    matrixModel = glm::scale(matrixModel, transform.scale);
-
-    // Rotation matrix
-    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[0], glm::vec3(1.0, 0.0, 0.0));
-    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[1], glm::vec3(0.0, 1.0, 0.0));
-    rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[2], glm::vec3(0.0, 0.0, 1.0));
-
-    matrixModel *= rotationMatrix;
-
-    ImGuizmo::Manipulate(glm::value_ptr(devDebug.view), glm::value_ptr(devDebug.projection),
-                         devDebug.gizmoOperation, ImGuizmo::LOCAL, glm::value_ptr(matrixModel));
+    auto modelMatrix = GetModelMatrix(transform);
+    QuatCamera& quatCamera = registry->GetComponent<QuatCamera>();
+    ImGuizmo::Manipulate(glm::value_ptr(quatCamera.GetView()),
+                         glm::value_ptr(quatCamera.GetProjection()), devDebug.gizmoOperation,
+                         ImGuizmo::LOCAL, glm::value_ptr(modelMatrix));
 
     if (ImGuizmo::IsUsing())
     {
@@ -411,7 +401,7 @@ void UiSystem::DrawGameCamera(double dt, Registry* registry, Input* input)
       glm::vec3 skew;
       glm::vec4 perspective;
 
-      glm::decompose(matrixModel, scale, rotation, position, skew, perspective);
+      glm::decompose(modelMatrix, scale, rotation, position, skew, perspective);
 
       // Tell the compiler explicitly these are not used
       (void)skew;
