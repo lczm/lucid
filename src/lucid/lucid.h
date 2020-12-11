@@ -15,7 +15,7 @@
 #include "utils.h"
 
 #if DEBUG
-#include "devStructs.h"
+#include "engineComponents.h"
 #endif
 
 #include "model.h"

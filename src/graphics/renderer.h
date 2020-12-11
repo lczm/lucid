@@ -13,7 +13,7 @@
 #include "boundingBox.h"
 #include "primitiveVertex.h"
 #include "renderUtils.h"
-#include "devStructs.h"
+#include "engineComponents.h"
 
 #include "gtx/string_cast.hpp"
 

@@ -3,13 +3,10 @@
 RenderSystem::RenderSystem(Registry* registry)
 {
   RenderSystem::renderer = new Renderer(registry);
-  RenderSystem::quatCamera = new QuatCamera();
-
-  // move back the camera a little bit.
-  quatCamera->TranslateInWorld(glm::vec3(0.0f, 1.0f, 35.0f));
 
   InitRenderBuffers();
   InitPrimitiveBuffers(registry);
+  InitSceneCameraComponent(registry);
 }
 
 RenderSystem::~RenderSystem()
@@ -85,6 +82,18 @@ void RenderSystem::InitRenderBuffers()
   glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void RenderSystem::InitSceneCameraComponent(Registry* registry)
+{
+  Entity cameraID = registry->GetAvailableEntityId();
+  registry->RegisterArchetype<QuatCamera>();
+  registry->CreateEntity<QuatCamera>(cameraID);
+
+  // Just store a pointer to it as it is used very often
+  // Translate the camera back a little bit so it makes more sense
+  RenderSystem::quatCamera = registry->GetComponent<QuatCamera>(cameraID);
+  quatCamera->TranslateInWorld({0.0f, 1.0f, 35.0f});
 }
 
 void RenderSystem::InitPrimitiveBuffers(Registry* registry)
