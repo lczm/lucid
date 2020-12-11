@@ -111,23 +111,23 @@ void RenderSystem::InitPrimitiveBuffers(Registry* registry)
   // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
   glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)), (void*)0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)), (void*)0);
 
   glEnableVertexAttribArray(1);
   glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)),
-                        (void*)(1 * vec4Size));
+                        (void*)(3 * sizeof(float)));
 
   glEnableVertexAttribArray(2);
   glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)),
-                        (void*)(2 * vec4Size));
+                        (void*)(3 * sizeof(float) + (1 * vec4Size)));
 
   glEnableVertexAttribArray(3);
   glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)),
-                        (void*)(3 * vec4Size));
+                        (void*)(3 * sizeof(float) + (2 * vec4Size)));
 
   glEnableVertexAttribArray(4);
-  glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)),
-                        (void*)(4 * vec4Size));
+  glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)),
+                        (void*)(3 * sizeof(float) + (3 * vec4Size)));
 
   // Line : Set the matrix 4 divisors
   glVertexAttribDivisor(0, 1);

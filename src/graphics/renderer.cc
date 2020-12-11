@@ -71,10 +71,6 @@ void Renderer::DrawLine(Line& line, Shader& shader)
   glBindVertexArray(0);
 }
 
-void Renderer::DrawLine(glm::vec3 origin, glm::vec3 end, glm::vec3 color)
-{
-}
-
 void Renderer::DrawLineIndexed(PrimitiveBatchIds primitiveBatchIds)
 {
   glBindVertexArray(primitiveBatchIds.lineVAO);
@@ -119,8 +115,8 @@ void Renderer::PushLineBuffer(glm::mat4 modelMatrix, Line line)
     PrimitiveBatchIds& primitiveBatchIds = registry->GetComponent<PrimitiveBatchIds>();
     FlushBatch(primitiveBatchIds, DrawType::Line);
   }
-  linePrimitiveBuffer[batchIndexCount].modelMatrix = modelMatrix;
   linePrimitiveBuffer[batchIndexCount].color = line.color;
+  linePrimitiveBuffer[batchIndexCount].modelMatrix = modelMatrix;
   batchIndexCount++;
 }
 
