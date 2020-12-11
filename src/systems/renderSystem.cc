@@ -227,6 +227,8 @@ void RenderSystem::HandleMousePan(double dt, Registry* registry, Input* input)
     quatCamera->PanCamera(dt, offsetX, offsetY);
     return;
   }
+
+  return;
 }
 
 void RenderSystem::HandleMouseScroll(double dt, Input* input)

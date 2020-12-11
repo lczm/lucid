@@ -32,7 +32,7 @@ double Input::GetMouseX()
   glfwGetCursorPos(window, &x, &y);
 
 #if DEBUG
-  if (activeWindow == WindowType::Scene)
+  if (activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera)
   {
     // When it is defined that it is in 'DEBUG' mode,
     // the coordinates needs to be offseted
@@ -52,7 +52,7 @@ double Input::GetMouseY()
   glfwGetCursorPos(window, &x, &y);
 
 #if DEBUG
-  if (activeWindow == WindowType::Scene)
+  if (activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera)
   {
     return std::abs(SCREEN_HEIGHT - y);
     // return y;
@@ -72,7 +72,7 @@ double Input::GetMouseYAbsolute()
   glfwGetCursorPos(window, &x, &y);
 
 #if DEBUG
-  if (activeWindow == WindowType::Scene)
+  if (activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera)
   {
     return y;
   }
@@ -89,7 +89,7 @@ double Input::GetMouseYAbsolute()
 int Input::GetScrollState()
 {
 #if DEBUG
-  if (activeWindow == WindowType::Scene)
+  if (activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera)
   {
     return scroll;
   }
@@ -115,7 +115,7 @@ bool Input::IsKeyDown(int key)
   // }
 
 #if DEBUG
-  if (activeWindow == WindowType::Scene)
+  if (activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera)
   {
     return keys[key];
   }
@@ -152,7 +152,7 @@ bool Input::IsMouseLDown()
   {
 #if DEBUG
     // Handle imgui windows
-    if (activeWindow == WindowType::Scene)
+    if (activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera)
     {
       return true;
     }
@@ -174,7 +174,7 @@ bool Input::IsMouseRDown()
   {
 #if DEBUG
     // Handle imgui windows
-    if (activeWindow == WindowType::Scene)
+    if (activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera)
     {
       return true;
     }
