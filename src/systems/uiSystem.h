@@ -11,6 +11,7 @@
 #include "renderUtils.h"
 
 #if DEBUG
+#include "quatCamera.h"
 #include "engineComponents.h"
 #endif
 

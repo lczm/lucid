@@ -282,9 +282,11 @@ void UiSystem::DrawScene(double dt, Registry* registry, Input* input)
     Transform& transform = *(registry->GetComponent<Transform>(devDebug.activeEntity));
 
     // TODO Create a utility method to compute this
+    QuatCamera& quatCamera = registry->GetComponent<QuatCamera>();
     auto modelMatrix = GetModelMatrix(transform);
-    ImGuizmo::Manipulate(glm::value_ptr(devDebug.view), glm::value_ptr(devDebug.projection),
-                         devDebug.gizmoOperation, ImGuizmo::LOCAL, glm::value_ptr(modelMatrix));
+    ImGuizmo::Manipulate(glm::value_ptr(quatCamera.GetView()),
+                         glm::value_ptr(quatCamera.GetProjection()), devDebug.gizmoOperation,
+                         ImGuizmo::LOCAL, glm::value_ptr(modelMatrix));
 
     if (ImGuizmo::IsUsing())
     {

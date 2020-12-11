@@ -35,9 +35,6 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input)
 
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
 
-  devDebug.projection = quatCamera->GetProjection();
-  devDebug.view = quatCamera->GetView();
-
   // TODO : wireframe drawing should have its own shaders
   // Draw wireframe
   // glLineWidth(3.0f);

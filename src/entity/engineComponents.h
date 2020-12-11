@@ -46,10 +46,6 @@ struct DevDebug
 
   WindowType changeFocusWindow = WindowType::None;
   ImGuizmo::OPERATION gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
-
-  // Temporary, Need to move the camera into an entity
-  glm::mat4 view = glm::mat4(1.0f);
-  glm::mat4 projection = glm::mat4(1.0f);
 };
 
 struct PrimitiveBatchIds
