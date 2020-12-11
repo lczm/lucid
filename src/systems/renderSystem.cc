@@ -286,7 +286,7 @@ bool RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input)
     return false;
   }
 
-  if (input->activeWindow != WindowType::Scene)
+  if (input->activeWindow != WindowType::Scene && input->activeWindow != WindowType::GameCamera)
   {
     return false;
   }

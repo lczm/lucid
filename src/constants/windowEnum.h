@@ -11,6 +11,7 @@ enum class WindowType
   Services,
   Assets,
   Scene,
+  GameCamera,
   ToolBar,
   DevDebug,
   None,
