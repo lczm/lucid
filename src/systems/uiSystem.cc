@@ -54,6 +54,7 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
     ImGuiID dockSpaceID = ImGui::GetID("DockSpace");
     if (!ImGui::DockBuilderGetNode(dockSpaceID))
     {
+      InitializeImGuiWindows(dt, registry, input);
       PresetLayout(dockSpaceID);
     }
 
@@ -148,8 +149,8 @@ void UiSystem::PresetLayout(ImGuiID dockSpaceID)
   ImGui::DockBuilderDockWindow("DevDebug", dockRightID);
 
   // Windows in the middle
-  ImGui::DockBuilderDockWindow("Scene", dockMiddleID);
   ImGui::DockBuilderDockWindow("Game Camera", dockMiddleID);
+  ImGui::DockBuilderDockWindow("Scene", dockMiddleID);
 
   // Windows on the top
   ImGui::DockBuilderDockWindow("ToolBar", dockTopID);
@@ -158,6 +159,9 @@ void UiSystem::PresetLayout(ImGuiID dockSpaceID)
   ImGui::DockBuilderDockWindow("Assets", dockBottomID);
   ImGui::DockBuilderDockWindow("Default Assets", dockBottomID);
   ImGui::DockBuilderFinish(dockSpaceID);
+
+  // Set initial window focus
+  ImGui::SetWindowFocus("Scene");
 }
 
 void UiSystem::InitializeImGuiWindows(float dt, Registry* registry, Input* input)
@@ -173,7 +177,7 @@ void UiSystem::InitializeImGuiWindows(float dt, Registry* registry, Input* input
   DrawServices(dt, registry, input);
   DrawDevDebug(dt, registry, input);
   DrawToolBar(dt, registry, input);
-  DrawShapes(dt, registry, input);
+  DrawDefaultAssets(dt, registry, input);
   DrawGameCamera(dt, registry, input);
 }
 
@@ -437,7 +441,7 @@ void UiSystem::DrawDevDebug(float dt, Registry* registry, Input* input)
   ImGui::End();
 }
 
-void UiSystem::DrawShapes(float dt, Registry* registry, Input* input)
+void UiSystem::DrawDefaultAssets(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Default Assets");
   static const char* assets[3] = {"Sphere", "Cube", "Camera"};

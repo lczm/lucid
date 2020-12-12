@@ -55,7 +55,7 @@ class UiSystem : public System
   void DrawServices(float dt, Registry* registry, Input* input);
   void DrawDevDebug(float dt, Registry* registry, Input* input);
   void DrawToolBar(float dt, Registry* registry, Input* input);
-  void DrawShapes(float dt, Registry* registry, Input* input);
+  void DrawDefaultAssets(float dt, Registry* registry, Input* input);
 
   void HandleGizmoInput(Registry* registry, Input* input);
   void UpdateSceneWindow(Registry* registry, Input* input);
