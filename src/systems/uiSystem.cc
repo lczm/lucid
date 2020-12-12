@@ -310,8 +310,6 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
           break;
         case DefaultAssetsType::Line:
           break;
-        case DefaultAssetsType::Camera:
-          break;
       }
     }
     ImGui::EndDragDropTarget();

@@ -35,8 +35,7 @@ class UiSystem : public System
   const std::vector<std::pair<DefaultAssetsType, const char*>> defaultAssets = {
       {DefaultAssetsType::Cube, "Cube"},
       {DefaultAssetsType::Sphere, "Sphere"},
-      {DefaultAssetsType::Line, "Line"},
-      {DefaultAssetsType::Camera, "Camera"}
+      {DefaultAssetsType::Line, "Line"}
   };
 
  public:
