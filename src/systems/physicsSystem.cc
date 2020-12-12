@@ -12,59 +12,61 @@ void PhysicsSystem::Update(float dt, Registry* registry, Input* input)
 {
   UpdateAllRigidbodies(dt, registry, input);
 
-  std::vector<void*> components = registry->GetComponents<Transform, RigidBody, ColliderCube>();
+  /*
+    std::vector<void*> components = registry->GetComponents<Transform, RigidBody, ColliderCube>();
 
-  auto* transformComponents = static_cast<ComponentVector<Transform>*>(components[0]);
-  auto* rigidBodyComponents = static_cast<ComponentVector<RigidBody>*>(components[1]);
-  auto* colliderCubeComponents = static_cast<ComponentVector<ColliderCube>*>(components[2]);
+    auto* transformComponents = static_cast<ComponentVector<Transform>*>(components[0]);
+    auto* rigidBodyComponents = static_cast<ComponentVector<RigidBody>*>(components[1]);
+    auto* colliderCubeComponents = static_cast<ComponentVector<ColliderCube>*>(components[2]);
 
-  // If there are less than two components, can ignore checking for collisions
-  if (colliderCubeComponents->Size() < 2)
-  {
-    return;
-  }
-
-  std::unordered_map<uint32_t, bool> collidedCache;
-
-  for (size_t i = 0; i < colliderCubeComponents->Size(); i++)
-  {
-    for (size_t j = 0; j < colliderCubeComponents->Size(); j++)
+    // If there are less than two components, can ignore checking for collisions
+    if (colliderCubeComponents->Size() < 2)
     {
-      // TODO can cache results,
-      // i.e. if A collides with B, there is no need to check if
-      // B collides with A
-      if (i == j) continue;
+      return;
+    }
 
-      ColliderCube& collider1 = colliderCubeComponents->At(i);
-      Transform& transform1 = transformComponents->At(i);
+    std::unordered_map<uint32_t, bool> collidedCache;
 
-      ColliderCube& collider2 = colliderCubeComponents->At(j);
-      Transform& transform2 = transformComponents->At(j);
-
-      if (collidedCache[i] || collidedCache[j]) continue;
-
-      if (CheckCollision(collider1, transform1, collider2, transform2))
+    for (size_t i = 0; i < colliderCubeComponents->Size(); i++)
+    {
+      for (size_t j = 0; j < colliderCubeComponents->Size(); j++)
       {
-        collider1.color = glm::vec3(1.0f, 0.0f, 0.0f);
-        collider2.color = glm::vec3(1.0f, 0.0f, 0.0f);
+        // TODO can cache results,
+        // i.e. if A collides with B, there is no need to check if
+        // B collides with A
+        if (i == j) continue;
 
-        collidedCache[i] = true;
-        collidedCache[j] = true;
-        collider1.collided = true;
-        collider2.collided = true;
-      }
-      else
-      {
-        collider1.color = glm::vec3(1.0f, 1.0f, 1.0f);
-        collider2.color = glm::vec3(1.0f, 1.0f, 1.0f);
+        ColliderCube& collider1 = colliderCubeComponents->At(i);
+        Transform& transform1 = transformComponents->At(i);
 
-        collidedCache[i] = false;
-        collidedCache[j] = false;
-        collider1.collided = false;
-        collider2.collided = false;
+        ColliderCube& collider2 = colliderCubeComponents->At(j);
+        Transform& transform2 = transformComponents->At(j);
+
+        if (collidedCache[i] || collidedCache[j]) continue;
+
+        if (CheckCollision(collider1, transform1, collider2, transform2))
+        {
+          collider1.color = glm::vec3(1.0f, 0.0f, 0.0f);
+          collider2.color = glm::vec3(1.0f, 0.0f, 0.0f);
+
+          collidedCache[i] = true;
+          collidedCache[j] = true;
+          collider1.collided = true;
+          collider2.collided = true;
+        }
+        else
+        {
+          collider1.color = glm::vec3(1.0f, 1.0f, 1.0f);
+          collider2.color = glm::vec3(1.0f, 1.0f, 1.0f);
+
+          collidedCache[i] = false;
+          collidedCache[j] = false;
+          collider1.collided = false;
+          collider2.collided = false;
+        }
       }
     }
-  }
+    */
 }
 
 void PhysicsSystem::UpdateAllRigidbodies(float dt, Registry* registry, Input* input)

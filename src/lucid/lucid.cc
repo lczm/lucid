@@ -38,6 +38,9 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window)
   InitializeModelEntities();
   // InitializeSystems();
 
+  // Please remove this in the future, for batch rendering tests only
+  InitializeManyCubes();
+
 #if DEBUG
   InitializeSceneGridLines();
 #endif
@@ -205,6 +208,23 @@ void Lucid::InitializeModelEntities()
 
 void Lucid::InitializeSystems()
 {
+}
+
+void Lucid::InitializeManyCubes()
+{
+  srand(time(NULL));
+  for (size_t i = 1; i < 1500; i++)
+  {
+    Entity cubeID = registry->GetAvailableEntityId();
+    registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(cubeID);
+
+    Transform* transform = registry->GetComponent<Transform>(cubeID);
+    transform->position = {rand() % 100, rand() % 100, rand() % 100};
+
+    // normalize values for the fun of it
+    Cube* cube = registry->GetComponent<Cube>(cubeID);
+    cube->color = {0.5, 0.5, 0.5};
+  }
 }
 
 void Lucid::InitializeDemoPongEntities()
