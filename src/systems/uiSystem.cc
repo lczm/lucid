@@ -471,7 +471,7 @@ void UiSystem::DrawDefaultAssets(float dt, Registry* registry, Input* input)
     if ((n % 10) != 0) ImGui::SameLine();
     ImGui::Button(defaultAssets.at(n).second, ImVec2(60, 60));
 
-    // Our buttons are both drag sources and drag targets here!
+    // Set buttons as drag and drop source
     if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
     {
       // Set payload to carry the index of the asset
@@ -520,6 +520,19 @@ void UiSystem::DrawToolBar(float dt, Registry* registry, Input* input)
   // DevDebug& devDebug = registry->GetComponent<DevDebug>();
   // if (devDebug.changeFocusWindow == WindowType::Animator) ImGui::SetWindowFocus();
 
+  ImGui::End();
+}
+
+// Need to call this in a loop
+void UiSystem::DrawProgressBar(float fraction, const char* message)
+{
+  int barWidth = 400;
+  ImGuiIO& io = ImGui::GetIO();
+  ImGui::SetNextWindowSize(ImVec2(barWidth, 0), ImGuiCond_Appearing);
+  ImGui::SetNextWindowPos(ImVec2(io.DisplaySize.x / 2, io.DisplaySize.y / 2), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+  ImGui::Begin("Progress Bar", (bool*)0, ImGuiWindowFlags_NoTitleBar);
+  ImGui::TextWrapped("%s %c", message, "|/-\\"[(int)(ImGui::GetTime() / 0.05f) & 3]);
+  ImGui::ProgressBar(fraction);
   ImGui::End();
 }
 

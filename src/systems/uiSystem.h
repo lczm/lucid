@@ -61,6 +61,7 @@ class UiSystem : public System
   void DrawDevDebug(float dt, Registry* registry, Input* input);
   void DrawToolBar(float dt, Registry* registry, Input* input);
   void DrawDefaultAssets(float dt, Registry* registry, Input* input);
+  void DrawProgressBar(float fraction, const char* message);
 
   void HandleGizmoInput(Registry* registry, Input* input);
   void UpdateSceneWindow(Registry* registry, Input* input);
