@@ -483,15 +483,6 @@ void UiSystem::DrawDefaultAssets(float dt, Registry* registry, Input* input)
       ImGui::Text(defaultAssets.at(n).second);
       ImGui::EndDragDropSource();
     }
-    if (ImGui::BeginDragDropTarget())
-    {
-      if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Default Assets"))
-      {
-        IM_ASSERT(payload->DataSize == sizeof(int));
-        int payloadN = *(const int*)payload->Data;
-      }
-      ImGui::EndDragDropTarget();
-    }
     ImGui::PopID();
   }
   ImGui::End();
