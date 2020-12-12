@@ -293,6 +293,29 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
   UpdateWindowFocus(registry, WindowType::Inspector, "Inspector", WindowType::Scene);
   UpdateWindowFocus(registry, WindowType::Scene, "Scene");
 
+  // Drag n drop from default assets
+  if (ImGui::BeginDragDropTarget())
+  {
+    // Check if drag and drop item is from default assets
+    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Default Assets"))
+    {
+      // Add assets to scene here
+      IM_ASSERT(payload->DataSize == sizeof(int));
+      DefaultAssetsType payloadN = *(const DefaultAssetsType*)payload->Data;
+      switch (payloadN)
+      {
+        case DefaultAssetsType::Cube:
+          break;
+        case DefaultAssetsType::Sphere:
+          break;
+        case DefaultAssetsType::Line:
+          break;
+        case DefaultAssetsType::Camera:
+          break;
+      }
+    }
+    ImGui::EndDragDropTarget();
+  }
   ImGui::End();
 }
 
@@ -444,19 +467,20 @@ void UiSystem::DrawDevDebug(float dt, Registry* registry, Input* input)
 void UiSystem::DrawDefaultAssets(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Default Assets");
-  static std::vector<const char*> assets = {"Sphere", "Cube", "Line", "Camera"};
-  for (int n = 0; n < assets.size(); n++)
+  for (int n = 0; n < defaultAssets.size(); n++)
   {
     ImGui::PushID(n);
     if ((n % 10) != 0) ImGui::SameLine();
-    ImGui::Button(assets.at(n), ImVec2(60, 60));
+    ImGui::Button(defaultAssets.at(n).second, ImVec2(60, 60));
 
     // Our buttons are both drag sources and drag targets here!
     if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
     {
-      // Set payload to carry the index of our item (could be anything)
+      // Set payload to carry the index of the asset
+      // but will check for it using the DefaultAssetType enum which im not sure
+      // if i shouldnt be doing it
       ImGui::SetDragDropPayload("Default Assets", &n, sizeof(int));
-      ImGui::Text(assets.at(n), assets.at(n));
+      ImGui::Text(defaultAssets.at(n).second);
       ImGui::EndDragDropSource();
     }
     if (ImGui::BeginDragDropTarget())
@@ -465,15 +489,10 @@ void UiSystem::DrawDefaultAssets(float dt, Registry* registry, Input* input)
       {
         IM_ASSERT(payload->DataSize == sizeof(int));
         int payloadN = *(const int*)payload->Data;
-        assets.at(n) = assets.at(payloadN);
       }
       ImGui::EndDragDropTarget();
     }
     ImGui::PopID();
-  }
-  if (!test)
-  {
-    ImGui::Text("Hi");
   }
   ImGui::End();
 }

@@ -7,6 +7,7 @@
 #include "ecs.h"
 #include "utils.h"
 #include "renderer.h"
+#include "defaultAssetsEnum.h"
 #include "windowEnum.h"
 #include "renderUtils.h"
 
@@ -31,7 +32,12 @@ class UiSystem : public System
  private:
   bool drawWireframe;
   bool drawSceneOnly;
-  bool test = false;
+  const std::vector<std::pair<DefaultAssetsType, const char*>> defaultAssets = {
+      {DefaultAssetsType::Cube, "Cube"},
+      {DefaultAssetsType::Sphere, "Sphere"},
+      {DefaultAssetsType::Line, "Line"},
+      {DefaultAssetsType::Camera, "Camera"}
+  };
 
  public:
   UiSystem();
