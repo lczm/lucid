@@ -63,6 +63,7 @@ void Renderer::DrawCubeIndexed(PrimitiveBatchIds primitiveBatchIds)
 {
   glBindVertexArray(primitiveBatchIds.cubeVAO);
   glBindBuffer(GL_ARRAY_BUFFER, primitiveBatchIds.cubeVBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, primitiveBatchIds.cubeEBO);
 
   uint32_t instanceBuffer;
   glGenBuffers(1, &instanceBuffer);
@@ -98,11 +99,6 @@ void Renderer::DrawCubeIndexed(PrimitiveBatchIds primitiveBatchIds)
   glVertexAttribDivisor(4, 1);  // mat4 : vec3
   glVertexAttribDivisor(5, 1);  // mat4 : vec4
 
-  // glBufferSubData(GL_ARRAY_BUFFER, 0, cubeVertices.size() * sizeof(float), &cubeVertices[0]);
-  // glBufferSubData(GL_ARRAY_BUFFER, cubeVertices.size() * sizeof(float),
-  //                 batchIndexCount * sizeof(CubeVertex), &cubePrimititiveBuffer[0]);
-
-  // glDrawArraysInstanced(GL_TRIANGLES, 0, cubeVertices.size(), batchIndexCount);
   glDrawElementsInstanced(GL_TRIANGLES, cubeIndices.size(), GL_UNSIGNED_INT, 0, batchIndexCount);
 
   glBindVertexArray(0);
