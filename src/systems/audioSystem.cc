@@ -13,7 +13,7 @@ AudioSystem::AudioSystem()
 
 AudioSystem::~AudioSystem() = default;
 
-void AudioSystem::Update(double dt, Registry* registry, Input* input)
+void AudioSystem::Update(float dt, Registry* registry, Input* input)
 {
   // std::vector<void*> seComponents = registry->GetComponents<SoundEffect, Transform>();
   // std::vector<void*> musicComponents = registry->GetComponents<Music>();

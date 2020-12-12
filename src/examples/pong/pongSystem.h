@@ -11,5 +11,5 @@ class PongSystem : public System
   PongSystem();
   ~PongSystem();
 
-  void Update(double dt, Registry* registry, Input* input);
+  void Update(float dt, Registry* registry, Input* input);
 };

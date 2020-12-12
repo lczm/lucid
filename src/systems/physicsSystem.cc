@@ -8,7 +8,7 @@ PhysicsSystem::~PhysicsSystem()
 {
 }
 
-void PhysicsSystem::Update(double dt, Registry* registry, Input* input)
+void PhysicsSystem::Update(float dt, Registry* registry, Input* input)
 {
   UpdateAllRigidbodies(dt, registry, input);
 
@@ -67,7 +67,7 @@ void PhysicsSystem::Update(double dt, Registry* registry, Input* input)
   }
 }
 
-void PhysicsSystem::UpdateAllRigidbodies(double dt, Registry* registry, Input* input)
+void PhysicsSystem::UpdateAllRigidbodies(float dt, Registry* registry, Input* input)
 {
   registry->GetComponentsIter<Transform, RigidBody>()->Each(
       [&](Transform& transform, RigidBody& rigidBody) {

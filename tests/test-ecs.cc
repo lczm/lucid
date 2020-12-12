@@ -13,32 +13,38 @@
   new entity is added.
  */
 
-struct TestAddStruct1 {
+struct TestAddStruct1
+{
   int a = 0;
   int b = 0;
 };
 
-struct TestAddStruct2 {
+struct TestAddStruct2
+{
   int c = 0;
   int d = 0;
 };
 
-struct TestAddStruct3 {
+struct TestAddStruct3
+{
   int e = 0;
   int f = 0;
 };
 
-struct TestAddStructDynamic1 {
+struct TestAddStructDynamic1
+{
   int a;
 };
 
-struct TestAddStructDynamic2 {
+struct TestAddStructDynamic2
+{
   float b;
 };
 
 GLFWwindow* TestsGL::window = nullptr;
 
-TEST_F(TestsGL, ComponentVectorSize) {
+TEST_F(TestsGL, ComponentVectorSize)
+{
   Registry* registry = new Registry();
 
   // Create some archetypes
@@ -78,7 +84,8 @@ TEST_F(TestsGL, ComponentVectorSize) {
 /*
    Test the iteration of the componentVector
  */
-TEST_F(TestsGL, ComponentVectorIteration) {
+TEST_F(TestsGL, ComponentVectorIteration)
+{
   Registry* registry = new Registry();
 
   // Create some archetypes
@@ -106,18 +113,23 @@ TEST_F(TestsGL, ComponentVectorIteration) {
   ASSERT_EQ(transformComponentVector->Size(), 2);
 
   // Test component vector iteration
-  for (size_t i = 0; i < transformComponentVector->Size(); i++) {
-    if (i == 0) {  // The updated component data
+  for (size_t i = 0; i < transformComponentVector->Size(); i++)
+  {
+    if (i == 0)
+    {  // The updated component data
       ASSERT_EQ(transformComponentVector->At(i).a, 500);
       ASSERT_EQ(transformComponentVector->At(i).b, 500);
-    } else if (i == 1) {  // The default component values
+    }
+    else if (i == 1)
+    {  // The default component values
       ASSERT_EQ(transformComponentVector->At(i).a, 0);
       ASSERT_EQ(transformComponentVector->At(i).b, 0);
     }
   }
 }
 
-TEST_F(TestsGL, ComponentVectorIterationIndex) {
+TEST_F(TestsGL, ComponentVectorIterationIndex)
+{
   Registry* registry = new Registry();
 
   // Create some archetypes
@@ -139,7 +151,8 @@ TEST_F(TestsGL, ComponentVectorIterationIndex) {
 
   ComponentVector<TestAddStruct1>& a = *(testAddStructComponentVector);
 
-  for (size_t i = 0; i < testAddStructComponentVector->Size(); i++) {
+  for (size_t i = 0; i < testAddStructComponentVector->Size(); i++)
+  {
     TestAddStruct1 testAddStruct = a[i];
     ASSERT_EQ(testAddStruct.a, 0);
     ASSERT_EQ(testAddStruct.b, 0);
@@ -150,7 +163,8 @@ TEST_F(TestsGL, ComponentVectorIterationIndex) {
    When creating entities, there the default values of the components are
    created. This test will test that the default values are created.
  */
-TEST_F(TestsGL, DefaultValues) {
+TEST_F(TestsGL, DefaultValues)
+{
   Registry* registry = new Registry();
 
   // Create some archetypes
@@ -174,7 +188,8 @@ TEST_F(TestsGL, DefaultValues) {
    More of a continuation of the DefaultValues test, this test checks that the
    component data is updated when new component data is added onto it.
  */
-TEST_F(TestsGL, AddComponentData) {
+TEST_F(TestsGL, AddComponentData)
+{
   Registry* registry = new Registry();
 
   // Create some archetypes
@@ -201,7 +216,8 @@ TEST_F(TestsGL, AddComponentData) {
   ASSERT_EQ(transformComponent->b, 500);
 }
 
-TEST_F(TestsGL, GetComponentExact) {
+TEST_F(TestsGL, GetComponentExact)
+{
   Registry* registry = new Registry();
 
   // Create some archetypes
@@ -233,7 +249,8 @@ TEST_F(TestsGL, GetComponentExact) {
   ASSERT_EQ(animationComponentVector->Size(), 1);
 }
 
-TEST_F(TestsGL, GetComponentSingle) {
+TEST_F(TestsGL, GetComponentSingle)
+{
   Registry* registry = new Registry();
 
   // Create one archetype
@@ -253,7 +270,8 @@ TEST_F(TestsGL, GetComponentSingle) {
   ASSERT_EQ(testStruct.b, 20);
 }
 
-TEST_F(TestsGL, GetComponentSingleAndModify) {
+TEST_F(TestsGL, GetComponentSingleAndModify)
+{
   Registry* registry = new Registry();
 
   // Create one archetype
@@ -281,7 +299,8 @@ TEST_F(TestsGL, GetComponentSingleAndModify) {
   ASSERT_EQ(testStructModified.b, 1000);
 }
 
-TEST_F(TestsGL, GetComponentsLambdaSingleIteration) {
+TEST_F(TestsGL, GetComponentsLambdaSingleIteration)
+{
   Registry* registry = new Registry();
 
   // Create a few archetypes
@@ -302,7 +321,7 @@ TEST_F(TestsGL, GetComponentsLambdaSingleIteration) {
 
   registry->AddComponentData<TestAddStruct1>(entity1, {10, 10});
 
-  const double dt = 0.001;
+  const float dt = 0.001;
 
   std::vector<uint32_t> testAData = {10, 0, 0, 0};
   std::vector<uint32_t> testBData = {10, 0, 0, 0};
@@ -334,7 +353,8 @@ TEST_F(TestsGL, GetComponentsLambdaSingleIteration) {
       });
 }
 
-TEST_F(TestsGL, GetComponentsLambdaMultiIteration) {
+TEST_F(TestsGL, GetComponentsLambdaMultiIteration)
+{
   Registry* registry = new Registry();
 
   // Create a few archetypes
@@ -358,7 +378,7 @@ TEST_F(TestsGL, GetComponentsLambdaMultiIteration) {
   registry->CreateEntity<TestAddStruct1, TestAddStruct2, TestAddStruct3>(entity5);
   registry->CreateEntity<TestAddStruct1, TestAddStruct2, TestAddStruct3>(entity6);
 
-  const double dt = 0.001;
+  const float dt = 0.001;
 
   std::vector<uint32_t> testAData = {0, 0, 0, 0};
   std::vector<uint32_t> testBData = {0, 0, 0, 0};
@@ -408,7 +428,8 @@ TEST_F(TestsGL, GetComponentsLambdaMultiIteration) {
       });
 }
 
-TEST_F(TestsGL, GetComponentsLambdaMultiIterationWithInitialDataModified) {
+TEST_F(TestsGL, GetComponentsLambdaMultiIterationWithInitialDataModified)
+{
   Registry* registry = new Registry();
 
   // Create a few archetypes
@@ -429,7 +450,7 @@ TEST_F(TestsGL, GetComponentsLambdaMultiIterationWithInitialDataModified) {
   registry->AddComponentData<TestAddStruct1>(entity3, {10, 10});
   registry->AddComponentData<TestAddStruct2>(entity3, {10, 10});
 
-  const double dt = 0.001;
+  const float dt = 0.001;
 
   std::vector<void*> components =
       registry->GetComponents<TestAddStruct1, TestAddStruct2, TestAddStruct3>();
@@ -462,7 +483,8 @@ TEST_F(TestsGL, GetComponentsLambdaMultiIterationWithInitialDataModified) {
       });
 }
 
-TEST_F(TestsGL, ECS_GetComponentsLambdaMultiIterationWithEntityID) {
+TEST_F(TestsGL, ECS_GetComponentsLambdaMultiIterationWithEntityID)
+{
   Registry* registry = new Registry();
 
   registry->RegisterArchetype<TestAddStruct1>();
@@ -488,7 +510,8 @@ TEST_F(TestsGL, ECS_GetComponentsLambdaMultiIterationWithEntityID) {
       });
 }
 
-TEST_F(TestsGL, GetEntityIDFromArchetypeWithOneEntity) {
+TEST_F(TestsGL, GetEntityIDFromArchetypeWithOneEntity)
+{
   Registry* registry = new Registry();
 
   // Register some archetypes
@@ -518,7 +541,8 @@ TEST_F(TestsGL, GetEntityIDFromArchetypeWithOneEntity) {
   ASSERT_EQ(entity3, entityID3);
 }
 
-TEST_F(TestsGL, GetEntityIDFromArchetypeWithMoreThanOneEntity) {
+TEST_F(TestsGL, GetEntityIDFromArchetypeWithMoreThanOneEntity)
+{
   Registry* registry = new Registry();
 
   // Register some archetypes
@@ -545,7 +569,8 @@ TEST_F(TestsGL, GetEntityIDFromArchetypeWithMoreThanOneEntity) {
   ASSERT_EQ(entity3, entityID3);
 }
 
-TEST_F(TestsGL, AddComponent) {
+TEST_F(TestsGL, AddComponent)
+{
   Registry* registry = new Registry();
 
   // Create some archetypes
@@ -583,8 +608,10 @@ TEST_F(TestsGL, AddComponent) {
   // ASSERT_EQ(testAddStruct2CV->Size(), 1);
 }
 
-TEST_F(TestsGL, RemoveComponent) {
+TEST_F(TestsGL, RemoveComponent)
+{
 }
 
-TEST_F(TestsGL, AddRemoveComponent) {
+TEST_F(TestsGL, AddRemoveComponent)
+{
 }

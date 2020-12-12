@@ -12,7 +12,7 @@ UiSystem::UiSystem()
 
 UiSystem::~UiSystem() = default;
 
-void UiSystem::Update(double dt, Registry* registry, Input* input)
+void UiSystem::Update(float dt, Registry* registry, Input* input)
 {
   // Update the gizmo through input keys
   UpdateGizmoType(registry, input);
@@ -20,7 +20,7 @@ void UiSystem::Update(double dt, Registry* registry, Input* input)
   InitializeGUI(dt, registry, input);
 }
 
-void UiSystem::InitializeGUI(double dt, Registry* registry, Input* input)
+void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
 {
   ImGui_ImplOpenGL3_NewFrame();
   ImGui_ImplGlfw_NewFrame();
@@ -160,7 +160,7 @@ void UiSystem::PresetLayout(ImGuiID dockSpaceID)
   ImGui::DockBuilderFinish(dockSpaceID);
 }
 
-void UiSystem::InitializeImGuiWindows(double dt, Registry* registry, Input* input)
+void UiSystem::InitializeImGuiWindows(float dt, Registry* registry, Input* input)
 {
   DrawHierarchy(dt, registry, input);
   DrawAssets(dt, registry, input);
@@ -177,7 +177,7 @@ void UiSystem::InitializeImGuiWindows(double dt, Registry* registry, Input* inpu
   DrawGameCamera(dt, registry, input);
 }
 
-void UiSystem::DrawHierarchy(double dt, Registry* registry, Input* input)
+void UiSystem::DrawHierarchy(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Hierarchy");
 
@@ -237,7 +237,7 @@ void UiSystem::DrawHierarchy(double dt, Registry* registry, Input* input)
   ImGui::End();
 }
 
-void UiSystem::DrawAssets(double dt, Registry* registry, Input* input)
+void UiSystem::DrawAssets(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Assets");
   UpdateInputActiveWindow(input, WindowType::Assets);
@@ -254,7 +254,7 @@ void UiSystem::DrawAssets(double dt, Registry* registry, Input* input)
   ImGui::End();
 }
 
-void UiSystem::DrawScene(double dt, Registry* registry, Input* input)
+void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
 {
   // Set no padding, as for the scene, there isn't really a need for padding
   ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
@@ -292,7 +292,7 @@ void UiSystem::DrawScene(double dt, Registry* registry, Input* input)
   ImGui::End();
 }
 
-void UiSystem::DrawGameCamera(double dt, Registry* registry, Input* input)
+void UiSystem::DrawGameCamera(float dt, Registry* registry, Input* input)
 {
   // Set no padding, as for the scene, there isn't really a need for padding
   ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
@@ -326,7 +326,7 @@ void UiSystem::DrawGameCamera(double dt, Registry* registry, Input* input)
   ImGui::End();
 }
 
-void UiSystem::DrawProject(double dt, Registry* registry, Input* input)
+void UiSystem::DrawProject(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Project");
 
@@ -339,7 +339,7 @@ void UiSystem::DrawProject(double dt, Registry* registry, Input* input)
   ImGui::End();
 }
 
-void UiSystem::DrawConsole(double dt, Registry* registry, Input* input)
+void UiSystem::DrawConsole(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Console");
 
@@ -352,7 +352,7 @@ void UiSystem::DrawConsole(double dt, Registry* registry, Input* input)
   ImGui::End();
 }
 
-void UiSystem::DrawAnimation(double dt, Registry* registry, Input* input)
+void UiSystem::DrawAnimation(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Animation");
 
@@ -365,7 +365,7 @@ void UiSystem::DrawAnimation(double dt, Registry* registry, Input* input)
   ImGui::End();
 }
 
-void UiSystem::DrawAnimator(double dt, Registry* registry, Input* input)
+void UiSystem::DrawAnimator(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Animator");
 
@@ -378,7 +378,7 @@ void UiSystem::DrawAnimator(double dt, Registry* registry, Input* input)
   ImGui::End();
 }
 
-void UiSystem::DrawInspector(double dt, Registry* registry, Input* input)
+void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Inspector");
 
@@ -407,7 +407,7 @@ void UiSystem::DrawInspector(double dt, Registry* registry, Input* input)
   ImGui::End();
 }
 
-void UiSystem::DrawServices(double dt, Registry* registry, Input* input)
+void UiSystem::DrawServices(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Services");
 
@@ -420,7 +420,7 @@ void UiSystem::DrawServices(double dt, Registry* registry, Input* input)
   ImGui::End();
 }
 
-void UiSystem::DrawDevDebug(double dt, Registry* registry, Input* input)
+void UiSystem::DrawDevDebug(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("DevDebug");
 
@@ -437,7 +437,7 @@ void UiSystem::DrawDevDebug(double dt, Registry* registry, Input* input)
   ImGui::End();
 }
 
-void UiSystem::DrawShapes(double dt, Registry* registry, Input* input)
+void UiSystem::DrawShapes(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Default Assets");
   static const char* assets[3] = {"Sphere", "Cube", "Camera"};
@@ -474,7 +474,7 @@ void UiSystem::DrawShapes(double dt, Registry* registry, Input* input)
   ImGui::End();
 }
 
-void UiSystem::DrawToolBar(double dt, Registry* registry, Input* input)
+void UiSystem::DrawToolBar(float dt, Registry* registry, Input* input)
 {
   ImGuiWindowClass* window_class = new ImGuiWindowClass();
   window_class->DockNodeFlagsOverrideSet = ImGuiDockNodeFlags_NoTabBar;

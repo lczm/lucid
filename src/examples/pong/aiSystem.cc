@@ -8,7 +8,7 @@ AiSystem::~AiSystem()
 {
 }
 
-void AiSystem::Update(double dt, Registry* registry, Input* input)
+void AiSystem::Update(float dt, Registry* registry, Input* input)
 {
   PongRules& pongRules = registry->GetComponent<PongRules>();
 

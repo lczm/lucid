@@ -36,6 +36,7 @@ const char MICROPHONE_MODEL[] = "../assets/microphone/scene.gltf";
 const char SCIFIHELMET_MODEL[] = "../assets/helmet/ScifiHelmet.gltf";
 const char FOX_MODEL[] = "../assets/fox/Fox.gltf";
 const char AVOCADO_MODEL[] = "../assets/avocado/Avocado.gltf";
+const char POLYBIRD_MODEL[] = "../assets/low-poly-bird-animated/source/Bird_Asset.fbx";
 
 // Images
 const char AIRMAN_IMAGE[] = "../assets/images/air-man.png";
@@ -45,7 +46,7 @@ const char GRUNT_SOUND[] = "../assets/audio/grunt.wav";
 const char PIANO_MUSIC[] = "../assets/audio/piano.wav";
 
 // Pseudo standard values that will not change
-const float PI = 3.14159265359;
+const float PI = static_cast<float>(3.14159265359);
 
 // Pong demo
 const float PADDLE_MOVE_SPEED = 0.05f;

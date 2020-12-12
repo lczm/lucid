@@ -271,7 +271,7 @@ class ComponentVectorContainer
 class System
 {
  public:
-  virtual void Update(double dt, Registry* registry, Input* input) = 0;
+  virtual void Update(float dt, Registry* registry, Input* input) = 0;
 };
 
 /*
@@ -979,7 +979,7 @@ class Registry
     systems.push_back(system);
   };
 
-  void UpdateSystems(double dt, Input* input)
+  void UpdateSystems(float dt, Input* input)
   {
     for (System* system : systems)
     {

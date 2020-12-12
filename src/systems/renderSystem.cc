@@ -15,7 +15,7 @@ RenderSystem::~RenderSystem()
   glDeleteFramebuffers(1, &fbo);
 }
 
-void RenderSystem::Update(double dt, Registry* registry, Input* input)
+void RenderSystem::Update(float dt, Registry* registry, Input* input)
 {
   // Temporary gateway for mouse picking
   HandleMousePick(dt, registry, input);
@@ -174,7 +174,7 @@ void RenderSystem::InitPrimitiveBuffers(Registry* registry)
   }
 }
 
-void RenderSystem::HandleMousePan(double dt, Registry* registry, Input* input)
+void RenderSystem::HandleMousePan(float dt, Registry* registry, Input* input)
 {
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
   if (devDebug.onGizmo == true) return;
@@ -216,7 +216,7 @@ void RenderSystem::HandleMousePan(double dt, Registry* registry, Input* input)
   return;
 }
 
-void RenderSystem::HandleMouseScroll(double dt, Input* input)
+void RenderSystem::HandleMouseScroll(float dt, Input* input)
 {
   // Scroll up
   if (input->GetScrollState() == 1)
@@ -235,7 +235,7 @@ void RenderSystem::HandleMouseScroll(double dt, Input* input)
   return;
 }
 
-void RenderSystem::HandleKeyboardPan(double dt, Input* input)
+void RenderSystem::HandleKeyboardPan(float dt, Input* input)
 {
   if (input->IsKeyDown('W')) quatCamera->Translate(glm::vec3(0.0f, 0.0f, CAMERA_SPEED * dt));
   if (input->IsKeyDown('S')) quatCamera->Translate(glm::vec3(0.0f, 0.0f, -(CAMERA_SPEED * dt)));
@@ -251,7 +251,7 @@ void RenderSystem::HandleKeyboardPan(double dt, Input* input)
   if (input->IsKeyDown(GLFW_KEY_DOWN)) quatCamera->PanCamera(dt, 0, -PAN_SPEED);
 }
 
-bool RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input)
+bool RenderSystem::HandleMousePick(float dt, Registry* registry, Input* input)
 {
   if (!input->mouseKeys[MOUSE_LEFT])
   {
@@ -365,7 +365,7 @@ bool RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input)
   return true;
 }
 
-void RenderSystem::DrawAllLines(double dt, Registry* registry, Input* input)
+void RenderSystem::DrawAllLines(float dt, Registry* registry, Input* input)
 {
   ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
 
@@ -390,7 +390,7 @@ void RenderSystem::DrawAllLines(double dt, Registry* registry, Input* input)
   shaderResource.primitiveShaderBatch.Unbind();
 }
 
-void RenderSystem::DrawAllModels(double dt, Registry* registry, Input* input)
+void RenderSystem::DrawAllModels(float dt, Registry* registry, Input* input)
 {
   ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
 
@@ -408,7 +408,7 @@ void RenderSystem::DrawAllModels(double dt, Registry* registry, Input* input)
   shaderResource.modelShader.Unbind();
 }
 
-void RenderSystem::DrawAllCubes(double dt, Registry* registry, Input* input)
+void RenderSystem::DrawAllCubes(float dt, Registry* registry, Input* input)
 {
   ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
 
@@ -444,7 +444,7 @@ void RenderSystem::DrawAllCubes(double dt, Registry* registry, Input* input)
   shaderResource.cubeShaderBatch.Unbind();
 }
 
-void RenderSystem::DrawAllSpheres(double dt, Registry* registry, Input* input)
+void RenderSystem::DrawAllSpheres(float dt, Registry* registry, Input* input)
 {
   ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
 
@@ -463,7 +463,7 @@ void RenderSystem::DrawAllSpheres(double dt, Registry* registry, Input* input)
   shaderResource.primitiveShader.Unbind();
 }
 
-void RenderSystem::DrawAllBoundingBoxes(double dt, Registry* registry, Input* input)
+void RenderSystem::DrawAllBoundingBoxes(float dt, Registry* registry, Input* input)
 {
   ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
 

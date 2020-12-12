@@ -8,6 +8,6 @@ LucidSystem::~LucidSystem()
 {
 }
 
-void LucidSystem::Update(double dt, Registry* registry, Input* input)
+void LucidSystem::Update(float dt, Registry* registry, Input* input)
 {
 }

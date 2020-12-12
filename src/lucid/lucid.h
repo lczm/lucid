@@ -53,7 +53,7 @@ class Lucid
   GLFWwindow* window;
 
   std::chrono::high_resolution_clock::time_point timer;
-  double dt, secondDt = 0;
+  float dt, secondDt = 0;
   int frameCount = 0;
 
   std::function<void(GLFWwindow* window, int button, int action, int mods)> mouseCallback;
@@ -69,7 +69,7 @@ class Lucid
   void InitializeBulitInEntities();
   void InitializeBuiltInSystems();
 
-  void InitializeEntities();
+  void InitializeModelEntities();
   void InitializeSystems();
 
   // Demo pong game

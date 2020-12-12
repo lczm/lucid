@@ -45,24 +45,24 @@ class RenderSystem : public System
   RenderSystem(Registry* registry);
   ~RenderSystem();
 
-  void Update(double dt, Registry* registry, Input* input);
+  void Update(float dt, Registry* registry, Input* input);
 
   void InitRenderBuffers();
   void InitSceneCameraComponent(Registry* registry);
   void InitPrimitiveBuffers(Registry* registry);
 
-  void HandleMousePan(double dt, Registry* registry, Input* input);
-  void HandleKeyboardPan(double dt, Input* input);
-  void HandleMouseScroll(double dt, Input* input);
+  void HandleMousePan(float dt, Registry* registry, Input* input);
+  void HandleKeyboardPan(float dt, Input* input);
+  void HandleMouseScroll(float dt, Input* input);
 
-  bool HandleMousePick(double dt, Registry* registry, Input* input);
-  void DrawAllLines(double dt, Registry* registry, Input* input);
-  void DrawAllModels(double dt, Registry* registry, Input* input);
-  void DrawAllCubes(double dt, Registry* registry, Input* input);
-  void DrawAllSpheres(double dt, Registry* registry, Input* input);
+  bool HandleMousePick(float dt, Registry* registry, Input* input);
+  void DrawAllLines(float dt, Registry* registry, Input* input);
+  void DrawAllModels(float dt, Registry* registry, Input* input);
+  void DrawAllCubes(float dt, Registry* registry, Input* input);
+  void DrawAllSpheres(float dt, Registry* registry, Input* input);
 
   // Debugging purposes for now?
-  void DrawAllBoundingBoxes(double dt, Registry* registry, Input* input);
+  void DrawAllBoundingBoxes(float dt, Registry* registry, Input* input);
 
  public:
   // TODO : Typedef glm::vec3 to a ray as it feels overly verbose to declare

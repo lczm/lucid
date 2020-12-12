@@ -21,9 +21,9 @@ class PhysicsSystem : public System
   PhysicsSystem();
   ~PhysicsSystem();
 
-  void Update(double dt, Registry* registry, Input* input);
+  void Update(float dt, Registry* registry, Input* input);
 
-  void UpdateAllRigidbodies(double dt, Registry* registry, Input* input);
+  void UpdateAllRigidbodies(float dt, Registry* registry, Input* input);
 
   // Cube : { Rest of the colliders };
   bool CheckCollision(ColliderCube colliderCube, Transform& transform,

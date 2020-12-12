@@ -37,25 +37,25 @@ class UiSystem : public System
   UiSystem();
   ~UiSystem();
 
-  void Update(double dt, Registry* registry, Input* input);
+  void Update(float dt, Registry* registry, Input* input);
 
-  void InitializeGUI(double dt, Registry* registry, Input* input);
+  void InitializeGUI(float dt, Registry* registry, Input* input);
   void PresetLayout(ImGuiID dockSpaceID);
-  void InitializeImGuiWindows(double dt, Registry* registry, Input* input);
+  void InitializeImGuiWindows(float dt, Registry* registry, Input* input);
 
-  void DrawHierarchy(double dt, Registry* registry, Input* input);
-  void DrawAssets(double dt, Registry* registry, Input* input);
-  void DrawScene(double dt, Registry* registry, Input* input);
-  void DrawGameCamera(double dt, Registry* registry, Input* input);
-  void DrawProject(double dt, Registry* registry, Input* input);
-  void DrawConsole(double dt, Registry* registry, Input* input);
-  void DrawAnimation(double dt, Registry* registry, Input* input);
-  void DrawAnimator(double dt, Registry* registry, Input* input);
-  void DrawInspector(double dt, Registry* registry, Input* input);
-  void DrawServices(double dt, Registry* registry, Input* input);
-  void DrawDevDebug(double dt, Registry* registry, Input* input);
-  void DrawToolBar(double dt, Registry* registry, Input* input);
-  void DrawShapes(double dt, Registry* registry, Input* input);
+  void DrawHierarchy(float dt, Registry* registry, Input* input);
+  void DrawAssets(float dt, Registry* registry, Input* input);
+  void DrawScene(float dt, Registry* registry, Input* input);
+  void DrawGameCamera(float dt, Registry* registry, Input* input);
+  void DrawProject(float dt, Registry* registry, Input* input);
+  void DrawConsole(float dt, Registry* registry, Input* input);
+  void DrawAnimation(float dt, Registry* registry, Input* input);
+  void DrawAnimator(float dt, Registry* registry, Input* input);
+  void DrawInspector(float dt, Registry* registry, Input* input);
+  void DrawServices(float dt, Registry* registry, Input* input);
+  void DrawDevDebug(float dt, Registry* registry, Input* input);
+  void DrawToolBar(float dt, Registry* registry, Input* input);
+  void DrawShapes(float dt, Registry* registry, Input* input);
 
   void HandleGizmoInput(Registry* registry, Input* input);
   void UpdateSceneWindow(Registry* registry, Input* input);

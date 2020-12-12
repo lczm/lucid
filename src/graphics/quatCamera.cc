@@ -76,7 +76,7 @@ void QuatCamera::Roll(const float angle)
   Rotate(angle, 0.0f, 0.0f, 1.0f);
 }
 
-void QuatCamera::PanCamera(double dt, float offsetX, float offsetY)
+void QuatCamera::PanCamera(float dt, float offsetX, float offsetY)
 {
   const float damp = 0.00005f;
 

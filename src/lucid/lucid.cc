@@ -34,7 +34,7 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window)
   InitializeBulitInEntities();
   InitializeBuiltInSystems();
 
-  // InitializeEntities();
+  InitializeModelEntities();
   // InitializeSystems();
 
   // TODO : This should be abstracted out into a user system
@@ -53,7 +53,7 @@ Lucid::~Lucid()
 void Lucid::Update()
 {
   auto now = std::chrono::high_resolution_clock::now();
-  std::chrono::duration<double> elapsed = now - timer;
+  std::chrono::duration<float> elapsed = now - timer;
   dt = elapsed.count();
   timer = now;
 
@@ -203,61 +203,43 @@ void Lucid::InitializeBuiltInSystems()
   registry->RegisterSystem(new AudioSystem());
 }
 
-void Lucid::InitializeEntities()
+void Lucid::InitializeModelEntities()
 {
   registry->RegisterArchetype<Model, Transform>();
-  registry->RegisterArchetype<Cube, Transform>();
-  registry->RegisterArchetype<Sphere, Transform>();
 
-  Entity modelID = registry->GetAvailableEntityId();
-  Entity modelID2 = registry->GetAvailableEntityId();
-  Entity modelID3 = registry->GetAvailableEntityId();
+  /*
+    Entity modelID = registry->GetAvailableEntityId();
+    Entity modelID2 = registry->GetAvailableEntityId();
+    Entity modelID3 = registry->GetAvailableEntityId();
 
-  Entity cubeID = registry->GetAvailableEntityId();
-  Entity sphereID = registry->GetAvailableEntityId();
+    registry->CreateEntity<Model, Transform>(modelID);
+    registry->CreateEntity<Model, Transform>(modelID2);
+    registry->CreateEntity<Model, Transform>(modelID3);
 
-  registry->CreateEntity<Model, Transform>(modelID);
-  registry->CreateEntity<Model, Transform>(modelID2);
-  registry->CreateEntity<Model, Transform>(modelID3);
-  registry->CreateEntity<Cube, Transform>(cubeID);
-  registry->CreateEntity<Sphere, Transform>(sphereID);
+    registry->AddComponentData<Model>(modelID, Model(MICROPHONE_MODEL));
+    registry->AddComponentData<Model>(modelID2, Model(SCIFIHELMET_MODEL));
+    registry->AddComponentData<Model>(modelID3, Model(AVOCADO_MODEL));
 
-  registry->AddComponentData<Model>(modelID, Model(MICROPHONE_MODEL));
-  registry->AddComponentData<Model>(modelID2, Model(SCIFIHELMET_MODEL));
-  registry->AddComponentData<Model>(modelID3, Model(AVOCADO_MODEL));
+    registry->AddComponentData<Transform>(modelID, {
+                                                       {3.0f, 3.0f, 3.0f},  // position
+                                                       {0.0f, 0.0f, 0.0f},  // rotation
+                                                       {1.0f, 1.0f, 1.0f},  // scale
+                                                   });
+    registry->AddComponentData<Transform>(modelID2, {
+                                                        {6.0f, 6.0f, 6.0f},  // position
+                                                        {0.0f, 0.0f, 0.0f},  // rotation
+                                                        {1.0f, 1.0f, 1.0f},  // scale
+                                                    });
+    registry->AddComponentData<Transform>(modelID3, {
+                                                        {1.0f, 1.0f, 1.0f},  // position
+                                                        {0.0f, 0.0f, 0.0f},  // rotation
+                                                        {1.0f, 1.0f, 1.0f},  // scale
+                                                    });
+  */
 
-  registry->GetComponentsIter<Sphere, Transform>()->Each([](Sphere& sphere, Transform& transform) {
-    sphere.radius = 1.0f;
-    sphere.sectors = 36;
-    sphere.stacks = 18;
-    sphere.BuildSphere();
-    sphere.Build();
-
-    transform.position = {-5.0f, -5.0f, -5.0f};
-    transform.rotation = {0.0f, 0.0f, 0.0f};
-    transform.scale = {1.0f, 1.0f, 1.0f};
-  });
-
-  registry->AddComponentData<Transform>(modelID, {
-                                                     {3.0f, 3.0f, 3.0f},  // position
-                                                     {0.0f, 0.0f, 0.0f},  // rotation
-                                                     {1.0f, 1.0f, 1.0f},  // scale
-                                                 });
-  registry->AddComponentData<Transform>(modelID2, {
-                                                      {6.0f, 6.0f, 6.0f},  // position
-                                                      {0.0f, 0.0f, 0.0f},  // rotation
-                                                      {1.0f, 1.0f, 1.0f},  // scale
-                                                  });
-  registry->AddComponentData<Transform>(modelID3, {
-                                                      {1.0f, 1.0f, 1.0f},     // position
-                                                      {0.0f, 0.0f, 0.0f},     // rotation
-                                                      {30.0f, 30.0f, 30.0f},  // scale
-                                                  });
-  registry->AddComponentData<Transform>(cubeID, {
-                                                    {0.0f, 0.0f, 0.0f},  // position
-                                                    {0.0f, 0.0f, 0.0f},  // rotation
-                                                    {2.0f, 2.0f, 2.0f},  // scale
-                                                });
+  Entity polyBirdID = registry->GetAvailableEntityId();
+  registry->CreateEntity<Model, Transform>(polyBirdID);
+  registry->AddComponentData<Model>(polyBirdID, Model(POLYBIRD_MODEL));
 }
 
 void Lucid::InitializeSystems()

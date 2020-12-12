@@ -8,7 +8,7 @@ PongSystem::~PongSystem()
 {
 }
 
-void PongSystem::Update(double dt, Registry* registry, Input* input)
+void PongSystem::Update(float dt, Registry* registry, Input* input)
 {
   registry->GetComponentsIter<Sphere, RigidBody, ColliderCube>()->Each(
       [&](Sphere& sphere, RigidBody& rigidBody, ColliderCube& colliderCube) {

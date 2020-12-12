@@ -31,9 +31,9 @@ class Input
   ~Input();
 
  public:
-  double GetMouseX();
-  double GetMouseY();
-  double GetMouseYAbsolute();
+  float GetMouseX();
+  float GetMouseY();
+  float GetMouseYAbsolute();
   int GetScrollState();
 
  public:

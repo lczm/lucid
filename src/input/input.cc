@@ -27,7 +27,7 @@ Input::~Input()
 {
 }
 
-double Input::GetMouseX()
+float Input::GetMouseX()
 {
   glfwGetCursorPos(window, &x, &y);
 
@@ -36,25 +36,25 @@ double Input::GetMouseX()
   {
     // When it is defined that it is in 'DEBUG' mode,
     // the coordinates needs to be offseted
-    return x;
+    return static_cast<float>(x);
   }
 #endif
 
 #if RELEASE
-  return x;
+  return static_cast<float>(x);
 #endif
 
-  return x;
+  return static_cast<float>(x);
 }
 
-double Input::GetMouseY()
+float Input::GetMouseY()
 {
   glfwGetCursorPos(window, &x, &y);
 
 #if DEBUG
   if (activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera)
   {
-    return std::abs(SCREEN_HEIGHT - y);
+    return std::abs(SCREEN_HEIGHT - static_cast<float>(y));
     // return y;
   }
 #endif
@@ -64,17 +64,17 @@ double Input::GetMouseY()
 #endif
 
   // OpenGL uses inverse y values compared to glfw window values
-  return std::abs(SCREEN_HEIGHT - y);
+  return std::abs(SCREEN_HEIGHT - static_cast<float>(y));
 }
 
-double Input::GetMouseYAbsolute()
+float Input::GetMouseYAbsolute()
 {
   glfwGetCursorPos(window, &x, &y);
 
 #if DEBUG
   if (activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera)
   {
-    return y;
+    return static_cast<float>(y);
   }
 #endif
 
@@ -83,7 +83,7 @@ double Input::GetMouseYAbsolute()
 #endif
 
   // OpenGL uses inverse y values compared to glfw window values
-  return y;
+  return static_cast<float>(y);
 }
 
 int Input::GetScrollState()
