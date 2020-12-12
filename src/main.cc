@@ -17,47 +17,56 @@
 #include "utils.h"
 #include <GLFW/glfw3.h>
 
-static void ErrorCallback(int error, const char* description) {
+static void ErrorCallback(int error, const char* description)
+{
   fprintf(stderr, "Error: %s\n", description);
 }
 
-static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-  if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+  if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+  {
     glfwSetWindowShouldClose(window, GLFW_TRUE);
   }
 }
 
 void APIENTRY MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity,
-                              GLsizei length, const GLchar* message, const void* userParam) {
+                              GLsizei length, const GLchar* message, const void* userParam)
+{
   // 0x826B is just a notification, which is what is printing out most of the
   // time. To keep the output verbose, only print out when there is a explicitly
   // defined severity error.
   if (severity == 0x9146 ||  // Severity_High
       severity == 0x9147 ||  // Severity_Medium
-      severity == 0x9148) {  // Severity_Low
+      severity == 0x9148)
+  {  // Severity_Low
     fprintf(stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
             (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""), type, severity, message);
   }
 }
 
 // Explicitly turn on vsync through GLFW
-void EnableVSync() {
+void EnableVSync()
+{
   glfwSwapInterval(1);
 }
 
 // To disable vsync, on computers that do not have the GPU enforcing
 // vsync on game windows (laptops), this will make it so that it
 // possibly goes on (hundreds) of frames per second.
-void DisableVSync() {
+void DisableVSync()
+{
   glfwSwapInterval(0);
 }
 
-int main(void) {
+int main(void)
+{
   GLFWwindow* window;
 
   glfwSetErrorCallback(ErrorCallback);
 
-  if (!glfwInit()) {
+  if (!glfwInit())
+  {
     exit(EXIT_FAILURE);
   }
 
@@ -69,7 +78,8 @@ int main(void) {
   glfwSetWindowIcon(window, 1, images);
   stbi_image_free(images[0].pixels);
 
-  if (!window) {
+  if (!window)
+  {
     glfwTerminate();
     exit(EXIT_FAILURE);
   }
@@ -107,7 +117,8 @@ int main(void) {
   Input* input = new Input(window);
   Lucid* lucid = new Lucid(registry, input, window);
 
-  while (!glfwWindowShouldClose(window)) {
+  while (!glfwWindowShouldClose(window))
+  {
     // Flip buffers
     glfwSwapBuffers(window);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -122,7 +133,8 @@ int main(void) {
 
     lucid->Update();
 
-    if (GlCheckError()) {
+    if (GlCheckError())
+    {
       // break out of the loop
       std::cout << "Breaking out of the loop, OpenGL Error" << std::endl;
       break;

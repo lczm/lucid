@@ -4,8 +4,8 @@ RenderSystem::RenderSystem(Registry* registry)
 {
   RenderSystem::renderer = new Renderer(registry);
 
-  InitRenderBuffers();
   InitPrimitiveBuffers(registry);
+  InitRenderBuffers();
   InitSceneCameraComponent(registry);
 }
 
@@ -23,7 +23,6 @@ void RenderSystem::Update(double dt, Registry* registry, Input* input)
   HandleMouseScroll(dt, input);
 
   HandleKeyboardPan(dt, input);
-  HandleKeyboardInput(dt, registry, input);
 
   glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
@@ -148,48 +147,33 @@ void RenderSystem::InitPrimitiveBuffers(Registry* registry)
   // TODO : Generate Sphere Buffers
 
   // TODO : Generate Cube Buffers
-  // Sphere : Generate VAO and VBO
+  // Cube : Generate VAO and VBO
   glGenVertexArrays(1, &primitiveBatchIds.cubeVAO);
   glGenBuffers(1, &primitiveBatchIds.cubeVBO);
+  glGenBuffers(1, &primitiveBatchIds.cubeEBO);
 
-  // Sphere : Bind VAO and VBO
+  // Cube : Bind VAO and VBO
   glBindVertexArray(primitiveBatchIds.cubeVAO);
   glBindBuffer(GL_ARRAY_BUFFER, primitiveBatchIds.cubeVBO);
 
-  std::size_t cubeSize = (cubeVertices.size() * sizeof(float)) + (MAX_BUFFER * sizeof(CubeVertex));
+  // std::size_t cubeSize = (cubeVertices.size() * sizeof(float)) + (MAX_BUFFER *
+  // sizeof(CubeVertex));
 
   // Set buffer data size, set to DYNAMIC_DRAW
-  glBufferData(GL_ARRAY_BUFFER, cubeSize, nullptr, GL_DYNAMIC_DRAW);
+  // glBufferData(GL_ARRAY_BUFFER, cubeSize, nullptr, GL_DYNAMIC_DRAW);
+
+  // Cube : Set VBO data
+  glBufferData(GL_ARRAY_BUFFER, cubeVertices.size() * sizeof(float), &cubeVertices[0],
+               GL_STATIC_DRAW);
+  // glBufferData(GL_ARRAY_BUFFER, MAX_BUFFER * sizeof(LineVertex), nullptr, GL_DYNAMIC_DRAW);
+
+  // Cube : Bind EBO
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, primitiveBatchIds.cubeEBO);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, cubeIndices.size() * sizeof(uint32_t), &cubeIndices[0],
+               GL_STATIC_DRAW);
 
   glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, cubeSize, (void*)0);
-
-  glEnableVertexAttribArray(1);
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, cubeSize, (void*)(3 * sizeof(float)));
-
-  glEnableVertexAttribArray(2);
-  glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, cubeSize, (void*)(6 * sizeof(float)));
-
-  glEnableVertexAttribArray(3);
-  glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, cubeSize,
-                        (void*)(6 * sizeof(float) + (1 * vec4Size)));
-
-  glEnableVertexAttribArray(4);
-  glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, cubeSize,
-                        (void*)(6 * sizeof(float) + (2 * vec4Size)));
-
-  glEnableVertexAttribArray(5);
-  glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, cubeSize,
-                        (void*)(6 * sizeof(float) + (3 * vec4Size)));
-
-  // Sphere : Set the matrix 4 divisors
-  glVertexAttribDivisor(1, 1);  // colors
-  glVertexAttribDivisor(2, 1);  // mat4 : vec1
-  glVertexAttribDivisor(3, 1);  // mat4 : vec2
-  glVertexAttribDivisor(4, 1);  // mat4 : vec3
-  glVertexAttribDivisor(5, 1);  // mat4 : vec4
-
-  glBufferSubData(GL_ARRAY_BUFFER, 0, cubeVertices.size() * sizeof(float), &cubeVertices[0]);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
   glBindVertexArray(0);
 }
@@ -269,21 +253,6 @@ void RenderSystem::HandleKeyboardPan(double dt, Input* input)
   if (input->IsKeyDown(GLFW_KEY_RIGHT)) quatCamera->PanCamera(dt, PAN_SPEED, 0);
   if (input->IsKeyDown(GLFW_KEY_UP)) quatCamera->PanCamera(dt, 0, PAN_SPEED);
   if (input->IsKeyDown(GLFW_KEY_DOWN)) quatCamera->PanCamera(dt, 0, -PAN_SPEED);
-}
-
-// Note : temporary
-void RenderSystem::HandleKeyboardInput(double dt, Registry* registry, Input* input)
-{
-  // if (input->IsKeyDown('1')) {
-  //   Entity cubeID = registry->GetAvailableEntityId();
-
-  //   registry->CreateEntity<Cube, Transform>(cubeID);
-
-  //   Transform* transform = registry->GetComponent<Transform>(cubeID);
-  //   transform->position = camera->cameraPos;
-
-  //   input->SetKeyOff('1');
-  // }
 }
 
 bool RenderSystem::HandleMousePick(double dt, Registry* registry, Input* input)
@@ -447,20 +416,36 @@ void RenderSystem::DrawAllCubes(double dt, Registry* registry, Input* input)
 {
   ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
 
-  shaderResource.primitiveShader.Bind();
-  shaderResource.primitiveShader.SetUniformMatFloat4("projection", quatCamera->projection);
-  shaderResource.primitiveShader.SetUniformMatFloat4("view", quatCamera->GetView());
+  // shaderResource.primitiveShader.Bind();
+  // shaderResource.primitiveShader.SetUniformMatFloat4("projection", quatCamera->projection);
+  // shaderResource.primitiveShader.SetUniformMatFloat4("view", quatCamera->GetView());
+
+  // registry->GetComponentsIter<Cube, Transform>()->Each([&](Cube& cube, Transform& transform) {
+  //   auto modelMatrix = GetModelMatrix(transform);
+
+  //   shaderResource.primitiveShader.SetUniformMatFloat4("model", modelMatrix);
+  //   shaderResource.primitiveShader.SetUniformVecFloat3("uColor", cube.color);
+
+  //   renderer->DrawCube(cube, shaderResource.primitiveShader);
+  // });
+
+  // shaderResource.primitiveShader.Unbind();
+
+  shaderResource.cubeShaderBatch.Bind();
+  shaderResource.cubeShaderBatch.SetUniformMatFloat4("projection", quatCamera->GetProjection());
+  shaderResource.cubeShaderBatch.SetUniformMatFloat4("view", quatCamera->GetView());
+
+  renderer->StartBatch();
 
   registry->GetComponentsIter<Cube, Transform>()->Each([&](Cube& cube, Transform& transform) {
     auto modelMatrix = GetModelMatrix(transform);
-
-    shaderResource.primitiveShader.SetUniformMatFloat4("model", modelMatrix);
-    shaderResource.primitiveShader.SetUniformVecFloat3("uColor", cube.color);
-
-    renderer->DrawCube(cube, shaderResource.primitiveShader);
+    renderer->PushCubeBuffer(modelMatrix, cube);
   });
 
-  shaderResource.primitiveShader.Unbind();
+  PrimitiveBatchIds primitiveBatchIds = registry->GetComponent<PrimitiveBatchIds>();
+  renderer->FlushBatch(primitiveBatchIds, DrawType::Cube);
+
+  shaderResource.cubeShaderBatch.Unbind();
 }
 
 void RenderSystem::DrawAllSpheres(double dt, Registry* registry, Input* input)

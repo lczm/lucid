@@ -18,6 +18,10 @@
 #include "primitiveVertex.h"
 #include "engineComponents.h"
 
+#if DEBUG
+#include "dbg.h"
+#endif
+
 #include "gtx/string_cast.hpp"
 
 #include "imgui.h"
@@ -51,7 +55,6 @@ class RenderSystem : public System
   void HandleKeyboardPan(double dt, Input* input);
   void HandleMouseScroll(double dt, Input* input);
 
-  void HandleKeyboardInput(double dt, Registry* registry, Input* input);
   bool HandleMousePick(double dt, Registry* registry, Input* input);
   void DrawAllLines(double dt, Registry* registry, Input* input);
   void DrawAllModels(double dt, Registry* registry, Input* input);

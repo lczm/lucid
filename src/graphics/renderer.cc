@@ -64,10 +64,46 @@ void Renderer::DrawCubeIndexed(PrimitiveBatchIds primitiveBatchIds)
   glBindVertexArray(primitiveBatchIds.cubeVAO);
   glBindBuffer(GL_ARRAY_BUFFER, primitiveBatchIds.cubeVBO);
 
-  glBufferSubData(GL_ARRAY_BUFFER, cubeVertices.size() * sizeof(float),
-                  batchIndexCount * sizeof(CubeVertex), &cubePrimititiveBuffer[0]);
+  uint32_t instanceBuffer;
+  glGenBuffers(1, &instanceBuffer);
+  glBindBuffer(GL_ARRAY_BUFFER, instanceBuffer);
+  glBufferData(GL_ARRAY_BUFFER, MAX_BUFFER * sizeof(CubeVertex), &cubePrimititiveBuffer[0],
+               GL_STATIC_DRAW);
 
-  glDrawArraysInstanced(GL_TRIANGLES, 0, 3, batchIndexCount);
+  glEnableVertexAttribArray(1);
+  glEnableVertexAttribArray(2);
+  glEnableVertexAttribArray(3);
+  glEnableVertexAttribArray(4);
+  glEnableVertexAttribArray(5);
+
+  std::size_t vec4Size = sizeof(glm::vec4);
+
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)), (void*)0);
+
+  glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)),
+                        (void*)(3 * sizeof(float)));
+
+  glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)),
+                        (void*)(3 * sizeof(float) + (1 * vec4Size)));
+
+  glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)),
+                        (void*)(3 * sizeof(float) + (2 * vec4Size)));
+
+  glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)),
+                        (void*)(3 * sizeof(float) + (3 * vec4Size)));
+
+  glVertexAttribDivisor(1, 1);  // colors
+  glVertexAttribDivisor(2, 1);  // mat4 : vec1
+  glVertexAttribDivisor(3, 1);  // mat4 : vec2
+  glVertexAttribDivisor(4, 1);  // mat4 : vec3
+  glVertexAttribDivisor(5, 1);  // mat4 : vec4
+
+  // glBufferSubData(GL_ARRAY_BUFFER, 0, cubeVertices.size() * sizeof(float), &cubeVertices[0]);
+  // glBufferSubData(GL_ARRAY_BUFFER, cubeVertices.size() * sizeof(float),
+  //                 batchIndexCount * sizeof(CubeVertex), &cubePrimititiveBuffer[0]);
+
+  // glDrawArraysInstanced(GL_TRIANGLES, 0, cubeVertices.size(), batchIndexCount);
+  glDrawElementsInstanced(GL_TRIANGLES, cubeIndices.size(), GL_UNSIGNED_INT, 0, batchIndexCount);
 
   glBindVertexArray(0);
 }
