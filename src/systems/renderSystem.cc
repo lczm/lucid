@@ -4,8 +4,8 @@ RenderSystem::RenderSystem(Registry* registry)
 {
   RenderSystem::renderer = new Renderer(registry);
 
-  InitPrimitiveBuffers(registry);
   InitRenderBuffers();
+  InitPrimitiveBuffers(registry);
   InitSceneCameraComponent(registry);
 }
 
@@ -89,93 +89,89 @@ void RenderSystem::InitSceneCameraComponent(Registry* registry)
   // Just store a pointer to it as it is used very often
   // Translate the camera back a little bit so it makes more sense
   RenderSystem::quatCamera = registry->GetComponent<QuatCamera>(cameraID);
-  quatCamera->TranslateInWorld({0.0f, 1.0f, 35.0f});
+  quatCamera->TranslateInWorld({0.0f, 1.0f, 20.0f});
 }
 
 void RenderSystem::InitPrimitiveBuffers(Registry* registry)
 {
   PrimitiveBatchIds& primitiveBatchIds = registry->GetComponent<PrimitiveBatchIds>();
 
-  // Line : Generate VAO and VBO
-  glGenVertexArrays(1, &primitiveBatchIds.lineVAO);
-  glGenBuffers(1, &primitiveBatchIds.lineVBO);
+  {  // Line buffers
+    // Line : Generate VAO and VBO
+    glGenVertexArrays(1, &primitiveBatchIds.lineVAO);
+    glGenBuffers(1, &primitiveBatchIds.lineVBO);
 
-  // Line : Bind VAO and VBO
-  glBindVertexArray(primitiveBatchIds.lineVAO);
-  glBindBuffer(GL_ARRAY_BUFFER, primitiveBatchIds.lineVBO);
+    // Line : Bind VAO and VBO
+    glBindVertexArray(primitiveBatchIds.lineVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, primitiveBatchIds.lineVBO);
 
-  // Line : Set the BufferData to a max size with dynamic draw
-  // glBufferData(GL_ARRAY_BUFFER, (MAX_BUFFER * sizeof(glm::mat4)) + (line_vertices.size() *
-  // sizeof(float)), nullptr, GL_DYNAMIC_DRAW); glBufferData(GL_ARRAY_BUFFER, (line_vertices.size()
-  // * sizeof(float)) + (MAX_BUFFER * sizeof(glm::mat4)), nullptr, GL_STATIC_DRAW);
-  glBufferData(GL_ARRAY_BUFFER, MAX_BUFFER * sizeof(LineVertex), nullptr, GL_DYNAMIC_DRAW);
+    // Line : Set the BufferData to a max size with dynamic draw
+    // glBufferData(GL_ARRAY_BUFFER, (MAX_BUFFER * sizeof(glm::mat4)) + (line_vertices.size() *
+    // sizeof(float)), nullptr, GL_DYNAMIC_DRAW); glBufferData(GL_ARRAY_BUFFER,
+    // (line_vertices.size()
+    // * sizeof(float)) + (MAX_BUFFER * sizeof(glm::mat4)), nullptr, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, MAX_BUFFER * sizeof(LineVertex), nullptr, GL_DYNAMIC_DRAW);
 
-  // Line : Update the vertex attributes
-  std::size_t vec4Size = sizeof(glm::vec4);
-  // glEnableVertexAttribArray(0);
-  // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    // Line : Update the vertex attributes
+    std::size_t vec4Size = sizeof(glm::vec4);
+    // glEnableVertexAttribArray(0);
+    // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
-  glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)), (void*)0);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)), (void*)0);
 
-  glEnableVertexAttribArray(1);
-  glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)),
-                        (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)),
+                          (void*)(3 * sizeof(float)));
 
-  glEnableVertexAttribArray(2);
-  glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)),
-                        (void*)(3 * sizeof(float) + (1 * vec4Size)));
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)),
+                          (void*)(3 * sizeof(float) + (1 * vec4Size)));
 
-  glEnableVertexAttribArray(3);
-  glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)),
-                        (void*)(3 * sizeof(float) + (2 * vec4Size)));
+    glEnableVertexAttribArray(3);
+    glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)),
+                          (void*)(3 * sizeof(float) + (2 * vec4Size)));
 
-  glEnableVertexAttribArray(4);
-  glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)),
-                        (void*)(3 * sizeof(float) + (3 * vec4Size)));
+    glEnableVertexAttribArray(4);
+    glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)),
+                          (void*)(3 * sizeof(float) + (3 * vec4Size)));
 
-  // Line : Set the matrix 4 divisors
-  glVertexAttribDivisor(0, 1);
-  glVertexAttribDivisor(1, 1);
-  glVertexAttribDivisor(2, 1);
-  glVertexAttribDivisor(3, 1);
-  glVertexAttribDivisor(4, 1);
+    // Line : Set the matrix 4 divisors
+    glVertexAttribDivisor(0, 1);
+    glVertexAttribDivisor(1, 1);
+    glVertexAttribDivisor(2, 1);
+    glVertexAttribDivisor(3, 1);
+    glVertexAttribDivisor(4, 1);
 
-  // Line : Un-Bind the Line VAO
-  glBindVertexArray(0);
+    // Line : Un-Bind the Line VAO
+    glBindVertexArray(0);
+  }
 
   // TODO : Generate Sphere Buffers
 
-  // TODO : Generate Cube Buffers
-  // Cube : Generate VAO and VBO
-  glGenVertexArrays(1, &primitiveBatchIds.cubeVAO);
-  glGenBuffers(1, &primitiveBatchIds.cubeVBO);
-  glGenBuffers(1, &primitiveBatchIds.cubeEBO);
+  {  // Cube buffers
+    glGenVertexArrays(1, &primitiveBatchIds.cubeVAO);
+    glGenBuffers(1, &primitiveBatchIds.cubeVBO);
+    glGenBuffers(1, &primitiveBatchIds.cubeEBO);
 
-  // Cube : Bind VAO and VBO
-  glBindVertexArray(primitiveBatchIds.cubeVAO);
-  glBindBuffer(GL_ARRAY_BUFFER, primitiveBatchIds.cubeVBO);
+    // Cube : Bind VAO and VBO
+    glBindVertexArray(primitiveBatchIds.cubeVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, primitiveBatchIds.cubeVBO);
 
-  // std::size_t cubeSize = (cubeVertices.size() * sizeof(float)) + (MAX_BUFFER *
-  // sizeof(CubeVertex));
+    // Cube : Set VBO data
+    glBufferData(GL_ARRAY_BUFFER, cubeVertices.size() * sizeof(float), &cubeVertices[0],
+                 GL_STATIC_DRAW);
 
-  // Set buffer data size, set to DYNAMIC_DRAW
-  // glBufferData(GL_ARRAY_BUFFER, cubeSize, nullptr, GL_DYNAMIC_DRAW);
+    // Cube : Bind EBO
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, primitiveBatchIds.cubeEBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, cubeIndices.size() * sizeof(uint32_t), &cubeIndices[0],
+                 GL_STATIC_DRAW);
 
-  // Cube : Set VBO data
-  glBufferData(GL_ARRAY_BUFFER, cubeVertices.size() * sizeof(float), &cubeVertices[0],
-               GL_STATIC_DRAW);
-  // glBufferData(GL_ARRAY_BUFFER, MAX_BUFFER * sizeof(LineVertex), nullptr, GL_DYNAMIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
-  // Cube : Bind EBO
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, primitiveBatchIds.cubeEBO);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, cubeIndices.size() * sizeof(uint32_t), &cubeIndices[0],
-               GL_STATIC_DRAW);
-
-  glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-
-  glBindVertexArray(0);
+    glBindVertexArray(0);
+  }
 }
 
 void RenderSystem::HandleMousePan(double dt, Registry* registry, Input* input)

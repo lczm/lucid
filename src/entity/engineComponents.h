@@ -61,7 +61,5 @@ struct PrimitiveBatchIds
   uint32_t sphereVAO, sphereVBO, sphereEBO = 0;
 
   // Cubes
-  // cubeVBO will be GL_STATIC_DRAW with the default positions
-  // dynamicVBO will consist of CubeVertex dynamically set on runtime
-  uint32_t cubeVAO, cubeVBO, cubeDynamicVBO, cubeEBO = 0;
+  uint32_t cubeVAO, cubeVBO, cubeEBO = 0;
 };

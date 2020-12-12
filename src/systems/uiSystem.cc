@@ -135,20 +135,25 @@ void UiSystem::PresetLayout(ImGuiID dockSpaceID)
 
   // Windows on left
   ImGui::DockBuilderDockWindow("Hierarchy", dockLeftID);
+
   // Windows on bottom left
   ImGui::DockBuilderDockWindow("Project", dockBottomLeftID);
   ImGui::DockBuilderDockWindow("Console", dockBottomLeftID);
   ImGui::DockBuilderDockWindow("Animation", dockBottomLeftID);
   ImGui::DockBuilderDockWindow("Animator", dockBottomLeftID);
+
   // Windows on right
   ImGui::DockBuilderDockWindow("Inspector", dockRightID);
   ImGui::DockBuilderDockWindow("Services", dockRightID);
   ImGui::DockBuilderDockWindow("DevDebug", dockRightID);
+
   // Windows in the middle
   ImGui::DockBuilderDockWindow("Scene", dockMiddleID);
   ImGui::DockBuilderDockWindow("Game Camera", dockMiddleID);
+
   // Windows on the top
   ImGui::DockBuilderDockWindow("ToolBar", dockTopID);
+
   // Windows on the bottom
   ImGui::DockBuilderDockWindow("Assets", dockBottomID);
   ImGui::DockBuilderDockWindow("Default Assets", dockBottomID);
@@ -277,59 +282,8 @@ void UiSystem::DrawScene(double dt, Registry* registry, Input* input)
   ImGui::Image((ImTextureID)sceneRender.textureID, wsize, ImVec2(0, 1), ImVec2(1, 0),
                ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
 
-  if (devDebug.activeEntity != 0)
-  {
-    ImGuizmo::BeginFrame();
-    // ImGuizmo::EndFrame();
+  HandleGizmoInput(registry, input);
 
-    ImGuizmo::SetOrthographic(false);
-    ImGuizmo::SetDrawlist();
-
-    float windowWidth = static_cast<float>(ImGui::GetWindowWidth());
-    float windowHeight = static_cast<float>(ImGui::GetWindowHeight());
-
-    ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
-
-    Transform& transform = *(registry->GetComponent<Transform>(devDebug.activeEntity));
-
-    // TODO Create a utility method to compute this
-    auto modelMatrix = GetModelMatrix(transform);
-    QuatCamera& quatCamera = registry->GetComponent<QuatCamera>();
-    ImGuizmo::Manipulate(glm::value_ptr(quatCamera.GetView()),
-                         glm::value_ptr(quatCamera.GetProjection()), devDebug.gizmoOperation,
-                         ImGuizmo::LOCAL, glm::value_ptr(modelMatrix));
-
-    if (ImGuizmo::IsUsing())
-    {
-      devDebug.onGizmo = true;
-      // TODO : decompose the matrix model and find the transform, rotation, scale
-      glm::vec3 position, scale;
-      glm::quat rotation;
-
-      // These are not needed, but are there to fulfill the decompose parameters
-      glm::vec3 skew;
-      glm::vec4 perspective;
-
-      glm::decompose(modelMatrix, scale, rotation, position, skew, perspective);
-
-      // Tell the compiler explicitly these are not used
-      (void)skew;
-      (void)perspective;
-
-      // TODO : These rotation computations can just stay as quats for simplicity and not have to
-      // be converted back into euler angles every time.
-      glm::vec3 newRotation = glm::eulerAngles(rotation);
-      glm::vec3 deltaRotation = newRotation - transform.rotation;
-
-      transform.position = position;
-      transform.rotation += deltaRotation;
-      transform.scale = scale;
-    }
-    else
-    {
-      devDebug.onGizmo = false;
-    }
-  }
   ImGui::EndChild();
 
   UpdateWindowFocus(registry, WindowType::Inspector, "Inspector", WindowType::Scene);
@@ -362,62 +316,11 @@ void UiSystem::DrawGameCamera(double dt, Registry* registry, Input* input)
   widgetLayout.sceneWidth = wsize.x;
   widgetLayout.sceneHeight = wsize.y;
 
+  // This should draw from sceneRender fbo that is being rendered through the gameScene camera
   // Flip V in the UV
-  ImGui::Image((ImTextureID)sceneRender.textureID, wsize, ImVec2(0, 1), ImVec2(1, 0),
-               ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
+  // ImGui::Image((ImTextureID)sceneRender.textureID, wsize, ImVec2(0, 1), ImVec2(1, 0),
+  //              ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
 
-  if (devDebug.activeEntity != 0)
-  {
-    ImGuizmo::BeginFrame();
-    // ImGuizmo::EndFrame();
-
-    ImGuizmo::SetOrthographic(false);
-    ImGuizmo::SetDrawlist();
-
-    float windowWidth = static_cast<float>(ImGui::GetWindowWidth());
-    float windowHeight = static_cast<float>(ImGui::GetWindowHeight());
-
-    ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
-
-    Transform& transform = *(registry->GetComponent<Transform>(devDebug.activeEntity));
-
-    auto modelMatrix = GetModelMatrix(transform);
-    QuatCamera& quatCamera = registry->GetComponent<QuatCamera>();
-    ImGuizmo::Manipulate(glm::value_ptr(quatCamera.GetView()),
-                         glm::value_ptr(quatCamera.GetProjection()), devDebug.gizmoOperation,
-                         ImGuizmo::LOCAL, glm::value_ptr(modelMatrix));
-
-    if (ImGuizmo::IsUsing())
-    {
-      devDebug.onGizmo = true;
-      // TODO : decompose the matrix model and find the transform, rotation, scale
-      glm::vec3 position, scale;
-      glm::quat rotation;
-
-      // These are not needed, but are there to fulfill the decompose parameters
-      glm::vec3 skew;
-      glm::vec4 perspective;
-
-      glm::decompose(modelMatrix, scale, rotation, position, skew, perspective);
-
-      // Tell the compiler explicitly these are not used
-      (void)skew;
-      (void)perspective;
-
-      // TODO : These rotation computations can just stay as quats for simplicity and not have to
-      // be converted back into euler angles every time.
-      glm::vec3 newRotation = glm::eulerAngles(rotation);
-      glm::vec3 deltaRotation = newRotation - transform.rotation;
-
-      transform.position = position;
-      transform.rotation += deltaRotation;
-      transform.scale = scale;
-    }
-    else
-    {
-      devDebug.onGizmo = false;
-    }
-  }
   ImGui::EndChild();
 
   ImGui::End();
@@ -608,6 +511,65 @@ void UiSystem::DrawToolBar(double dt, Registry* registry, Input* input)
   ImGui::End();
 }
 
+void UiSystem::HandleGizmoInput(Registry* registry, Input* input)
+{
+  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+
+  if (devDebug.activeEntity != 0)
+  {
+    ImGuizmo::BeginFrame();
+    // ImGuizmo::EndFrame();
+
+    ImGuizmo::SetOrthographic(false);
+    ImGuizmo::SetDrawlist();
+
+    float windowWidth = static_cast<float>(ImGui::GetWindowWidth());
+    float windowHeight = static_cast<float>(ImGui::GetWindowHeight());
+
+    ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+
+    Transform& transform = *(registry->GetComponent<Transform>(devDebug.activeEntity));
+
+    // TODO Create a utility method to compute this
+    auto modelMatrix = GetModelMatrix(transform);
+    QuatCamera& quatCamera = registry->GetComponent<QuatCamera>();
+    ImGuizmo::Manipulate(glm::value_ptr(quatCamera.GetView()),
+                         glm::value_ptr(quatCamera.GetProjection()), devDebug.gizmoOperation,
+                         ImGuizmo::LOCAL, glm::value_ptr(modelMatrix));
+
+    if (ImGuizmo::IsUsing())
+    {
+      devDebug.onGizmo = true;
+      // TODO : decompose the matrix model and find the transform, rotation, scale
+      glm::vec3 position, scale;
+      glm::quat rotation;
+
+      // These are not needed, but are there to fulfill the decompose parameters
+      glm::vec3 skew;
+      glm::vec4 perspective;
+
+      glm::decompose(modelMatrix, scale, rotation, position, skew, perspective);
+
+      // Tell the compiler explicitly these are not used
+      (void)skew;
+      (void)perspective;
+
+      // TODO : These rotation computations can just stay as quats for simplicity and not have to
+      // be converted back into euler angles every time.
+      glm::vec3 newRotation = glm::eulerAngles(rotation);
+      glm::vec3 deltaRotation = newRotation - transform.rotation;
+
+      transform.position = position;
+      transform.rotation += deltaRotation;
+      transform.scale = scale;
+    }
+    else
+    {
+      devDebug.onGizmo = false;
+    }
+  }
+}
+
 void UiSystem::UpdateSceneWindow(Registry* registry, Input* input)
 {
   WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
@@ -648,7 +610,8 @@ void UiSystem::UpdateInputActiveWindow(Input* input, WindowType windowType)
   }
 }
 
-void UiSystem::UpdateWindowFocus(Registry* registry, WindowType windowType, const char* focusWindow, WindowType changeFocusWindow)
+void UiSystem::UpdateWindowFocus(Registry* registry, WindowType windowType, const char* focusWindow,
+                                 WindowType changeFocusWindow)
 {
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
 

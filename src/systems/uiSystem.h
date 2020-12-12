@@ -57,8 +57,10 @@ class UiSystem : public System
   void DrawToolBar(double dt, Registry* registry, Input* input);
   void DrawShapes(double dt, Registry* registry, Input* input);
 
+  void HandleGizmoInput(Registry* registry, Input* input);
   void UpdateSceneWindow(Registry* registry, Input* input);
   void UpdateGizmoType(Registry* registry, Input* input);
   void UpdateInputActiveWindow(Input* input, WindowType windowType);
-  void UpdateWindowFocus(Registry* registry, WindowType windowType, const char* focusWindow, WindowType changeFocusWindow = WindowType::None);
+  void UpdateWindowFocus(Registry* registry, WindowType windowType, const char* focusWindow,
+                         WindowType changeFocusWindow = WindowType::None);
 };
