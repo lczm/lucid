@@ -30,5 +30,6 @@ static glm::mat4 GetModelMatrix(Transform transform)
   rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[2], glm::vec3(0.0, 0.0, 1.0));
 
   matrixModel *= rotationMatrix;
+
   return matrixModel;
 }

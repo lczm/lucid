@@ -44,7 +44,7 @@ class Renderer
 
   void DrawSphere(Sphere& sphere, Shader& shader);
 
-  void DrawLine(Line& line, Shader& shader);
+  // void DrawLine(Line& line, Shader& shader);
   void DrawLineIndexed(PrimitiveBatchIds primitiveBatchIds);
 
   void DrawBoundingBox(Model& model, Shader& shader);

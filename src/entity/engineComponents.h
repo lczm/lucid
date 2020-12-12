@@ -1,7 +1,8 @@
 #pragma once
 
-#include "windowEnum.h"
+#include "line.h"
 #include "glm.hpp"
+#include "windowEnum.h"
 
 #include "imgui.h"
 #include "imgui_internal.h"
@@ -62,4 +63,9 @@ struct PrimitiveBatchIds
 
   // Cubes
   uint32_t cubeVAO, cubeVBO, cubeEBO = 0;
+};
+
+struct GridLine
+{
+  Line line;
 };

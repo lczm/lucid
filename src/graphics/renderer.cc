@@ -112,12 +112,12 @@ void Renderer::DrawSphere(Sphere& sphere, Shader& shader)
   glBindVertexArray(0);
 }
 
-void Renderer::DrawLine(Line& line, Shader& shader)
-{
-  glBindVertexArray(line.VAO);
-  glDrawArrays(GL_LINES, 0, 2);
-  glBindVertexArray(0);
-}
+// void Renderer::DrawLine(Line& line, Shader& shader)
+// {
+//   glBindVertexArray(line.VAO);
+//   glDrawArrays(GL_LINES, 0, 2);
+//   glBindVertexArray(0);
+// }
 
 void Renderer::DrawLineIndexed(PrimitiveBatchIds primitiveBatchIds)
 {

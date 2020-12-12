@@ -253,12 +253,8 @@ void RenderSystem::HandleKeyboardPan(float dt, Input* input)
 
 bool RenderSystem::HandleMousePick(float dt, Registry* registry, Input* input)
 {
-  if (!input->mouseKeys[MOUSE_LEFT])
-  {
-    return false;
-  }
-
-  if (input->activeWindow != WindowType::Scene)
+  if (!input->mouseKeys[MOUSE_LEFT] ||  // If mouse is not currently on left-click
+      input->activeWindow != WindowType::Scene)
   {
     return false;
   }
@@ -269,12 +265,6 @@ bool RenderSystem::HandleMousePick(float dt, Registry* registry, Input* input)
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
   glm::vec3 rayDirection = GetRayDirection(registry, input);
 
-  // Don't really need this for now
-  // Line* line = registry->GetComponent<Line>(devDebug.rayID);
-  // line->origin = quatCamera->GetPositionInWorld();
-  // line->destination = rayDirection;
-  // line->color.r = 1.0f;
-
   std::vector<Entity> entityIds;
   std::vector<BoundingBox> boundingBoxes;
   // Calculate all the positions, assume that there is a BoundingBoxCube around it.
@@ -282,17 +272,14 @@ bool RenderSystem::HandleMousePick(float dt, Registry* registry, Input* input)
     if (transform.scale.x == 1.0f)
     {
       // Calculate the model matrix
-      glm::mat4 matrixModel = glm::mat4(1.0f);
-
-      matrixModel = glm::translate(matrixModel, transform.position);
-      matrixModel = glm::scale(matrixModel, transform.scale);
+      auto modelMatrix = GetModelMatrix(transform);
 
       std::vector<glm::vec4> verticesCollection;
       verticesCollection.reserve(boundingBoxCubeVertices.size() / 3);
 
       for (size_t i = 0; i < boundingBoxCubeVertices.size(); i += 3)
       {
-        verticesCollection.push_back(matrixModel * glm::vec4(boundingBoxCubeVertices[i],
+        verticesCollection.push_back(modelMatrix * glm::vec4(boundingBoxCubeVertices[i],
                                                              boundingBoxCubeVertices[i + 1],
                                                              boundingBoxCubeVertices[i + 2], 1.0f));
       }
@@ -307,10 +294,6 @@ bool RenderSystem::HandleMousePick(float dt, Registry* registry, Input* input)
   // Calculate the distance between the ray origin and the bounding box?
   auto origin = quatCamera->GetPositionInWorld();
 
-  // Resolve the collision if there are more than one intersections / collisions
-  // TODO : Need a way to get the ID from registry->GetComponents<Iter>()
-  // Perhaps overload the GetComponents such that you can also take in
-  // Each([](uint32_t id, Transform& transform))
   std::vector<float> lengths;
   std::vector<uint32_t> lengthIndexs;
   for (size_t i = 0; i < boundingBoxes.size(); i++)
@@ -327,13 +310,14 @@ bool RenderSystem::HandleMousePick(float dt, Registry* registry, Input* input)
   if (lengths.size() == 0)
   {
     // If it does not collide, set activeEntity to be 0
+    dbg("Mouse pick no collision");
     devDebug.activeEntity = 0;
     return false;
   }
 
   if (lengths.size() == 1)
   {
-    // lucid::Log("Single collision! ID : ", entityIds[lengthIndexs[0]], " Length : ", lengths[0]);
+    dbg("Mouse pick collided one");
     devDebug.activeEntity = entityIds[lengthIndexs[0]];
 
     // Change the focus to the inspector window
@@ -353,15 +337,12 @@ bool RenderSystem::HandleMousePick(float dt, Registry* registry, Input* input)
     }
   }
 
-  // Entity id = registry->GetEntityIDFromArchetype<Transform>(shortestIndex);
-
-  // lucid::Log("Multiple collision! Shortest ID : ", entityIds[shortestIndex],
-  //              " Length : ", shortestLength, " Amount : ", lengths.size());
   devDebug.activeEntity = entityIds[shortestIndex];
 
   // Change the focus to the inspector window
   devDebug.changeFocusWindow = WindowType::Inspector;
 
+  dbg("Mouse pick collided many");
   return true;
 }
 
@@ -388,6 +369,29 @@ void RenderSystem::DrawAllLines(float dt, Registry* registry, Input* input)
   renderer->FlushBatch(primitiveBatchIds, DrawType::Line);
 
   shaderResource.primitiveShaderBatch.Unbind();
+
+// Draw grid lines
+#if DEBUG
+  shaderResource.primitiveShaderBatch.Bind();
+  shaderResource.primitiveShaderBatch.SetUniformMatFloat4("projection",
+                                                          quatCamera->GetProjection());
+  shaderResource.primitiveShaderBatch.SetUniformMatFloat4("view", quatCamera->GetView());
+
+  renderer->StartBatch();
+
+  registry->GetComponentsIter<GridLine, Transform>()->Each(
+      [&](GridLine& line, Transform& transform) {
+        transform.position = line.line.origin;
+        transform.scale = line.line.destination - line.line.origin;
+
+        auto modelMatrix = GetModelMatrix(transform);
+        renderer->PushLineBuffer(modelMatrix, line.line);
+      });
+
+  renderer->FlushBatch(primitiveBatchIds, DrawType::Line);
+
+  shaderResource.primitiveShaderBatch.Unbind();
+#endif
 }
 
 void RenderSystem::DrawAllModels(float dt, Registry* registry, Input* input)

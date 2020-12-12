@@ -31,11 +31,16 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window)
   ImGui_ImplGlfw_InitForOpenGL(window, true);
   ImGui_ImplOpenGL3_Init(GLSL_VERSION);
 
+  InitializeArchetypes();
   InitializeBulitInEntities();
   InitializeBuiltInSystems();
 
   InitializeModelEntities();
   // InitializeSystems();
+
+#if DEBUG
+  InitializeSceneGridLines();
+#endif
 
   // TODO : This should be abstracted out into a user system
   // Demo pong
@@ -74,13 +79,34 @@ void Lucid::Update()
   registry->UpdateSystems(dt, input);
 }
 
-void Lucid::InitializeBulitInEntities()
+void Lucid::InitializeArchetypes()
 {
   // Builtin usage, not for the user
   // Singletons single struct usage
   registry->RegisterArchetype<ShaderResource>();
   registry->RegisterArchetype<PrimitiveBatchIds>();
 
+  registry->RegisterArchetype<Model, Transform>();
+
+  // Register the necessary archetypes
+  // Note that this should be using `ColliderCube` but it is hardcoded like this for now.
+  registry->RegisterArchetype<Cube, Transform, RigidBody, ColliderCube>();
+  registry->RegisterArchetype<Sphere, Transform, RigidBody, ColliderCube>();
+  registry->RegisterArchetype<PongRules>();
+
+  registry->RegisterArchetype<SoundEffect, Transform>();
+  registry->RegisterArchetype<Music>();
+
+#if DEBUG
+  registry->RegisterArchetype<SceneRender>();
+  registry->RegisterArchetype<DevDebug>();
+  registry->RegisterArchetype<WidgetLayout>();
+  registry->RegisterArchetype<GridLine, Transform>();
+#endif
+}
+
+void Lucid::InitializeBulitInEntities()
+{
   Entity primitiveBatchID = registry->GetAvailableEntityId();
   Entity shaderResourceID = registry->GetAvailableEntityId();
 
@@ -97,73 +123,7 @@ void Lucid::InitializeBulitInEntities()
 
   registry->RegisterArchetype<Line, Transform>();
 
-  Entity xLineID = registry->GetAvailableEntityId();
-  Entity yLineID = registry->GetAvailableEntityId();
-  Entity zLineID = registry->GetAvailableEntityId();
-
-  registry->CreateEntity<Line, Transform>(xLineID);
-  registry->CreateEntity<Line, Transform>(yLineID);
-  registry->CreateEntity<Line, Transform>(zLineID);
-
-  Line* xLine = registry->GetComponent<Line>(xLineID);
-  Line* yLine = registry->GetComponent<Line>(yLineID);
-  Line* zLine = registry->GetComponent<Line>(zLineID);
-
-  // TODO : Either define maximum limit for a scene or find a compile time number for this
-  // Note that if the number is too big, e.g. 100000.0f,
-  // opengl will start cutting off some numbers? the lines will not look
-  // the same size. Better to stick with a smaller number
-  const float MAX_WORLD_COORDINATE_LIMIT = 100.0f;
-
-  xLine->color = {0.8f, 0.0f, 0.0f};
-  xLine->origin.x = -MAX_WORLD_COORDINATE_LIMIT;
-  xLine->destination.x = MAX_WORLD_COORDINATE_LIMIT;
-
-  yLine->color = {0.0f, 0.8f, 0.0f};
-  yLine->origin.y = -MAX_WORLD_COORDINATE_LIMIT;
-  yLine->destination.y = MAX_WORLD_COORDINATE_LIMIT;
-
-  zLine->color = {0.0f, 0.0f, 0.8f};
-  zLine->origin.z = -MAX_WORLD_COORDINATE_LIMIT;
-  zLine->destination.z = MAX_WORLD_COORDINATE_LIMIT;
-
-  // Draw the x-z grid lines
-  for (int i = -100; i < 100; i++)
-  {
-    Entity lineID = registry->GetAvailableEntityId();
-    registry->CreateEntity<Line, Transform>(lineID);
-
-    Line* line = registry->GetComponent<Line>(lineID);
-    line->color = {0.2f, 0.2f, 0.2f};
-
-    line->origin.x = static_cast<float>(i);
-    line->origin.z = -MAX_WORLD_COORDINATE_LIMIT;
-
-    line->destination.x = static_cast<float>(i);
-    line->destination.z = MAX_WORLD_COORDINATE_LIMIT;
-  }
-
-  // Draw the z-x grid lines
-  for (int i = -100; i < 100; i++)
-  {
-    Entity lineID = registry->GetAvailableEntityId();
-    registry->CreateEntity<Line, Transform>(lineID);
-
-    Line* line = registry->GetComponent<Line>(lineID);
-    line->color = {0.2f, 0.2f, 0.2f};
-
-    line->origin.x = -MAX_WORLD_COORDINATE_LIMIT;
-    line->origin.z = static_cast<float>(i);
-
-    line->destination.x = MAX_WORLD_COORDINATE_LIMIT;
-    line->destination.z = static_cast<float>(i);
-  }
-
 #if DEBUG
-  registry->RegisterArchetype<SceneRender>();
-  registry->RegisterArchetype<DevDebug>();
-  registry->RegisterArchetype<WidgetLayout>();
-
   Entity sceneRenderID = registry->GetAvailableEntityId();
   Entity devDebugID = registry->GetAvailableEntityId();
   Entity widgetLayoutID = registry->GetAvailableEntityId();
@@ -205,8 +165,6 @@ void Lucid::InitializeBuiltInSystems()
 
 void Lucid::InitializeModelEntities()
 {
-  registry->RegisterArchetype<Model, Transform>();
-
   /*
     Entity modelID = registry->GetAvailableEntityId();
     Entity modelID2 = registry->GetAvailableEntityId();
@@ -240,6 +198,9 @@ void Lucid::InitializeModelEntities()
   Entity polyBirdID = registry->GetAvailableEntityId();
   registry->CreateEntity<Model, Transform>(polyBirdID);
   registry->AddComponentData<Model>(polyBirdID, Model(POLYBIRD_MODEL));
+
+  // Move the bird up 3 world units
+  registry->GetComponent<Transform>(polyBirdID)->position = {0.0f, 3.0f, 0.0f};
 }
 
 void Lucid::InitializeSystems()
@@ -248,12 +209,6 @@ void Lucid::InitializeSystems()
 
 void Lucid::InitializeDemoPongEntities()
 {
-  // Register the necessary archetypes
-  // Note that this should be using `ColliderCube` but it is hardcoded like this for now.
-  registry->RegisterArchetype<Cube, Transform, RigidBody, ColliderCube>();
-  registry->RegisterArchetype<Sphere, Transform, RigidBody, ColliderCube>();
-  registry->RegisterArchetype<PongRules>();
-
   // Cube / rectangle entities
   Entity playerPaddleID = registry->GetAvailableEntityId();
   Entity aiPaddleID = registry->GetAvailableEntityId();
@@ -295,12 +250,6 @@ void Lucid::InitializeDemoPongEntities()
     sphere.Build();
   });
 
-  // TODO : Need to scale the cubes to become 'paddles'
-
-  // Audio Stuff Start
-  registry->RegisterArchetype<SoundEffect, Transform>();
-  registry->RegisterArchetype<Music>();
-
   Entity soundEffectID = registry->GetAvailableEntityId();
   Entity musicID = registry->GetAvailableEntityId();
 
@@ -315,11 +264,75 @@ void Lucid::InitializeDemoPongEntities()
 
   Music* music = registry->GetComponent<Music>(musicID);
   music->filePath = PIANO_MUSIC;
-  // Audio Stuff End
 }
 
 void Lucid::InitializeDemoPongSystems()
 {
+}
+
+void Lucid::InitializeSceneGridLines()
+{
+  Entity xLineID = registry->GetAvailableEntityId();
+  Entity yLineID = registry->GetAvailableEntityId();
+  Entity zLineID = registry->GetAvailableEntityId();
+
+  registry->CreateEntity<GridLine, Transform>(xLineID);
+  registry->CreateEntity<GridLine, Transform>(yLineID);
+  registry->CreateEntity<GridLine, Transform>(zLineID);
+
+  GridLine* xLine = registry->GetComponent<GridLine>(xLineID);
+  GridLine* yLine = registry->GetComponent<GridLine>(yLineID);
+  GridLine* zLine = registry->GetComponent<GridLine>(zLineID);
+
+  // TODO : Either define maximum limit for a scene or find a compile time number for this
+  // Note that if the number is too big, e.g. 100000.0f,
+  // opengl will start cutting off some numbers? the lines will not look
+  // the same size. Better to stick with a smaller number
+  const float MAX_WORLD_COORDINATE_LIMIT = 100.0f;
+
+  xLine->line.color = {0.8f, 0.0f, 0.0f};
+  xLine->line.origin.x = -MAX_WORLD_COORDINATE_LIMIT;
+  xLine->line.destination.x = MAX_WORLD_COORDINATE_LIMIT;
+
+  yLine->line.color = {0.0f, 0.8f, 0.0f};
+  yLine->line.origin.y = -MAX_WORLD_COORDINATE_LIMIT;
+  yLine->line.destination.y = MAX_WORLD_COORDINATE_LIMIT;
+
+  zLine->line.color = {0.0f, 0.0f, 0.8f};
+  zLine->line.origin.z = -MAX_WORLD_COORDINATE_LIMIT;
+  zLine->line.destination.z = MAX_WORLD_COORDINATE_LIMIT;
+
+  // Draw the x-z grid lines
+  for (int i = -100; i < 100; i++)
+  {
+    Entity lineID = registry->GetAvailableEntityId();
+    registry->CreateEntity<GridLine, Transform>(lineID);
+
+    GridLine* line = registry->GetComponent<GridLine>(lineID);
+    line->line.color = {0.2f, 0.2f, 0.2f};
+
+    line->line.origin.x = static_cast<float>(i);
+    line->line.origin.z = -MAX_WORLD_COORDINATE_LIMIT;
+
+    line->line.destination.x = static_cast<float>(i);
+    line->line.destination.z = MAX_WORLD_COORDINATE_LIMIT;
+  }
+
+  // Draw the z-x grid lines
+  for (int i = -100; i < 100; i++)
+  {
+    Entity lineID = registry->GetAvailableEntityId();
+    registry->CreateEntity<GridLine, Transform>(lineID);
+
+    GridLine* line = registry->GetComponent<GridLine>(lineID);
+    line->line.color = {0.2f, 0.2f, 0.2f};
+
+    line->line.origin.x = -MAX_WORLD_COORDINATE_LIMIT;
+    line->line.origin.z = static_cast<float>(i);
+
+    line->line.destination.x = MAX_WORLD_COORDINATE_LIMIT;
+    line->line.destination.z = static_cast<float>(i);
+  }
 }
 
 void Lucid::SetMouseCallback(std::function<void(GLFWwindow*, int, int, int)> fn)

@@ -13,9 +13,6 @@ const std::vector<float> line_vertices = {
 class Line
 {
  public:
-  // Line does not need index buffer
-  uint32_t VAO, VBO;
-
   glm::vec3 origin = glm::vec3(0.0f);
   glm::vec3 destination = glm::vec3(0.0f);
 

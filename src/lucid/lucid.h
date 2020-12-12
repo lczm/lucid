@@ -66,6 +66,7 @@ class Lucid
 
   void Update();
 
+  void InitializeArchetypes();
   void InitializeBulitInEntities();
   void InitializeBuiltInSystems();
 
@@ -75,6 +76,10 @@ class Lucid
   // Demo pong game
   void InitializeDemoPongEntities();
   void InitializeDemoPongSystems();
+
+#if DEBUG
+  void InitializeSceneGridLines();
+#endif
 
   void SetMouseCallback(
       std::function<void(GLFWwindow* window, int button, int action, int mods)> fn);
