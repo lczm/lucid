@@ -13,8 +13,8 @@ ALuint SoundEffectsLibrary::Load(const char* filename)
   SNDFILE* sndfile;
   SF_INFO sfinfo;
   short* membuf;
-  sf_count_t num_frames;
-  ALsizei num_bytes;
+  sf_count_t numFrames;
+  ALsizei numBytes;
 
   /* Open the audio file and check that it's usable. */
   sndfile = sf_open(filename, SFM_READ, &sfinfo);
@@ -56,22 +56,22 @@ ALuint SoundEffectsLibrary::Load(const char* filename)
   /* Decode the whole audio file to a buffer. */
   membuf = static_cast<short*>(malloc((size_t)(sfinfo.frames * sfinfo.channels) * sizeof(short)));
 
-  num_frames = sf_readf_short(sndfile, membuf, sfinfo.frames);
-  if (num_frames < 1)
+  numFrames = sf_readf_short(sndfile, membuf, sfinfo.frames);
+  if (numFrames < 1)
   {
     free(membuf);
     sf_close(sndfile);
-    fprintf(stderr, "Failed to read samples in %s (%" PRId64 ")\n", filename, num_frames);
+    fprintf(stderr, "Failed to read samples in %s (%" PRId64 ")\n", filename, numFrames);
     return 0;
   }
-  num_bytes = (ALsizei)(num_frames * sfinfo.channels) * (ALsizei)sizeof(short);
+  numBytes = (ALsizei)(numFrames * sfinfo.channels) * (ALsizei)sizeof(short);
 
   /* Buffer the audio data into a new buffer object, then free the data and
    * close the file.
    */
   buffer = 0;
   alGenBuffers(1, &buffer);
-  alBufferData(buffer, format, membuf, num_bytes, sfinfo.samplerate);
+  alBufferData(buffer, format, membuf, numBytes, sfinfo.samplerate);
 
   free(membuf);
   sf_close(sndfile);
@@ -85,21 +85,21 @@ ALuint SoundEffectsLibrary::Load(const char* filename)
     return 0;
   }
 
-  p_SoundEffectBuffers.push_back(buffer);  // add to the list of known buffers
+  soundEffectBuffers.push_back(buffer);  // add to the list of known buffers
 
   return buffer;
 }
 
 bool SoundEffectsLibrary::UnLoad(const ALuint& buffer)
 {
-  auto it = p_SoundEffectBuffers.begin();
-  while (it != p_SoundEffectBuffers.end())
+  auto it = soundEffectBuffers.begin();
+  while (it != soundEffectBuffers.end())
   {
     if (*it == buffer)
     {
       alDeleteBuffers(1, &*it);
 
-      it = p_SoundEffectBuffers.erase(it);
+      it = soundEffectBuffers.erase(it);
 
       return true;
     }
@@ -113,12 +113,12 @@ bool SoundEffectsLibrary::UnLoad(const ALuint& buffer)
 
 SoundEffectsLibrary::SoundEffectsLibrary()
 {
-  p_SoundEffectBuffers.clear();
+  soundEffectBuffers.clear();
 }
 
 SoundEffectsLibrary::~SoundEffectsLibrary()
 {
-  alDeleteBuffers(p_SoundEffectBuffers.size(), p_SoundEffectBuffers.data());
+  alDeleteBuffers(soundEffectBuffers.size(), soundEffectBuffers.data());
 
-  p_SoundEffectBuffers.clear();
+  soundEffectBuffers.clear();
 }

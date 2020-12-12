@@ -444,19 +444,19 @@ void UiSystem::DrawDevDebug(float dt, Registry* registry, Input* input)
 void UiSystem::DrawDefaultAssets(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Default Assets");
-  static const char* assets[3] = {"Sphere", "Cube", "Camera"};
-  for (int n = 0; n < IM_ARRAYSIZE(assets); n++)
+  static std::vector<const char*> assets = {"Sphere", "Cube", "Line", "Camera"};
+  for (int n = 0; n < assets.size(); n++)
   {
     ImGui::PushID(n);
-    if ((n % 3) != 0) ImGui::SameLine();
-    ImGui::Button(assets[n], ImVec2(60, 60));
+    if ((n % 10) != 0) ImGui::SameLine();
+    ImGui::Button(assets.at(n), ImVec2(60, 60));
 
     // Our buttons are both drag sources and drag targets here!
     if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
     {
       // Set payload to carry the index of our item (could be anything)
       ImGui::SetDragDropPayload("Default Assets", &n, sizeof(int));
-      ImGui::Text(assets[n], assets[n]);
+      ImGui::Text(assets.at(n), assets.at(n));
       ImGui::EndDragDropSource();
     }
     if (ImGui::BeginDragDropTarget())
@@ -464,8 +464,8 @@ void UiSystem::DrawDefaultAssets(float dt, Registry* registry, Input* input)
       if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Default Assets"))
       {
         IM_ASSERT(payload->DataSize == sizeof(int));
-        int payload_n = *(const int*)payload->Data;
-        assets[n] = assets[payload_n];
+        int payloadN = *(const int*)payload->Data;
+        assets.at(n) = assets.at(payloadN);
       }
       ImGui::EndDragDropTarget();
     }
@@ -480,9 +480,9 @@ void UiSystem::DrawDefaultAssets(float dt, Registry* registry, Input* input)
 
 void UiSystem::DrawToolBar(float dt, Registry* registry, Input* input)
 {
-  ImGuiWindowClass* window_class = new ImGuiWindowClass();
-  window_class->DockNodeFlagsOverrideSet = ImGuiDockNodeFlags_NoTabBar;
-  ImGui::SetNextWindowClass(window_class);
+  ImGuiWindowClass* windowClass = new ImGuiWindowClass();
+  windowClass->DockNodeFlagsOverrideSet = ImGuiDockNodeFlags_NoTabBar;
+  ImGui::SetNextWindowClass(windowClass);
   ImGui::Begin("ToolBar");
   ImVec2 wSize = ImGui::GetWindowSize();
   float buttonWidth = 60.0f;

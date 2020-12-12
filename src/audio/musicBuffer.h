@@ -23,14 +23,14 @@ class MusicBuffer
   ~MusicBuffer();
 
  private:
-  ALuint p_Source;
-  static const int BUFFER_SAMPLES = 8192;
-  static const int NUM_BUFFERS = 4;
-  ALuint p_Buffers[NUM_BUFFERS];
-  SNDFILE* p_SndFile;
-  SF_INFO p_Sfinfo;
-  short* p_Membuf;
-  ALenum p_Format;
+  ALuint source;
+  static const int bufferSamples = 8192;
+  static const int numBuffers = 4;
+  ALuint buffers[numBuffers];
+  SNDFILE* sndFile;
+  SF_INFO sfinfo;
+  short* membuf;
+  ALenum format;
 
   MusicBuffer() = delete;
 };

@@ -11,7 +11,7 @@ class SoundEffectsLibrary
   SoundEffectsLibrary();
   ~SoundEffectsLibrary();
 
-  std::vector<ALuint> p_SoundEffectBuffers;
+  std::vector<ALuint> soundEffectBuffers;
 
  public:
   static SoundEffectsLibrary* Get();

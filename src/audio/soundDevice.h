@@ -10,8 +10,8 @@ class SoundDevice
   SoundDevice();
   ~SoundDevice();
 
-  ALCdevice* p_ALCDevice;
-  ALCcontext* p_ALCContext;
+  ALCdevice* ALCDevice;
+  ALCcontext* ALCContext;
 
  public:
   static SoundDevice* Get();
