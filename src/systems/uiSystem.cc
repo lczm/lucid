@@ -513,7 +513,7 @@ void UiSystem::DrawToolBar(float dt, Registry* registry, Input* input)
   }
 
   ImGui::SameLine();
-  if (ImGui::Button("Resume", ImVec2(buttonWidth, 0.0f)))
+  if (ImGui::Button("Restart", ImVec2(buttonWidth, 0.0f)))
   {
   }
 
