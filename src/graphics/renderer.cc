@@ -59,7 +59,7 @@ void Renderer::DrawCube(Cube& cube, Shader& shader)
   glBindVertexArray(0);
 }
 
-void Renderer::DrawCubeIndexed(PrimitiveBatchIds primitiveBatchIds)
+void Renderer::DrawCubeIndexed(const PrimitiveBatchIds primitiveBatchIds)
 {
   glBindVertexArray(primitiveBatchIds.cubeVAO);
   glBindBuffer(GL_ARRAY_BUFFER, primitiveBatchIds.cubeVBO);
@@ -106,9 +106,59 @@ void Renderer::DrawCubeIndexed(PrimitiveBatchIds primitiveBatchIds)
 
 void Renderer::DrawSphere(Sphere& sphere, Shader& shader)
 {
+  /*
   glBindVertexArray(sphere.VAO);
   // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sphere.EBO);
   glDrawElements(GL_TRIANGLES, sphere.indices.size(), GL_UNSIGNED_INT, 0);
+  glBindVertexArray(0);
+  */
+}
+
+void Renderer::DrawSphereIndexed(const PrimitiveBatchIds primitiveBatchIds)
+{
+  glBindVertexArray(primitiveBatchIds.sphereVAO);
+  glBindBuffer(GL_ARRAY_BUFFER, primitiveBatchIds.sphereVBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, primitiveBatchIds.sphereEBO);
+
+  uint32_t instanceBuffer;
+  glGenBuffers(1, &instanceBuffer);
+  glBindBuffer(GL_ARRAY_BUFFER, instanceBuffer);
+  glBufferData(GL_ARRAY_BUFFER, MAX_BUFFER * sizeof(SphereVertex), &spherePrimitiveBuffer[0],
+               GL_STATIC_DRAW);
+
+  glEnableVertexAttribArray(1);
+  glEnableVertexAttribArray(2);
+  glEnableVertexAttribArray(3);
+  glEnableVertexAttribArray(4);
+  glEnableVertexAttribArray(5);
+
+  std::size_t vec4Size = sizeof(glm::vec4);
+
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)), (void*)0);
+
+  glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)),
+                        (void*)(3 * sizeof(float)));
+
+  glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)),
+                        (void*)(3 * sizeof(float) + (1 * vec4Size)));
+
+  glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)),
+                        (void*)(3 * sizeof(float) + (2 * vec4Size)));
+
+  glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, (4 * vec4Size) + (3 * sizeof(float)),
+                        (void*)(3 * sizeof(float) + (3 * vec4Size)));
+
+  glVertexAttribDivisor(1, 1);  // colors
+  glVertexAttribDivisor(2, 1);  // mat4 : vec1
+  glVertexAttribDivisor(3, 1);  // mat4 : vec2
+  glVertexAttribDivisor(4, 1);  // mat4 : vec3
+  glVertexAttribDivisor(5, 1);  // mat4 : vec4
+
+  SphereVerticesIndices sphereVerticesIndices = registry->GetComponent<SphereVerticesIndices>();
+
+  glDrawElementsInstanced(GL_TRIANGLES, sphereVerticesIndices.indices.size(), GL_UNSIGNED_INT, 0,
+                          batchIndexCount);
+
   glBindVertexArray(0);
 }
 
@@ -119,7 +169,7 @@ void Renderer::DrawSphere(Sphere& sphere, Shader& shader)
 //   glBindVertexArray(0);
 // }
 
-void Renderer::DrawLineIndexed(PrimitiveBatchIds primitiveBatchIds)
+void Renderer::DrawLineIndexed(const PrimitiveBatchIds primitiveBatchIds)
 {
   glBindVertexArray(primitiveBatchIds.lineVAO);
   glBindBuffer(GL_ARRAY_BUFFER, primitiveBatchIds.lineVBO);
@@ -155,7 +205,7 @@ void Renderer::StartBatch()
   batchIndexCount = 0;
 }
 
-void Renderer::PushLineBuffer(glm::mat4 modelMatrix, Line line)
+void Renderer::PushLineBuffer(const glm::mat4 modelMatrix, const Line line)
 {
   // If there is too much to add on, flush it down before adding
   if (batchIndexCount == MAX_BUFFER)
@@ -169,7 +219,21 @@ void Renderer::PushLineBuffer(glm::mat4 modelMatrix, Line line)
   batchIndexCount++;
 }
 
-void Renderer::PushCubeBuffer(glm::mat4 modelMatrix, Cube cube)
+void Renderer::PushSphereBuffer(const glm::mat4 modelMatrix, const Sphere sphere)
+{
+  // If there is too much to add on, flush it down before adding
+  if (batchIndexCount == MAX_BUFFER)
+  {
+    PrimitiveBatchIds primitiveBatchIds = registry->GetComponent<PrimitiveBatchIds>();
+    FlushBatch(primitiveBatchIds, DrawType::Sphere);
+  }
+
+  spherePrimitiveBuffer[batchIndexCount].color = sphere.color;
+  spherePrimitiveBuffer[batchIndexCount].modelMatrix = modelMatrix;
+  batchIndexCount++;
+}
+
+void Renderer::PushCubeBuffer(const glm::mat4 modelMatrix, const Cube cube)
 {
   // If there is too much to add on, flush it down before adding
   if (batchIndexCount == MAX_BUFFER)
@@ -183,6 +247,10 @@ void Renderer::PushCubeBuffer(glm::mat4 modelMatrix, Cube cube)
   batchIndexCount++;
 }
 
+void Renderer::PushModelBuffer(const glm::mat4 modelMatrix, const Model model)
+{
+}
+
 // TODO : This assumes its all lines
 void Renderer::FlushBatch(PrimitiveBatchIds primitiveBatchIds, DrawType drawType)
 {
@@ -192,6 +260,7 @@ void Renderer::FlushBatch(PrimitiveBatchIds primitiveBatchIds, DrawType drawType
       DrawLineIndexed(primitiveBatchIds);
       break;
     case DrawType::Sphere:
+      DrawSphereIndexed(primitiveBatchIds);
       break;
     case DrawType::Cube:
       DrawCubeIndexed(primitiveBatchIds);

@@ -84,12 +84,15 @@ void Lucid::Update()
 
 void Lucid::InitializeArchetypes()
 {
-  // Builtin usage, not for the user
-  // Singletons single struct usage
+  // Note that the archetypes registered under here and that are not
+  // under the #if DEBUG flag are the ones that will also exist
+  // in the release build of the game.
   registry->RegisterArchetype<ShaderResource>();
   registry->RegisterArchetype<PrimitiveBatchIds>();
-
   registry->RegisterArchetype<Model, Transform>();
+  registry->RegisterArchetype<QuatCamera>();
+  registry->RegisterArchetype<SphereVerticesIndices>();
+  registry->RegisterArchetype<Line, Transform>();
 
   // Register the necessary archetypes
   // Note that this should be using `ColliderCube` but it is hardcoded like this for now.
@@ -113,8 +116,8 @@ void Lucid::InitializeBulitInEntities()
   Entity primitiveBatchID = registry->GetAvailableEntityId();
   Entity shaderResourceID = registry->GetAvailableEntityId();
 
-  registry->CreateEntity<ShaderResource>(shaderResourceID);
   registry->CreateEntity<PrimitiveBatchIds>(primitiveBatchID);
+  registry->CreateEntity<ShaderResource>(shaderResourceID);
 
   ShaderResource& shaderResource = registry->GetComponent<ShaderResource>();
   shaderResource.modelShader.CreateShader(MODEL_VERTEX_SHADER, MODEL_FRAGMENT_SHADER);
@@ -123,8 +126,12 @@ void Lucid::InitializeBulitInEntities()
   shaderResource.primitiveShaderBatch.CreateShader(PRIMITIVE_LINE_SHADER,
                                                    PRIMITIVE_FRAGMENT_SHADER);
   shaderResource.cubeShaderBatch.CreateShader(PRIMITIVE_CUBE_SHADER, PRIMITIVE_FRAGMENT_SHADER);
+  // Note : using the primitive cube shader for now? If there turns out to not be a need
+  // for the sphere and cubes to use different shaders, then simplify the shader names.
+  shaderResource.sphereShaderBatch.CreateShader(PRIMITIVE_CUBE_SHADER, PRIMITIVE_FRAGMENT_SHADER);
 
-  registry->RegisterArchetype<Line, Transform>();
+  Entity sphereVerticesIndicesID = registry->GetAvailableEntityId();
+  registry->CreateEntity<SphereVerticesIndices>(sphereVerticesIndicesID);
 
 #if DEBUG
   Entity sceneRenderID = registry->GetAvailableEntityId();
@@ -261,14 +268,15 @@ void Lucid::InitializeDemoPongEntities()
   ballRigidBody->velocity =
       glm::normalize(playerTransform->position - ballTransform->position) * 0.020f;
 
-  // TODO : This can be simplified
-  registry->GetComponentsIter<Sphere>()->Each([](Sphere& sphere) {
-    sphere.radius = 1.0f;
-    sphere.sectors = 36;
-    sphere.stacks = 18;
-    sphere.BuildSphere();
-    sphere.Build();
-  });
+  // The spheres do not need these values to be set anymore because
+  // they are set by default.
+  // registry->GetComponentsIter<Sphere>()->Each([](Sphere& sphere) {
+  //   sphere.radius = 1.0f;
+  //   sphere.sectors = 36;
+  //   sphere.stacks = 18;
+  //   sphere.BuildSphere();
+  //   sphere.Build();
+  // });
 
   Entity soundEffectID = registry->GetAvailableEntityId();
   Entity musicID = registry->GetAvailableEntityId();

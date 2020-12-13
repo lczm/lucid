@@ -83,7 +83,6 @@ void RenderSystem::InitRenderBuffers()
 void RenderSystem::InitSceneCameraComponent(Registry* registry)
 {
   Entity cameraID = registry->GetAvailableEntityId();
-  registry->RegisterArchetype<QuatCamera>();
   registry->CreateEntity<QuatCamera>(cameraID);
 
   // Just store a pointer to it as it is used very often
@@ -147,7 +146,34 @@ void RenderSystem::InitPrimitiveBuffers(Registry* registry)
     glBindVertexArray(0);
   }
 
-  // TODO : Generate Sphere Buffers
+  {  // Sphere buffers
+    glGenVertexArrays(1, &primitiveBatchIds.sphereVAO);
+    glGenBuffers(1, &primitiveBatchIds.sphereVBO);
+    glGenBuffers(1, &primitiveBatchIds.sphereEBO);
+
+    // Sphere : Bind VAO and VBO
+    glBindVertexArray(primitiveBatchIds.sphereVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, primitiveBatchIds.sphereVBO);
+
+    // Sphere : Because a sphere is relatively special in terms of the vertices
+    // The vertices and indices have to be computed before the buffer data can be added
+    SphereVerticesIndices& sphereVerticesIndices = registry->GetComponent<SphereVerticesIndices>();
+    InitSphereVerticesIndices(sphereVerticesIndices);
+
+    // Sphere : Set VBO data
+    glBufferData(GL_ARRAY_BUFFER, sphereVerticesIndices.vertices.size() * sizeof(float),
+                 &sphereVerticesIndices.vertices[0], GL_STATIC_DRAW);
+
+    // Sphere : Bind EBO
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, primitiveBatchIds.sphereEBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sphereVerticesIndices.indices.size() * sizeof(uint32_t),
+                 &sphereVerticesIndices.indices[0], GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+
+    glBindVertexArray(0);
+  }
 
   {  // Cube buffers
     glGenVertexArrays(1, &primitiveBatchIds.cubeVAO);
@@ -452,19 +478,36 @@ void RenderSystem::DrawAllSpheres(float dt, Registry* registry, Input* input)
 {
   ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
 
-  shaderResource.primitiveShader.Bind();
-  shaderResource.primitiveShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
-  shaderResource.primitiveShader.SetUniformMatFloat4("view", quatCamera->GetView());
+  // shaderResource.primitiveShader.Bind();
+  // shaderResource.primitiveShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
+  // shaderResource.primitiveShader.SetUniformMatFloat4("view", quatCamera->GetView());
+
+  // registry->GetComponentsIter<Sphere, Transform>()->Each([&](Sphere& sphere, Transform&
+  // transform) {
+  //   auto modelMatrix = GetModelMatrix(transform);
+
+  //   shaderResource.primitiveShader.SetUniformMatFloat4("model", modelMatrix);
+  //   shaderResource.primitiveShader.SetUniformVecFloat3("uColor", sphere.color);
+  //   renderer->DrawSphere(sphere, shaderResource.primitiveShader);
+  // });
+
+  // shaderResource.primitiveShader.Unbind();
+
+  shaderResource.sphereShaderBatch.Bind();
+  shaderResource.sphereShaderBatch.SetUniformMatFloat4("projection", quatCamera->GetProjection());
+  shaderResource.sphereShaderBatch.SetUniformMatFloat4("view", quatCamera->GetView());
+
+  renderer->StartBatch();
 
   registry->GetComponentsIter<Sphere, Transform>()->Each([&](Sphere& sphere, Transform& transform) {
     auto modelMatrix = GetModelMatrix(transform);
-
-    shaderResource.primitiveShader.SetUniformMatFloat4("model", modelMatrix);
-    shaderResource.primitiveShader.SetUniformVecFloat3("uColor", sphere.color);
-    renderer->DrawSphere(sphere, shaderResource.primitiveShader);
+    renderer->PushSphereBuffer(modelMatrix, sphere);
   });
 
-  shaderResource.primitiveShader.Unbind();
+  PrimitiveBatchIds primitiveBatchIds = registry->GetComponent<PrimitiveBatchIds>();
+  renderer->FlushBatch(primitiveBatchIds, DrawType::Sphere);
+
+  shaderResource.sphereShaderBatch.Unbind();
 }
 
 void RenderSystem::DrawAllBoundingBoxes(float dt, Registry* registry, Input* input)
@@ -597,4 +640,90 @@ BoundingBox RenderSystem::GetBoundingBox(std::vector<glm::vec4> vertices)
     bb.maxZ = glm::max(vertices[i].z, bb.maxZ);
   }
   return bb;
+}
+
+void RenderSystem::InitSphereVerticesIndices(SphereVerticesIndices& sphereVerticesIndices)
+{
+  // vertex positions
+  float x, y, z, xy;
+
+  // vertex normals
+  // float nx, ny, nz;
+  // float lengthInverse = 1.0f / radius;
+  // float s, t;
+
+  auto radius = sphereVerticesIndices.radius;
+  auto sectors = sphereVerticesIndices.sectors;
+  auto stacks = sphereVerticesIndices.stacks;
+
+  float sectorStep = 2 * PI / sectors;
+  float stackStep = PI / stacks;
+  float sectorAngle, stackAngle;
+
+  for (int i = 0; i <= stacks; i++)
+  {
+    stackAngle = PI / 2 - i * stackStep;
+
+    xy = radius * cosf(stackAngle);
+    z = radius * sinf(stackAngle);
+
+    // add (sectorCount+1) vertices per stack
+    // the first and last vertices have same position and normal, but different texCoord
+    for (int j = 0; j <= sectors; j++)
+    {
+      sectorAngle = j * sectorStep;
+
+      // vertex position (x, y, z)
+      x = xy * cosf(sectorAngle);
+      y = xy * sinf(sectorAngle);
+      sphereVerticesIndices.vertices.push_back(x);
+      sphereVerticesIndices.vertices.push_back(y);
+      sphereVerticesIndices.vertices.push_back(z);
+
+      // Note : Normals are not used at the current time
+      // normalized vertex normal (nx, ny, nz)
+      // nx = x * lengthInverse;
+      // ny = y * lengthInverse;
+      // nz = z * lengthInverse;
+      // normals.push_back(nx);
+      // normals.push_back(ny);
+      // normals.push_back(nz);
+
+      // Note : TexCoords are also not used at the current time
+      // simplicity
+      // vertex tex coord (s, t) range between [0, 1]
+      // s = (float)j / sectors;
+      // t = (float)i / stacks;
+
+      // texCoords.push_back(s);
+      // texCoords.push_back(t);
+    }
+  }
+
+  int k1, k2;
+  for (int i = 0; i < stacks; ++i)
+  {
+    k1 = i * (sectors + 1);  // beginning of current stack
+    k2 = k1 + sectors + 1;   // beginning of next stack
+
+    for (int j = 0; j < sectors; ++j, ++k1, ++k2)
+    {
+      // 2 triangles per sector excluding first and last stacks
+      // k1 => k2 => k1+1
+      if (i != 0)
+      {
+        sphereVerticesIndices.indices.push_back(k1);
+        sphereVerticesIndices.indices.push_back(k2);
+        sphereVerticesIndices.indices.push_back(k1 + 1);
+      }
+
+      // k1+1 => k2 => k2+1
+      if (i != (stacks - 1))
+      {
+        sphereVerticesIndices.indices.push_back(k1 + 1);
+        sphereVerticesIndices.indices.push_back(k2);
+        sphereVerticesIndices.indices.push_back(k2 + 1);
+      }
+    }
+  }
 }

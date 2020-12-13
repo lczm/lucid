@@ -72,4 +72,7 @@ class RenderSystem : public System
                                                        BoundingBox boundingBox);
 
   BoundingBox GetBoundingBox(std::vector<glm::vec4> vertices);
+
+ private:
+  void InitSphereVerticesIndices(SphereVerticesIndices& sphereVerticesIndices);
 };

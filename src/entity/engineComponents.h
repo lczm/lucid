@@ -69,3 +69,18 @@ struct GridLine
 {
   Line line;
 };
+
+// This is a special struct that will be initialized with the
+// default positions and vertices of a sphere primtiive when
+// initialized on run-time. The reason for this is because
+// the vertices and indices of a sphere is relatively special
+// compared to a cube or a line.
+struct SphereVerticesIndices
+{
+  const float radius = 1.0f;
+  const int sectors = 36;
+  const int stacks = 18;
+
+  std::vector<float> vertices;
+  std::vector<uint32_t> indices;
+};

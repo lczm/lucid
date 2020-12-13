@@ -15,8 +15,9 @@ enum class DrawType
 
 /*
  * TODO : Update this to the quaternion based representation
+ * this should be updated when transform.rotation is updated to become a glm::quat
  */
-static glm::mat4 GetModelMatrix(Transform transform)
+static glm::mat4 GetModelMatrix(const Transform transform)
 {
   glm::mat4 matrixModel = glm::mat4(1.0f);
   glm::mat4 rotationMatrix = glm::mat4(1.0f);
@@ -30,6 +31,18 @@ static glm::mat4 GetModelMatrix(Transform transform)
   rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[2], glm::vec3(0.0, 0.0, 1.0));
 
   matrixModel *= rotationMatrix;
+
+  return matrixModel;
+}
+
+// This will be useful in the situation in (e.g.) trying to get a gigantic 
+// axis aligned bounding box, without the rotations
+static glm::mat4 GetModelMatrixWithoutRotation(const Transform transform)
+{
+  glm::mat4 matrixModel = glm::mat4(1.0f);
+
+  matrixModel = glm::translate(matrixModel, transform.position);
+  matrixModel = glm::scale(matrixModel, transform.scale);
 
   return matrixModel;
 }

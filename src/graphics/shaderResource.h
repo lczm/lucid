@@ -10,5 +10,6 @@ struct ShaderResource
   Shader primitiveShader;
   Shader primitiveShaderBatch;
   Shader cubeShaderBatch;
+  Shader sphereShaderBatch;
   Shader boundingBoxShader;
 };

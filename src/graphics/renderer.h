@@ -41,12 +41,13 @@ class Renderer
   void DrawModel(Model& model, Shader& shader);
 
   void DrawCube(Cube& cube, Shader& shader);
-  void DrawCubeIndexed(PrimitiveBatchIds primitiveBatchIds);
+  void DrawCubeIndexed(const PrimitiveBatchIds primitiveBatchIds);
 
   void DrawSphere(Sphere& sphere, Shader& shader);
+  void DrawSphereIndexed(const PrimitiveBatchIds);
 
   // void DrawLine(Line& line, Shader& shader);
-  void DrawLineIndexed(PrimitiveBatchIds primitiveBatchIds);
+  void DrawLineIndexed(const PrimitiveBatchIds primitiveBatchIds);
 
   void DrawBoundingBox(Model& model, Shader& shader);
   void DrawBoundingBox(Sphere& sphere, Shader& shader);
@@ -62,8 +63,8 @@ class Renderer
   void FlushBatch(PrimitiveBatchIds primitiveBatchIds, DrawType drawType);
 
  public:
-  void PushLineBuffer(glm::mat4 modelMatrix, Line line);
-  void PushSphereBuffer(glm::mat4 modelMatrix, Sphere sphere);
-  void PushCubeBuffer(glm::mat4 modelMatrix, Cube cube);
-  void PushModelBuffer(glm::mat4 modelMatrix, Model model);
+  void PushLineBuffer(const glm::mat4 modelMatrix, const Line line);
+  void PushSphereBuffer(const glm::mat4 modelMatrix, const Sphere sphere);
+  void PushCubeBuffer(const glm::mat4 modelMatrix, const Cube cube);
+  void PushModelBuffer(const glm::mat4 modelMatrix, const Model model);
 };
