@@ -4,4 +4,6 @@ Sphere::Sphere()
 {
 }
 
-Sphere::~Sphere() = default;
+Sphere::~Sphere()
+{
+}
