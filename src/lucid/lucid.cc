@@ -90,6 +90,8 @@ void Lucid::Update()
   else if (gameEngineState.gameState == GameState::PAUSED)
   {
     // If it is paused, draw the ui, and run the render system only.
+    // Note that this systems update has to be ran in the order of what the original systems
+    // are ran in
     registry->UpdateSystem(dt, input, "ui");
     registry->UpdateSystem(dt, input, "render");
   }

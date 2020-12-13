@@ -498,14 +498,18 @@ void UiSystem::DrawToolBar(float dt, Registry* registry, Input* input)
 
   UpdateInputActiveWindow(input, WindowType::ToolBar);
 
+  GameEngineState& gameEngineState = registry->GetComponent<GameEngineState>();
+
   ImGui::SameLine((wSize.x - ((buttonWidth * 3) + totalPadding)) * 0.5);
   if (ImGui::Button("Play", ImVec2(buttonWidth, 0.0f)))
   {
+    gameEngineState.gameState = GameState::PLAYING;
   }
 
   ImGui::SameLine();
   if (ImGui::Button("Pause", ImVec2(buttonWidth, 0.0f)))
   {
+    gameEngineState.gameState = GameState::PAUSED;
   }
 
   ImGui::SameLine();
@@ -529,7 +533,8 @@ void UiSystem::DrawProgressBar(float fraction, const char* message)
   int barWidth = 400;
   ImGuiIO& io = ImGui::GetIO();
   ImGui::SetNextWindowSize(ImVec2(barWidth, 0), ImGuiCond_Appearing);
-  ImGui::SetNextWindowPos(ImVec2(io.DisplaySize.x / 2, io.DisplaySize.y / 2), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+  ImGui::SetNextWindowPos(ImVec2(io.DisplaySize.x / 2, io.DisplaySize.y / 2), ImGuiCond_Appearing,
+                          ImVec2(0.5f, 0.5f));
   ImGui::Begin("Progress Bar", (bool*)0, ImGuiWindowFlags_NoTitleBar);
   ImGui::TextWrapped("%s %c", message, "|/-\\"[(int)(ImGui::GetTime() / 0.05f) & 3]);
   ImGui::ProgressBar(fraction);
