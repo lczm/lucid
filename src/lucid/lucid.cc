@@ -79,7 +79,20 @@ void Lucid::Update()
     frameCount = 0;
   }
 
-  registry->UpdateSystems(dt, input);
+  // Get the current game state
+  GameEngineState& gameEngineState = registry->GetComponent<GameEngineState>();
+
+  // Only if the game state is 'playing', then update the systems.
+  if (gameEngineState.gameState == GameState::PLAYING)
+  {
+    registry->UpdateSystems(dt, input);
+  }
+  else if (gameEngineState.gameState == GameState::PAUSED)
+  {
+    // If it is paused, draw the ui, and run the render system only.
+    registry->UpdateSystem(dt, input, "ui");
+    registry->UpdateSystem(dt, input, "render");
+  }
 }
 
 void Lucid::InitializeArchetypes()
@@ -93,6 +106,7 @@ void Lucid::InitializeArchetypes()
   registry->RegisterArchetype<QuatCamera>();
   registry->RegisterArchetype<SphereVerticesIndices>();
   registry->RegisterArchetype<Line, Transform>();
+  registry->RegisterArchetype<GameEngineState>();
 
   // Register the necessary archetypes
   // Note that this should be using `ColliderCube` but it is hardcoded like this for now.
@@ -133,6 +147,9 @@ void Lucid::InitializeBulitInEntities()
   Entity sphereVerticesIndicesID = registry->GetAvailableEntityId();
   registry->CreateEntity<SphereVerticesIndices>(sphereVerticesIndicesID);
 
+  Entity gameEngineStateID = registry->GetAvailableEntityId();
+  registry->CreateEntity<GameEngineState>(gameEngineStateID);
+
 #if DEBUG
   Entity sceneRenderID = registry->GetAvailableEntityId();
   Entity devDebugID = registry->GetAvailableEntityId();
@@ -147,7 +164,7 @@ void Lucid::InitializeBulitInEntities()
 void Lucid::InitializeBuiltInSystems()
 {
   // LucidSystem needs to be first, as this will be what 'calls' the other systems.
-  registry->RegisterSystem(new LucidSystem());
+  registry->RegisterSystem(new LucidSystem(), "lucid");
 
   // TODO : Figure this out
   // UiSystem can either be before or after rendersystem.
@@ -156,21 +173,21 @@ void Lucid::InitializeBuiltInSystems()
   // renderSystem generates a frameBuffer object that the uiSystem can immediately use after
   // But I also recall that I had a specific reason for setting UiSystem to be first
   // perhaps double buffering...?
-  registry->RegisterSystem(new UiSystem());
+  registry->RegisterSystem(new UiSystem(), "ui");
 
   // Demo start -- TODO : This should be separated, need a way of prioritising systems
-  registry->RegisterSystem(new PlayerSystem());
-  registry->RegisterSystem(new AiSystem());
+  registry->RegisterSystem(new PlayerSystem(), "player");
+  registry->RegisterSystem(new AiSystem(), "ai");
   // Demo end
 
-  registry->RegisterSystem(new PhysicsSystem());
+  registry->RegisterSystem(new PhysicsSystem(), "physics");
 
   // Demo start -- PongSystem will need to deal with collision for the ball
-  registry->RegisterSystem(new PongSystem());
+  registry->RegisterSystem(new PongSystem(), "pong");
   // Demo end
 
-  registry->RegisterSystem(new RenderSystem(registry));
-  registry->RegisterSystem(new AudioSystem());
+  registry->RegisterSystem(new RenderSystem(registry), "render");
+  registry->RegisterSystem(new AudioSystem(), "audio");
 }
 
 void Lucid::InitializeModelEntities()

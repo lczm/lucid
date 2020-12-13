@@ -1,5 +1,7 @@
 #pragma once
+
 #include <map>
+#include <string>
 #include <vector>
 #include <utility>
 #include <cstdint>
@@ -270,6 +272,9 @@ class ComponentVectorContainer
 */
 class System
 {
+ public:
+  std::string tag = "";
+
  public:
   virtual void Update(float dt, Registry* registry, Input* input) = 0;
 };
@@ -979,11 +984,29 @@ class Registry
     systems.push_back(system);
   };
 
+  void RegisterSystem(System* system, std::string tag)
+  {
+    system->tag = tag;
+    systems.push_back(system);
+  }
+
   void UpdateSystems(float dt, Input* input)
   {
     for (System* system : systems)
     {
       system->Update(dt, this, input);
+    }
+  }
+
+  // To update one specific system
+  void UpdateSystem(float dt, Input* input, std::string tag)
+  {
+    for (System* system : systems)
+    {
+      if (system->tag == tag)
+      {
+        system->Update(dt, this, input);
+      }
     }
   }
 };

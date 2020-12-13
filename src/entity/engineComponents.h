@@ -84,3 +84,15 @@ struct SphereVerticesIndices
   std::vector<float> vertices;
   std::vector<uint32_t> indices;
 };
+
+// This GameState specifically refers to the in-game 'scene' state
+enum class GameState
+{
+  PLAYING,  // The systems are being updated
+  PAUSED,   // The systems are not being updated
+};
+
+struct GameEngineState
+{
+  GameState gameState = GameState::PAUSED;
+};
