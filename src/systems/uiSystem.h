@@ -35,8 +35,7 @@ class UiSystem : public System
   const std::vector<std::pair<DefaultAssetsType, const char*>> defaultAssets = {
       {DefaultAssetsType::Cube, "Cube"},
       {DefaultAssetsType::Sphere, "Sphere"},
-      {DefaultAssetsType::Line, "Line"}
-  };
+      {DefaultAssetsType::Line, "Line"}};
 
  public:
   UiSystem();
@@ -61,7 +60,7 @@ class UiSystem : public System
   void DrawDevDebug(float dt, Registry* registry, Input* input);
   void DrawToolBar(float dt, Registry* registry, Input* input);
   void DrawDefaultAssets(float dt, Registry* registry, Input* input);
-  void DrawProgressBar(float fraction, const char* message);
+  void DrawProgressBar(float fraction, std::string message);
 
   void HandleGizmoInput(Registry* registry, Input* input);
   void UpdateSceneWindow(Registry* registry, Input* input);

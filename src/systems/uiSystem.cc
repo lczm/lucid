@@ -528,15 +528,16 @@ void UiSystem::DrawToolBar(float dt, Registry* registry, Input* input)
 }
 
 // Need to call this in a loop
-void UiSystem::DrawProgressBar(float fraction, const char* message)
+void UiSystem::DrawProgressBar(float fraction, std::string message)
 {
   int barWidth = 400;
   ImGuiIO& io = ImGui::GetIO();
+  const char* castedMessage = message.c_str();
   ImGui::SetNextWindowSize(ImVec2(barWidth, 0), ImGuiCond_Appearing);
   ImGui::SetNextWindowPos(ImVec2(io.DisplaySize.x / 2, io.DisplaySize.y / 2), ImGuiCond_Appearing,
                           ImVec2(0.5f, 0.5f));
   ImGui::Begin("Progress Bar", (bool*)0, ImGuiWindowFlags_NoTitleBar);
-  ImGui::TextWrapped("%s %c", message, "|/-\\"[(int)(ImGui::GetTime() / 0.05f) & 3]);
+  ImGui::TextWrapped("%s %c", castedMessage, "|/-\\"[(int)(ImGui::GetTime() / 0.05f) & 3]);
   ImGui::ProgressBar(fraction);
   ImGui::End();
 }
