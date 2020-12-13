@@ -321,7 +321,7 @@ TEST_F(TestsGL, GetComponentsLambdaSingleIteration)
 
   registry->AddComponentData<TestAddStruct1>(entity1, {10, 10});
 
-  const float dt = 0.001;
+  const float dt = 0.001f;
 
   std::vector<uint32_t> testAData = {10, 0, 0, 0};
   std::vector<uint32_t> testBData = {10, 0, 0, 0};
@@ -332,7 +332,7 @@ TEST_F(TestsGL, GetComponentsLambdaSingleIteration)
   uint32_t i = 0;
   registry->GetComponentsIter<TestAddStruct1>()->Each(
       [dt, &i, &testAData, &testBData](TestAddStruct1& testAddStruct) {
-        ASSERT_EQ(dt, 0.001);
+        ASSERT_FLOAT_EQ(dt, 0.001f);
         ASSERT_EQ(testAddStruct.a, testAData[i]);
         ASSERT_EQ(testAddStruct.b, testBData[i]);
 
@@ -345,7 +345,7 @@ TEST_F(TestsGL, GetComponentsLambdaSingleIteration)
   i = 0;
   registry->GetComponentsIter<TestAddStruct1>()->Each(
       [dt, &i, &testAData2, &testBData2](TestAddStruct1& testAddStruct) {
-        ASSERT_EQ(dt, 0.001);
+        ASSERT_FLOAT_EQ(dt, 0.001f);
         ASSERT_EQ(testAddStruct.a, testAData2[i]);
         ASSERT_EQ(testAddStruct.b, testBData2[i]);
 
@@ -378,7 +378,7 @@ TEST_F(TestsGL, GetComponentsLambdaMultiIteration)
   registry->CreateEntity<TestAddStruct1, TestAddStruct2, TestAddStruct3>(entity5);
   registry->CreateEntity<TestAddStruct1, TestAddStruct2, TestAddStruct3>(entity6);
 
-  const float dt = 0.001;
+  const float dt = 0.001f;
 
   std::vector<uint32_t> testAData = {0, 0, 0, 0};
   std::vector<uint32_t> testBData = {0, 0, 0, 0};
@@ -400,7 +400,7 @@ TEST_F(TestsGL, GetComponentsLambdaMultiIteration)
   registry->GetComponentsIter<TestAddStruct1, TestAddStruct2>()->Each(
       [dt, &i, &testAData, &testBData, &testCData, &testDData](TestAddStruct1& testAddStruct,
                                                                TestAddStruct2& testAddStruct2) {
-        ASSERT_EQ(dt, 0.001);
+        ASSERT_FLOAT_EQ(dt, 0.001f);
         ASSERT_EQ(testAddStruct.a, testAData[i]);
         ASSERT_EQ(testAddStruct.b, testBData[i]);
         ASSERT_EQ(testAddStruct2.c, testCData[i]);
@@ -418,7 +418,7 @@ TEST_F(TestsGL, GetComponentsLambdaMultiIteration)
   registry->GetComponentsIter<TestAddStruct1, TestAddStruct2>()->Each(
       [dt, &i, &testAData2, &testBData2, &testCData2, &testDData2](TestAddStruct1& testAddStruct,
                                                                    TestAddStruct2& testAddStruct2) {
-        ASSERT_EQ(dt, 0.001);
+        ASSERT_FLOAT_EQ(dt, 0.001f);
         ASSERT_EQ(testAddStruct.a, testAData2[i]);
         ASSERT_EQ(testAddStruct.b, testBData2[i]);
         ASSERT_EQ(testAddStruct2.c, testCData2[i]);
@@ -450,7 +450,7 @@ TEST_F(TestsGL, GetComponentsLambdaMultiIterationWithInitialDataModified)
   registry->AddComponentData<TestAddStruct1>(entity3, {10, 10});
   registry->AddComponentData<TestAddStruct2>(entity3, {10, 10});
 
-  const float dt = 0.001;
+  const float dt = 0.001f;
 
   std::vector<void*> components =
       registry->GetComponents<TestAddStruct1, TestAddStruct2, TestAddStruct3>();
@@ -470,7 +470,7 @@ TEST_F(TestsGL, GetComponentsLambdaMultiIterationWithInitialDataModified)
   registry->GetComponentsIter<TestAddStruct1, TestAddStruct2, TestAddStruct3>()->Each(
       [dt](TestAddStruct1& testAddStruct, TestAddStruct2& testAddStruct2,
            TestAddStruct3& testAddStruct3) {
-        ASSERT_EQ(dt, 0.001);
+        ASSERT_FLOAT_EQ(dt, 0.001f);
 
         ASSERT_EQ(testAddStruct.a, 10);
         ASSERT_EQ(testAddStruct.b, 10);
