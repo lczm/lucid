@@ -39,7 +39,7 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window)
   // InitializeSystems();
 
   // Please remove this in the future, for batch rendering tests only
-  InitializeManyCubes();
+  // InitializeManyCubes();
 
 #if DEBUG
   InitializeSceneGridLines();
