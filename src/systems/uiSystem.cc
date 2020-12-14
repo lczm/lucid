@@ -396,7 +396,7 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
 
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
   ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen;
-  // if (devDebug.changeFocusWindow == WindowType::Inspector) ImGui::SetWindowFocus();
+
   UpdateInputActiveWindow(input, WindowType::Inspector);
 
   if (devDebug.activeEntity == 0)
@@ -672,7 +672,8 @@ void UiSystem::UpdateGizmoType(Registry* registry, Input* input)
 
 void UiSystem::UpdateInputActiveWindow(Input* input, WindowType windowType)
 {
-  if (ImGui::IsWindowFocused() && input->activeWindow != windowType)
+  // if (ImGui::IsWindowFocused() && input->activeWindow != windowType)
+  if (input->IsMouseLDown() && ImGui::IsWindowHovered() && input->activeWindow != windowType)
   {
     input->activeWindow = windowType;
     dbg(windowType);
