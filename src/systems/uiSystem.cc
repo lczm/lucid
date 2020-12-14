@@ -447,11 +447,22 @@ void UiSystem::DrawDevDebug(float dt, Registry* registry, Input* input)
 
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
   WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
+  RendererStats& rendererStats = registry->GetComponent<RendererStats>();
+
   widgetLayout.rightWindowWidth = ImGui::GetWindowWidth();
   // if (devDebug.changeFocusWindow == WindowType::DevDebug) ImGui::SetWindowFocus();
 
   ImGui::Checkbox("Draw all with wireframe", &devDebug.drawWireframe);
   ImGui::Checkbox("Draw all colliders", &devDebug.drawColliders);
+
+  std::string callsPerFrame = "Calls per frame : " + std::to_string(rendererStats.calls);
+  ImGui::Text(callsPerFrame.c_str());
+
+  std::string verticesPerFrame = "Vertices per frame : " + std::to_string(rendererStats.vertices);
+  ImGui::Text(verticesPerFrame.c_str());
+
+  std::string indicesPerFrame = "Indices per frame : " + std::to_string(rendererStats.indices);
+  ImGui::Text(indicesPerFrame.c_str());
 
   ImGui::End();
 }

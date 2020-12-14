@@ -32,6 +32,14 @@ struct DevDebug
   ImGuizmo::OPERATION gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
 };
 
+// These values are updated on a per frame basis
+struct RendererStats
+{
+  uint32_t calls;
+  uint32_t vertices;
+  uint32_t indices;
+};
+
 struct WidgetLayout
 {
   float sceneWidth = 0;

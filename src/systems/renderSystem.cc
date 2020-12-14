@@ -24,6 +24,9 @@ void RenderSystem::Update(float dt, Registry* registry, Input* input)
 
   HandleKeyboardPan(dt, input);
 
+  // Start the update call, so that the draw calls are reseted properly
+  renderer->ClearRendererStats();
+
   glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
   glClearColor(0.1f, 0.1f, 0.1f, 1.0f);

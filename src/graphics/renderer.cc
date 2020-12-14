@@ -6,6 +6,7 @@ Renderer::Renderer(Registry* registry)
       spherePrimitiveBuffer(MAX_BUFFER)
 {
   Renderer::registry = registry;
+  Renderer::stats = &registry->GetComponent<RendererStats>();
 };
 
 Renderer::~Renderer() = default;
@@ -41,6 +42,11 @@ void Renderer::DrawMesh(Mesh& mesh, Shader& shader)
 
   // Reset gl texture unit to 0
   glActiveTexture(GL_TEXTURE0);
+
+  // Update stats
+  stats->calls++;
+  stats->vertices += 1 * mesh.vertices.size();
+  stats->indices += mesh.indices.size();
 }
 
 void Renderer::DrawModel(Model& model, Shader& shader)
@@ -57,6 +63,11 @@ void Renderer::DrawCube(Cube& cube, Shader& shader)
   // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cube.EBO);
   glDrawElements(GL_TRIANGLES, cubeIndices.size(), GL_UNSIGNED_INT, 0);
   glBindVertexArray(0);
+
+  // Update stats
+  stats->calls++;
+  stats->vertices += 1 * cubeVertices.size();
+  stats->indices += cubeIndices.size();
 }
 
 void Renderer::DrawCubeIndexed(const PrimitiveBatchIds primitiveBatchIds)
@@ -102,6 +113,11 @@ void Renderer::DrawCubeIndexed(const PrimitiveBatchIds primitiveBatchIds)
   glDrawElementsInstanced(GL_TRIANGLES, cubeIndices.size(), GL_UNSIGNED_INT, 0, batchIndexCount);
 
   glBindVertexArray(0);
+
+  // Update stats
+  stats->calls++;
+  stats->vertices += batchIndexCount * cubeVertices.size();
+  stats->indices += cubeIndices.size();
 }
 
 void Renderer::DrawSphere(Sphere& sphere, Shader& shader)
@@ -160,6 +176,11 @@ void Renderer::DrawSphereIndexed(const PrimitiveBatchIds primitiveBatchIds)
                           batchIndexCount);
 
   glBindVertexArray(0);
+
+  // Update stats
+  stats->calls++;
+  stats->vertices += batchIndexCount * sphereVerticesIndices.vertices.size();
+  stats->indices += sphereVerticesIndices.indices.size();
 }
 
 // void Renderer::DrawLine(Line& line, Shader& shader)
@@ -180,6 +201,11 @@ void Renderer::DrawLineIndexed(const PrimitiveBatchIds primitiveBatchIds)
   glDrawArraysInstanced(GL_LINES, 0, 2, batchIndexCount);
 
   glBindVertexArray(0);
+
+  // Update stats
+  stats->calls++;
+  stats->vertices += batchIndexCount * 2;
+  // There are no indices in lines
 }
 
 void Renderer::DrawBoundingBox(Model& model, Shader& shader)
@@ -203,6 +229,13 @@ void Renderer::StartBatch()
 {
   // Reset the batch counter
   batchIndexCount = 0;
+}
+
+void Renderer::ClearRendererStats()
+{
+  stats->calls = 0;
+  stats->vertices = 0;
+  stats->indices = 0;
 }
 
 void Renderer::PushLineBuffer(const glm::mat4 modelMatrix, const Line line)

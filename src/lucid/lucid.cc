@@ -109,6 +109,7 @@ void Lucid::InitializeArchetypes()
   registry->RegisterArchetype<SphereVerticesIndices>();
   registry->RegisterArchetype<Line, Transform>();
   registry->RegisterArchetype<GameEngineState>();
+  registry->RegisterArchetype<RendererStats>();
 
   // Register the necessary archetypes
   // Note that this should be using `ColliderCube` but it is hardcoded like this for now.
@@ -156,10 +157,12 @@ void Lucid::InitializeBuiltInEntities()
   Entity sceneRenderID = registry->GetAvailableEntityId();
   Entity devDebugID = registry->GetAvailableEntityId();
   Entity widgetLayoutID = registry->GetAvailableEntityId();
+  Entity rendererStatsID = registry->GetAvailableEntityId();
 
   registry->CreateEntity<SceneRender>(sceneRenderID);
   registry->CreateEntity<DevDebug>(devDebugID);
   registry->CreateEntity<WidgetLayout>(widgetLayoutID);
+  registry->CreateEntity<RendererStats>(rendererStatsID);
 #endif
 }
 

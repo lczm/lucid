@@ -24,6 +24,7 @@ class Renderer
 {
  private:
   Registry* registry;
+  RendererStats* stats;
 
   uint32_t batchIndexCount = 0;
   std::vector<glm::mat4> modelMatrices;
@@ -53,7 +54,12 @@ class Renderer
   void DrawBoundingBox(Sphere& sphere, Shader& shader);
   void DrawBoundingBox(ColliderCube colliderCube, Shader& shader);
 
-  void CalculateModelBoundingBox(Model& model);
+  /*
+   * This is to start and end each update frame cycle.
+   * The reason this is used is to track renderer stats.
+   * i.e. how many draw calls were made in a frame.
+   */
+  void ClearRendererStats();
 
   /*
    * This is to start and end draw calls, this is mostly to help batch calls
