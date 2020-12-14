@@ -251,8 +251,47 @@ void Renderer::PushModelBuffer(const glm::mat4 modelMatrix, const Model model)
 {
 }
 
+void Renderer::PushGenericBufferWithColor(const glm::mat4 modelMatrix, const glm::vec3 color,
+                                          const DrawType drawType)
+{
+  PrimitiveBatchIds primitiveBatchIds = registry->GetComponent<PrimitiveBatchIds>();
+  switch (drawType)
+  {
+    case DrawType::Line:
+      if (batchIndexCount == MAX_BUFFER)
+      {
+        FlushBatch(primitiveBatchIds, DrawType::Line);
+      }
+
+      linePrimitiveBuffer[batchIndexCount].color = color;
+      linePrimitiveBuffer[batchIndexCount].modelMatrix = modelMatrix;
+      batchIndexCount++;
+      break;
+    case DrawType::Cube:
+      if (batchIndexCount == MAX_BUFFER)
+      {
+        FlushBatch(primitiveBatchIds, DrawType::Cube);
+      }
+
+      cubePrimititiveBuffer[batchIndexCount].color = color;
+      cubePrimititiveBuffer[batchIndexCount].modelMatrix = modelMatrix;
+      batchIndexCount++;
+      break;
+    case DrawType::Sphere:
+      if (batchIndexCount == MAX_BUFFER)
+      {
+        FlushBatch(primitiveBatchIds, DrawType::Sphere);
+      }
+
+      spherePrimitiveBuffer[batchIndexCount].color = color;
+      spherePrimitiveBuffer[batchIndexCount].modelMatrix = modelMatrix;
+      batchIndexCount++;
+      break;
+  }
+}
+
 // TODO : This assumes its all lines
-void Renderer::FlushBatch(PrimitiveBatchIds primitiveBatchIds, DrawType drawType)
+void Renderer::FlushBatch(PrimitiveBatchIds primitiveBatchIds, const DrawType drawType)
 {
   switch (drawType)
   {

@@ -60,11 +60,13 @@ class Renderer
    * together so that it is more performant.
    */
   void StartBatch();
-  void FlushBatch(PrimitiveBatchIds primitiveBatchIds, DrawType drawType);
+  void FlushBatch(PrimitiveBatchIds primitiveBatchIds, const DrawType drawType);
 
  public:
   void PushLineBuffer(const glm::mat4 modelMatrix, const Line line);
   void PushSphereBuffer(const glm::mat4 modelMatrix, const Sphere sphere);
   void PushCubeBuffer(const glm::mat4 modelMatrix, const Cube cube);
   void PushModelBuffer(const glm::mat4 modelMatrix, const Model model);
+  void PushGenericBufferWithColor(const glm::mat4 modelMatrix, const glm::vec3 color,
+                                  const DrawType drawType);
 };

@@ -67,7 +67,7 @@ class Lucid
   void Update();
 
   void InitializeArchetypes();
-  void InitializeBulitInEntities();
+  void InitializeBuiltInEntities();
   void InitializeBuiltInSystems();
 
   void InitializeModelEntities();

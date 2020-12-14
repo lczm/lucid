@@ -32,10 +32,10 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window)
   ImGui_ImplOpenGL3_Init(GLSL_VERSION);
 
   InitializeArchetypes();
-  InitializeBulitInEntities();
+  InitializeBuiltInEntities();
   InitializeBuiltInSystems();
 
-  InitializeModelEntities();
+  // InitializeModelEntities();
   // InitializeSystems();
 
   // Please remove this in the future, for batch rendering tests only
@@ -127,7 +127,7 @@ void Lucid::InitializeArchetypes()
 #endif
 }
 
-void Lucid::InitializeBulitInEntities()
+void Lucid::InitializeBuiltInEntities()
 {
   Entity primitiveBatchID = registry->GetAvailableEntityId();
   Entity shaderResourceID = registry->GetAvailableEntityId();
@@ -297,20 +297,20 @@ void Lucid::InitializeDemoPongEntities()
   //   sphere.Build();
   // });
 
-  Entity soundEffectID = registry->GetAvailableEntityId();
-  Entity musicID = registry->GetAvailableEntityId();
+  // Entity soundEffectID = registry->GetAvailableEntityId();
+  // Entity musicID = registry->GetAvailableEntityId();
 
-  registry->CreateEntity<SoundEffect, Transform>(soundEffectID);
-  registry->CreateEntity<Music>(musicID);
+  // registry->CreateEntity<SoundEffect, Transform>(soundEffectID);
+  // registry->CreateEntity<Music>(musicID);
 
-  Transform* soundEffectTransform = registry->GetComponent<Transform>(soundEffectID);
-  soundEffectTransform->position = {0, 0, 0};
+  // Transform* soundEffectTransform = registry->GetComponent<Transform>(soundEffectID);
+  // soundEffectTransform->position = {0, 0, 0};
 
-  SoundEffect* soundEffect = registry->GetComponent<SoundEffect>(soundEffectID);
-  soundEffect->filePath = GRUNT_SOUND;
+  // SoundEffect* soundEffect = registry->GetComponent<SoundEffect>(soundEffectID);
+  // soundEffect->filePath = GRUNT_SOUND;
 
-  Music* music = registry->GetComponent<Music>(musicID);
-  music->filePath = PIANO_MUSIC;
+  // Music* music = registry->GetComponent<Music>(musicID);
+  // music->filePath = PIANO_MUSIC;
 }
 
 void Lucid::InitializeDemoPongSystems()

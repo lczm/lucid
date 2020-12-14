@@ -298,7 +298,7 @@ bool RenderSystem::HandleMousePick(float dt, Registry* registry, Input* input)
     if (transform.scale.x == 1.0f)
     {
       // Calculate the model matrix
-      auto modelMatrix = GetModelMatrix(transform);
+      auto modelMatrix = GetModelMatrixWithoutRotation(transform);
 
       std::vector<glm::vec4> verticesCollection;
       verticesCollection.reserve(boundingBoxCubeVertices.size() / 3);
@@ -514,20 +514,31 @@ void RenderSystem::DrawAllBoundingBoxes(float dt, Registry* registry, Input* inp
 {
   ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
 
-  shaderResource.primitiveShader.Bind();
-  shaderResource.primitiveShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
-  shaderResource.primitiveShader.SetUniformMatFloat4("view", quatCamera->GetView());
+  shaderResource.cubeShaderBatch.Bind();
+  shaderResource.cubeShaderBatch.SetUniformMatFloat4("projection", quatCamera->GetProjection());
+  shaderResource.cubeShaderBatch.SetUniformMatFloat4("view", quatCamera->GetView());
 
-  registry->GetComponentsIter<Transform, ColliderCube>()->Each(
-      [&](Transform& transform, ColliderCube& colliderCube) {
-        auto modelMatrix = GetModelMatrix(transform);
+  glLineWidth(5.0f);
+  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-        shaderResource.primitiveShader.SetUniformMatFloat4("model", modelMatrix);
-        shaderResource.primitiveShader.SetUniformVecFloat3("uColor", colliderCube.color);
-        renderer->DrawBoundingBox(colliderCube, shaderResource.primitiveShader);
-      });
+  renderer->StartBatch();
 
-  shaderResource.primitiveShader.Unbind();
+  registry->GetComponentsIter<Transform>()->Each([&](Transform& transform) {
+    auto modelMatrix = GetModelMatrixWithoutRotation(transform);
+    renderer->PushGenericBufferWithColor(modelMatrix, {1.0f, 0.0f, 0.0f}, DrawType::Cube);
+  });
+
+  PrimitiveBatchIds primitiveBatchIds = registry->GetComponent<PrimitiveBatchIds>();
+  renderer->FlushBatch(primitiveBatchIds, DrawType::Cube);
+
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  glLineWidth(1.0f);
+
+  shaderResource.cubeShaderBatch.Unbind();
+}
+
+void RenderSystem::DrawAllColldiers(float dt, Registry* registry, Input* input)
+{
 }
 
 glm::vec3 RenderSystem::GetRayDirection(Registry* registry, Input* input)

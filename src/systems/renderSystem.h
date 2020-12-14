@@ -61,8 +61,10 @@ class RenderSystem : public System
   void DrawAllCubes(float dt, Registry* registry, Input* input);
   void DrawAllSpheres(float dt, Registry* registry, Input* input);
 
-  // Debugging purposes for now?
+  // This draws a bounding box around everything that has a transform
+  // Main used for debugging purposes though.
   void DrawAllBoundingBoxes(float dt, Registry* registry, Input* input);
+  void DrawAllColldiers(float dt, Registry* registry, Input* input);
 
  public:
   // TODO : Typedef glm::vec3 to a ray as it feels overly verbose to declare
