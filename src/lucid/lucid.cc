@@ -65,8 +65,12 @@ void Lucid::Update()
   dt = elapsed.count();
   timer = now;
 
+  // SecondDt here refers to 'seconds' in time measurements
   secondDt += dt;
-  frameCount++;
+
+  // TODO : Set max FPS
+  const float MAX_FPS = 60.0f;
+  const float MAX_PERIOD = 1.0 / MAX_FPS;
 
   // If it has been a second
   if (secondDt >= 1.0f)
@@ -95,6 +99,8 @@ void Lucid::Update()
     registry->UpdateSystem(dt, input, "ui");
     registry->UpdateSystem(dt, input, "render");
   }
+
+  frameCount++;
 }
 
 void Lucid::InitializeArchetypes()
