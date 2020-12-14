@@ -404,6 +404,7 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
   UpdateInputActiveWindow(input, WindowType::Inspector);
 
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen;
   // if (devDebug.changeFocusWindow == WindowType::Inspector) ImGui::SetWindowFocus();
 
   if (devDebug.activeEntity == 0)
@@ -414,13 +415,48 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
 
   if (registry->EntityHasComponent<Cube>(devDebug.activeEntity))
   {
-    Cube* cube = registry->GetComponent<Cube>(devDebug.activeEntity);
-    ImGui::ColorEdit3("Color", &(cube->color.x));
+    if (ImGui::CollapsingHeader("Color"), treeNodeFlags)
+    {
+      Cube* cube = registry->GetComponent<Cube>(devDebug.activeEntity);
+      ImGui::ColorEdit3("Color", &(cube->color.x));
+    }
   }
-  else if (registry->EntityHasComponent<Sphere>(devDebug.activeEntity))
+  if (registry->EntityHasComponent<Transform>(devDebug.activeEntity))
   {
-    Sphere* sphere = registry->GetComponent<Sphere>(devDebug.activeEntity);
-    ImGui::ColorEdit3("Color", &(sphere->color.x));
+    if (ImGui::CollapsingHeader("Transform"), treeNodeFlags)
+    {
+      Transform* transform = registry->GetComponent<Transform>(devDebug.activeEntity);
+      ImGui::InputFloat("x position", &(transform->position.x), 0.01f, 1.0f);
+      ImGui::InputFloat("y position", &(transform->position.y), 0.01f, 1.0f);
+      ImGui::InputFloat("z position", &(transform->position.x), 0.01f, 1.0f);
+    }
+  }
+  if (registry->EntityHasComponent<RigidBody>(devDebug.activeEntity))
+  {
+    if (ImGui::CollapsingHeader("Rigid Body"), treeNodeFlags)
+    {
+      RigidBody* rigidBody = registry->GetComponent<RigidBody>(devDebug.activeEntity);
+      ImGui::InputFloat("x velocity", &(rigidBody->velocity.x), 0.01f, 1.0f);
+      ImGui::InputFloat("y velocity", &(rigidBody->velocity.y), 0.01f, 1.0f);
+      ImGui::InputFloat("z velocity", &(rigidBody->velocity.z), 0.01f, 1.0f);
+    }
+  }
+  if (registry->EntityHasComponent<Animation>(devDebug.activeEntity))
+  {
+    if (ImGui::CollapsingHeader("Animation"), treeNodeFlags)
+    {
+      Animation* animation = registry->GetComponent<Animation>(devDebug.activeEntity);
+      ImGui::InputFloat("Animation Counter", &(animation->animCounter), 0.01f, 1.0f);
+      ImGui::InputFloat("Animation Interval", &(animation->animInterval), 0.01f, 1.0f);
+    }
+  }
+  if (registry->EntityHasComponent<Sphere>(devDebug.activeEntity))
+  {
+    if (ImGui::CollapsingHeader("Color"), treeNodeFlags)
+    {
+      Sphere* sphere = registry->GetComponent<Sphere>(devDebug.activeEntity);
+      ImGui::ColorEdit3("Color", &(sphere->color.x));
+    }
   }
 
   ImGui::End();
@@ -495,13 +531,13 @@ void UiSystem::DrawToolBar(float dt, Registry* registry, Input* input)
 {
   ImGuiWindowClass* windowClass = new ImGuiWindowClass();
   ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse;
-  windowClass->DockNodeFlagsOverrideSet = ImGuiDockNodeFlags_NoTabBar;
-  ImGui::SetNextWindowClass(windowClass);
-  ImGui::Begin("ToolBar", (bool*)0, windowFlags);
-  ImGui::SetScrollY(0);
   ImVec2 wSize = ImGui::GetWindowSize();
   float buttonWidth = 60.0f;
   float totalPadding = 16;
+
+  windowClass->DockNodeFlagsOverrideSet = ImGuiDockNodeFlags_NoTabBar;
+  ImGui::SetNextWindowClass(windowClass);
+  ImGui::Begin("ToolBar", (bool*)0, windowFlags);
 
   UpdateInputActiveWindow(input, WindowType::ToolBar);
 
