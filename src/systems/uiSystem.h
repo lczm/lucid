@@ -67,5 +67,5 @@ class UiSystem : public System
   void UpdateGizmoType(Registry* registry, Input* input);
   void UpdateInputActiveWindow(Input* input, WindowType windowType);
   void UpdateWindowFocus(Registry* registry, WindowType windowType, const char* focusWindow,
-                         WindowType changeFocusWindow = WindowType::None);
+                         Input* input, WindowType changeFocusWindow = WindowType::None);
 };

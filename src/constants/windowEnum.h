@@ -14,5 +14,6 @@ enum class WindowType
   GameCamera,
   ToolBar,
   DevDebug,
+  DefaultAssets,
   None,
 };

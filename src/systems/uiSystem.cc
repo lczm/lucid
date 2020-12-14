@@ -185,8 +185,6 @@ void UiSystem::DrawHierarchy(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Hierarchy");
 
-  UpdateInputActiveWindow(input, WindowType::Hierarchy);
-
   WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
   widgetLayout.leftWindowWidth = ImGui::GetWindowWidth();
 
@@ -232,13 +230,13 @@ void UiSystem::DrawHierarchy(float dt, Registry* registry, Input* input)
   }
 
   // ImGui::Text("This is the scene hierarchy");
+  UpdateInputActiveWindow(input, WindowType::Hierarchy);
   ImGui::End();
 }
 
 void UiSystem::DrawAssets(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Assets");
-  UpdateInputActiveWindow(input, WindowType::Assets);
 
   WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
   // if (devDebug.changeFocusWindow == WindowType::Assets) ImGui::SetWindowFocus();
@@ -249,6 +247,7 @@ void UiSystem::DrawAssets(float dt, Registry* registry, Input* input)
   widgetLayout.bottomWindowHeight = wsize.y;
 
   ImGui::Text("This is the assets");
+  UpdateInputActiveWindow(input, WindowType::Assets);
   ImGui::End();
 }
 
@@ -261,8 +260,6 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
   ImGui::PopStyleVar();
 
   ImGui::BeginChild("SceneRender");
-
-  UpdateInputActiveWindow(input, WindowType::Scene);
 
   // Get the size of the current imgui window to draw in
   ImVec2 wsize = ImGui::GetWindowSize();
@@ -282,10 +279,11 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
 
   HandleGizmoInput(registry, input);
 
+  UpdateInputActiveWindow(input, WindowType::Scene);
   ImGui::EndChild();
 
-  UpdateWindowFocus(registry, WindowType::Inspector, "Inspector", WindowType::Scene);
-  UpdateWindowFocus(registry, WindowType::Scene, "Scene");
+  UpdateWindowFocus(registry, WindowType::Inspector, "Inspector", input, WindowType::Scene);
+  UpdateWindowFocus(registry, WindowType::Scene, "Scene", input);
 
   // Drag n drop from default assets
   if (ImGui::BeginDragDropTarget())
@@ -321,8 +319,6 @@ void UiSystem::DrawGameCamera(float dt, Registry* registry, Input* input)
 
   ImGui::BeginChild("SceneRender");
 
-  UpdateInputActiveWindow(input, WindowType::GameCamera);
-
   // Get the size of the current imgui window to draw in
   ImVec2 wsize = ImGui::GetWindowSize();
 
@@ -342,6 +338,7 @@ void UiSystem::DrawGameCamera(float dt, Registry* registry, Input* input)
 
   ImGui::EndChild();
 
+  UpdateInputActiveWindow(input, WindowType::GameCamera);
   ImGui::End();
 }
 
@@ -349,12 +346,11 @@ void UiSystem::DrawProject(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Project");
 
-  UpdateInputActiveWindow(input, WindowType::Project);
-
   // DevDebug& devDebug = registry->GetComponent<DevDebug>();
   // if (devDebug.changeFocusWindow == WindowType::Scene) ImGui::SetWindowFocus();
 
   ImGui::Text("This is the project");
+  UpdateInputActiveWindow(input, WindowType::Project);
   ImGui::End();
 }
 
@@ -362,12 +358,11 @@ void UiSystem::DrawConsole(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Console");
 
-  UpdateInputActiveWindow(input, WindowType::Console);
-
   // DevDebug& devDebug = registry->GetComponent<DevDebug>();
   // if (devDebug.changeFocusWindow == WindowType::Console) ImGui::SetWindowFocus();
 
   ImGui::Text("This is the console");
+  UpdateInputActiveWindow(input, WindowType::Console);
   ImGui::End();
 }
 
@@ -375,12 +370,11 @@ void UiSystem::DrawAnimation(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Animation");
 
-  UpdateInputActiveWindow(input, WindowType::Animation);
-
   // DevDebug& devDebug = registry->GetComponent<DevDebug>();
   // if (devDebug.changeFocusWindow == WindowType::Animation) ImGui::SetWindowFocus();
 
   ImGui::Text("This is the animations");
+  UpdateInputActiveWindow(input, WindowType::Animation);
   ImGui::End();
 }
 
@@ -388,12 +382,11 @@ void UiSystem::DrawAnimator(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Animator");
 
-  UpdateInputActiveWindow(input, WindowType::Animator);
-
   // DevDebug& devDebug = registry->GetComponent<DevDebug>();
   // if (devDebug.changeFocusWindow == WindowType::Animator) ImGui::SetWindowFocus();
 
   ImGui::Text("This is the animator");
+  UpdateInputActiveWindow(input, WindowType::Animator);
   ImGui::End();
 }
 
@@ -401,11 +394,10 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Inspector");
 
-  UpdateInputActiveWindow(input, WindowType::Inspector);
-
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
   ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen;
   // if (devDebug.changeFocusWindow == WindowType::Inspector) ImGui::SetWindowFocus();
+  UpdateInputActiveWindow(input, WindowType::Inspector);
 
   if (devDebug.activeEntity == 0)
   {
@@ -466,20 +458,17 @@ void UiSystem::DrawServices(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Services");
 
-  UpdateInputActiveWindow(input, WindowType::Services);
-
   // DevDebug& devDebug = registry->GetComponent<DevDebug>();
   // if (devDebug.changeFocusWindow == WindowType::Services) ImGui::SetWindowFocus();
 
   ImGui::Text("This is the services");
+  UpdateInputActiveWindow(input, WindowType::Services);
   ImGui::End();
 }
 
 void UiSystem::DrawDevDebug(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("DevDebug");
-
-  UpdateInputActiveWindow(input, WindowType::DevDebug);
 
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
   WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
@@ -500,6 +489,7 @@ void UiSystem::DrawDevDebug(float dt, Registry* registry, Input* input)
   std::string indicesPerFrame = "Indices per frame : " + std::to_string(rendererStats.indices);
   ImGui::Text(indicesPerFrame.c_str());
 
+  UpdateInputActiveWindow(input, WindowType::DevDebug);
   ImGui::End();
 }
 
@@ -524,6 +514,7 @@ void UiSystem::DrawDefaultAssets(float dt, Registry* registry, Input* input)
     }
     ImGui::PopID();
   }
+  UpdateInputActiveWindow(input, WindowType::DefaultAssets);
   ImGui::End();
 }
 
@@ -538,8 +529,6 @@ void UiSystem::DrawToolBar(float dt, Registry* registry, Input* input)
   windowClass->DockNodeFlagsOverrideSet = ImGuiDockNodeFlags_NoTabBar;
   ImGui::SetNextWindowClass(windowClass);
   ImGui::Begin("ToolBar", (bool*)0, windowFlags);
-
-  UpdateInputActiveWindow(input, WindowType::ToolBar);
 
   GameEngineState& gameEngineState = registry->GetComponent<GameEngineState>();
 
@@ -567,6 +556,7 @@ void UiSystem::DrawToolBar(float dt, Registry* registry, Input* input)
   // DevDebug& devDebug = registry->GetComponent<DevDebug>();
   // if (devDebug.changeFocusWindow == WindowType::Animator) ImGui::SetWindowFocus();
 
+  UpdateInputActiveWindow(input, WindowType::ToolBar);
   ImGui::End();
 }
 
@@ -681,17 +671,19 @@ void UiSystem::UpdateInputActiveWindow(Input* input, WindowType windowType)
   if (ImGui::IsWindowFocused() && input->activeWindow != windowType)
   {
     input->activeWindow = windowType;
+    dbg(windowType);
   }
 }
 
 void UiSystem::UpdateWindowFocus(Registry* registry, WindowType windowType, const char* focusWindow,
-                                 WindowType changeFocusWindow)
+                                 Input* input, WindowType changeFocusWindow)
 {
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
 
   if (devDebug.changeFocusWindow == windowType)
   {
     ImGui::SetWindowFocus(focusWindow);
+    input->activeWindow = windowType;
     devDebug.changeFocusWindow = changeFocusWindow;
   }
 }
