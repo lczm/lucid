@@ -35,7 +35,7 @@ static glm::mat4 GetModelMatrix(const Transform transform)
   return matrixModel;
 }
 
-// This will be useful in the situation in (e.g.) trying to get a gigantic 
+// This will be useful in the situation in (e.g.) trying to get a gigantic
 // axis aligned bounding box, without the rotations
 static glm::mat4 GetModelMatrixWithoutRotation(const Transform transform)
 {

@@ -553,10 +553,10 @@ void UiSystem::HandleGizmoInput(Registry* registry, Input* input)
 
     ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
 
-    Transform& transform = *(registry->GetComponent<Transform>(devDebug.activeEntity));
+    Transform* transform = registry->GetComponent<Transform>(devDebug.activeEntity);
 
     // TODO Create a utility method to compute this
-    auto modelMatrix = GetModelMatrix(transform);
+    auto modelMatrix = GetModelMatrix(*(transform));
     QuatCamera& quatCamera = registry->GetComponent<QuatCamera>();
     ImGuizmo::Manipulate(glm::value_ptr(quatCamera.GetView()),
                          glm::value_ptr(quatCamera.GetProjection()), devDebug.gizmoOperation,
@@ -582,11 +582,11 @@ void UiSystem::HandleGizmoInput(Registry* registry, Input* input)
       // TODO : These rotation computations can just stay as quats for simplicity and not have to
       // be converted back into euler angles every time.
       glm::vec3 newRotation = glm::eulerAngles(rotation);
-      glm::vec3 deltaRotation = newRotation - transform.rotation;
+      glm::vec3 deltaRotation = newRotation - transform->rotation;
 
-      transform.position = position;
-      transform.rotation += deltaRotation;
-      transform.scale = scale;
+      transform->position = position;
+      transform->rotation += deltaRotation;
+      transform->scale = scale;
     }
     else
     {
