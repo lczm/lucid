@@ -526,13 +526,13 @@ void UiSystem::DrawToolBar(float dt, Registry* registry, Input* input)
 {
   ImGuiWindowClass* windowClass = new ImGuiWindowClass();
   ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse;
-  ImVec2 wSize = ImGui::GetWindowSize();
   float buttonWidth = 60.0f;
   float totalPadding = 16;
 
   windowClass->DockNodeFlagsOverrideSet = ImGuiDockNodeFlags_NoTabBar;
   ImGui::SetNextWindowClass(windowClass);
   ImGui::Begin("ToolBar", (bool*)0, windowFlags);
+  ImVec2 wSize = ImGui::GetWindowSize();
 
   GameEngineState& gameEngineState = registry->GetComponent<GameEngineState>();
 
