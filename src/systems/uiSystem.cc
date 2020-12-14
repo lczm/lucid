@@ -413,6 +413,7 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
       ImGui::ColorEdit3("Color", &(cube->color.x));
     }
   }
+
   if (registry->EntityHasComponent<Transform>(devDebug.activeEntity))
   {
     if (ImGui::CollapsingHeader("Transform"), treeNodeFlags)
@@ -423,6 +424,7 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
       ImGui::InputFloat("z position", &(transform->position.x), 0.01f, 1.0f);
     }
   }
+
   if (registry->EntityHasComponent<RigidBody>(devDebug.activeEntity))
   {
     if (ImGui::CollapsingHeader("Rigid Body"), treeNodeFlags)
@@ -433,6 +435,7 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
       ImGui::InputFloat("z velocity", &(rigidBody->velocity.z), 0.01f, 1.0f);
     }
   }
+
   if (registry->EntityHasComponent<Animation>(devDebug.activeEntity))
   {
     if (ImGui::CollapsingHeader("Animation"), treeNodeFlags)
@@ -442,6 +445,7 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
       ImGui::InputFloat("Animation Interval", &(animation->animInterval), 0.01f, 1.0f);
     }
   }
+
   if (registry->EntityHasComponent<Sphere>(devDebug.activeEntity))
   {
     if (ImGui::CollapsingHeader("Color"), treeNodeFlags)
