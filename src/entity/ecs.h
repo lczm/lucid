@@ -13,6 +13,56 @@
 #include "component.h"
 #include "input.h"
 
+#define MOVE_COMPONENT(T, from, to, index)                                                \
+  if (std::find(archetype.begin(), archetype.end(), GetHashCode<T>()) != archetype.end()) \
+  {                                                                                       \
+    auto& transformVector = GetVectorFromArchetypeComponentMap<T>(keyPtr);                \
+    std::cout << "hello..." << std::endl;                                                 \
+  }
+
+#define CREATE_ALL_COMPONENT_VECTORS_IN_ARCHETYPE(archetype, newKeyPtr) \
+  REGISTER_COMPONENT_CREATE(archetype, newKeyPtr);
+
+#define CREATE_COMPONENT_VECTOR(T, archetype, keyPtr)                                     \
+  if (std::find(archetype.begin(), archetype.end(), GetHashCode<T>()) != archetype.end()) \
+  {                                                                                       \
+    if (keyPtr.find(GetHashCode<T>()) == keyPtr.end())                                    \
+    {                                                                                     \
+      keyPtr[GetHashCode<T>()] = new std::vector<T>();                                    \
+    }                                                                                     \
+  }
+
+#define INITIALIZE_ARCHETYPE(archetype) if ()
+
+#define MOVE_ALL_COMPONENTS REGISTER_COMPONENT
+#define REGISTER(T) MOVE_COMPONENT(T)
+
+#define REGISTER_COMPONENT \
+  REGISTER(Transform)      \
+  REGISTER(RigidBody)      \
+  REGISTER(Animation)      \
+  REGISTER(SoundEffect)    \
+  REGISTER(Music)          \
+  REGISTER(Cube)           \
+  REGISTER(Sphere)         \
+  REGISTER(Model)          \
+  REGISTER(ColliderCube)   \
+  REGISTER(ColliderSphere) \
+  REGISTER(ColliderPolygon)
+
+#define REGISTER_COMPONENT_CREATE(archetype, keyPtr)         \
+  CREATE_COMPONENT_VECTOR(Transform, archetype, keyPtr)      \
+  CREATE_COMPONENT_VECTOR(RigidBody, archetype, keyPtr)      \
+  CREATE_COMPONENT_VECTOR(Animation, archetype, keyPtr)      \
+  CREATE_COMPONENT_VECTOR(SoundEffect, archetype, keyPtr)    \
+  CREATE_COMPONENT_VECTOR(Music, archetype, keyPtr)          \
+  CREATE_COMPONENT_VECTOR(Cube, archetype, keyPtr)           \
+  CREATE_COMPONENT_VECTOR(Sphere, archetype, keyPtr)         \
+  CREATE_COMPONENT_VECTOR(Model, archetype, keyPtr)          \
+  CREATE_COMPONENT_VECTOR(ColliderCube, archetype, keyPtr)   \
+  CREATE_COMPONENT_VECTOR(ColliderSphere, archetype, keyPtr) \
+  CREATE_COMPONENT_VECTOR(ColliderPolygon, archetype, keyPtr)
+
 /*
    This header file will define all that is needed for the ecs structure to
    perform. Mostly consists of typedefs as well as constants that can be changed
@@ -355,6 +405,13 @@ class Registry
     return *(static_cast<std::vector<Component>*>(keyPtr[hashCode]));
   }
 
+  template <typename Component>
+  std::vector<Component>& GetVectorFromArchetypeComponentMap(
+      std::unordered_map<uint32_t, void*> keyPtr)
+  {
+    return *(static_cast<std::vector<Component>*>(keyPtr[GetHashCode<Component>()]));
+  }
+
   Entity GetAvailableEntityId()
   {
     if (availablePool.size() == 0)
@@ -604,6 +661,34 @@ class Registry
     entityIndexMap[entity] = vectorPtr.size();
 
     vectorPtr.push_back(Component());
+  }
+
+  template <typename Component>
+  void AddComponentTest(Entity entity)
+  {
+    // Convert the component
+    uint32_t componentHashCode = GetHashCode<Component>();
+
+    // Get the entity's current archetype
+    Archetype& archetype = entityComponentMap[entity];
+
+    uint32_t entityIndex = entityIndexMap[entity];
+
+    // Add the data to the archetype
+    auto& keyPtr = GetArchetypeComponentMap(archetype);
+
+    // Update the archetype hashcode
+    archetype.push_back(componentHashCode);
+
+    if (archetypeComponentMap.find(archetype) == archetypeComponentMap.end())
+    {
+      archetypeComponentMap[archetype] = new std::unordered_map<uint32_t, void*>();
+    }
+
+    auto& newKeyPtr = GetArchetypeComponentMap(archetype);
+    CREATE_ALL_COMPONENT_VECTORS_IN_ARCHETYPE(archetype, newKeyPtr);
+
+    // MOVE_ALL_COMPONENTS;
   }
 
   // Likewise for RemoveComponent, it is very similar to AddComponent

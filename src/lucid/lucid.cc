@@ -1,5 +1,9 @@
 #include "lucid.h"
 
+struct Test
+{
+};
+
 Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window)
 {
   Lucid::registry = registry;
@@ -296,15 +300,8 @@ void Lucid::InitializeDemoPongEntities()
   ballRigidBody->velocity =
       glm::normalize(playerTransform->position - ballTransform->position) * 0.020f;
 
-  // The spheres do not need these values to be set anymore because
-  // they are set by default.
-  // registry->GetComponentsIter<Sphere>()->Each([](Sphere& sphere) {
-  //   sphere.radius = 1.0f;
-  //   sphere.sectors = 36;
-  //   sphere.stacks = 18;
-  //   sphere.BuildSphere();
-  //   sphere.Build();
-  // });
+  // Testing purposes
+  registry->AddComponentTest<Test>(playerPaddleID);
 
   // Entity soundEffectID = registry->GetAvailableEntityId();
   // Entity musicID = registry->GetAvailableEntityId();
