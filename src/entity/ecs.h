@@ -12,13 +12,7 @@
 
 #include "component.h"
 #include "input.h"
-
-#define MOVE_COMPONENT(T, from, to, index)                                                \
-  if (std::find(archetype.begin(), archetype.end(), GetHashCode<T>()) != archetype.end()) \
-  {                                                                                       \
-    auto& transformVector = GetVectorFromArchetypeComponentMap<T>(keyPtr);                \
-    std::cout << "hello..." << std::endl;                                                 \
-  }
+#include "boundingBox.h"
 
 #define CREATE_ALL_COMPONENT_VECTORS_IN_ARCHETYPE(archetype, newKeyPtr) \
   REGISTER_COMPONENT_CREATE(archetype, newKeyPtr);
@@ -32,36 +26,49 @@
     }                                                                                     \
   }
 
-#define INITIALIZE_ARCHETYPE(archetype) if ()
+// TODO : This can be optimized, take in the keyptr instead of
+// searching for it every for every component
+#define MOVE_COMPONENT(T, from, to, index)                                 \
+  if (std::find(from.begin(), from.end(), GetHashCode<T>()) != from.end()) \
+  {                                                                        \
+    auto& oldKeyPtr = GetArchetypeComponentMap(from);                      \
+    auto& newKeyPtr = GetArchetypeComponentMap(to);                        \
+                                                                           \
+    auto& oldVectorPtr = GetVectorFromArchetypeComponentMap<T>(oldKeyPtr); \
+    auto& newVectorPtr = GetVectorFromArchetypeComponentMap<T>(newKeyPtr); \
+                                                                           \
+    newVectorPtr.push_back(oldVectorPtr[index]);                           \
+    std::cout << "hello... : " << GetHashCode<T>() << std::endl;           \
+  }
 
-#define MOVE_ALL_COMPONENTS REGISTER_COMPONENT
-#define REGISTER(T) MOVE_COMPONENT(T)
+// TODO : ColliderCube, ColliderSphere, ColliderPolygon has issues hen moving
+#define MOVE_ALL_COMPONENTS(from, to, index)   \
+  MOVE_COMPONENT(Transform, from, to, index)   \
+  MOVE_COMPONENT(RigidBody, from, to, index)   \
+  MOVE_COMPONENT(Animation, from, to, index)   \
+  MOVE_COMPONENT(SoundEffect, from, to, index) \
+  MOVE_COMPONENT(Music, from, to, index)       \
+  MOVE_COMPONENT(Cube, from, to, index)        \
+  MOVE_COMPONENT(Sphere, from, to, index)      \
+  MOVE_COMPONENT(Model, from, to, index)       \
+  MOVE_COMPONENT(Test, from, to, index)        \
+  // MOVE_COMPONENT(ColliderCube, from, to, index)   \
+  // MOVE_COMPONENT(ColliderSphere, from, to, index) \
+  // MOVE_COMPONENT(ColliderPolygon, from, to, index)
 
-#define REGISTER_COMPONENT \
-  REGISTER(Transform)      \
-  REGISTER(RigidBody)      \
-  REGISTER(Animation)      \
-  REGISTER(SoundEffect)    \
-  REGISTER(Music)          \
-  REGISTER(Cube)           \
-  REGISTER(Sphere)         \
-  REGISTER(Model)          \
-  REGISTER(ColliderCube)   \
-  REGISTER(ColliderSphere) \
-  REGISTER(ColliderPolygon)
-
-#define REGISTER_COMPONENT_CREATE(archetype, keyPtr)         \
-  CREATE_COMPONENT_VECTOR(Transform, archetype, keyPtr)      \
-  CREATE_COMPONENT_VECTOR(RigidBody, archetype, keyPtr)      \
-  CREATE_COMPONENT_VECTOR(Animation, archetype, keyPtr)      \
-  CREATE_COMPONENT_VECTOR(SoundEffect, archetype, keyPtr)    \
-  CREATE_COMPONENT_VECTOR(Music, archetype, keyPtr)          \
-  CREATE_COMPONENT_VECTOR(Cube, archetype, keyPtr)           \
-  CREATE_COMPONENT_VECTOR(Sphere, archetype, keyPtr)         \
-  CREATE_COMPONENT_VECTOR(Model, archetype, keyPtr)          \
-  CREATE_COMPONENT_VECTOR(ColliderCube, archetype, keyPtr)   \
-  CREATE_COMPONENT_VECTOR(ColliderSphere, archetype, keyPtr) \
-  CREATE_COMPONENT_VECTOR(ColliderPolygon, archetype, keyPtr)
+#define REGISTER_COMPONENT_CREATE(archetype, keyPtr)          \
+  CREATE_COMPONENT_VECTOR(Transform, archetype, keyPtr)       \
+  CREATE_COMPONENT_VECTOR(RigidBody, archetype, keyPtr)       \
+  CREATE_COMPONENT_VECTOR(Animation, archetype, keyPtr)       \
+  CREATE_COMPONENT_VECTOR(SoundEffect, archetype, keyPtr)     \
+  CREATE_COMPONENT_VECTOR(Music, archetype, keyPtr)           \
+  CREATE_COMPONENT_VECTOR(Cube, archetype, keyPtr)            \
+  CREATE_COMPONENT_VECTOR(Sphere, archetype, keyPtr)          \
+  CREATE_COMPONENT_VECTOR(Model, archetype, keyPtr)           \
+  CREATE_COMPONENT_VECTOR(ColliderCube, archetype, keyPtr)    \
+  CREATE_COMPONENT_VECTOR(ColliderSphere, archetype, keyPtr)  \
+  CREATE_COMPONENT_VECTOR(ColliderPolygon, archetype, keyPtr) \
+  CREATE_COMPONENT_VECTOR(Test, archetype, keyPtr)
 
 /*
    This header file will define all that is needed for the ecs structure to
@@ -670,6 +677,7 @@ class Registry
     uint32_t componentHashCode = GetHashCode<Component>();
 
     // Get the entity's current archetype
+    Archetype oldArchetype = entityComponentMap[entity];
     Archetype& archetype = entityComponentMap[entity];
 
     uint32_t entityIndex = entityIndexMap[entity];
@@ -686,9 +694,15 @@ class Registry
     }
 
     auto& newKeyPtr = GetArchetypeComponentMap(archetype);
-    CREATE_ALL_COMPONENT_VECTORS_IN_ARCHETYPE(archetype, newKeyPtr);
 
-    // MOVE_ALL_COMPONENTS;
+    CREATE_ALL_COMPONENT_VECTORS_IN_ARCHETYPE(archetype, newKeyPtr);
+    MOVE_ALL_COMPONENTS(oldArchetype, archetype, entityIndex);
+
+    // Update the entity index based on the size.
+    auto& componentVector = GetVectorFromArchetypeComponentMap<Component>(newKeyPtr);
+    componentVector.push_back(Component());
+
+    entityIndexMap[entity] = componentVector.size() - 1;
   }
 
   // Likewise for RemoveComponent, it is very similar to AddComponent

@@ -123,6 +123,7 @@ void Lucid::InitializeArchetypes()
 
   // Register the necessary archetypes
   // Note that this should be using `ColliderCube` but it is hardcoded like this for now.
+  registry->RegisterArchetype<Cube, Transform, RigidBody>();
   registry->RegisterArchetype<Cube, Transform, RigidBody, ColliderCube>();
   registry->RegisterArchetype<Sphere, Transform, RigidBody, ColliderCube>();
   registry->RegisterArchetype<PongRules>();
@@ -275,7 +276,8 @@ void Lucid::InitializeDemoPongEntities()
   Entity ballID = registry->GetAvailableEntityId();
   Entity pongRulesID = registry->GetAvailableEntityId();
 
-  registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(playerPaddleID);
+  // Note to add back collidercube back to playerpaddle after addcomponent debugging
+  registry->CreateEntity<Cube, Transform, RigidBody>(playerPaddleID);
   registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(aiPaddleID);
   registry->CreateEntity<Sphere, Transform, RigidBody, ColliderCube>(ballID);
   registry->CreateEntity<PongRules>(pongRulesID);
@@ -302,6 +304,12 @@ void Lucid::InitializeDemoPongEntities()
 
   // Testing purposes
   registry->AddComponentTest<Test>(playerPaddleID);
+
+  registry->GetComponentsIter<Test>()->Each(
+      [&](Test& test) { std::cout << "hello from loop" << std::endl; });
+
+  std::cout << registry->GetHashCode<Test>() << std::endl;
+  std::cout << "thing" << std::endl;
 
   // Entity soundEffectID = registry->GetAvailableEntityId();
   // Entity musicID = registry->GetAvailableEntityId();
