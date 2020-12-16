@@ -52,9 +52,9 @@
   MOVE_COMPONENT(Sphere, from, to, index)      \
   MOVE_COMPONENT(Model, from, to, index)       \
   MOVE_COMPONENT(Test, from, to, index)        \
-  // MOVE_COMPONENT(ColliderCube, from, to, index)   \
-  // MOVE_COMPONENT(ColliderSphere, from, to, index) \
-  // MOVE_COMPONENT(ColliderPolygon, from, to, index)
+  MOVE_COMPONENT(ColliderCube, from, to, index)   \
+  MOVE_COMPONENT(ColliderSphere, from, to, index) \
+  MOVE_COMPONENT(ColliderPolygon, from, to, index)
 
 #define REGISTER_COMPONENT_CREATE(archetype, keyPtr)          \
   CREATE_COMPONENT_VECTOR(Transform, archetype, keyPtr)       \

@@ -303,13 +303,10 @@ void Lucid::InitializeDemoPongEntities()
       glm::normalize(playerTransform->position - ballTransform->position) * 0.020f;
 
   // Testing purposes
-  registry->AddComponentTest<Test>(playerPaddleID);
+  // registry->AddComponentTest<Test>(playerPaddleID);
 
-  registry->GetComponentsIter<Test>()->Each(
-      [&](Test& test) { std::cout << "hello from loop" << std::endl; });
-
-  std::cout << registry->GetHashCode<Test>() << std::endl;
-  std::cout << "thing" << std::endl;
+  // registry->GetComponentsIter<Test>()->Each(
+  //     [&](Test& test) { std::cout << "hello from loop" << std::endl; });
 
   // Entity soundEffectID = registry->GetAvailableEntityId();
   // Entity musicID = registry->GetAvailableEntityId();
