@@ -297,9 +297,21 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
       switch (payloadN)
       {
         case DefaultAssetsType::Cube:
-          break;
+        {
+          Entity cubeID = registry->GetAvailableEntityId();
+          registry->CreateEntity<Cube, Transform>(cubeID);
+          QuatCamera& quatCamera = registry->GetComponent<QuatCamera>();
+          registry->GetComponent<Transform>(cubeID)->position = quatCamera.GetPositionInWorld();
+        }
+        break;
         case DefaultAssetsType::Sphere:
-          break;
+        {
+          Entity sphereID = registry->GetAvailableEntityId();
+          registry->CreateEntity<Sphere, Transform>(sphereID);
+          QuatCamera& quatCamera = registry->GetComponent<QuatCamera>();
+          registry->GetComponent<Transform>(sphereID)->position = quatCamera.GetPositionInWorld();
+        }
+        break;
         case DefaultAssetsType::Line:
           break;
       }
@@ -419,9 +431,9 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
     if (ImGui::CollapsingHeader("Transform"), treeNodeFlags)
     {
       Transform* transform = registry->GetComponent<Transform>(devDebug.activeEntity);
-      ImGui::InputFloat("x position", &(transform->position.x), 0.01f, 1.0f);
-      ImGui::InputFloat("y position", &(transform->position.y), 0.01f, 1.0f);
-      ImGui::InputFloat("z position", &(transform->position.x), 0.01f, 1.0f);
+      ImGui::InputFloat("x position", &(transform->position.x), 0.25f, 1.0f);
+      ImGui::InputFloat("y position", &(transform->position.y), 0.25f, 1.0f);
+      ImGui::InputFloat("z position", &(transform->position.x), 0.25f, 1.0f);
     }
   }
 
@@ -430,9 +442,9 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
     if (ImGui::CollapsingHeader("Rigid Body"), treeNodeFlags)
     {
       RigidBody* rigidBody = registry->GetComponent<RigidBody>(devDebug.activeEntity);
-      ImGui::InputFloat("x velocity", &(rigidBody->velocity.x), 0.01f, 1.0f);
-      ImGui::InputFloat("y velocity", &(rigidBody->velocity.y), 0.01f, 1.0f);
-      ImGui::InputFloat("z velocity", &(rigidBody->velocity.z), 0.01f, 1.0f);
+      ImGui::InputFloat("x velocity", &(rigidBody->velocity.x), 0.25f, 1.0f);
+      ImGui::InputFloat("y velocity", &(rigidBody->velocity.y), 0.25f, 1.0f);
+      ImGui::InputFloat("z velocity", &(rigidBody->velocity.z), 0.25f, 1.0f);
     }
   }
 
@@ -441,8 +453,8 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
     if (ImGui::CollapsingHeader("Animation"), treeNodeFlags)
     {
       Animation* animation = registry->GetComponent<Animation>(devDebug.activeEntity);
-      ImGui::InputFloat("Animation Counter", &(animation->animCounter), 0.01f, 1.0f);
-      ImGui::InputFloat("Animation Interval", &(animation->animInterval), 0.01f, 1.0f);
+      ImGui::InputFloat("Animation Counter", &(animation->animCounter), 0.25f, 1.0f);
+      ImGui::InputFloat("Animation Interval", &(animation->animInterval), 0.25f, 1.0f);
     }
   }
 

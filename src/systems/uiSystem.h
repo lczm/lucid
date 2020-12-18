@@ -10,6 +10,8 @@
 #include "defaultAssetsEnum.h"
 #include "windowEnum.h"
 #include "renderUtils.h"
+#include "cube.h"
+#include "sphere.h"
 
 #if DEBUG
 #include "quatCamera.h"

@@ -128,6 +128,10 @@ void Lucid::InitializeArchetypes()
   registry->RegisterArchetype<Sphere, Transform, RigidBody, ColliderCube>();
   registry->RegisterArchetype<PongRules>();
 
+  // Default archetypes for gui interface
+  registry->RegisterArchetype<Sphere, Transform>();
+  registry->RegisterArchetype<Cube, Transform>();
+
   registry->RegisterArchetype<SoundEffect, Transform>();
   registry->RegisterArchetype<Music>();
 
