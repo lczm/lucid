@@ -583,7 +583,6 @@ TEST_F(TestsGL, AddComponent)
   // Add a component to entity1
   registry->AddComponent<TestAddStructDynamic1>(entity1);
   registry->FlushEntity<Transform, TestAddStructDynamic1>(entity1);
-
   std::vector<void*> components = registry->GetComponents<Transform, TestAddStructDynamic1>();
 
   auto* transformCV = static_cast<ComponentVector<Transform>*>(components[0]);

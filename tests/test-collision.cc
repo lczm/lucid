@@ -14,7 +14,8 @@
 #include "physicsSystem.h"
 #include "test-utils.h"
 
-TEST_F(TestsGL, BoxBoxColliding) {
+TEST_F(TestsGL, BoxBoxColliding)
+{
   Registry* registry = new Registry();
   Input* input = new Input();
 
@@ -49,7 +50,8 @@ TEST_F(TestsGL, BoxBoxColliding) {
 }
 
 // Test that it detects that it is not colliding
-TEST_F(TestsGL, BoxBoxNotColliding) {
+TEST_F(TestsGL, BoxBoxNotColliding)
+{
   Registry* registry = new Registry();
   Input* input = new Input();
 
@@ -86,11 +88,11 @@ TEST_F(TestsGL, BoxBoxNotColliding) {
 // The ray & box intersection current lies in the renderSystem, so the test will be
 // using renderSystem to do the testing, but in the future I think there should
 // be a centralised place that hosts the collision checks between the primitives
-TEST_F(TestsGL, RayBoxColliding) {
+TEST_F(TestsGL, RayBoxColliding)
+{
   Registry* registry = new Registry();
   RenderSystem* renderSystem = new RenderSystem(registry);
 
-  registry->RegisterArchetype<Cube, Transform>();
   Entity first = registry->GetAvailableEntityId();
   registry->CreateEntity<Cube, Transform>(first);
 
@@ -109,7 +111,8 @@ TEST_F(TestsGL, RayBoxColliding) {
   std::vector<glm::vec4> vertices;
   vertices.reserve(boundingBoxCubeVertices.size() / 3);
 
-  for (size_t i = 0; i < boundingBoxCubeVertices.size(); i += 3) {
+  for (size_t i = 0; i < boundingBoxCubeVertices.size(); i += 3)
+  {
     vertices.push_back(matrixModel * glm::vec4(boundingBoxCubeVertices[i],
                                                boundingBoxCubeVertices[i + 1],
                                                boundingBoxCubeVertices[i + 2], 1.0f));
@@ -121,7 +124,8 @@ TEST_F(TestsGL, RayBoxColliding) {
   ASSERT_TRUE(std::get<bool>(collidedAndLength));
 }
 
-TEST_F(TestsGL, RayBoxNotColliding) {
+TEST_F(TestsGL, RayBoxNotColliding)
+{
   Registry* registry = new Registry();
   RenderSystem* renderSystem = new RenderSystem(registry);
 
@@ -144,7 +148,8 @@ TEST_F(TestsGL, RayBoxNotColliding) {
   std::vector<glm::vec4> vertices;
   vertices.reserve(boundingBoxCubeVertices.size() / 3);
 
-  for (size_t i = 0; i < boundingBoxCubeVertices.size(); i += 3) {
+  for (size_t i = 0; i < boundingBoxCubeVertices.size(); i += 3)
+  {
     vertices.push_back(matrixModel * glm::vec4(boundingBoxCubeVertices[i],
                                                boundingBoxCubeVertices[i + 1],
                                                boundingBoxCubeVertices[i + 2], 1.0f));

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gl.h"
+#include "shader.h"
 #include "ecs.h"
 #include "pong.h"
 #include "gtx/string_cast.hpp"

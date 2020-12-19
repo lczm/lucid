@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "gl.h"
+#include "shader.h"
 #include "glm.hpp"
 
 const std::vector<float> line_vertices = {

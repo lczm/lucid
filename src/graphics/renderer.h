@@ -4,7 +4,7 @@
 #include <vector>
 #include <chrono>
 
-#include "gl.h"
+#include "shader.h"
 #include "ecs.h"
 #include "model.h"
 #include "cube.h"

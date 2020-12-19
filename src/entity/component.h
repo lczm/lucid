@@ -1,7 +1,7 @@
 #pragma once
 
 #include "constants.h"
-#include "gl.h"
+#include "shader.h"
 #include "glm.hpp"
 #include "boundingBox.h"
 

@@ -1,4 +1,4 @@
-#include "gl.h"
+#include "shader.h"
 
 // -- Shaders
 Shader::Shader()
@@ -108,76 +108,4 @@ void Shader::SetUniformMatFloat4(const std::string& name, glm::mat4 mat)
 {
   // The false here is to indicate that there is no need to transpose the matrix
   glUniformMatrix4fv(glGetUniformLocation(id, &name[0]), 1, false, &mat[0][0]);
-}
-
-// Texture
-Texture::Texture()
-{
-}
-
-Texture::Texture(const char imagePath[], int slot)
-{
-  glGenTextures(1, &id);
-
-  stbi_set_flip_vertically_on_load(1);
-  data = stbi_load(imagePath, &width, &height, &nrChannels, 0);
-  if (!data)
-  {
-    std::cout << "Data not loaded, something went wrong" << std::endl;
-    std::cout << "Image Path : " << imagePath << std::endl;
-  }
-
-  glActiveTexture(GL_TEXTURE0 + slot);
-  glBindTexture(GL_TEXTURE_2D, id);
-
-  // These have to be loaded in
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  // These are set to GL_NEAREST instead of GL_LINEAR, because this is
-  // pixel game and nearest would be very clear instead of blurred
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-  glGenerateMipmap(GL_TEXTURE_2D);
-}
-
-Texture::~Texture()
-{
-  glDeleteTextures(1, &id);
-  stbi_image_free(data);
-}
-
-void Texture::Initialize(const char imagePath[], int slot)
-{
-  stbi_set_flip_vertically_on_load(1);
-  data = stbi_load(imagePath, &width, &height, &nrChannels, 0);
-  if (!data)
-  {
-    std::cout << "Data not loaded, something went wrong" << std::endl;
-    std::cout << "Image Path : " << imagePath << std::endl;
-  }
-
-  glActiveTexture(GL_TEXTURE0 + slot);
-  glBindTexture(GL_TEXTURE_2D, id);
-
-  // These have to be loaded in
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  // These are set to GL_NEAREST instead of GL_LINEAR, because this is
-  // pixel game and nearest would be very clear instead of blurred
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-  glGenerateMipmap(GL_TEXTURE_2D);
-}
-
-void Texture::Bind()
-{
-  glBindTexture(GL_TEXTURE_2D, id);
-}
-void Texture::Unbind()
-{
-  glBindTexture(GL_TEXTURE_2D, 0);
 }

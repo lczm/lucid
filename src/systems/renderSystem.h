@@ -4,7 +4,7 @@
 #include <vector>
 #include <iostream>
 
-#include "gl.h"
+#include "shader.h"
 #include "ecs.h"
 #include "utils.h"
 #include "renderer.h"

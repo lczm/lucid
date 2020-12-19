@@ -8,7 +8,7 @@
 #include <typeinfo>
 #include <vector>
 
-#include "gl.h"
+#include "shader.h"
 #include "ecs.h"
 #include "input.h"
 #include "constants.h"

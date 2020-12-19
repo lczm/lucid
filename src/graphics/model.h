@@ -6,7 +6,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 
-#include "gl.h"
+#include "shader.h"
 #include "mesh.h"
 #include "boundingBox.h"
 

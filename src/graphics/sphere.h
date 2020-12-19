@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "gl.h"
+#include "shader.h"
 #include "glm.hpp"
 
 class Sphere
