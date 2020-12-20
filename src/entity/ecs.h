@@ -42,16 +42,16 @@
   }
 
 // TODO : ColliderCube, ColliderSphere, ColliderPolygon has issues hen moving
-#define MOVE_ALL_COMPONENTS(from, to, index)   \
-  MOVE_COMPONENT(Transform, from, to, index)   \
-  MOVE_COMPONENT(RigidBody, from, to, index)   \
-  MOVE_COMPONENT(Animation, from, to, index)   \
-  MOVE_COMPONENT(SoundEffect, from, to, index) \
-  MOVE_COMPONENT(Music, from, to, index)       \
-  MOVE_COMPONENT(Cube, from, to, index)        \
-  MOVE_COMPONENT(Sphere, from, to, index)      \
-  MOVE_COMPONENT(Model, from, to, index)       \
-  MOVE_COMPONENT(Test, from, to, index)        \
+#define MOVE_ALL_COMPONENTS(from, to, index)      \
+  MOVE_COMPONENT(Transform, from, to, index)      \
+  MOVE_COMPONENT(RigidBody, from, to, index)      \
+  MOVE_COMPONENT(Animation, from, to, index)      \
+  MOVE_COMPONENT(SoundEffect, from, to, index)    \
+  MOVE_COMPONENT(Music, from, to, index)          \
+  MOVE_COMPONENT(Cube, from, to, index)           \
+  MOVE_COMPONENT(Sphere, from, to, index)         \
+  MOVE_COMPONENT(Model, from, to, index)          \
+  MOVE_COMPONENT(Test, from, to, index)           \
   MOVE_COMPONENT(ColliderCube, from, to, index)   \
   MOVE_COMPONENT(ColliderSphere, from, to, index) \
   MOVE_COMPONENT(ColliderPolygon, from, to, index)
@@ -143,6 +143,8 @@ class ComponentVector
 
  public:
   ComponentVector(){};
+  ~ComponentVector(){};
+
   void AddVector(std::vector<Component>* vectorPtr)
   {
     store.push_back(vectorPtr);
@@ -211,7 +213,7 @@ class ComponentVectorContainer
 {
  public:
   Registry* registry;
-  std::vector<void*> componentVectors;
+  // std::vector<void*> componentVectors;
 
   // GetHashCode<Component> : Index
   // where the index is the index for the componentVectors
@@ -224,12 +226,12 @@ class ComponentVectorContainer
   {
     ComponentVectorContainer::registry = registry;
   };
-  ~ComponentVectorContainer(){};
 
   template <typename Func>
   void Each(Func function)
   {
-    componentVectors = registry->GetComponents<Components...>();
+    // componentVectors = registry->GetComponents<Components...>();
+    std::vector<void*> componentVectors = registry->GetComponents<Components...>();
 
     std::vector<uint32_t> hashCodes = {(registry->GetHashCode<Components>())...};
     for (size_t i = 0; i < hashCodes.size(); i++)
@@ -239,7 +241,7 @@ class ComponentVectorContainer
 
     uint32_t maxSize = GetSize<Components...>(componentVectors);
 
-    // For each of the components
+    //  For each of the components
     for (size_t i = 0; i < maxSize; i++)
     {
       // Make a tuple consisting of the component data
@@ -250,15 +252,19 @@ class ComponentVectorContainer
       std::apply(function, tuple);
       // function(std::get<decltype(GetComponentData<Components>(componentVectors, i))>(tuple)...);
     }
+
+    uint32_t deleteCounter = 0;
+    auto p = {(registry->DeleteComponentVector<Components>(componentVectors, deleteCounter), 0)...};
+
+    delete this;
   }
 
   // This one will be used as such :
-  // registry->GetComponents<T...>()->EachWithID([](uint32_t, T...){
-  // });
+  // registry->GetComponents<T...>()->EachWithID([](uint32_t, T...){});
   template <typename Func>
   void EachWithID(Func function)
   {
-    componentVectors = registry->GetComponentsWithID<Components...>();
+    std::vector<void*> componentVectors = registry->GetComponentsWithID<Components...>();
 
     std::vector<uint32_t> hashCodes = {(registry->GetHashCode<Components>())...};
     for (size_t i = 0; i < hashCodes.size(); i++)
@@ -270,7 +276,7 @@ class ComponentVectorContainer
 
     uint32_t maxSize = GetSize<Components...>(componentVectors);
 
-    // For each of the components
+    //  For each of the components
     for (size_t i = 0; i < maxSize; i++)
     {
       // Make a tuple consisting of the component data
@@ -280,6 +286,13 @@ class ComponentVectorContainer
 
       std::apply(function, tuple);
     }
+
+    // for (size_t i = 0; i < componentVectors.size(); i++)
+    // {
+    //   delete componentVectors[i];
+    // }
+
+    delete this;
   }
 
   template <typename Component>
@@ -834,6 +847,13 @@ class Registry
   }
 
   template <typename Component>
+  void DeleteComponentVector(std::vector<void*> componentVectorPtr, uint32_t& deleteCounter)
+  {
+    delete static_cast<ComponentVector<Component>*>(componentVectorPtr[deleteCounter]);
+    deleteCounter++;
+  }
+
+  template <typename Component>
   void FillComponentVector(Archetype archetype, std::vector<void*>& componentVectors,
                            int& componentIndex)
   {
@@ -952,10 +972,10 @@ class Registry
   template <typename... Components>
   ComponentVectorContainer<Components...>* GetComponentsIter()
   {
-    ComponentVectorContainer<Components...>* container =
-        new ComponentVectorContainer<Components...>(this);
+    // ComponentVectorContainer<Components...>* container =
+    //     new ComponentVectorContainer<Components...>(this);
 
-    return container;
+    return new ComponentVectorContainer<Components...>(this);
   }
 
   // This is to get exact components rather than 'inclusive of <Components>'

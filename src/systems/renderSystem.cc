@@ -4,7 +4,7 @@ RenderSystem::RenderSystem(Registry* registry)
 {
   RenderSystem::renderer = new Renderer(registry);
 
-  InitRenderBuffers();
+  // InitRenderBuffers();
   InitPrimitiveBuffers(registry);
   InitSceneCameraComponent(registry);
 }
@@ -27,7 +27,7 @@ void RenderSystem::Update(float dt, Registry* registry, Input* input)
   // Start the update call, so that the draw calls are reseted properly
   renderer->ClearRendererStats();
 
-  glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+  // glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
   glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -43,14 +43,14 @@ void RenderSystem::Update(float dt, Registry* registry, Input* input)
   if (devDebug.drawWireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
   DrawAllLines(dt, registry, input);
-  DrawAllModels(dt, registry, input);
+  // DrawAllModels(dt, registry, input);
   DrawAllCubes(dt, registry, input);
   DrawAllSpheres(dt, registry, input);
 
   if (devDebug.drawColliders) DrawAllBoundingBoxes(dt, registry, input);
   if (devDebug.drawWireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  // glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void RenderSystem::InitRenderBuffers()
@@ -394,12 +394,21 @@ void RenderSystem::DrawAllLines(float dt, Registry* registry, Input* input)
     renderer->PushLineBuffer(modelMatrix, line);
   });
 
+  // auto a = registry->GetComponentsIter<Line, Transform>();
+  // a->Each([&](Line& line, Transform& transform) {
+  //   transform.position = line.origin;
+  //   transform.scale = line.destination - line.origin;
+
+  //   auto modelMatrix = GetModelMatrix(transform);
+  //   renderer->PushLineBuffer(modelMatrix, line);
+  // });
+
   PrimitiveBatchIds& primitiveBatchIds = registry->GetComponent<PrimitiveBatchIds>();
   renderer->FlushBatch(primitiveBatchIds, DrawType::Line);
 
   shaderResource.primitiveShaderBatch.Unbind();
 
-// Draw grid lines
+  // Draw grid lines
 #if DEBUG
   shaderResource.primitiveShaderBatch.Bind();
   shaderResource.primitiveShaderBatch.SetUniformMatFloat4("projection",
@@ -430,6 +439,15 @@ void RenderSystem::DrawAllModels(float dt, Registry* registry, Input* input)
   shaderResource.modelShader.Bind();
   shaderResource.modelShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
   shaderResource.modelShader.SetUniformMatFloat4("view", quatCamera->GetView());
+
+  // auto a = registry->GetComponentsIter<Model, Transform>();
+  // a->Each([&](Model& model, Transform& transform) {
+  //   auto modelMatrix = GetModelMatrix(transform);
+
+  //   shaderResource.modelShader.SetUniformMatFloat4("model", modelMatrix);
+  //   renderer->DrawModel(model, shaderResource.modelShader);
+  // });
+  // delete a;
 
   registry->GetComponentsIter<Model, Transform>()->Each([&](Model& model, Transform& transform) {
     auto modelMatrix = GetModelMatrix(transform);

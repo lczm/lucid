@@ -193,7 +193,7 @@ void Lucid::InitializeBuiltInSystems()
   // renderSystem generates a frameBuffer object that the uiSystem can immediately use after
   // But I also recall that I had a specific reason for setting UiSystem to be first
   // perhaps double buffering...?
-  registry->RegisterSystem(new UiSystem(), "ui");
+  // registry->RegisterSystem(new UiSystem(), "ui");
 
   // Demo start -- TODO : This should be separated, need a way of prioritising systems
   registry->RegisterSystem(new PlayerSystem(), "player");

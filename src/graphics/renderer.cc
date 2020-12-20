@@ -113,6 +113,7 @@ void Renderer::DrawCubeIndexed(const PrimitiveBatchIds primitiveBatchIds)
   glDrawElementsInstanced(GL_TRIANGLES, cubeIndices.size(), GL_UNSIGNED_INT, 0, batchIndexCount);
 
   glBindVertexArray(0);
+  glDeleteBuffers(1, &instanceBuffer);
 
   // Update stats
   stats->calls++;
@@ -176,6 +177,7 @@ void Renderer::DrawSphereIndexed(const PrimitiveBatchIds primitiveBatchIds)
                           batchIndexCount);
 
   glBindVertexArray(0);
+  glDeleteBuffers(1, &instanceBuffer);
 
   // Update stats
   stats->calls++;
