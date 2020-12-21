@@ -140,12 +140,9 @@ void UiSystem::PresetLayout(ImGuiID dockSpaceID)
   // Windows on bottom left
   ImGui::DockBuilderDockWindow("Project", dockBottomLeftID);
   ImGui::DockBuilderDockWindow("Console", dockBottomLeftID);
-  ImGui::DockBuilderDockWindow("Animation", dockBottomLeftID);
-  ImGui::DockBuilderDockWindow("Animator", dockBottomLeftID);
 
   // Windows on right
   ImGui::DockBuilderDockWindow("Inspector", dockRightID);
-  ImGui::DockBuilderDockWindow("Services", dockRightID);
   ImGui::DockBuilderDockWindow("DevDebug", dockRightID);
 
   // Windows in the middle
@@ -171,10 +168,7 @@ void UiSystem::InitializeImGuiWindows(float dt, Registry* registry, Input* input
   DrawScene(dt, registry, input);
   DrawProject(dt, registry, input);
   DrawConsole(dt, registry, input);
-  DrawAnimation(dt, registry, input);
-  DrawAnimator(dt, registry, input);
   DrawInspector(dt, registry, input);
-  DrawServices(dt, registry, input);
   DrawDevDebug(dt, registry, input);
   DrawToolBar(dt, registry, input);
   DrawDefaultAssets(dt, registry, input);
@@ -378,30 +372,6 @@ void UiSystem::DrawConsole(float dt, Registry* registry, Input* input)
   ImGui::End();
 }
 
-void UiSystem::DrawAnimation(float dt, Registry* registry, Input* input)
-{
-  ImGui::Begin("Animation");
-
-  // DevDebug& devDebug = registry->GetComponent<DevDebug>();
-  // if (devDebug.changeFocusWindow == WindowType::Animation) ImGui::SetWindowFocus();
-
-  ImGui::Text("This is the animations");
-  UpdateInputActiveWindow(input, WindowType::Animation);
-  ImGui::End();
-}
-
-void UiSystem::DrawAnimator(float dt, Registry* registry, Input* input)
-{
-  ImGui::Begin("Animator");
-
-  // DevDebug& devDebug = registry->GetComponent<DevDebug>();
-  // if (devDebug.changeFocusWindow == WindowType::Animator) ImGui::SetWindowFocus();
-
-  ImGui::Text("This is the animator");
-  UpdateInputActiveWindow(input, WindowType::Animator);
-  ImGui::End();
-}
-
 void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Inspector");
@@ -467,18 +437,6 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
     }
   }
 
-  ImGui::End();
-}
-
-void UiSystem::DrawServices(float dt, Registry* registry, Input* input)
-{
-  ImGui::Begin("Services");
-
-  // DevDebug& devDebug = registry->GetComponent<DevDebug>();
-  // if (devDebug.changeFocusWindow == WindowType::Services) ImGui::SetWindowFocus();
-
-  ImGui::Text("This is the services");
-  UpdateInputActiveWindow(input, WindowType::Services);
   ImGui::End();
 }
 

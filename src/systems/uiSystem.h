@@ -55,10 +55,7 @@ class UiSystem : public System
   void DrawGameCamera(float dt, Registry* registry, Input* input);
   void DrawProject(float dt, Registry* registry, Input* input);
   void DrawConsole(float dt, Registry* registry, Input* input);
-  void DrawAnimation(float dt, Registry* registry, Input* input);
-  void DrawAnimator(float dt, Registry* registry, Input* input);
   void DrawInspector(float dt, Registry* registry, Input* input);
-  void DrawServices(float dt, Registry* registry, Input* input);
   void DrawDevDebug(float dt, Registry* registry, Input* input);
   void DrawToolBar(float dt, Registry* registry, Input* input);
   void DrawDefaultAssets(float dt, Registry* registry, Input* input);
