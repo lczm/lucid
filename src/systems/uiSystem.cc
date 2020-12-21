@@ -223,6 +223,10 @@ void UiSystem::DrawHierarchy(float dt, Registry* registry, Input* input)
     ImGui::Text(modelName.c_str());
   }
 
+  delete cubes;
+  delete spheres;
+  delete models;
+
   // ImGui::Text("This is the scene hierarchy");
   UpdateInputActiveWindow(input, WindowType::Hierarchy);
   ImGui::End();
