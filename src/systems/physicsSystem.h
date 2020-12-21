@@ -5,14 +5,9 @@
 #include "cube.h"
 #include "sphere.h"
 #include "model.h"
+#include "engineComponents.h"
 #include "gtx/string_cast.hpp"
 
-struct AxisAlignedBoundingBox
-{
-};
-struct OrientedBoundingBox
-{
-};
 
 class PhysicsSystem : public System
 {

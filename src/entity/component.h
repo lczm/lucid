@@ -25,6 +25,7 @@ struct Transform
 // as it is simpler this way
 struct RigidBody
 {
+  bool applyGravity = true;
   glm::vec3 velocity = glm::vec3(0.0f);
 };
 
