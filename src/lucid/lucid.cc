@@ -285,8 +285,6 @@ void Lucid::InitializeDemoPongEntities()
   Entity ballID = registry->GetAvailableEntityId();
   Entity pongRulesID = registry->GetAvailableEntityId();
 
-  Entity platformID = registry->GetAvailableEntityId();
-
   // Note to add back collidercube back to playerpaddle after addcomponent debugging
   registry->CreateEntity<Cube, Transform, RigidBody>(playerPaddleID);
   registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(aiPaddleID);
@@ -313,17 +311,18 @@ void Lucid::InitializeDemoPongEntities()
   ballRigidBody->velocity =
       glm::normalize(playerTransform->position - ballTransform->position) * 0.020f;
 
-  registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(platformID);
+  // Entity platformID = registry->GetAvailableEntityId();
+  // registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(platformID);
 
-  // Change the colour so that it is more immediately visible
-  registry->GetComponent<Cube>(platformID)->color = {0.5f, 0.0f, 0.0f};
+  // // Change the colour so that it is more immediately visible
+  // registry->GetComponent<Cube>(platformID)->color = {0.5f, 0.0f, 0.0f};
 
-  // Set that this platform does not have gravity apply on it.
-  registry->GetComponent<RigidBody>(platformID)->applyGravity = false;
+  // // Set that this platform does not have gravity apply on it.
+  // registry->GetComponent<RigidBody>(platformID)->applyGravity = false;
 
-  Transform* platformTransform = registry->GetComponent<Transform>(platformID);
-  platformTransform->position = {0.0f, 1.0f, -10.0f};
-  platformTransform->scale = {20.0f, 1.0f, 20.0f};
+  // Transform* platformTransform = registry->GetComponent<Transform>(platformID);
+  // platformTransform->position = {0.0f, 1.0f, -10.0f};
+  // platformTransform->scale = {20.0f, 1.0f, 20.0f};
 
 
   // Testing purposes
