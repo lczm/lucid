@@ -15,5 +15,6 @@ enum class WindowType
   ToolBar,
   DevDebug,
   DefaultAssets,
+  GameConfiguration,
   None,
 };

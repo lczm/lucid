@@ -136,6 +136,7 @@ void UiSystem::PresetLayout(ImGuiID dockSpaceID)
 
   // Windows on left
   ImGui::DockBuilderDockWindow("Hierarchy", dockLeftID);
+  ImGui::DockBuilderDockWindow("Game Configuration", dockLeftID);
 
   // Windows on bottom left
   ImGui::DockBuilderDockWindow("Project", dockBottomLeftID);
@@ -165,6 +166,7 @@ void UiSystem::InitializeImGuiWindows(float dt, Registry* registry, Input* input
 {
   DrawHierarchy(dt, registry, input);
   DrawAssets(dt, registry, input);
+  DrawGameConfiguration(dt, registry, input);
   DrawScene(dt, registry, input);
   DrawProject(dt, registry, input);
   DrawConsole(dt, registry, input);
@@ -313,6 +315,9 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
         case DefaultAssetsType::Line:
           break;
       }
+
+      devDebug.changeFocusWindow = WindowType::Scene;
+      UpdateWindowFocus(registry, WindowType::DefaultAssets, "Scene", input);
     }
     ImGui::EndDragDropTarget();
   }
@@ -535,6 +540,16 @@ void UiSystem::DrawToolBar(float dt, Registry* registry, Input* input)
   // if (devDebug.changeFocusWindow == WindowType::Animator) ImGui::SetWindowFocus();
 
   UpdateInputActiveWindow(input, WindowType::ToolBar);
+  ImGui::End();
+}
+
+void UiSystem::DrawGameConfiguration(float dt, Registry* registry, Input* input)
+{
+  ImGui::Begin("Game Configuration");
+  // if (devDebug.changeFocusWindow == WindowType::Assets) ImGui::SetWindowFocus();
+
+  ImGui::Text("This is the game configuration");
+  UpdateInputActiveWindow(input, WindowType::GameConfiguration);
   ImGui::End();
 }
 

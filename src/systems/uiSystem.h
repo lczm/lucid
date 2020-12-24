@@ -59,6 +59,7 @@ class UiSystem : public System
   void DrawDevDebug(float dt, Registry* registry, Input* input);
   void DrawToolBar(float dt, Registry* registry, Input* input);
   void DrawDefaultAssets(float dt, Registry* registry, Input* input);
+  void DrawGameConfiguration(float dt, Registry* registry, Input* input);
   void DrawProgressBar(float fraction, std::string message);
 
   void HandleGizmoInput(Registry* registry, Input* input);
