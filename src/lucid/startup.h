@@ -11,6 +11,7 @@
  */
 
 #define MOVE_ALL_COMPONENTS(from, to, index)      \
+  MOVE_COMPONENT(uint32_t, from, to, index)       \
   MOVE_COMPONENT(Transform, from, to, index)      \
   MOVE_COMPONENT(RigidBody, from, to, index)      \
   MOVE_COMPONENT(Animation, from, to, index)      \
@@ -24,6 +25,7 @@
   MOVE_COMPONENT(ColliderPolygon, from, to, index)
 
 #define REGISTER_COMPONENT_CREATE(archetype, keyPtr)         \
+  CREATE_COMPONENT_VECTOR(uint32_t, archetype, keyPtr)       \
   CREATE_COMPONENT_VECTOR(Transform, archetype, keyPtr)      \
   CREATE_COMPONENT_VECTOR(RigidBody, archetype, keyPtr)      \
   CREATE_COMPONENT_VECTOR(Animation, archetype, keyPtr)      \

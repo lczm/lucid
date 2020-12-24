@@ -38,8 +38,11 @@
     auto& oldVectorPtr = GetVectorFromArchetypeComponentMap<T>(oldKeyPtr); \
     auto& newVectorPtr = GetVectorFromArchetypeComponentMap<T>(newKeyPtr); \
                                                                            \
+    /* Add the new data */                                                 \
     newVectorPtr.push_back(oldVectorPtr[index]);                           \
-    std::cout << "hello... : " << GetHashCode<T>() << std::endl;           \
+                                                                           \
+    /* Remove the old data */                                              \
+    oldVectorPtr.erase(oldVectorPtr.begin() + index);                      \
   }
 
 /*
@@ -685,6 +688,8 @@ class Registry
 
     // Update the entity index based on the size.
     auto& componentVector = GetVectorFromArchetypeComponentMap<Component>(newKeyPtr);
+
+    // Add the new component into the vector
     componentVector.push_back(Component());
 
     entityIndexMap[entity] = componentVector.size() - 1;
