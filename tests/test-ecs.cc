@@ -652,6 +652,12 @@ TEST_F(TestsGL, AddComponent)
 
   Transform& transform = newTransformComponents->At(0);
   ASSERT_FLOAT_EQ(transform.position.x, 5.0f);
+
+  // Check that it has moved back by one
+  ASSERT_EQ(registry->entityIndexMap[id2], 0);
+
+  // Check that it is index 0
+  ASSERT_EQ(registry->entityIndexMap[id1], 0);
 }
 
 TEST_F(TestsGL, RemoveComponent)

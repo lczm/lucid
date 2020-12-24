@@ -262,11 +262,6 @@ class ComponentVectorContainer
       std::apply(function, tuple);
     }
 
-    // for (size_t i = 0; i < componentVectors.size(); i++)
-    // {
-    //   delete componentVectors[i];
-    // }
-
     delete this;
   }
 
@@ -628,7 +623,22 @@ class Registry
     // Add the new component into the vector
     componentVector.push_back(Component());
 
-    entityIndexMap[entity] = componentVector.size() - 1;
+    // After moving the entity components, re-order the entity indexes
+    // e.g. [1, 2],
+    // 1 gets removed (original index 0)
+    // 2 becomes index 0
+    auto& oldArchetypePtr = GetArchetypeComponentMap(oldArchetype);
+    auto& idComponentVector = GetVectorFromArchetypeComponentMap<uint32_t>(oldArchetypePtr);
+
+    // For every entity that has an index that is higher than the current, move it back by one
+    // as the entity has been moved, so the index alignment will need to match up again.
+    for (uint32_t& id : idComponentVector)
+    {
+      if (id > entityIndex && id != entity)
+      {
+        entityIndexMap[id]--;
+      }
+    }
   }
 
   // Likewise for RemoveComponent, it is very similar to AddComponent
@@ -781,6 +791,37 @@ class Registry
         auto p = {
             (FillComponentVector<Components>(archetype, componentVectors, componentIndex), 0)...};
         (void)p;  // To silence the compiler warning about unused vars
+        FillComponentVector<uint32_t>(archetype, componentVectors, componentIndex);
+        componentIndex++;
+      }
+    }
+    return componentVectors;
+  }
+
+  template <typename... Components>
+  std::vector<void*> GetComponentsExactWithID()
+  {
+    Archetype hashCodes = {(GetHashCode<Components>())...};
+    std::vector<void*> componentVectors = {(MakeComponentVector<Components>())...};
+
+    // For the entity IDs
+    componentVectors.push_back(new ComponentVector<uint32_t>());
+
+    // archetype : std::unordered_map<hashcode, void*>
+    for (auto& archetypePair : archetypeComponentMap)
+    {
+      Archetype archetype = archetypePair.first;
+      // I don't think there is a way to do this in a fast way as
+      // iterators can only find one element at a time. So this has to be
+      // done in separate iterator find calls equal to the number of
+      // hashes that exist
+      // The flag will turn false if any of the elements dont match
+      if (archetype == hashCodes)
+      {
+        int componentIndex = 0;
+        auto p = {
+            (FillComponentVector<Components>(archetype, componentVectors, componentIndex), 0)...};
+        (void)p;
         FillComponentVector<uint32_t>(archetype, componentVectors, componentIndex);
         componentIndex++;
       }
