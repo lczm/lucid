@@ -204,7 +204,7 @@ void Lucid::InitializeDemoPongEntities()
   Entity pongRulesID = registry->GetAvailableEntityId();
 
   // Note to add back collidercube back to playerpaddle after addcomponent debugging
-  registry->CreateEntity<Cube, Transform, RigidBody>(playerPaddleID);
+  registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(playerPaddleID);
   registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(aiPaddleID);
   registry->CreateEntity<Sphere, Transform, RigidBody, ColliderCube>(ballID);
   registry->CreateEntity<PongRules>(pongRulesID);
@@ -220,48 +220,17 @@ void Lucid::InitializeDemoPongEntities()
 
   // TODO : registry->GetComponent<Transform> should return a reference not a pointer
   // Move around the transforms of each
-  playerTransform->position = {-10.0f, 10.0f, -10.0f};
-  ballTransform->position = {0.0f, 10.0f, -10.0f};
-  aiTransform->position = {10.0f, 10.0f, 0.0f};
+  playerTransform->position = {-10.0f, 5.0f, -10.0f};
+  ballTransform->position = {0.0f, 5.0f, -10.0f};
+  aiTransform->position = {10.0f, 5.0f, 0.0f};
 
   RigidBody* ballRigidBody = registry->GetComponent<RigidBody>(ballID);
-  // note 0.05f is just harded 'movement speed'
   ballRigidBody->velocity =
       glm::normalize(playerTransform->position - ballTransform->position) * 0.020f;
 
-  // Entity platformID = registry->GetAvailableEntityId();
-  // registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(platformID);
-
-  // // Change the colour so that it is more immediately visible
-  // registry->GetComponent<Cube>(platformID)->color = {0.5f, 0.0f, 0.0f};
-
-  // // Set that this platform does not have gravity apply on it.
-  // registry->GetComponent<RigidBody>(platformID)->applyGravity = false;
-
-  // Transform* platformTransform = registry->GetComponent<Transform>(platformID);
-  // platformTransform->position = {0.0f, 1.0f, -10.0f};
-  // platformTransform->scale = {20.0f, 1.0f, 20.0f};
-
-  // Testing purposes
-  // registry->AddComponentTest<Test>(playerPaddleID);
-
-  // registry->GetComponentsIter<Test>()->Each(
-  //     [&](Test& test) { std::cout << "hello from loop" << std::endl; });
-
-  // Entity soundEffectID = registry->GetAvailableEntityId();
-  // Entity musicID = registry->GetAvailableEntityId();
-
-  // registry->CreateEntity<SoundEffect, Transform>(soundEffectID);
-  // registry->CreateEntity<Music>(musicID);
-
-  // Transform* soundEffectTransform = registry->GetComponent<Transform>(soundEffectID);
-  // soundEffectTransform->position = {0, 0, 0};
-
-  // SoundEffect* soundEffect = registry->GetComponent<SoundEffect>(soundEffectID);
-  // soundEffect->filePath = GRUNT_SOUND;
-
-  // Music* music = registry->GetComponent<Music>(musicID);
-  // music->filePath = PIANO_MUSIC;
+  registry->GetComponent<RigidBody>(playerPaddleID)->applyGravity = false;
+  registry->GetComponent<RigidBody>(aiPaddleID)->applyGravity = false;
+  registry->GetComponent<RigidBody>(ballID)->applyGravity = false;
 }
 
 void Lucid::InitializeDemoPongSystems()

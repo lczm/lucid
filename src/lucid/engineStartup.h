@@ -35,6 +35,7 @@ static void InitArchetypes(Registry* registry)
   // Note that this should be using `ColliderCube` but it is hardcoded like this for now.
   registry->RegisterArchetype<Cube, Transform, RigidBody>();
   registry->RegisterArchetype<Cube, Transform, RigidBody, ColliderCube>();
+  registry->RegisterArchetype<Cube, Transform, RigidBody, ColliderSphere>();
   registry->RegisterArchetype<Sphere, Transform, RigidBody, ColliderCube>();
   registry->RegisterArchetype<PongRules>();
 

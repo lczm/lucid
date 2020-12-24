@@ -47,7 +47,7 @@ void RenderSystem::Update(float dt, Registry* registry, Input* input)
   DrawAllCubes(dt, registry, input);
   DrawAllSpheres(dt, registry, input);
 
-  if (devDebug.drawColliders) DrawAllBoundingBoxes(dt, registry, input);
+  if (devDebug.drawColliders) DrawAllColldiers(dt, registry, input);
   if (devDebug.drawWireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -445,21 +445,6 @@ void RenderSystem::DrawAllCubes(float dt, Registry* registry, Input* input)
 {
   ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
 
-  // shaderResource.primitiveShader.Bind();
-  // shaderResource.primitiveShader.SetUniformMatFloat4("projection", quatCamera->projection);
-  // shaderResource.primitiveShader.SetUniformMatFloat4("view", quatCamera->GetView());
-
-  // registry->GetComponentsIter<Cube, Transform>()->Each([&](Cube& cube, Transform& transform) {
-  //   auto modelMatrix = GetModelMatrix(transform);
-
-  //   shaderResource.primitiveShader.SetUniformMatFloat4("model", modelMatrix);
-  //   shaderResource.primitiveShader.SetUniformVecFloat3("uColor", cube.color);
-
-  //   renderer->DrawCube(cube, shaderResource.primitiveShader);
-  // });
-
-  // shaderResource.primitiveShader.Unbind();
-
   shaderResource.cubeShaderBatch.Bind();
   shaderResource.cubeShaderBatch.SetUniformMatFloat4("projection", quatCamera->GetProjection());
   shaderResource.cubeShaderBatch.SetUniformMatFloat4("view", quatCamera->GetView());
@@ -481,21 +466,6 @@ void RenderSystem::DrawAllSpheres(float dt, Registry* registry, Input* input)
 {
   ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
 
-  // shaderResource.primitiveShader.Bind();
-  // shaderResource.primitiveShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
-  // shaderResource.primitiveShader.SetUniformMatFloat4("view", quatCamera->GetView());
-
-  // registry->GetComponentsIter<Sphere, Transform>()->Each([&](Sphere& sphere, Transform&
-  // transform) {
-  //   auto modelMatrix = GetModelMatrix(transform);
-
-  //   shaderResource.primitiveShader.SetUniformMatFloat4("model", modelMatrix);
-  //   shaderResource.primitiveShader.SetUniformVecFloat3("uColor", sphere.color);
-  //   renderer->DrawSphere(sphere, shaderResource.primitiveShader);
-  // });
-
-  // shaderResource.primitiveShader.Unbind();
-
   shaderResource.sphereShaderBatch.Bind();
   shaderResource.sphereShaderBatch.SetUniformMatFloat4("projection", quatCamera->GetProjection());
   shaderResource.sphereShaderBatch.SetUniformMatFloat4("view", quatCamera->GetView());
@@ -513,7 +483,7 @@ void RenderSystem::DrawAllSpheres(float dt, Registry* registry, Input* input)
   shaderResource.sphereShaderBatch.Unbind();
 }
 
-void RenderSystem::DrawAllBoundingBoxes(float dt, Registry* registry, Input* input)
+void RenderSystem::DrawAllColldiers(float dt, Registry* registry, Input* input)
 {
   ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
 
@@ -524,24 +494,32 @@ void RenderSystem::DrawAllBoundingBoxes(float dt, Registry* registry, Input* inp
   glLineWidth(5.0f);
   glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+  // Render ColliderCubes
   renderer->StartBatch();
-
-  registry->GetComponentsIter<Transform>()->Each([&](Transform& transform) {
-    auto modelMatrix = GetModelMatrixWithoutRotation(transform);
-    renderer->PushGenericBufferWithColor(modelMatrix, {1.0f, 0.0f, 0.0f}, DrawType::Cube);
-  });
+  registry->GetComponentsIter<Transform, ColliderCube>()->Each(
+      [&](Transform& transform, ColliderCube& colliderCube) {
+        auto modelMatrix = GetModelMatrixWithoutRotation(transform);
+        renderer->PushGenericBufferWithColor(modelMatrix, {1.0f, 0.0f, 0.0f}, DrawType::Cube);
+      });
 
   PrimitiveBatchIds primitiveBatchIds = registry->GetComponent<PrimitiveBatchIds>();
   renderer->FlushBatch(primitiveBatchIds, DrawType::Cube);
+
+  // Render ColliderSpheres
+  renderer->StartBatch();
+  registry->GetComponentsIter<Transform, ColliderSphere>()->Each(
+      [&](Transform& transform, ColliderSphere& colliderSphere) {
+        auto modelMatrix = GetModelMatrixWithoutRotation(transform);
+        renderer->PushGenericBufferWithColor(modelMatrix, {1.0f, 0.0f, 0.0f}, DrawType::Sphere);
+      });
+  renderer->FlushBatch(primitiveBatchIds, DrawType::Sphere);
+
+  // TODO : Render ColliderPolygons
 
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   glLineWidth(1.0f);
 
   shaderResource.cubeShaderBatch.Unbind();
-}
-
-void RenderSystem::DrawAllColldiers(float dt, Registry* registry, Input* input)
-{
 }
 
 // bool : true if collided, false if not collided

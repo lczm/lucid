@@ -56,10 +56,6 @@ class RenderSystem : public System
   void DrawAllModels(float dt, Registry* registry, Input* input);
   void DrawAllCubes(float dt, Registry* registry, Input* input);
   void DrawAllSpheres(float dt, Registry* registry, Input* input);
-
-  // This draws a bounding box around everything that has a transform
-  // Main used for debugging purposes though.
-  void DrawAllBoundingBoxes(float dt, Registry* registry, Input* input);
   void DrawAllColldiers(float dt, Registry* registry, Input* input);
 
  public:
