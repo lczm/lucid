@@ -532,6 +532,10 @@ class Registry
     entityIndexMap[id] = entityVectorPtr.size() - 1;
   }
 
+  void DeleteEntity(Entity id)
+  {
+  }
+
   // General method to convert (Component) to an uint32_t
   template <typename Component>
   uint32_t GetHashCode(Component component)
