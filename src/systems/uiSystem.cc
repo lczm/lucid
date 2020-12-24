@@ -650,7 +650,6 @@ void UiSystem::UpdateInputActiveWindow(Input* input, WindowType windowType)
   if (input->IsMouseLDown() && ImGui::IsWindowHovered() && input->activeWindow != windowType)
   {
     input->activeWindow = windowType;
-    dbg(windowType);
   }
 }
 

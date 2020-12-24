@@ -339,14 +339,14 @@ bool RenderSystem::HandleMousePick(float dt, Registry* registry, Input* input)
   if (lengths.size() == 0)
   {
     // If it does not collide, set activeEntity to be 0
-    dbg("Mouse pick no collision");
+    std::cout << "Mouse pick no collision" << std::endl;
     devDebug.activeEntity = 0;
     return false;
   }
 
   if (lengths.size() == 1)
   {
-    dbg("Mouse pick collided one");
+    std::cout << "Mouse pick collided one" << std::endl;
     devDebug.activeEntity = entityIds[lengthIndexs[0]];
 
     // Change the focus to the inspector window
@@ -371,7 +371,7 @@ bool RenderSystem::HandleMousePick(float dt, Registry* registry, Input* input)
   // Change the focus to the inspector window
   devDebug.changeFocusWindow = WindowType::Inspector;
 
-  dbg("Mouse pick collided many");
+  std::cout << "Mouse pick collided many" << std::endl;
   return true;
 }
 

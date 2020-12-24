@@ -1020,7 +1020,9 @@ class Registry
     // TODO : Find a better way to deal with this...? for now this can just return a default
     // component
     std::cout << "GetComponent() not able to retrieve component" << std::endl;
-    // return Component();
+
+    // TODO : This will return the default value to silence compiler warnings for now.
+    return *(new Component());
   }
 
   // This differs from getComponents() in the sense that getComponents is used

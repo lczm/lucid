@@ -14,7 +14,6 @@
 #include "primitiveVertex.h"
 #include "renderUtils.h"
 #include "engineComponents.h"
-#include "dbg.h"
 
 #include "gtx/string_cast.hpp"
 

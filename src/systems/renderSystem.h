@@ -18,10 +18,6 @@
 #include "primitiveVertex.h"
 #include "engineComponents.h"
 
-#if DEBUG
-#include "dbg.h"
-#endif
-
 #include "gtx/string_cast.hpp"
 
 #include "imgui.h"

@@ -62,10 +62,6 @@ set (IMGUIZMO_HEADERS
     lib/ImGuizmo/ImGuizmo.cpp
 )
 
-set (DBG_MACRO_HEADERS
-    lib/dbg-macro/dbg.h
-)
-
 # Import directories
 include_directories(src/utils)
 include_directories(src/constants)
@@ -111,9 +107,6 @@ include_directories(lib/assimp/include)
 # Setup ImGuizmo
 include_directories(lib/ImGuizmo)
 
-# Setup dbg-macro
-include_directories(lib/dbg-macro)
-
 # Setup glfw
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
@@ -137,8 +130,7 @@ add_executable(lucid
     ${STB_IMAGE_HEADERS}
     ${GLAD_SOURCE_FILES}
     ${GLM_HEADERS}
-    ${IMGUIZMO_HEADERS}
-    ${DBG_MACRO_HEADERS})
+    ${IMGUIZMO_HEADERS})
 
 # Link the executable to glfw
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
@@ -157,8 +149,7 @@ add_executable(tests
     ${STB_IMAGE_HEADERS}
     ${GLAD_SOURCE_FILES}
     ${GLM_HEADERS}
-    ${IMGUIZMO_HEADERS}
-    ${DBG_MACRO_HEADERS})
+    ${IMGUIZMO_HEADERS})
 
 # Link test executable against gtest & gtest_main
 target_link_libraries(tests gtest gtest_main glfw assimp* sndfile OpenAL32)

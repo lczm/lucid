@@ -73,8 +73,8 @@ void Lucid::Update()
   secondDt += dt;
 
   // TODO : Set max FPS
-  const float MAX_FPS = 60.0f;
-  const float MAX_PERIOD = 1.0 / MAX_FPS;
+  // const float MAX_FPS = 60.0f;
+  // const float MAX_PERIOD = 1.0 / MAX_FPS;
 
   // If it has been a second
   if (secondDt >= 1.0f)
@@ -256,7 +256,7 @@ void Lucid::InitializeSystems()
 
 void Lucid::InitializeManyCubes()
 {
-  srand(time(NULL));
+  // srand(time(NULL));
   for (size_t i = 1; i < 1500; i++)
   {
     Entity cubeID = registry->GetAvailableEntityId();
@@ -456,7 +456,7 @@ void Lucid::HandleScrollCallback(GLFWwindow* window, double xOffset, double yOff
    * -1 : scrolled down
    */
   Lucid* lucid = (Lucid*)glfwGetWindowUserPointer(window);
-  lucid->input->scroll = yOffset;
+  lucid->input->scroll = static_cast<int>(yOffset);
 }
 
 void Lucid::MouseCallback(GLFWwindow* window, int button, int action, int mods)
