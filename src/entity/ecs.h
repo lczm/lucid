@@ -10,6 +10,7 @@
 #include <type_traits>
 #include <unordered_map>
 
+#include "startup.h"
 #include "component.h"
 #include "input.h"
 #include "boundingBox.h"
@@ -40,35 +41,6 @@
     newVectorPtr.push_back(oldVectorPtr[index]);                           \
     std::cout << "hello... : " << GetHashCode<T>() << std::endl;           \
   }
-
-// TODO : ColliderCube, ColliderSphere, ColliderPolygon has issues hen moving
-#define MOVE_ALL_COMPONENTS(from, to, index)      \
-  MOVE_COMPONENT(Transform, from, to, index)      \
-  MOVE_COMPONENT(RigidBody, from, to, index)      \
-  MOVE_COMPONENT(Animation, from, to, index)      \
-  MOVE_COMPONENT(SoundEffect, from, to, index)    \
-  MOVE_COMPONENT(Music, from, to, index)          \
-  MOVE_COMPONENT(Cube, from, to, index)           \
-  MOVE_COMPONENT(Sphere, from, to, index)         \
-  MOVE_COMPONENT(Model, from, to, index)          \
-  MOVE_COMPONENT(Test, from, to, index)           \
-  MOVE_COMPONENT(ColliderCube, from, to, index)   \
-  MOVE_COMPONENT(ColliderSphere, from, to, index) \
-  MOVE_COMPONENT(ColliderPolygon, from, to, index)
-
-#define REGISTER_COMPONENT_CREATE(archetype, keyPtr)          \
-  CREATE_COMPONENT_VECTOR(Transform, archetype, keyPtr)       \
-  CREATE_COMPONENT_VECTOR(RigidBody, archetype, keyPtr)       \
-  CREATE_COMPONENT_VECTOR(Animation, archetype, keyPtr)       \
-  CREATE_COMPONENT_VECTOR(SoundEffect, archetype, keyPtr)     \
-  CREATE_COMPONENT_VECTOR(Music, archetype, keyPtr)           \
-  CREATE_COMPONENT_VECTOR(Cube, archetype, keyPtr)            \
-  CREATE_COMPONENT_VECTOR(Sphere, archetype, keyPtr)          \
-  CREATE_COMPONENT_VECTOR(Model, archetype, keyPtr)           \
-  CREATE_COMPONENT_VECTOR(ColliderCube, archetype, keyPtr)    \
-  CREATE_COMPONENT_VECTOR(ColliderSphere, archetype, keyPtr)  \
-  CREATE_COMPONENT_VECTOR(ColliderPolygon, archetype, keyPtr) \
-  CREATE_COMPONENT_VECTOR(Test, archetype, keyPtr)
 
 /*
    This header file will define all that is needed for the ecs structure to
@@ -1076,6 +1048,7 @@ class Registry
     // Cannot find the entity given the archetype
     std::cout << "GetEntityIDFromArchetype cannot find entity given index of : " << index
               << std::endl;
+    return 0;
   }
 
   bool SubsetOfArchetype(Archetype& archetype, Archetype& archetypeOther)

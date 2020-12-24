@@ -1,9 +1,5 @@
 #include "lucid.h"
 
-struct Test
-{
-};
-
 Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window)
 {
   Lucid::registry = registry;
@@ -35,8 +31,9 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window)
   ImGui_ImplGlfw_InitForOpenGL(window, true);
   ImGui_ImplOpenGL3_Init(GLSL_VERSION);
 
-  InitializeArchetypes();
-  InitializeBuiltInEntities();
+  InitArchetypes(registry);
+  InitEngineComponents(registry);
+
   InitializeBuiltInSystems();
 
   // InitializeModelEntities();
@@ -105,85 +102,6 @@ void Lucid::Update()
   }
 
   frameCount++;
-}
-
-void Lucid::InitializeArchetypes()
-{
-  // Note that the archetypes registered under here and that are not
-  // under the #if DEBUG flag are the ones that will also exist
-  // in the release build of the game.
-  registry->RegisterArchetype<ShaderResource>();
-  registry->RegisterArchetype<PrimitiveBatchIds>();
-  registry->RegisterArchetype<Model, Transform>();
-  registry->RegisterArchetype<QuatCamera>();
-  registry->RegisterArchetype<SphereVerticesIndices>();
-  registry->RegisterArchetype<Line, Transform>();
-  registry->RegisterArchetype<GameEngineState>();
-  registry->RegisterArchetype<RendererStats>();
-
-  // Register the necessary archetypes
-  // Note that this should be using `ColliderCube` but it is hardcoded like this for now.
-  registry->RegisterArchetype<Cube, Transform, RigidBody>();
-  registry->RegisterArchetype<Cube, Transform, RigidBody, ColliderCube>();
-  registry->RegisterArchetype<Sphere, Transform, RigidBody, ColliderCube>();
-  registry->RegisterArchetype<PongRules>();
-
-  // Default archetypes for gui interface
-  registry->RegisterArchetype<Sphere, Transform>();
-  registry->RegisterArchetype<Cube, Transform>();
-
-  registry->RegisterArchetype<SoundEffect, Transform>();
-  registry->RegisterArchetype<Music>();
-
-  registry->RegisterArchetype<RigidBodyConfiguration>();
-
-#if DEBUG
-  registry->RegisterArchetype<SceneRender>();
-  registry->RegisterArchetype<DevDebug>();
-  registry->RegisterArchetype<WidgetLayout>();
-  registry->RegisterArchetype<GridLine, Transform>();
-#endif
-}
-
-void Lucid::InitializeBuiltInEntities()
-{
-  Entity primitiveBatchID = registry->GetAvailableEntityId();
-  Entity shaderResourceID = registry->GetAvailableEntityId();
-
-  registry->CreateEntity<PrimitiveBatchIds>(primitiveBatchID);
-  registry->CreateEntity<ShaderResource>(shaderResourceID);
-
-  ShaderResource& shaderResource = registry->GetComponent<ShaderResource>();
-  shaderResource.modelShader.CreateShader(MODEL_VERTEX_SHADER, MODEL_FRAGMENT_SHADER);
-  shaderResource.triangleShader.CreateShader(TRIANGLE_VERTEX_SHADER, TRIANGLE_FRAGMENT_SHADER);
-  shaderResource.primitiveShader.CreateShader(PRIMITIVE_VERTEX_SHADER, PRIMITIVE_FRAGMENT_SHADER);
-  shaderResource.primitiveShaderBatch.CreateShader(PRIMITIVE_LINE_SHADER,
-                                                   PRIMITIVE_FRAGMENT_SHADER);
-  shaderResource.cubeShaderBatch.CreateShader(PRIMITIVE_CUBE_SHADER, PRIMITIVE_FRAGMENT_SHADER);
-  // Note : using the primitive cube shader for now? If there turns out to not be a need
-  // for the sphere and cubes to use different shaders, then simplify the shader names.
-  shaderResource.sphereShaderBatch.CreateShader(PRIMITIVE_CUBE_SHADER, PRIMITIVE_FRAGMENT_SHADER);
-
-  Entity sphereVerticesIndicesID = registry->GetAvailableEntityId();
-  registry->CreateEntity<SphereVerticesIndices>(sphereVerticesIndicesID);
-
-  Entity gameEngineStateID = registry->GetAvailableEntityId();
-  registry->CreateEntity<GameEngineState>(gameEngineStateID);
-
-  Entity rigidBodyConfigurationID = registry->GetAvailableEntityId();
-  registry->CreateEntity<RigidBodyConfiguration>(rigidBodyConfigurationID);
-
-#if DEBUG
-  Entity sceneRenderID = registry->GetAvailableEntityId();
-  Entity devDebugID = registry->GetAvailableEntityId();
-  Entity widgetLayoutID = registry->GetAvailableEntityId();
-  Entity rendererStatsID = registry->GetAvailableEntityId();
-
-  registry->CreateEntity<SceneRender>(sceneRenderID);
-  registry->CreateEntity<DevDebug>(devDebugID);
-  registry->CreateEntity<WidgetLayout>(widgetLayoutID);
-  registry->CreateEntity<RendererStats>(rendererStatsID);
-#endif
 }
 
 void Lucid::InitializeBuiltInSystems()
@@ -323,7 +241,6 @@ void Lucid::InitializeDemoPongEntities()
   // Transform* platformTransform = registry->GetComponent<Transform>(platformID);
   // platformTransform->position = {0.0f, 1.0f, -10.0f};
   // platformTransform->scale = {20.0f, 1.0f, 20.0f};
-
 
   // Testing purposes
   // registry->AddComponentTest<Test>(playerPaddleID);

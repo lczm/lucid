@@ -9,6 +9,7 @@
 #include "ecs.h"
 #include "input.h"
 #include "utils.h"
+#include "engineStartup.h"
 
 #include "renderSystem.h"
 #include "physicsSystem.h"
@@ -17,6 +18,9 @@
 TEST_F(TestsGL, BoxBoxColliding)
 {
   Registry* registry = new Registry();
+  InitArchetypes(registry);
+  InitEngineComponents(registry);
+
   Input* input = new Input();
 
   registry->RegisterSystem(new PhysicsSystem());
@@ -53,6 +57,9 @@ TEST_F(TestsGL, BoxBoxColliding)
 TEST_F(TestsGL, BoxBoxNotColliding)
 {
   Registry* registry = new Registry();
+  InitArchetypes(registry);
+  InitEngineComponents(registry);
+
   Input* input = new Input();
 
   registry->RegisterSystem(new PhysicsSystem());
@@ -91,6 +98,9 @@ TEST_F(TestsGL, BoxBoxNotColliding)
 TEST_F(TestsGL, RayBoxColliding)
 {
   Registry* registry = new Registry();
+  InitArchetypes(registry);
+  InitEngineComponents(registry);
+
   RenderSystem* renderSystem = new RenderSystem(registry);
 
   Entity first = registry->GetAvailableEntityId();
@@ -127,6 +137,9 @@ TEST_F(TestsGL, RayBoxColliding)
 TEST_F(TestsGL, RayBoxNotColliding)
 {
   Registry* registry = new Registry();
+  InitArchetypes(registry);
+  InitEngineComponents(registry);
+
   RenderSystem* renderSystem = new RenderSystem(registry);
 
   registry->RegisterArchetype<Cube, Transform>();

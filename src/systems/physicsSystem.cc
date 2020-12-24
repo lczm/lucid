@@ -65,6 +65,10 @@ void PhysicsSystem::Update(float dt, Registry* registry, Input* input)
       }
     }
   }
+
+  delete transformComponents;
+  delete rigidBodyComponents;
+  delete colliderCubeComponents;
 }
 
 void PhysicsSystem::UpdateAllRigidbodies(float dt, Registry* registry, Input* input)
