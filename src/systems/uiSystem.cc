@@ -313,6 +313,9 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
         case DefaultAssetsType::Line:
           break;
       }
+
+      devDebug.changeFocusWindow = WindowType::Scene;
+      UpdateWindowFocus(registry, WindowType::DefaultAssets, "Scene", input);
     }
     ImGui::EndDragDropTarget();
   }
