@@ -628,7 +628,7 @@ TEST_F(TestsGL, AddComponent)
   ASSERT_TRUE(registry->EntityHasComponent<Transform>(id1));
   ASSERT_FALSE(registry->EntityHasComponent<ColliderCube>(id1));
 
-  registry->AddComponentTest<ColliderCube>(id1);
+  registry->AddComponent<ColliderCube>(id1);
 
   ASSERT_TRUE(registry->EntityHasComponent<Cube>(id1));
   ASSERT_TRUE(registry->EntityHasComponent<Transform>(id1));
