@@ -69,9 +69,17 @@ void PhysicsSystem::Update(float dt, Registry* registry, Input* input)
 
 void PhysicsSystem::UpdateAllRigidbodies(float dt, Registry* registry, Input* input)
 {
+  RigidBodyConfiguration& rigidBodyConfiguration = registry->GetComponent<RigidBodyConfiguration>();
+
   registry->GetComponentsIter<Transform, RigidBody>()->Each(
       [&](Transform& transform, RigidBody& rigidBody) {
         transform.position += rigidBody.velocity;
+
+        // If the rigidbody component has applyGravity, then apply the gravity.
+        if (rigidBody.applyGravity)
+        {
+          transform.position.y -= rigidBodyConfiguration.gravityRate;
+        }
       });
 }
 

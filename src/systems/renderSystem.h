@@ -14,7 +14,6 @@
 #include "sphere.h"
 #include "line.h"
 #include "quatCamera.h"
-#include "renderUtils.h"
 #include "primitiveVertex.h"
 #include "engineComponents.h"
 
@@ -24,6 +23,7 @@
 #include "imgui_internal.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
+#include "renderUtils.h"
 
 class RenderSystem : public System
 {
@@ -65,7 +65,6 @@ class RenderSystem : public System
  public:
   // TODO : Typedef glm::vec3 to a ray as it feels overly verbose to declare
   // a vector as input/output
-  glm::vec3 GetRayDirection(Registry* registry, Input* input);
   std::tuple<bool, float> RayBoundingBoxCollisionCheck(glm::vec3 origin, glm::vec3 ray,
                                                        BoundingBox boundingBox);
 

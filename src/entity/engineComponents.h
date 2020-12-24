@@ -104,3 +104,8 @@ struct GameEngineState
 {
   GameState gameState = GameState::PAUSED;
 };
+
+struct RigidBodyConfiguration
+{
+  float gravityRate = 0.10f;
+};

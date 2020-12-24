@@ -135,6 +135,8 @@ void Lucid::InitializeArchetypes()
   registry->RegisterArchetype<SoundEffect, Transform>();
   registry->RegisterArchetype<Music>();
 
+  registry->RegisterArchetype<RigidBodyConfiguration>();
+
 #if DEBUG
   registry->RegisterArchetype<SceneRender>();
   registry->RegisterArchetype<DevDebug>();
@@ -167,6 +169,9 @@ void Lucid::InitializeBuiltInEntities()
 
   Entity gameEngineStateID = registry->GetAvailableEntityId();
   registry->CreateEntity<GameEngineState>(gameEngineStateID);
+
+  Entity rigidBodyConfigurationID = registry->GetAvailableEntityId();
+  registry->CreateEntity<RigidBodyConfiguration>(rigidBodyConfigurationID);
 
 #if DEBUG
   Entity sceneRenderID = registry->GetAvailableEntityId();
@@ -297,14 +302,28 @@ void Lucid::InitializeDemoPongEntities()
 
   // TODO : registry->GetComponent<Transform> should return a reference not a pointer
   // Move around the transforms of each
-  playerTransform->position = {-10.0f, 0.0f, -10.0f};
-  ballTransform->position = {0.0f, 0.0f, -10.0f};
-  aiTransform->position = {10.0f, 0.0f, 0.0f};
+  playerTransform->position = {-10.0f, 10.0f, -10.0f};
+  ballTransform->position = {0.0f, 10.0f, -10.0f};
+  aiTransform->position = {10.0f, 10.0f, 0.0f};
 
   RigidBody* ballRigidBody = registry->GetComponent<RigidBody>(ballID);
   // note 0.05f is just harded 'movement speed'
   ballRigidBody->velocity =
       glm::normalize(playerTransform->position - ballTransform->position) * 0.020f;
+
+  // Entity platformID = registry->GetAvailableEntityId();
+  // registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(platformID);
+
+  // // Change the colour so that it is more immediately visible
+  // registry->GetComponent<Cube>(platformID)->color = {0.5f, 0.0f, 0.0f};
+
+  // // Set that this platform does not have gravity apply on it.
+  // registry->GetComponent<RigidBody>(platformID)->applyGravity = false;
+
+  // Transform* platformTransform = registry->GetComponent<Transform>(platformID);
+  // platformTransform->position = {0.0f, 1.0f, -10.0f};
+  // platformTransform->scale = {20.0f, 1.0f, 20.0f};
+
 
   // Testing purposes
   // registry->AddComponentTest<Test>(playerPaddleID);
