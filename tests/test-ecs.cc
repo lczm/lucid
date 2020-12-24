@@ -662,8 +662,46 @@ TEST_F(TestsGL, AddComponent)
 
 TEST_F(TestsGL, RemoveComponent)
 {
-}
+  Registry* registry = new Registry();
 
-TEST_F(TestsGL, AddRemoveComponent)
-{
+  registry->RegisterArchetype<Cube, Transform, ColliderCube>();
+  Entity id1 = registry->GetAvailableEntityId();
+  registry->CreateEntity<Cube, Transform, ColliderCube>(id1);
+
+  Entity id2 = registry->GetAvailableEntityId();
+  registry->CreateEntity<Cube, Transform, ColliderCube>(id2);
+
+  uint32_t count = 0;
+  registry->GetComponentsIter<Cube, Transform, ColliderCube>()->Each(
+      [&](Cube& cube, Transform& transform, ColliderCube& colliderCube) { count++; });
+
+  ASSERT_EQ(count, 2);
+
+  registry->GetComponent<Transform>(id1)->position = {5.0f, 0.0f, 0.0f};
+
+  ASSERT_TRUE(registry->EntityHasComponent<Cube>(id1));
+  ASSERT_TRUE(registry->EntityHasComponent<Transform>(id1));
+  ASSERT_TRUE(registry->EntityHasComponent<ColliderCube>(id1));
+
+  registry->RemoveComponent<ColliderCube>(id1);
+
+  ASSERT_TRUE(registry->EntityHasComponent<Cube>(id1));
+  ASSERT_TRUE(registry->EntityHasComponent<Transform>(id1));
+  ASSERT_FALSE(registry->EntityHasComponent<ColliderCube>(id1));
+
+  auto components = registry->GetComponentsExact<Cube, Transform>();
+  auto cubeComponents = static_cast<ComponentVector<Cube>*>(components[0]);
+  auto transformComponents = static_cast<ComponentVector<Transform>*>(components[1]);
+
+  ASSERT_EQ(cubeComponents->Size(), 1);
+  ASSERT_EQ(transformComponents->Size(), 1);
+
+  count = 0;
+  registry->GetComponentsIter<Cube, Transform, ColliderCube>()->Each(
+      [&](Cube& cube, Transform& transform, ColliderCube& colliderCube) { count++; });
+
+  ASSERT_EQ(count, 1);
+
+  ASSERT_EQ(registry->entityIndexMap[id2], 0);
+  ASSERT_EQ(registry->entityIndexMap[id1], 0);
 }

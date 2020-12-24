@@ -599,6 +599,7 @@ class Registry
     Archetype oldArchetype = entityComponentMap[entity];
     Archetype& archetype = entityComponentMap[entity];
 
+    // Get entityIndex before modifying it later down the line
     uint32_t entityIndex = entityIndexMap[entity];
 
     // Add the data to the archetype
@@ -607,6 +608,7 @@ class Registry
     // Update the archetype hashcode
     archetype.push_back(componentHashCode);
 
+    // If the archetype does not yet exist
     if (archetypeComponentMap.find(archetype) == archetypeComponentMap.end())
     {
       archetypeComponentMap[archetype] = new std::unordered_map<uint32_t, void*>();
@@ -647,6 +649,59 @@ class Registry
   template <typename Component>
   void RemoveComponent(Entity entity)
   {
+    // Convert the component
+    uint32_t componentHashCode = GetHashCode<Component>();
+
+    // Get the entity's current archetype
+    Archetype oldArchetype = entityComponentMap[entity];
+    Archetype& archetype = entityComponentMap[entity];
+
+    // Get entityIndex before modifying it later down the line
+    uint32_t entityIndex = entityIndexMap[entity];
+
+    auto& keyPtr = GetArchetypeComponentMap(archetype);
+
+    // Update the archetype hashcode
+    uint32_t archetypeIndex = 0;
+    for (size_t i = 0; i < archetype.size(); i++)
+    {
+      if (archetype[i] == componentHashCode)
+      {
+        archetypeIndex = i;
+        break;
+      }
+    }
+    archetype.erase(archetype.begin() + archetypeIndex);
+
+    // If the archetype does not yet exist
+    if (archetypeComponentMap.find(archetype) == archetypeComponentMap.end())
+    {
+      archetypeComponentMap[archetype] = new std::unordered_map<uint32_t, void*>();
+    }
+
+    auto& newKeyPtr = GetArchetypeComponentMap(archetype);
+
+    CREATE_ALL_COMPONENT_VECTORS_IN_ARCHETYPE(archetype, newKeyPtr);
+    
+    // Since this is removing, set the new archetype as the 'from' target
+    // and set the older archetype as the 'to' target
+    MOVE_ALL_COMPONENTS(archetype, oldArchetype, entityIndex);
+
+    auto& newIdComponentVector = GetVectorFromArchetypeComponentMap<uint32_t>(newKeyPtr);
+    entityIndexMap[entity] = newIdComponentVector.size() - 1;
+
+    auto& oldArchetypePtr = GetArchetypeComponentMap(oldArchetype);
+    auto& idComponentVector = GetVectorFromArchetypeComponentMap<uint32_t>(oldArchetypePtr);
+
+    // For every entity that has an index that is higher than the current, move it back by one
+    // as the entity has been moved, so the index alignment will need to match up again.
+    for (uint32_t& id : idComponentVector)
+    {
+      if (id > entityIndex && id != entity)
+      {
+        entityIndexMap[id]--;
+      }
+    }
   }
 
   // This is named addComponentData rather than addComponent because this does
