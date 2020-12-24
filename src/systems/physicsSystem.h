@@ -8,7 +8,6 @@
 #include "engineComponents.h"
 #include "gtx/string_cast.hpp"
 
-
 class PhysicsSystem : public System
 {
  private:
@@ -19,6 +18,7 @@ class PhysicsSystem : public System
   void Update(float dt, Registry* registry, Input* input);
 
   void UpdateAllRigidbodies(float dt, Registry* registry, Input* input);
+  void UpdateCollisions(float dt, Registry* registry, Input* input);
 
   // Cube : { Rest of the colliders };
   bool CheckCollision(ColliderCube colliderCube, Transform& transform,

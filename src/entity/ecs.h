@@ -419,9 +419,6 @@ class Registry
     return id;
   };
 
-  // TODO : This needs to work as well
-  void DeleteEntity(Entity entity);
-
   template <typename Component>
   bool EntityHasComponent(Entity id)
   {
