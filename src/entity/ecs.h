@@ -378,27 +378,27 @@ class Registry
   };
   ~Registry();
 
-  // Very useful utility functions
-  std::unordered_map<uint32_t, void*>& GetArchetypeComponentMap(Archetype archetype)
+  // Useful utility functions
+  inline std::unordered_map<uint32_t, void*>& GetArchetypeComponentMap(Archetype archetype)
   {
     return *(static_cast<std::unordered_map<uint32_t, void*>*>(archetypeComponentMap[archetype]));
   }
 
   // Use case for when using a for range loop over the archetypeComponentMap
-  std::unordered_map<uint32_t, void*>& GetArchetypeComponentMap(void* pairIterSecond)
+  inline std::unordered_map<uint32_t, void*>& GetArchetypeComponentMap(void* pairIterSecond)
   {
     return *(static_cast<std::unordered_map<uint32_t, void*>*>(pairIterSecond));
   }
 
   template <typename Component>
-  std::vector<Component>& GetVectorFromArchetypeComponentMap(
+  inline std::vector<Component>& GetVectorFromArchetypeComponentMap(
       std::unordered_map<uint32_t, void*> keyPtr, uint32_t hashCode)
   {
     return *(static_cast<std::vector<Component>*>(keyPtr[hashCode]));
   }
 
   template <typename Component>
-  std::vector<Component>& GetVectorFromArchetypeComponentMap(
+  inline std::vector<Component>& GetVectorFromArchetypeComponentMap(
       std::unordered_map<uint32_t, void*> keyPtr)
   {
     return *(static_cast<std::vector<Component>*>(keyPtr[GetHashCode<Component>()]));
