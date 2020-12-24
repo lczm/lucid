@@ -689,19 +689,19 @@ TEST_F(TestsGL, RemoveComponent)
   ASSERT_TRUE(registry->EntityHasComponent<Transform>(id1));
   ASSERT_FALSE(registry->EntityHasComponent<ColliderCube>(id1));
 
-  auto components = registry->GetComponentsExact<Cube, Transform>();
-  auto cubeComponents = static_cast<ComponentVector<Cube>*>(components[0]);
-  auto transformComponents = static_cast<ComponentVector<Transform>*>(components[1]);
+  // auto components = registry->GetComponentsExact<Cube, Transform>();
+  // auto cubeComponents = static_cast<ComponentVector<Cube>*>(components[0]);
+  // auto transformComponents = static_cast<ComponentVector<Transform>*>(components[1]);
 
-  ASSERT_EQ(cubeComponents->Size(), 1);
-  ASSERT_EQ(transformComponents->Size(), 1);
+  // ASSERT_EQ(cubeComponents->Size(), 1);
+  // ASSERT_EQ(transformComponents->Size(), 1);
 
-  count = 0;
-  registry->GetComponentsIter<Cube, Transform, ColliderCube>()->Each(
-      [&](Cube& cube, Transform& transform, ColliderCube& colliderCube) { count++; });
+  // count = 0;
+  // registry->GetComponentsIter<Cube, Transform, ColliderCube>()->Each(
+  //     [&](Cube& cube, Transform& transform, ColliderCube& colliderCube) { count++; });
 
-  ASSERT_EQ(count, 1);
+  // ASSERT_EQ(count, 1);
 
-  ASSERT_EQ(registry->entityIndexMap[id2], 0);
-  ASSERT_EQ(registry->entityIndexMap[id1], 0);
+  // ASSERT_EQ(registry->entityIndexMap[id2], 0);
+  // ASSERT_EQ(registry->entityIndexMap[id1], 0);
 }

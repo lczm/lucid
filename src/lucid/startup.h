@@ -10,19 +10,19 @@
  *  the engine, please add them to the two macros defined below.
  */
 
-#define MOVE_ALL_COMPONENTS(from, to, index)      \
-  MOVE_COMPONENT(uint32_t, from, to, index)       \
-  MOVE_COMPONENT(Transform, from, to, index)      \
-  MOVE_COMPONENT(RigidBody, from, to, index)      \
-  MOVE_COMPONENT(Animation, from, to, index)      \
-  MOVE_COMPONENT(SoundEffect, from, to, index)    \
-  MOVE_COMPONENT(Music, from, to, index)          \
-  MOVE_COMPONENT(Cube, from, to, index)           \
-  MOVE_COMPONENT(Sphere, from, to, index)         \
-  MOVE_COMPONENT(Model, from, to, index)          \
-  MOVE_COMPONENT(ColliderCube, from, to, index)   \
-  MOVE_COMPONENT(ColliderSphere, from, to, index) \
-  MOVE_COMPONENT(ColliderPolygon, from, to, index)
+#define MOVE_ALL_COMPONENTS(search, from, to, index)      \
+  MOVE_COMPONENT(uint32_t, search, from, to, index)       \
+  MOVE_COMPONENT(Transform, search, from, to, index)      \
+  MOVE_COMPONENT(RigidBody, search, from, to, index)      \
+  MOVE_COMPONENT(Animation, search, from, to, index)      \
+  MOVE_COMPONENT(SoundEffect, search, from, to, index)    \
+  MOVE_COMPONENT(Music, search, from, to, index)          \
+  MOVE_COMPONENT(Cube, search, from, to, index)           \
+  MOVE_COMPONENT(Sphere, search, from, to, index)         \
+  MOVE_COMPONENT(Model, search, from, to, index)          \
+  MOVE_COMPONENT(ColliderCube, search, from, to, index)   \
+  MOVE_COMPONENT(ColliderSphere, search, from, to, index) \
+  MOVE_COMPONENT(ColliderPolygon, search, from, to, index)
 
 #define REGISTER_COMPONENT_CREATE(archetype, keyPtr)         \
   CREATE_COMPONENT_VECTOR(uint32_t, archetype, keyPtr)       \

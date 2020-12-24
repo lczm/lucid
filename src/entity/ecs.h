@@ -29,20 +29,23 @@
 
 // TODO : This can be optimized, take in the keyptr instead of
 // searching for it every for every component
-#define MOVE_COMPONENT(T, from, to, index)                                 \
-  if (std::find(from.begin(), from.end(), GetHashCode<T>()) != from.end()) \
-  {                                                                        \
-    auto& oldKeyPtr = GetArchetypeComponentMap(from);                      \
-    auto& newKeyPtr = GetArchetypeComponentMap(to);                        \
-                                                                           \
-    auto& oldVectorPtr = GetVectorFromArchetypeComponentMap<T>(oldKeyPtr); \
-    auto& newVectorPtr = GetVectorFromArchetypeComponentMap<T>(newKeyPtr); \
-                                                                           \
-    /* Add the new data */                                                 \
-    newVectorPtr.push_back(oldVectorPtr[index]);                           \
-                                                                           \
-    /* Remove the old data */                                              \
-    oldVectorPtr.erase(oldVectorPtr.begin() + index);                      \
+#define MOVE_COMPONENT(T, search, from, to, index)                                                \
+  if (std::find(search.begin(), search.end(), GetHashCode<T>()) != search.end())                  \
+  {                                                                                               \
+    auto& oldKeyPtr = GetArchetypeComponentMap(from);                                             \
+    auto& newKeyPtr = GetArchetypeComponentMap(to);                                               \
+                                                                                                  \
+    auto& oldVectorPtr = GetVectorFromArchetypeComponentMap<T>(oldKeyPtr);                        \
+    auto& newVectorPtr = GetVectorFromArchetypeComponentMap<T>(newKeyPtr);                        \
+                                                                                                  \
+    /* Add the new data */                                                                        \
+    newVectorPtr.push_back(oldVectorPtr[index]);                                                  \
+                                                                                                  \
+    /* Remove the old data */                                                                     \
+    oldVectorPtr.erase(oldVectorPtr.begin() + index);                                             \
+                                                                                                  \
+    /* Update the new entity index mapping through the macro */ /* As it has access to the type*/ \
+    newIndexMapping = newVectorPtr.size() - 1;                                                    \
   }
 
 /*
@@ -616,14 +619,17 @@ class Registry
 
     auto& newKeyPtr = GetArchetypeComponentMap(archetype);
 
+    uint32_t newIndexMapping = 0;
     CREATE_ALL_COMPONENT_VECTORS_IN_ARCHETYPE(archetype, newKeyPtr);
-    MOVE_ALL_COMPONENTS(oldArchetype, archetype, entityIndex);
+    MOVE_ALL_COMPONENTS(oldArchetype, oldArchetype, archetype, entityIndex);
 
     // Update the entity index based on the size.
     auto& componentVector = GetVectorFromArchetypeComponentMap<Component>(newKeyPtr);
 
     // Add the new component into the vector
     componentVector.push_back(Component());
+
+    entityIndexMap[entity] = newIndexMapping;
 
     // After moving the entity components, re-order the entity indexes
     // e.g. [1, 2],
@@ -682,13 +688,13 @@ class Registry
     auto& newKeyPtr = GetArchetypeComponentMap(archetype);
 
     CREATE_ALL_COMPONENT_VECTORS_IN_ARCHETYPE(archetype, newKeyPtr);
-    
+
+    uint32_t newIndexMapping = 0;
     // Since this is removing, set the new archetype as the 'from' target
     // and set the older archetype as the 'to' target
-    MOVE_ALL_COMPONENTS(archetype, oldArchetype, entityIndex);
+    MOVE_ALL_COMPONENTS(archetype, oldArchetype, archetype, entityIndex);
 
-    auto& newIdComponentVector = GetVectorFromArchetypeComponentMap<uint32_t>(newKeyPtr);
-    entityIndexMap[entity] = newIdComponentVector.size() - 1;
+    entityIndexMap[entity] = newIndexMapping;
 
     auto& oldArchetypePtr = GetArchetypeComponentMap(oldArchetype);
     auto& idComponentVector = GetVectorFromArchetypeComponentMap<uint32_t>(oldArchetypePtr);
