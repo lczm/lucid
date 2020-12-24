@@ -474,11 +474,11 @@ void UiSystem::DrawDevDebug(float dt, Registry* registry, Input* input)
 void UiSystem::DrawDefaultAssets(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Default Assets");
-  for (int n = 0; n < defaultAssets.size(); n++)
+  for (size_t n = 0; n < defaultAssets.size(); n++)
   {
     ImGui::PushID(n);
     if ((n % 10) != 0) ImGui::SameLine();
-    ImGui::Button(defaultAssets.at(n).second, ImVec2(60, 60));
+    ImGui::Button(defaultAssets.at(n).second.c_str(), ImVec2(60, 60));
 
     // Set buttons as drag and drop source
     if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
@@ -487,7 +487,7 @@ void UiSystem::DrawDefaultAssets(float dt, Registry* registry, Input* input)
       // but will check for it using the DefaultAssetType enum which im not sure
       // if i shouldnt be doing it
       ImGui::SetDragDropPayload("Default Assets", &n, sizeof(int));
-      ImGui::Text(defaultAssets.at(n).second);
+      ImGui::Text(defaultAssets.at(n).second.c_str());
       ImGui::EndDragDropSource();
     }
     ImGui::PopID();
@@ -510,7 +510,7 @@ void UiSystem::DrawToolBar(float dt, Registry* registry, Input* input)
 
   GameEngineState& gameEngineState = registry->GetComponent<GameEngineState>();
 
-  ImGui::SameLine((wSize.x - ((buttonWidth * 3) + totalPadding)) * 0.5);
+  ImGui::SameLine(static_cast<float>((wSize.x - ((buttonWidth * 3) + totalPadding)) * 0.5));
   if (ImGui::Button("Play", ImVec2(buttonWidth, 0.0f)))
   {
     gameEngineState.gameState = GameState::PLAYING;
@@ -541,7 +541,7 @@ void UiSystem::DrawToolBar(float dt, Registry* registry, Input* input)
 // Need to call this in a loop
 void UiSystem::DrawProgressBar(float fraction, std::string message)
 {
-  int barWidth = 400;
+  float barWidth = 400.0f;
   ImGuiIO& io = ImGui::GetIO();
   const char* castedMessage = message.c_str();
   ImGui::SetNextWindowSize(ImVec2(barWidth, 0), ImGuiCond_Appearing);

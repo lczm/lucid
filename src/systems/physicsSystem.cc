@@ -126,6 +126,8 @@ bool PhysicsSystem::CheckCollision(ColliderCube colliderCube, Transform& transfo
   {
     return true;
   }
+
+  return false;
 }
 
 glm::mat4 PhysicsSystem::ApplyTransformation(Transform& transform)

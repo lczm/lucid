@@ -98,6 +98,9 @@ int Input::GetScrollState()
 #if RELEASE
   return scroll;
 #endif
+
+  // Note : will never reach this, it is either DEBUG or RELEASE
+  return scroll;
 }
 
 bool Input::IsKeyDown(int key)
