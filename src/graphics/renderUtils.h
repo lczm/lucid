@@ -5,9 +5,14 @@
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
 #include "gtx/quaternion.hpp"
+#include "gtc/type_ptr.hpp"
 #include "component.h"
 #include "engineComponents.h"
 #include "quatCamera.h"
+
+#include <assimp/scene.h>
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
 
 enum class DrawType
 {
@@ -87,7 +92,7 @@ static glm::vec3 GetRayDirection(Registry* registry, Input* input)
   glm::vec4 rayClip = glm::vec4(rayNds.x, rayNds.y, -1.0f, 1.0f);
 
   QuatCamera& quatCamera = registry->GetComponent<QuatCamera>();
-  
+
   // convert to eye/camera coordinates
   glm::vec4 rayEye = glm::inverse(quatCamera.GetProjection()) * rayClip;
 
@@ -110,4 +115,34 @@ static glm::vec3 GetRayDirection(Registry* registry, Input* input)
   // rayWorld.z = -15.0f;
 
   return rayWorld;
+}
+
+/*
+ * Utility functions to help cast from assimp data structures to the
+ * equivalent in glm
+ */
+
+static inline glm::mat4 CastToGlmMat4(aiMatrix4x4 from)
+{
+  return glm::transpose(glm::make_mat4(&from.a1));
+}
+
+static inline glm::mat4 CastToGlmMat4(aiMatrix3x3 from)
+{
+  return glm::transpose(glm::make_mat3(&from.a1));
+}
+
+static inline glm::quat CastToGlmQuat(aiQuaternion from)
+{
+  return glm::quat(from.w, from.x, from.y, from.z);
+}
+
+static inline glm::vec2 CastToVec2(aiVector3D from)
+{
+  return glm::vec2(from.x, from.y);
+}
+
+static inline glm::vec3 CastToVec3(aiVector3D from)
+{
+  return glm::vec3(from.x, from.y, from.z);
 }

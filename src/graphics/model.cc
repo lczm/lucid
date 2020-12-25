@@ -36,6 +36,9 @@ void Model::ProcessNode(aiNode* node, const aiScene* scene)
   {
     aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
     meshes.push_back(ProcessMesh(mesh, scene));
+
+    // Testing skinning animations
+    ProcessBones(mesh, scene, i);
   }
 
   // Recursively process each of its children
@@ -102,6 +105,52 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
   }
 
   return Mesh(vertices, indices, textures, scene);
+}
+
+void Model::ProcessBones(aiMesh* mesh, const aiScene* scene, uint32_t meshIndex)
+{
+  // Process bones
+  std::unordered_map<std::string, uint32_t> boneMapping;
+  std::vector<BoneInfo> boneInfo;
+
+  for (size_t i = 0; i < mesh->mNumBones; i++)
+  {
+    uint32_t boneIndex = 0;
+    std::string name = mesh->mBones[i]->mName.data;
+
+    if (boneMapping.find(name) == boneMapping.end())
+    {
+      boneIndex = boneCount;
+      boneCount++;
+      BoneInfo bi;
+      boneInfo.push_back(bi);
+    }
+    else
+    {
+      boneIndex = boneMapping[name];
+    }
+
+    boneMapping[name] = boneIndex;
+    boneInfo[boneIndex].boneOffset = CastToGlmMat4(mesh->mBones[i]->mOffsetMatrix);
+
+    for (size_t j = 0; j < mesh->mBones[i]->mNumWeights; j++)
+    {
+      // meshes[meshIndex].indices.size() is converted from meshes[meshIndex].BaseVertex
+      // where BaseVertex is defined as the amount of indices
+      uint32_t vertexID = meshes[meshIndex].indices.size() + mesh->mBones[i]->mWeights[j].mVertexId;
+      float weight = mesh->mBones[i]->mWeights[j].mWeight;
+
+      // TODO : Make sure this is correct
+      // Bones[VertexID].AddBoneData(BoneIndex, Weight);
+      VertexBone vb;
+      for (size_t i = 0; i < 4; i++)
+      {
+        vb.ids[i] = boneIndex;
+        vb.weights[i] = weight;
+      }
+      bones.push_back(vb);
+    }
+  }
 }
 
 std::vector<MeshTexture> Model::LoadMaterialTextures(aiMaterial* material, aiTextureType type,
@@ -179,23 +228,3 @@ uint32_t Model::TextureFromFile(const char* path, const std::string& directory, 
 
   return textureID;
 }
-
-// void Model::CalculateModelBoundingBox() {
-//   BoundingBox boundingBox;
-//
-//   for (size_t i = 0; i < meshes.size(); i++) {
-//     std::vector<MeshVertex>& vertices = meshes[i].vertices;
-//     for (size_t j = 0; j < vertices.size(); j++) {
-//       boundingBox.minX = glm::min(boundingBox.minX, vertices[j].position.x);
-//       boundingBox.maxX = glm::max(boundingBox.maxX, vertices[j].position.x);
-//
-//       boundingBox.minY = glm::min(boundingBox.minY, vertices[j].position.y);
-//       boundingBox.maxY = glm::max(boundingBox.maxY, vertices[j].position.y);
-//
-//       boundingBox.minZ = glm::min(boundingBox.minZ, vertices[j].position.z);
-//       boundingBox.maxZ = glm::max(boundingBox.maxZ, vertices[j].position.z);
-//     }
-//   }
-//
-//   Model::boundingBox = boundingBox;
-// }
