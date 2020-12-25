@@ -1,27 +1,20 @@
 #include "model.h"
 
-Model::Model(){};
+Model::Model() = default;
 
 Model::Model(std::string path)
-{
-  LoadModel(path);
-}
-
-void Model::LoadModel(std::string path)
 {
   Assimp::Importer importer;
   scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
 
   if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
   {
-    std::cout << "Error : " << importer.GetErrorString() << std::endl;
+    std::cout << "(Model Loading) Error : " << importer.GetErrorString() << std::endl;
     return;
   }
 
   directory = path.substr(0, path.find_last_of('/'));
   ProcessNode(scene->mRootNode, scene);
-
-  // CalculateModelBoundingBox();
 }
 
 std::vector<Mesh> Model::GetMeshes()

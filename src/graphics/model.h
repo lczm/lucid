@@ -42,7 +42,6 @@ class Model
 
   std::vector<Mesh> GetMeshes();
 
-  void LoadModel(std::string path);
   void ProcessNode(aiNode* node, const aiScene* scene);
   Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene);
   void ProcessBones(aiMesh* mesh, const aiScene* scene, uint32_t meshIndex);
