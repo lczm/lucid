@@ -98,6 +98,10 @@ void Lucid::Update()
     // Note that this systems update has to be ran in the order of what the original systems
     // are ran in
     registry->UpdateSystem(dt, input, "ui");
+
+    // TODO : Get rid of this in the future, this is just for debugging
+    registry->UpdateSystem(dt, input, "animation");
+
     registry->UpdateSystem(dt, input, "render");
   }
 
@@ -128,6 +132,8 @@ void Lucid::InitializeBuiltInSystems()
   // Demo start -- PongSystem will need to deal with collision for the ball
   registry->RegisterSystem(new PongSystem(), "pong");
   // Demo end
+
+  registry->RegisterSystem(new AnimationSystem(), "animation");
 
   registry->RegisterSystem(new RenderSystem(registry), "render");
   registry->RegisterSystem(new AudioSystem(), "audio");

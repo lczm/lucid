@@ -75,6 +75,9 @@ static void InitEngineComponents(Registry* registry)
   // for the sphere and cubes to use different shaders, then simplify the shader names.
   shaderResource.sphereShaderBatch.CreateShader(PRIMITIVE_CUBE_SHADER, PRIMITIVE_FRAGMENT_SHADER);
 
+  shaderResource.modelAnimatedShader.CreateShader(MODEL_ANIMATED_VERTEX_SHADER,
+                                                  MODEL_FRAGMENT_SHADER);
+
   Entity sphereVerticesIndicesID = registry->GetAvailableEntityId();
   registry->CreateEntity<SphereVerticesIndices>(sphereVerticesIndicesID);
 

@@ -12,4 +12,7 @@ struct ShaderResource
   Shader cubeShaderBatch;
   Shader sphereShaderBatch;
   Shader boundingBoxShader;
+
+  // Animated model
+  Shader modelAnimatedShader;
 };

@@ -109,3 +109,9 @@ void Shader::SetUniformMatFloat4(const std::string& name, glm::mat4 mat)
   // The false here is to indicate that there is no need to transpose the matrix
   glUniformMatrix4fv(glGetUniformLocation(id, &name[0]), 1, false, &mat[0][0]);
 }
+
+void Shader::SetUniformMatFloat4(const std::string& name, uint32_t count,
+                                 std::vector<glm::mat4> mats)
+{
+  glUniformMatrix4fv(glGetUniformLocation(id, &name[0]), count, GL_FALSE, glm::value_ptr(mats[0]));
+}

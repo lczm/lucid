@@ -29,9 +29,6 @@ void Model::ProcessNode(aiNode* node, const aiScene* scene)
   {
     aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
     meshes.push_back(ProcessMesh(mesh, scene));
-
-    // Testing skinning animations
-    ProcessBones(mesh, scene, i);
   }
 
   // Recursively process each of its children
@@ -52,14 +49,8 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
     MeshVertex vertex;
 
     // Process vertex positions, normals, texture coordinates
-    // glm::vec3 position;
-    // position.x = mesh->mVertices[i].x;
-    // position.y = mesh->mVertices[i].y;
-    // position.z = mesh->mVertices[i].z;
-
-    // vertex.position = position;
-    vertex.position = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
-    vertex.normal = glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
+    vertex.position = glm::make_vec3(&mesh->mVertices[i].x);
+    vertex.normal = glm::make_vec3(&mesh->mNormals[i].x);
 
     if (mesh->mTextureCoords[0])
     {
