@@ -328,6 +328,12 @@ void Renderer::PushGenericBufferWithColor(const glm::mat4 modelMatrix, const glm
 // TODO : This assumes its all lines
 void Renderer::FlushBatch(PrimitiveBatchIds primitiveBatchIds, const DrawType drawType)
 {
+  // Nothing to draw
+  if (batchIndexCount == 0)
+  {
+    return;
+  }
+
   switch (drawType)
   {
     case DrawType::Line:

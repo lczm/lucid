@@ -135,36 +135,6 @@ void Lucid::InitializeBuiltInSystems()
 
 void Lucid::InitializeModelEntities()
 {
-  /*
-    Entity modelID = registry->GetAvailableEntityId();
-    Entity modelID2 = registry->GetAvailableEntityId();
-    Entity modelID3 = registry->GetAvailableEntityId();
-
-    registry->CreateEntity<Model, Transform>(modelID);
-    registry->CreateEntity<Model, Transform>(modelID2);
-    registry->CreateEntity<Model, Transform>(modelID3);
-
-    registry->AddComponentData<Model>(modelID, Model(MICROPHONE_MODEL));
-    registry->AddComponentData<Model>(modelID2, Model(SCIFIHELMET_MODEL));
-    registry->AddComponentData<Model>(modelID3, Model(AVOCADO_MODEL));
-
-    registry->AddComponentData<Transform>(modelID, {
-                                                       {3.0f, 3.0f, 3.0f},  // position
-                                                       {0.0f, 0.0f, 0.0f},  // rotation
-                                                       {1.0f, 1.0f, 1.0f},  // scale
-                                                   });
-    registry->AddComponentData<Transform>(modelID2, {
-                                                        {6.0f, 6.0f, 6.0f},  // position
-                                                        {0.0f, 0.0f, 0.0f},  // rotation
-                                                        {1.0f, 1.0f, 1.0f},  // scale
-                                                    });
-    registry->AddComponentData<Transform>(modelID3, {
-                                                        {1.0f, 1.0f, 1.0f},  // position
-                                                        {0.0f, 0.0f, 0.0f},  // rotation
-                                                        {1.0f, 1.0f, 1.0f},  // scale
-                                                    });
-  */
-
   Entity polyBirdID = registry->GetAvailableEntityId();
   registry->CreateEntity<Model, Transform>(polyBirdID);
   registry->AddComponentData<Model>(polyBirdID, Model(POLYBIRD_MODEL));
