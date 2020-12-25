@@ -13,6 +13,7 @@
 class Model
 {
  public:
+  const aiScene* scene;
   std::vector<MeshTexture> loadedTextures;
   std::vector<Mesh> meshes;
   std::string directory;

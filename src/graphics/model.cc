@@ -10,7 +10,7 @@ Model::Model(std::string path)
 void Model::LoadModel(std::string path)
 {
   Assimp::Importer importer;
-  const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+  scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
 
   if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
   {
@@ -60,9 +60,9 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
     // position.x = mesh->mVertices[i].x;
     // position.y = mesh->mVertices[i].y;
     // position.z = mesh->mVertices[i].z;
+
     // vertex.position = position;
     vertex.position = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
-
     vertex.normal = glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
 
     if (mesh->mTextureCoords[0])
@@ -101,7 +101,7 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
     textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
   }
 
-  return Mesh(vertices, indices, textures);
+  return Mesh(vertices, indices, textures, scene);
 }
 
 std::vector<MeshTexture> Model::LoadMaterialTextures(aiMaterial* material, aiTextureType type,

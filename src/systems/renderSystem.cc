@@ -43,7 +43,7 @@ void RenderSystem::Update(float dt, Registry* registry, Input* input)
   if (devDebug.drawWireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
   DrawAllLines(dt, registry, input);
-  // DrawAllModels(dt, registry, input);
+  DrawAllModels(dt, registry, input);
   DrawAllCubes(dt, registry, input);
   DrawAllSpheres(dt, registry, input);
 
