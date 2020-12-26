@@ -147,6 +147,11 @@ void Lucid::InitializeModelEntities()
 
   // Move the bird up 3 world units
   registry->GetComponent<Transform>(polyBirdID)->position = {0.0f, 3.0f, 0.0f};
+
+  // Entity polyFoxID = registry->GetAvailableEntityId();
+  // registry->CreateEntity<Model, Transform>(polyFoxID);
+  // registry->AddComponentData<Model>(polyFoxID, Model(POLYFOX_MODEL));
+  // registry->GetComponent<Transform>(polyFoxID)->position = {3.0f, 3.0f, 0.0f};
 }
 
 void Lucid::InitializeSystems()

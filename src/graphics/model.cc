@@ -120,15 +120,16 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 
     for (size_t j = 0; j < mesh->mBones[i]->mNumWeights; j++)
     {
-      uint32_t vertexID = numVertices + mesh->mBones[i]->mWeights[j].mVertexId;
+      // uint32_t vertexID = numVertices + mesh->mBones[i]->mWeights[j].mVertexId;
       float weight = mesh->mBones[i]->mWeights[j].mWeight;
 
       VertexBoneData vb;
       for (size_t i = 0; i < NUM_BONES_PER_VERTEX; i++)
       {
-        vb.ids[i] = vertexID;
+        vb.ids[i] = boneIndex;
         vb.weights[i] = weight;
       }
+      //  bones[vertexID] = vb;
       bones.push_back(vb);
     }
   }

@@ -38,6 +38,7 @@ const char SCIFIHELMET_MODEL[] = "../assets/helmet/ScifiHelmet.gltf";
 const char FOX_MODEL[] = "../assets/fox/Fox.gltf";
 const char AVOCADO_MODEL[] = "../assets/avocado/Avocado.gltf";
 const char POLYBIRD_MODEL[] = "../assets/low-poly-bird-animated/source/Bird_Asset.fbx";
+const char POLYFOX_MODEL[] = "../assets/low-poly-fox-by-pixelmannen-animated/source/animations.fbx";
 
 // Images
 const char AIRMAN_IMAGE[] = "../assets/images/air-man.png";
