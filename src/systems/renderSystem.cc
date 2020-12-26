@@ -427,18 +427,18 @@ void RenderSystem::DrawAllModels(float dt, Registry* registry, Input* input)
 {
   ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
 
-  shaderResource.modelShader.Bind();
-  shaderResource.modelShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
-  shaderResource.modelShader.SetUniformMatFloat4("view", quatCamera->GetView());
+  shaderResource.modelAnimatedShader.Bind();
+  shaderResource.modelAnimatedShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
+  shaderResource.modelAnimatedShader.SetUniformMatFloat4("view", quatCamera->GetView());
 
   registry->GetComponentsIter<Model, Transform>()->Each([&](Model& model, Transform& transform) {
     auto modelMatrix = GetModelMatrix(transform);
 
-    shaderResource.modelShader.SetUniformMatFloat4("model", modelMatrix);
-    renderer->DrawModel(model, shaderResource.modelShader);
+    shaderResource.modelAnimatedShader.SetUniformMatFloat4("model", modelMatrix);
+    renderer->DrawModel(model, shaderResource.modelAnimatedShader);
   });
 
-  shaderResource.modelShader.Unbind();
+  shaderResource.modelAnimatedShader.Unbind();
 }
 
 void RenderSystem::DrawAllCubes(float dt, Registry* registry, Input* input)

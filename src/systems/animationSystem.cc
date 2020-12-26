@@ -20,26 +20,27 @@ void AnimationSystem::Update(float dt, Registry* registry, Input* input)
     for (auto& mesh : model.GetMeshes())
     {
       // TODO : Set this apart
-      // SetBoneTransform(dt, registry, mesh);
+      SetBoneTransform(dt, registry, model, mesh);
     }
   });
 }
 
-void AnimationSystem::SetBoneTransform(float dt, Registry* registry, Mesh& mesh)
+void AnimationSystem::SetBoneTransform(float dt, Registry* registry, Model& model, Mesh& mesh)
 {
   ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
 
   std::vector<glm::mat4> transforms;
-  BoneTransform(dt, mesh, transforms);
+  BoneTransform(dt, model, mesh, transforms);
 
-  // shaderResource.modelAnimatedShader.Bind();
+  std::cout << "Reached here" << std::endl;
 
-  // shaderResource.modelAnimatedShader.SetUniformMatFloat4("gBones", transforms.size(),
-  // transforms);
-  // shaderResource.modelAnimatedShader.Unbind();
+  shaderResource.modelAnimatedShader.Bind();
+  shaderResource.modelAnimatedShader.SetUniformMatFloat4("gBones", transforms.size(), transforms);
+  shaderResource.modelAnimatedShader.Unbind();
 }
 
-void AnimationSystem::BoneTransform(float dt, Mesh& mesh, std::vector<glm::mat4>& transforms)
+void AnimationSystem::BoneTransform(float dt, Model& model, Mesh& mesh,
+                                    std::vector<glm::mat4>& transforms)
 {
   glm::mat4 identity = glm::mat4(1.0f);
 
@@ -68,10 +69,10 @@ void AnimationSystem::BoneTransform(float dt, Mesh& mesh, std::vector<glm::mat4>
   transforms.resize(mNumBones);
 
   // TODO : Figure this out
-  // for (size_t i = 0; i < mNumBones; i++)
-  // {
-  //   transforms[i] = m_BoneInfo[i].FinalTransformation;
-  // }
+  for (size_t i = 0; i < mNumBones; i++)
+  {
+    transforms[i] = model.boneInfo[i].finalTransformation;
+  }
 }
 
 void AnimationSystem::ReadNodeHierarchy(float animTime, const aiScene* scene, const aiNode* node,

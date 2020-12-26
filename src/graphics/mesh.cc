@@ -1,11 +1,14 @@
 #include "mesh.h"
 
 Mesh::Mesh(std::vector<MeshVertex> vertices, std::vector<uint32_t> indices,
-           std::vector<MeshTexture> textures, const aiScene* scene)
+           std::vector<MeshTexture> textures, std::vector<VertexBoneData> bones,
+           const aiScene* scene)
 {
   Mesh::vertices = vertices;
   Mesh::indices = indices;
   Mesh::textures = textures;
+  Mesh::bones = bones;
+
   Mesh::scene = scene;
 
   SetupMesh();

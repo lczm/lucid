@@ -1,20 +1,26 @@
 #include "model.h"
 
-Model::Model() = default;
+Model::Model()
+{
+}
 
 Model::Model(std::string path)
 {
-  Assimp::Importer importer;
-  scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+  importer = new Assimp::Importer();
+  scene = importer->ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
 
   if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
   {
-    std::cout << "(Model Loading) Error : " << importer.GetErrorString() << std::endl;
+    std::cout << "(Model Loading) Error : " << importer->GetErrorString() << std::endl;
     return;
   }
 
   directory = path.substr(0, path.find_last_of('/'));
   ProcessNode(scene->mRootNode, scene);
+}
+
+Model::~Model()
+{
 }
 
 std::vector<Mesh> Model::GetMeshes()
@@ -40,10 +46,13 @@ void Model::ProcessNode(aiNode* node, const aiScene* scene)
 
 Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 {
+  // MeshVertex : {position, normals, texcoords}
   std::vector<MeshVertex> vertices;
   std::vector<uint32_t> indices;
   std::vector<MeshTexture> textures;
+  std::vector<VertexBoneData> bones;
 
+  // Populate and process MeshVertex(s)
   for (size_t i = 0; i < mesh->mNumVertices; i++)
   {
     MeshVertex vertex;
@@ -64,7 +73,7 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
     vertices.push_back(vertex);
   }
 
-  // Process indices
+  // Populate and process indices
   for (size_t i = 0; i < mesh->mNumFaces; i++)
   {
     aiFace face = mesh->mFaces[i];
@@ -74,7 +83,7 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
     }
   }
 
-  // Process material
+  // Populate and process material
   if (mesh->mMaterialIndex >= 0)
   {
     aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
@@ -88,53 +97,50 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
     textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
   }
 
-  return Mesh(vertices, indices, textures, scene);
-}
-
-void Model::ProcessBones(aiMesh* mesh, const aiScene* scene, uint32_t meshIndex)
-{
-  // Process bones
+  // Bone processing maps
+  // Maps a bone name to the its
   std::unordered_map<std::string, uint32_t> boneMapping;
-  std::vector<BoneInfo> boneInfo;
 
+  // Populate and process bones
   for (size_t i = 0; i < mesh->mNumBones; i++)
   {
     uint32_t boneIndex = 0;
-    std::string name = mesh->mBones[i]->mName.data;
+    std::string boneName = mesh->mBones[i]->mName.data;
 
-    if (boneMapping.find(name) == boneMapping.end())
+    if (boneMapping.find(boneName) == boneMapping.end())
     {
       boneIndex = boneCount;
       boneCount++;
+
       BoneInfo bi;
       boneInfo.push_back(bi);
+      boneInfo[boneIndex].boneOffset = CastToGlmMat4(mesh->mBones[i]->mOffsetMatrix);
+      boneMapping[boneName] = boneIndex;
     }
     else
     {
-      boneIndex = boneMapping[name];
+      boneIndex = boneMapping[boneName];
     }
-
-    boneMapping[name] = boneIndex;
-    boneInfo[boneIndex].boneOffset = CastToGlmMat4(mesh->mBones[i]->mOffsetMatrix);
 
     for (size_t j = 0; j < mesh->mBones[i]->mNumWeights; j++)
     {
-      // meshes[meshIndex].indices.size() is converted from meshes[meshIndex].BaseVertex
-      // where BaseVertex is defined as the amount of indices
-      uint32_t vertexID = meshes[meshIndex].indices.size() + mesh->mBones[i]->mWeights[j].mVertexId;
+      uint32_t vertexID = numVertices + mesh->mBones[i]->mWeights[j].mVertexId;
       float weight = mesh->mBones[i]->mWeights[j].mWeight;
 
-      // TODO : Make sure this is correct
-      // Bones[VertexID].AddBoneData(BoneIndex, Weight);
-      VertexBone vb;
-      for (size_t i = 0; i < 4; i++)
+      VertexBoneData vb;
+      for (size_t i = 0; i < NUM_BONES_PER_VERTEX; i++)
       {
-        vb.ids[i] = boneIndex;
+        vb.ids[i] = vertexID;
         vb.weights[i] = weight;
       }
       bones.push_back(vb);
     }
   }
+
+  numVertices += vertices.size();
+  numIndices += indices.size();
+
+  return Mesh(vertices, indices, textures, bones, scene);
 }
 
 std::vector<MeshTexture> Model::LoadMaterialTextures(aiMaterial* material, aiTextureType type,

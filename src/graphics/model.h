@@ -12,39 +12,33 @@
 #include "boundingBox.h"
 #include "renderUtils.h"
 
-const uint32_t NUM_BONES_PER_VERTEX = 4;
-struct VertexBone
-{
-  uint32_t ids[NUM_BONES_PER_VERTEX];
-  float weights[NUM_BONES_PER_VERTEX];
-};
-
-struct BoneInfo
-{
-  glm::mat4 finalTransformation = glm::mat4(1.0f);
-  glm::mat4 boneOffset = glm::mat4(1.0f);
-};
-
 class Model
 {
  public:
+  Assimp::Importer* importer;
   const aiScene* scene;
+
   std::vector<MeshTexture> loadedTextures;
   std::vector<Mesh> meshes;
   std::string directory;
 
+  // TODO : Check if this is actually needed?
   uint32_t boneCount = 0;
-  std::vector<VertexBone> bones;
+  std::vector<BoneInfo> boneInfo;
+
+  // TODO : Check this out as well?
+  uint32_t numVertices = 0;
+  uint32_t numIndices = 0;
 
  public:
   Model();
   Model(std::string path);
+  ~Model();
 
   std::vector<Mesh> GetMeshes();
 
   void ProcessNode(aiNode* node, const aiScene* scene);
   Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene);
-  void ProcessBones(aiMesh* mesh, const aiScene* scene, uint32_t meshIndex);
   std::vector<MeshTexture> LoadMaterialTextures(aiMaterial* material, aiTextureType type,
                                                 std::string typeName);
 

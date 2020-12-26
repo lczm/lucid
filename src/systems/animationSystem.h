@@ -22,8 +22,8 @@ class AnimationSystem : public System
 
   void Update(float dt, Registry* registry, Input* input);
 
-  void SetBoneTransform(float dt, Registry* registry, Mesh& mesh);
-  void BoneTransform(float dt, Mesh& mesh, std::vector<glm::mat4>& transforms);
+  void SetBoneTransform(float dt, Registry* registry, Model& model, Mesh& mesh);
+  void BoneTransform(float dt, Model& model, Mesh& mesh, std::vector<glm::mat4>& transforms);
   void ReadNodeHierarchy(float animTime, const aiScene* scene, const aiNode* node,
                          glm::mat4& parentTransform);
   const aiNodeAnim* FindNodeAnim(const aiAnimation* pAnimation, const std::string nodeName);
