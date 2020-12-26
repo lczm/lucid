@@ -62,7 +62,7 @@ void AnimationSystem::BoneTransform(float dt, Model& model, Mesh& mesh,
   float animationTime = fmod(timeInTicks, animDuration);
 
   // TODO : ReadNodeHierarchy
-  ReadNodeHierarchy(animationTime, mesh.scene, mesh.scene->mRootNode, identity);
+  ReadNodeHierarchy(animationTime, model, mesh.scene, mesh.scene->mRootNode, identity);
 
   // TODO : mNumBones
   const int mNumBones = 4;
@@ -72,11 +72,12 @@ void AnimationSystem::BoneTransform(float dt, Model& model, Mesh& mesh,
   for (size_t i = 0; i < mNumBones; i++)
   {
     transforms[i] = model.boneInfo[i].finalTransformation;
+    std::cout << "..." << std::endl;
   }
 }
 
-void AnimationSystem::ReadNodeHierarchy(float animTime, const aiScene* scene, const aiNode* node,
-                                        glm::mat4& parentTransform)
+void AnimationSystem::ReadNodeHierarchy(float animTime, Model& model, const aiScene* scene,
+                                        const aiNode* node, glm::mat4& parentTransform)
 {
   // TODO : currentAnimation
   const uint32_t currentAnimation = 0;
@@ -121,17 +122,19 @@ void AnimationSystem::ReadNodeHierarchy(float animTime, const aiScene* scene, co
   // TODO : m_BoneMapping?
   // TODO : mBoneInfo?
   // TODO : m_GlobalInverseTransform?
-  // if (m_BoneMapping.find(nodeName) != m_BoneMapping.end())
-  // {
-  //   uint32_t boneIndex = m_BoneMapping[nodeName];
-  //   m_BoneInfo[boneIndex].finalTransformation =
-  //       m_GlobalInverseTransform * globalTransformation * m_BoneInfo[boneIndex].boneOffset;
-  // }
+  if (model.boneMapping.find(nodeName) != model.boneMapping.end())
+  {
+    uint32_t boneIndex = model.boneMapping[nodeName];
+    model.boneInfo[boneIndex].finalTransformation =
+        globalTransformation * model.boneInfo[boneIndex].boneOffset;
+    // m_BoneInfo[boneIndex].finalTransformation =
+    //     m_GlobalInverseTransform * globalTransformation * m_BoneInfo[boneIndex].boneOffset;
+  }
 
   // Recursively apply bone transformation to the rest of the mesh children
   for (size_t i = 0; i < node->mNumChildren; i++)
   {
-    ReadNodeHierarchy(animTime, scene, node->mChildren[i], globalTransformation);
+    ReadNodeHierarchy(animTime, model, scene, node->mChildren[i], globalTransformation);
   }
 }
 

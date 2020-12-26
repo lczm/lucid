@@ -19,10 +19,15 @@ void main()
 {
   TexCoords = aTexCoords;
 
-  mat4 boneTransform = gBones[boneIDs[0]] * weights[0];
-  boneTransform += gBones[boneIDs[1]] * weights[1];
-  boneTransform += gBones[boneIDs[2]] * weights[2];
-  boneTransform += gBones[boneIDs[3]] * weights[3];
+  // mat4 boneTransform = gBones[boneIDs[0]] * weights[0];
+  // boneTransform += gBones[boneIDs[1]] * weights[1];
+  // boneTransform += gBones[boneIDs[2]] * weights[2];
+  // boneTransform += gBones[boneIDs[3]] * weights[3];
+
+  mat4 boneTransform = gBones[0] * weights[0];
+  boneTransform += gBones[0] * weights[1];
+  boneTransform += gBones[0] * weights[2];
+  boneTransform += gBones[0] * weights[3];
 
   vec4 position = boneTransform * vec4(aPos, 1.0);
   gl_Position = projection * view * model * position;

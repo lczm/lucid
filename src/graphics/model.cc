@@ -97,10 +97,6 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
     textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
   }
 
-  // Bone processing maps
-  // Maps a bone name to the its
-  std::unordered_map<std::string, uint32_t> boneMapping;
-
   // Populate and process bones
   for (size_t i = 0; i < mesh->mNumBones; i++)
   {
@@ -137,10 +133,15 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
     }
   }
 
-  numVertices += vertices.size();
-  numIndices += indices.size();
+  uint32_t meshNumIndices = mesh->mNumFaces * 3;
+  uint32_t meshBaseVertex = numVertices;
+  uint32_t meshBaseIndex = numIndices;
 
-  return Mesh(vertices, indices, textures, bones, scene);
+  numVertices += mesh->mNumVertices;
+  numIndices += meshNumIndices;
+
+  return Mesh(vertices, indices, textures, bones, scene, meshNumIndices, meshBaseVertex,
+              meshBaseIndex);
 }
 
 std::vector<MeshTexture> Model::LoadMaterialTextures(aiMaterial* material, aiTextureType type,

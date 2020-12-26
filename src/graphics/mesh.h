@@ -43,19 +43,25 @@ struct BoneInfo
   glm::mat4 finalTransformation = glm::mat4(0.0f);
   glm::mat4 boneOffset = glm::mat4(0.0f);
 };
+
 class Mesh
 {
  public:
-  uint32_t VAO, VBO, EBO;
+  uint32_t VAO, VBO, EBO, boneVBO;
   const aiScene* scene;
   std::vector<MeshVertex> vertices;
   std::vector<uint32_t> indices;
   std::vector<MeshTexture> textures;
   std::vector<VertexBoneData> bones;
 
+  uint32_t numIndices = 0;
+  uint32_t baseVertex = 0;
+  uint32_t baseIndex = 0;
+
  public:
   Mesh(std::vector<MeshVertex> vertices, std::vector<uint32_t> indices,
-       std::vector<MeshTexture> textures, std::vector<VertexBoneData> bones, const aiScene* scene);
+       std::vector<MeshTexture> textures, std::vector<VertexBoneData> bones, const aiScene* scene,
+       uint32_t meshNumIndices, uint32_t meshBaseVertex, uint32_t meshBaseIndex);
 
   void SetupMesh();
 };

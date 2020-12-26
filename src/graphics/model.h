@@ -30,6 +30,10 @@ class Model
   uint32_t numVertices = 0;
   uint32_t numIndices = 0;
 
+  // Bone processing maps
+  // Maps a bone name to the its
+  std::unordered_map<std::string, uint32_t> boneMapping;
+
  public:
   Model();
   Model(std::string path);

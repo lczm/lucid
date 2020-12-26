@@ -37,7 +37,11 @@ void Renderer::DrawMesh(Mesh& mesh, Shader& shader)
 
   // Draw the mesh
   glBindVertexArray(mesh.VAO);
-  glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0);
+
+  // glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0);
+  glDrawElementsBaseVertex(GL_TRIANGLES, mesh.numIndices, GL_UNSIGNED_INT,
+                           (void*)(sizeof(uint32_t) * mesh.baseIndex), mesh.baseVertex);
+
   glBindVertexArray(0);
 
   // Reset gl texture unit to 0
