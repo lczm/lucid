@@ -50,13 +50,14 @@ class RenderSystem : public System
   void HandleMousePan(float dt, Registry* registry, Input* input);
   void HandleKeyboardPan(float dt, Input* input);
   void HandleMouseScroll(float dt, Input* input);
-
   bool HandleMousePick(float dt, Registry* registry, Input* input);
+
   void DrawAllLines(float dt, Registry* registry, Input* input);
   void DrawAllModels(float dt, Registry* registry, Input* input);
   void DrawAllCubes(float dt, Registry* registry, Input* input);
   void DrawAllSpheres(float dt, Registry* registry, Input* input);
   void DrawAllColldiers(float dt, Registry* registry, Input* input);
+  void DrawActiveEntityBoundingBox(float dt, Registry* registry, Input* input);
 
  public:
   // TODO : Typedef glm::vec3 to a ray as it feels overly verbose to declare

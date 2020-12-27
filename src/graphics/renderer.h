@@ -49,9 +49,7 @@ class Renderer
   // void DrawLine(Line& line, Shader& shader);
   void DrawLineIndexed(const PrimitiveBatchIds primitiveBatchIds);
 
-  void DrawBoundingBox(Model& model, Shader& shader);
-  void DrawBoundingBox(Sphere& sphere, Shader& shader);
-  void DrawBoundingBox(ColliderCube colliderCube, Shader& shader);
+  void DrawBoundingBox(const BoundingBox boundingBox);
 
   /*
    * This is to start and end each update frame cycle.

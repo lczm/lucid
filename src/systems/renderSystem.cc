@@ -47,6 +47,8 @@ void RenderSystem::Update(float dt, Registry* registry, Input* input)
   DrawAllCubes(dt, registry, input);
   DrawAllSpheres(dt, registry, input);
 
+  DrawActiveEntityBoundingBox(dt, registry, input);
+
   if (devDebug.drawColliders) DrawAllColldiers(dt, registry, input);
   if (devDebug.drawWireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
@@ -572,6 +574,44 @@ void RenderSystem::DrawAllColldiers(float dt, Registry* registry, Input* input)
   glLineWidth(1.0f);
 
   shaderResource.cubeShaderBatch.Unbind();
+}
+
+void RenderSystem::DrawActiveEntityBoundingBox(float dt, Registry* registry, Input* input)
+{
+  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+
+  // Only proceed if there is an active entity that is being selected on the screen
+  if (devDebug.activeEntity == 0)
+  {
+    return;
+  }
+
+  // Get the transform of said entity
+  Transform& transform = *(registry->GetComponent<Transform>(devDebug.activeEntity));
+
+  // Check if the entity is a cube/sphere (primitive) or a model
+  // the difference is that if it is a model, then the meshes have to be
+  // iterated over to get the maximum bounding box
+  if (registry->EntityHasComponent<Cube>(devDebug.activeEntity) ||
+      registry->EntityHasComponent<Sphere>(devDebug.activeEntity))
+  {
+    std::vector<glm::vec4> verticesCollection;
+    verticesCollection.reserve(boundingBoxCubeVertices.size() / 3);
+    auto modelMatrix = GetModelMatrix(transform);
+
+    for (size_t i = 0; i < boundingBoxCubeVertices.size(); i += 3)
+    {
+      verticesCollection.push_back(modelMatrix * glm::vec4(boundingBoxCubeVertices[i],
+                                                           boundingBoxCubeVertices[i + 1],
+                                                           boundingBoxCubeVertices[i + 2], 1.0f));
+    }
+
+    BoundingBox bb = GetBoundingBox(verticesCollection);
+  }
+  // TODO : When a component for animated component is added here -  add another check
+  else if (registry->EntityHasComponent<Model>(devDebug.activeEntity))
+  {
+  }
 }
 
 // bool : true if collided, false if not collided

@@ -214,22 +214,18 @@ void Renderer::DrawLineIndexed(const PrimitiveBatchIds primitiveBatchIds)
   // There are no indices in lines
 }
 
-void Renderer::DrawBoundingBox(Model& model, Shader& shader)
+void Renderer::DrawBoundingBox(const BoundingBox boundingBox)
 {
 }
 
-void Renderer::DrawBoundingBox(Sphere& sphere, Shader& shader)
-{
-}
-
-void Renderer::DrawBoundingBox(ColliderCube colliderCube, Shader& shader)
-{
-  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-  glBindVertexArray(colliderCube.VAO);
-  glDrawElements(GL_TRIANGLES, boundingBoxCubeIndices.size(), GL_UNSIGNED_INT, 0);
-  glBindVertexArray(0);
-  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-}
+// void Renderer::DrawBoundingBox(ColliderCube colliderCube, Shader& shader)
+// {
+//   glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+//   glBindVertexArray(colliderCube.VAO);
+//   glDrawElements(GL_TRIANGLES, boundingBoxCubeIndices.size(), GL_UNSIGNED_INT, 0);
+//   glBindVertexArray(0);
+//   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+// }
 
 void Renderer::StartBatch()
 {
