@@ -44,6 +44,13 @@ void Mesh::SetupMesh()
   glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(MeshVertex),
                         (void*)offsetof(MeshVertex, texCoords));
 
+  glEnableVertexAttribArray(3);
+  glVertexAttribIPointer(3, 4, GL_INT, sizeof(MeshVertex), (void*)(offsetof(MeshVertex, boneIds)));
+
+  glEnableVertexAttribArray(4);
+  glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(MeshVertex),
+                        (void*)(offsetof(MeshVertex, boneWeights)));
+
   // Setup bone vertex attribs
   // glBindBuffer(GL_ARRAY_BUFFER, boneVBO);
   // glBufferData(GL_ARRAY_BUFFER, sizeof(bones[0]) * bones.size(), &bones[0], GL_STATIC_DRAW);
@@ -68,14 +75,6 @@ void Mesh::SetupMesh()
   // glEnableVertexAttribArray(6);
   // glVertexAttribPointer(6, 4, GL_FLOAT, false, sizeof(Vertex),
   //                       (void*)(offsetof(MeshVertex, boneWeights) + 4 * sizeof(float)));
-
-  glEnableVertexAttribArray(3);
-  glVertexAttribPointer(3, 4, GL_INT, GL_FALSE, sizeof(MeshVertex),
-                        (void*)(offsetof(MeshVertex, boneIds)));
-
-  glEnableVertexAttribArray(4);
-  glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(MeshVertex),
-                        (void*)(offsetof(MeshVertex, boneWeights)));
 
   // 'unbind' the vertex arrays to not cause future issues
   glBindVertexArray(0);

@@ -39,14 +39,6 @@ class Model
   std::vector<Mesh> meshes;
   std::string directory;
 
-  // TODO : Check if this is actually needed?
-  uint32_t boneCount = 0;
-  std::vector<BoneInfo> boneInfo;
-
-  // TODO : Check this out as well?
-  uint32_t numVertices = 0;
-  uint32_t numIndices = 0;
-
   // Bone processing maps
   // Maps a bone name to the its
   std::unordered_map<std::string, uint32_t> boneMapping;

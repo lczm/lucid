@@ -13,22 +13,20 @@ struct MeshVertex
   glm::vec3 position;
   glm::vec3 normal;
   glm::vec2 texCoords;
-  int boneIds[NUM_MAX_BONES_PER_VERTEX];
-  float boneWeights[NUM_MAX_BONES_PER_VERTEX];
+
+  int boneIds[NUM_MAX_BONES_PER_VERTEX] = {0, 0, 0, 0};
+  float boneWeights[NUM_MAX_BONES_PER_VERTEX] = {0.0f, 0.0f, 0.0f, 0.0f};
 
   void AddBone(int id, float weight)
   {
     for (size_t i = 0; i < NUM_MAX_BONES_PER_VERTEX; i++)
     {
-      if (boneWeights[i] == 0) break;
-      if (i >= NUM_MAX_BONES_PER_VERTEX)
+      if (boneWeights[i] == 0)
       {
-        std::cout << "(MeshVertex::AddBone) Too many bones" << std::endl;
+        boneIds[i] = id;
+        boneWeights[i] = weight;
         return;
       }
-
-      boneWeights[i] = weight;
-      boneIds[i] = id;
     }
   }
 };
@@ -38,12 +36,6 @@ struct MeshTexture
   uint32_t id;
   std::string type;
   std::string path;
-};
-
-struct BoneInfo
-{
-  glm::mat4 finalTransformation = glm::mat4(0.0f);
-  glm::mat4 boneOffset = glm::mat4(0.0f);
 };
 
 class Mesh

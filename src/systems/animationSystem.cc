@@ -30,6 +30,7 @@ void AnimationSystem::Update(float dt, Registry* registry, Input* input)
   // });
 }
 
+/*
 void AnimationSystem::SetBoneTransform(float dt, Registry* registry, Model& model, Mesh& mesh)
 {
   ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
@@ -279,3 +280,4 @@ void AnimationSystem::CalculateInterpolatedPosition(aiVector3D& vec, float animT
   aiVector3D delta = end - start;
   vec = start + factor * delta;
 }
+*/

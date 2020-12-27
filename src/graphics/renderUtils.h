@@ -140,8 +140,7 @@ static inline glm::mat4 CastToGlmMat4(aiVector3D from)
 // TODO : Check if this is correct
 static inline glm::mat4 CastToGlmMat4(aiQuaternion from)
 {
-  // return CastToGlmMat4(from.GetMatrix());
-  return glm::transpose(CastToGlmMat4(from.GetMatrix()));
+  return CastToGlmMat4(from.GetMatrix());
 }
 
 static inline glm::quat CastToGlmQuat(aiQuaternion from)

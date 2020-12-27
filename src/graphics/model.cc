@@ -145,45 +145,6 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
     textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
   }
 
-  /*
-    // Populate and process bones
-    for (size_t i = 0; i < mesh->mNumBones; i++)
-    {
-      uint32_t boneIndex = 0;
-      std::string boneName = mesh->mBones[i]->mName.data;
-
-      if (boneMapping.find(boneName) == boneMapping.end())
-      {
-        boneIndex = boneCount;
-        boneCount++;
-
-        BoneInfo bi;
-        boneInfo.push_back(bi);
-        boneInfo[boneIndex].boneOffset = CastToGlmMat4(mesh->mBones[i]->mOffsetMatrix);
-        boneMapping[boneName] = boneIndex;
-      }
-      else
-      {
-        boneIndex = boneMapping[boneName];
-      }
-
-      // for (size_t j = 0; j < mesh->mBones[i]->mNumWeights; j++)
-      // {
-      //   // uint32_t vertexID = numVertices + mesh->mBones[i]->mWeights[j].mVertexId;
-      //   float weight = mesh->mBones[i]->mWeights[j].mWeight;
-
-      //   VertexBoneData vb;
-      //   for (size_t i = 0; i < NUM_BONES_PER_VERTEX; i++)
-      //   {
-      //     vb.ids[i] = boneIndex;
-      //     vb.weights[i] = weight;
-      //   }
-      //   //  bones[vertexID] = vb;
-      //   bones.push_back(vb);
-      // }
-    }
-    */
-
   // Populate and process bones
   for (size_t i = 0; i < mesh->mNumBones; i++)
   {
@@ -191,7 +152,7 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
     auto id = boneNamer.Name(bone->mName.C_Str());
 
     boneOffsets.resize(std::max(id + 1, static_cast<uint32_t>(boneOffsets.size())));
-    boneOffsets[i] = CastToGlmMat4(bone->mOffsetMatrix);
+    boneOffsets[id] = CastToGlmMat4(bone->mOffsetMatrix);
 
     for (size_t j = 0; j < bone->mNumWeights; j++)
     {
@@ -228,7 +189,6 @@ void Model::UpdateBoneMatrices(float dt, uint32_t animationId, aiNode* node, glm
         InterpolateScalingMatrix(dt, channel->mScalingKeys, channel->mNumScalingKeys);
 
     currentTransform = translationMatrix * rotationMatrix * scalingMatrix;
-    std::cout << "Updated currentTransform" << std::endl;
   }
   else
   {
@@ -239,8 +199,6 @@ void Model::UpdateBoneMatrices(float dt, uint32_t animationId, aiNode* node, glm
   {
     uint32_t i = boneNamer.Map()[nodeName];
     boneMatrices[i] = transform * currentTransform * boneOffsets[i];
-
-    std::cout << glm::to_string(transform * currentTransform * boneOffsets[i]) << std::endl;
   }
 
   for (size_t i = 0; i < node->mNumChildren; i++)
