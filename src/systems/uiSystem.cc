@@ -181,8 +181,8 @@ void UiSystem::DrawHierarchy(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Hierarchy");
 
-  WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
-  widgetLayout.leftWindowWidth = ImGui::GetWindowWidth();
+  // WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
+  // widgetLayout.leftWindowWidth = ImGui::GetWindowWidth();
 
   // if (devDebug.changeFocusWindow == WindowType::Hierarchy) ImGui::SetWindowFocus();
 
@@ -238,13 +238,13 @@ void UiSystem::DrawAssets(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Assets");
 
-  WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
-  // if (devDebug.changeFocusWindow == WindowType::Assets) ImGui::SetWindowFocus();
+  // WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
+  //// if (devDebug.changeFocusWindow == WindowType::Assets) ImGui::SetWindowFocus();
 
-  ImVec2 wsize = ImGui::GetWindowSize();
+  // ImVec2 wsize = ImGui::GetWindowSize();
 
-  widgetLayout.bottomWindowWidth = wsize.x;
-  widgetLayout.bottomWindowHeight = wsize.y;
+  // widgetLayout.bottomWindowWidth = wsize.x;
+  // widgetLayout.bottomWindowHeight = wsize.y;
 
   ImGui::Text("This is the assets");
   UpdateInputActiveWindow(input, WindowType::Assets);
@@ -268,7 +268,7 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
   WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
 
-  // if (devDebug.changeFocusWindow == WindowType::Scene) ImGui::SetWindowFocus();
+  //// if (devDebug.changeFocusWindow == WindowType::Scene) ImGui::SetWindowFocus();
 
   widgetLayout.sceneWidth = wsize.x;
   widgetLayout.sceneHeight = wsize.y;
@@ -282,6 +282,12 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
   UpdateWindowFocus(registry, WindowType::Inspector, "Inspector", input, WindowType::Scene);
   UpdateWindowFocus(registry, WindowType::Scene, "Scene", input);
   UpdateInputActiveWindow(input, WindowType::Scene);
+  ImVec2 scenePos = ImGui::GetWindowPos();
+  widgetLayout.topWindowHeight = scenePos.y;
+  widgetLayout.leftWindowWidth = scenePos.x;
+  widgetLayout.bottomWindowHeight = SCREEN_HEIGHT - (scenePos.y + wsize.y);
+  widgetLayout.rightWindowWidth = SCREEN_WIDTH - (scenePos.x + wsize.x);
+
   ImGui::EndChild();
 
   // Drag n drop from default assets
@@ -338,12 +344,12 @@ void UiSystem::DrawGameCamera(float dt, Registry* registry, Input* input)
 
   SceneRender sceneRender = registry->GetComponent<SceneRender>();
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
-  WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
+  // WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
 
-  // if (devDebug.changeFocusWindow == WindowType::Scene) ImGui::SetWindowFocus();
+  //// if (devDebug.changeFocusWindow == WindowType::Scene) ImGui::SetWindowFocus();
 
-  widgetLayout.sceneWidth = wsize.x;
-  widgetLayout.sceneHeight = wsize.y;
+  // widgetLayout.sceneWidth = wsize.x;
+  // widgetLayout.sceneHeight = wsize.y;
 
   // This should draw from sceneRender fbo that is being rendered through the gameScene camera
   // Flip V in the UV
@@ -453,10 +459,10 @@ void UiSystem::DrawDevDebug(float dt, Registry* registry, Input* input)
   ImGui::Begin("DevDebug");
 
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
-  WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
+  // WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
   RendererStats& rendererStats = registry->GetComponent<RendererStats>();
 
-  widgetLayout.rightWindowWidth = ImGui::GetWindowWidth();
+  // widgetLayout.rightWindowWidth = ImGui::GetWindowWidth();
   // if (devDebug.changeFocusWindow == WindowType::DevDebug) ImGui::SetWindowFocus();
 
   ImGui::Checkbox("Draw all with wireframe", &devDebug.drawWireframe);
@@ -557,9 +563,9 @@ void UiSystem::DrawToolBar(float dt, Registry* registry, Input* input)
   {
   }
 
-  WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
-  widgetLayout.topWindowHeight = ImGui::GetWindowWidth();
-  widgetLayout.topWindowHeight = ImGui::GetWindowHeight();
+  // WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
+  // widgetLayout.topWindowHeight = ImGui::GetWindowWidth();
+  // widgetLayout.topWindowHeight = ImGui::GetWindowHeight();
 
   // DevDebug& devDebug = registry->GetComponent<DevDebug>();
   // if (devDebug.changeFocusWindow == WindowType::Animator) ImGui::SetWindowFocus();
@@ -654,7 +660,7 @@ void UiSystem::HandleGizmoInput(Registry* registry, Input* input)
 
 void UiSystem::UpdateSceneWindow(Registry* registry, Input* input)
 {
-  WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
+  // WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
 
   if (input->IsKeyDown('7'))
   {
@@ -662,12 +668,12 @@ void UiSystem::UpdateSceneWindow(Registry* registry, Input* input)
     input->SetKeyOff('7');
     if (drawSceneOnly)
     {
-      widgetLayout.bottomWindowHeight = 0;
-      widgetLayout.bottomWindowWidth = 0;
-      widgetLayout.leftWindowHeight = 0;
-      widgetLayout.leftWindowWidth = 0;
-      widgetLayout.rightWindowHeight = 0;
-      widgetLayout.rightWindowWidth = 0;
+      // widgetLayout.bottomWindowHeight = 0;
+      // widgetLayout.bottomWindowWidth = 0;
+      // widgetLayout.leftWindowHeight = 0;
+      // widgetLayout.leftWindowWidth = 0;
+      // widgetLayout.rightWindowHeight = 0;
+      // widgetLayout.rightWindowWidth = 0;
     }
   }
 }
