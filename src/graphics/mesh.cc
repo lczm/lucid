@@ -1,20 +1,12 @@
 #include "mesh.h"
 
 Mesh::Mesh(std::vector<MeshVertex> vertices, std::vector<uint32_t> indices,
-           std::vector<MeshTexture> textures, std::vector<VertexBoneData> bones,
-           const aiScene* scene, uint32_t meshNumIndices, uint32_t meshBaseVertex,
-           uint32_t meshBaseIndex)
+           std::vector<MeshTexture> textures, const aiScene* scene)
 {
   Mesh::vertices = vertices;
   Mesh::indices = indices;
   Mesh::textures = textures;
-  Mesh::bones = bones;
-
   Mesh::scene = scene;
-
-  Mesh::numIndices = meshNumIndices;
-  Mesh::baseVertex = meshBaseVertex;
-  Mesh::baseIndex = meshBaseIndex;
 
   SetupMesh();
 }
@@ -24,7 +16,6 @@ void Mesh::SetupMesh()
   // Generate the appropriate buffers
   glGenVertexArrays(1, &VAO);
   glGenBuffers(1, &VBO);
-  glGenBuffers(1, &boneVBO);
   glGenBuffers(1, &EBO);
 
   // Bind VAO & VBO
@@ -54,13 +45,37 @@ void Mesh::SetupMesh()
                         (void*)offsetof(MeshVertex, texCoords));
 
   // Setup bone vertex attribs
-  glBindBuffer(GL_ARRAY_BUFFER, boneVBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(bones[0]) * bones.size(), &bones[0], GL_STATIC_DRAW);
+  // glBindBuffer(GL_ARRAY_BUFFER, boneVBO);
+  // glBufferData(GL_ARRAY_BUFFER, sizeof(bones[0]) * bones.size(), &bones[0], GL_STATIC_DRAW);
+  // glEnableVertexAttribArray(3);
+  // glVertexAttribIPointer(3, 4, GL_INT, sizeof(VertexBoneData), (void*)0);
+
+  // glEnableVertexAttribArray(4);
+  // glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(VertexBoneData), (void*)16);
+
+  // glEnableVertexAttribArray(3);
+  // glVertexAttribPointer(3, 4, GL_INT, GL_FALSE, sizeof(MeshVertex),
+  //                       (void*)(offsetof(MeshVertex, boneIds) + 0 * sizeof(int)));
+
+  // glEnableVertexAttribArray(4);
+  // glVertexAttribPointer(4, 4, GL_INT, GL_FALSE, sizeof(MeshVertex),
+  //                       (void*)(offsetof(MeshVertex, boneIds) + 4 * sizeof(int)));
+
+  // glEnableVertexAttribArray(5);
+  // glVertexAttribPointer(5, 4, GL_FLOAT, false, sizeof(Vertex),
+  //                       (void*)(offsetof(MeshVertex, boneWeights) + 0 * sizeof(float)));
+
+  // glEnableVertexAttribArray(6);
+  // glVertexAttribPointer(6, 4, GL_FLOAT, false, sizeof(Vertex),
+  //                       (void*)(offsetof(MeshVertex, boneWeights) + 4 * sizeof(float)));
+
   glEnableVertexAttribArray(3);
-  glVertexAttribIPointer(3, 4, GL_INT, sizeof(VertexBoneData), (void*)0);
+  glVertexAttribPointer(3, 4, GL_INT, GL_FALSE, sizeof(MeshVertex),
+                        (void*)(offsetof(MeshVertex, boneIds)));
 
   glEnableVertexAttribArray(4);
-  glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(VertexBoneData), (void*)16);
+  glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(MeshVertex),
+                        (void*)(offsetof(MeshVertex, boneWeights)));
 
   // 'unbind' the vertex arrays to not cause future issues
   glBindVertexArray(0);
