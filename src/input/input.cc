@@ -154,6 +154,7 @@ bool Input::IsMouseLDown()
   if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT))
   {
 #if DEBUG
+    // TODO: fix debug and release being the same
     // Handle imgui windows
     // if (activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera)
     //{

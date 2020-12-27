@@ -422,6 +422,7 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
       ImGui::InputFloat("x velocity", &(rigidBody->velocity.x), 0.25f, 1.0f);
       ImGui::InputFloat("y velocity", &(rigidBody->velocity.y), 0.25f, 1.0f);
       ImGui::InputFloat("z velocity", &(rigidBody->velocity.z), 0.25f, 1.0f);
+      ImGui::Checkbox("Apply gravity", &(rigidBody->applyGravity));
     }
   }
 
