@@ -297,27 +297,74 @@ bool RenderSystem::HandleMousePick(float dt, Registry* registry, Input* input)
   std::vector<Entity> entityIds;
   std::vector<BoundingBox> boundingBoxes;
   // Calculate all the positions, assume that there is a BoundingBoxCube around it.
-  registry->GetComponentsIter<Transform>()->EachWithID([&](Entity id, Transform& transform) {
-    if (transform.scale.x == 1.0f)
+  registry->GetComponentsIter<Cube, Transform>()->EachWithID([&](Entity id, Cube& cube,
+                                                                 Transform& transform) {
+    // Calculate the model matrix
+    auto modelMatrix = GetModelMatrix(transform);
+    // auto modelMatrix = GetModelMatrixWithoutRotation(transform);
+
+    std::vector<glm::vec4> verticesCollection;
+    verticesCollection.reserve(boundingBoxCubeVertices.size() / 3);
+
+    for (size_t i = 0; i < boundingBoxCubeVertices.size(); i += 3)
     {
-      // Calculate the model matrix
-      auto modelMatrix = GetModelMatrixWithoutRotation(transform);
-
-      std::vector<glm::vec4> verticesCollection;
-      verticesCollection.reserve(boundingBoxCubeVertices.size() / 3);
-
-      for (size_t i = 0; i < boundingBoxCubeVertices.size(); i += 3)
-      {
-        verticesCollection.push_back(modelMatrix * glm::vec4(boundingBoxCubeVertices[i],
-                                                             boundingBoxCubeVertices[i + 1],
-                                                             boundingBoxCubeVertices[i + 2], 1.0f));
-      }
-
-      BoundingBox bb = GetBoundingBox(verticesCollection);
-      boundingBoxes.push_back(bb);
-
-      entityIds.push_back(id);
+      verticesCollection.push_back(modelMatrix * glm::vec4(boundingBoxCubeVertices[i],
+                                                           boundingBoxCubeVertices[i + 1],
+                                                           boundingBoxCubeVertices[i + 2], 1.0f));
     }
+
+    BoundingBox bb = GetBoundingBox(verticesCollection);
+    boundingBoxes.push_back(bb);
+
+    entityIds.push_back(id);
+  });
+
+  registry->GetComponentsIter<Sphere, Transform>()->EachWithID([&](Entity id, Sphere& sphere,
+                                                                   Transform& transform) {
+    // Calculate the model matrix
+    auto modelMatrix = GetModelMatrix(transform);
+    // auto modelMatrix = GetModelMatrixWithoutRotation(transform);
+
+    std::vector<glm::vec4> verticesCollection;
+    verticesCollection.reserve(boundingBoxCubeVertices.size() / 3);
+
+    for (size_t i = 0; i < boundingBoxCubeVertices.size(); i += 3)
+    {
+      verticesCollection.push_back(modelMatrix * glm::vec4(boundingBoxCubeVertices[i],
+                                                           boundingBoxCubeVertices[i + 1],
+                                                           boundingBoxCubeVertices[i + 2], 1.0f));
+    }
+
+    BoundingBox bb = GetBoundingBox(verticesCollection);
+    boundingBoxes.push_back(bb);
+
+    entityIds.push_back(id);
+  });
+
+  registry->GetComponentsIter<Model, Transform>()->EachWithID([&](Entity id, Model& model,
+                                                                  Transform& transform) {
+    // Calculate the model matrix
+    auto modelMatrix = GetModelMatrix(transform);
+    // auto modelMatrix = GetModelMatrixWithoutRotation(transform);
+
+    std::vector<glm::vec4> verticesCollection;
+
+    for (auto& mesh : model.GetMeshes())
+    {
+      // verticesCollection.reserve(mesh.vertices.size() / 3);
+      verticesCollection.reserve(mesh.vertices.size());
+      for (size_t i = 0; i < mesh.vertices.size(); i++)
+      {
+        verticesCollection.push_back(modelMatrix * glm::vec4(mesh.vertices[i].position.x,
+                                                             mesh.vertices[i].position.y,
+                                                             mesh.vertices[i].position.z, 1.0f));
+      }
+    }
+
+    BoundingBox bb = GetBoundingBox(verticesCollection);
+    boundingBoxes.push_back(bb);
+
+    entityIds.push_back(id);
   });
 
   // Calculate the distance between the ray origin and the bounding box?
