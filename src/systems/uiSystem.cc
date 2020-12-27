@@ -504,6 +504,7 @@ void UiSystem::DrawToolBar(float dt, Registry* registry, Input* input)
 {
   ImGuiWindowClass* windowClass = new ImGuiWindowClass();
   ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse;
+  DevDebug& devDebug = registry->GetComponent<DevDebug>();
   float buttonWidth = 60.0f;
   float totalPadding = 16;
 
@@ -514,6 +515,31 @@ void UiSystem::DrawToolBar(float dt, Registry* registry, Input* input)
 
   GameEngineState& gameEngineState = registry->GetComponent<GameEngineState>();
 
+  if (devDebug.activeEntity != 0)
+  {
+    std::string gizmoType;
+    std::string gizmoTypeString;
+    const char* gizmoTypeChar;
+    switch (devDebug.gizmoOperation)
+    {
+      case ImGuizmo::OPERATION::ROTATE:
+        gizmoType = "Rotate";
+        break;
+      case ImGuizmo::OPERATION::TRANSLATE:
+        gizmoType = "Translate";
+        break;
+      case ImGuizmo::OPERATION::SCALE:
+        gizmoType = "Scale";
+        break;
+      case ImGuizmo::OPERATION::BOUNDS:
+        gizmoType = "Bounds";
+        break;
+    }
+
+    gizmoTypeString = "Gizmo Type: " + gizmoType;
+    gizmoTypeChar = gizmoTypeString.c_str();
+    ImGui::Text(gizmoTypeChar);
+  }
   ImGui::SameLine(static_cast<float>((wSize.x - ((buttonWidth * 3) + totalPadding)) * 0.5));
   if (ImGui::Button("Play", ImVec2(buttonWidth, 0.0f)))
   {
