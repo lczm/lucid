@@ -155,10 +155,11 @@ bool Input::IsMouseLDown()
   {
 #if DEBUG
     // Handle imgui windows
-    if (activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera)
-    {
-      return true;
-    }
+    // if (activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera)
+    //{
+    //  return true;
+    //}
+    return true;
 #endif
 
 #if RELEASE

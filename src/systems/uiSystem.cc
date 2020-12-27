@@ -279,11 +279,10 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
 
   HandleGizmoInput(registry, input);
 
-  UpdateInputActiveWindow(input, WindowType::Scene);
-  ImGui::EndChild();
-
   UpdateWindowFocus(registry, WindowType::Inspector, "Inspector", input, WindowType::Scene);
   UpdateWindowFocus(registry, WindowType::Scene, "Scene", input);
+  UpdateInputActiveWindow(input, WindowType::Scene);
+  ImGui::EndChild();
 
   // Drag n drop from default assets
   if (ImGui::BeginDragDropTarget())
@@ -389,7 +388,6 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
   ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen;
 
   UpdateInputActiveWindow(input, WindowType::Inspector);
-
   if (devDebug.activeEntity == 0)
   {
     ImGui::End();
@@ -668,14 +666,15 @@ void UiSystem::UpdateInputActiveWindow(Input* input, WindowType windowType)
   }
 }
 
-void UiSystem::UpdateWindowFocus(Registry* registry, WindowType windowType, const char* focusWindow,
+void UiSystem::UpdateWindowFocus(Registry* registry, WindowType windowType, std::string focusWindow,
                                  Input* input, WindowType changeFocusWindow)
 {
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
 
   if (devDebug.changeFocusWindow == windowType)
   {
-    ImGui::SetWindowFocus(focusWindow);
+    const char* charFocusWindow = focusWindow.c_str();
+    ImGui::SetWindowFocus(charFocusWindow);
     input->activeWindow = windowType;
     devDebug.changeFocusWindow = changeFocusWindow;
   }
