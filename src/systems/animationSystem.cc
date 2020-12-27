@@ -15,14 +15,19 @@ void AnimationSystem::Update(float dt, Registry* registry, Input* input)
   // A 'ModelAnimated' component should be created for those components
   // But for now this is enough for testing purposes.
 
-  registry->GetComponentsIter<Model>()->Each([&](Model& model) {
-    // For every mesh in every model, recalculate the animated bone transforms
-    for (auto& mesh : model.GetMeshes())
-    {
-      // TODO : Set this apart
-      SetBoneTransform(dt, registry, model, mesh);
-    }
-  });
+  return;
+
+  // registry->GetComponentsIter<Model>()->Each([&](Model& model) {
+  //   model.UpdateBoneMatrices(dt * model.scene->mAnimations[0]->mTicksPerSecond, 0,
+  //                            model.scene->mRootNode, glm::mat4(1.0f));
+
+  //   // For every mesh in every model, recalculate the animated bone transforms
+  //   // for (auto& mesh : model.GetMeshes())
+  //   // {
+  //   //   // TODO : Set this apart
+  //   //   SetBoneTransform(dt, registry, model, mesh);
+  //   // }
+  // });
 }
 
 void AnimationSystem::SetBoneTransform(float dt, Registry* registry, Model& model, Mesh& mesh)
@@ -31,8 +36,6 @@ void AnimationSystem::SetBoneTransform(float dt, Registry* registry, Model& mode
 
   std::vector<glm::mat4> transforms;
   BoneTransform(dt, model, mesh, transforms);
-
-  std::cout << "Reached here" << std::endl;
 
   shaderResource.modelAnimatedShader.Bind();
   shaderResource.modelAnimatedShader.SetUniformMatFloat4("gBones", transforms.size(), transforms);
@@ -72,7 +75,6 @@ void AnimationSystem::BoneTransform(float dt, Model& model, Mesh& mesh,
   for (size_t i = 0; i < mNumBones; i++)
   {
     transforms[i] = model.boneInfo[i].finalTransformation;
-    std::cout << "..." << std::endl;
   }
 }
 
@@ -249,6 +251,7 @@ void AnimationSystem::CalculateInterpolatedRotation(aiQuaternion& quat, float an
   // Normalize the quat
   quat = quat.Normalize();
 }
+
 void AnimationSystem::CalculateInterpolatedPosition(aiVector3D& vec, float animTime,
                                                     const aiNodeAnim* pNodeAnim)
 {

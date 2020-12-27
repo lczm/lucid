@@ -432,9 +432,12 @@ void RenderSystem::DrawAllModels(float dt, Registry* registry, Input* input)
   shaderResource.modelAnimatedShader.SetUniformMatFloat4("view", quatCamera->GetView());
 
   registry->GetComponentsIter<Model, Transform>()->Each([&](Model& model, Transform& transform) {
+    model.UpdateBoneMatrices(dt * model.scene->mAnimations[0]->mTicksPerSecond, 0,
+                             model.scene->mRootNode, glm::mat4(1.0f));
     auto modelMatrix = GetModelMatrix(transform);
 
     shaderResource.modelAnimatedShader.SetUniformMatFloat4("model", modelMatrix);
+    shaderResource.modelAnimatedShader.SetUniformMatFloat4("boneMatrices", 100, model.boneMatrices);
     renderer->DrawModel(model, shaderResource.modelAnimatedShader);
   });
 

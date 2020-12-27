@@ -132,6 +132,18 @@ static inline glm::mat4 CastToGlmMat4(aiMatrix3x3 from)
   return glm::transpose(glm::make_mat3(&from.a1));
 }
 
+static inline glm::mat4 CastToGlmMat4(aiVector3D from)
+{
+  return glm::translate(glm::mat4(1.0f), glm::vec3(from.x, from.y, from.z));
+}
+
+// TODO : Check if this is correct
+static inline glm::mat4 CastToGlmMat4(aiQuaternion from)
+{
+  // return CastToGlmMat4(from.GetMatrix());
+  return glm::transpose(CastToGlmMat4(from.GetMatrix()));
+}
+
 static inline glm::quat CastToGlmQuat(aiQuaternion from)
 {
   return glm::quat(from.w, from.x, from.y, from.z);
