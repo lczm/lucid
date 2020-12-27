@@ -37,7 +37,11 @@ void Renderer::DrawMesh(Mesh& mesh, Shader& shader)
 
   // Draw the mesh
   glBindVertexArray(mesh.VAO);
+
   glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0);
+  // glDrawElementsBaseVertex(GL_TRIANGLES, mesh.numIndices, GL_UNSIGNED_INT,
+  //                          (void*)(sizeof(uint32_t) * mesh.baseIndex), mesh.baseVertex);
+
   glBindVertexArray(0);
 
   // Reset gl texture unit to 0
@@ -210,22 +214,18 @@ void Renderer::DrawLineIndexed(const PrimitiveBatchIds primitiveBatchIds)
   // There are no indices in lines
 }
 
-void Renderer::DrawBoundingBox(Model& model, Shader& shader)
+void Renderer::DrawBoundingBox(const BoundingBox boundingBox)
 {
 }
 
-void Renderer::DrawBoundingBox(Sphere& sphere, Shader& shader)
-{
-}
-
-void Renderer::DrawBoundingBox(ColliderCube colliderCube, Shader& shader)
-{
-  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-  glBindVertexArray(colliderCube.VAO);
-  glDrawElements(GL_TRIANGLES, boundingBoxCubeIndices.size(), GL_UNSIGNED_INT, 0);
-  glBindVertexArray(0);
-  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-}
+// void Renderer::DrawBoundingBox(ColliderCube colliderCube, Shader& shader)
+// {
+//   glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+//   glBindVertexArray(colliderCube.VAO);
+//   glDrawElements(GL_TRIANGLES, boundingBoxCubeIndices.size(), GL_UNSIGNED_INT, 0);
+//   glBindVertexArray(0);
+//   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+// }
 
 void Renderer::StartBatch()
 {
@@ -328,6 +328,12 @@ void Renderer::PushGenericBufferWithColor(const glm::mat4 modelMatrix, const glm
 // TODO : This assumes its all lines
 void Renderer::FlushBatch(PrimitiveBatchIds primitiveBatchIds, const DrawType drawType)
 {
+  // Nothing to draw
+  if (batchIndexCount == 0)
+  {
+    return;
+  }
+
   switch (drawType)
   {
     case DrawType::Line:

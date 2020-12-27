@@ -10,6 +10,7 @@
 #include <type_traits>
 #include <unordered_map>
 
+#include "startup.h"
 #include "component.h"
 #include "input.h"
 #include "boundingBox.h"
@@ -28,47 +29,24 @@
 
 // TODO : This can be optimized, take in the keyptr instead of
 // searching for it every for every component
-#define MOVE_COMPONENT(T, from, to, index)                                 \
-  if (std::find(from.begin(), from.end(), GetHashCode<T>()) != from.end()) \
-  {                                                                        \
-    auto& oldKeyPtr = GetArchetypeComponentMap(from);                      \
-    auto& newKeyPtr = GetArchetypeComponentMap(to);                        \
-                                                                           \
-    auto& oldVectorPtr = GetVectorFromArchetypeComponentMap<T>(oldKeyPtr); \
-    auto& newVectorPtr = GetVectorFromArchetypeComponentMap<T>(newKeyPtr); \
-                                                                           \
-    newVectorPtr.push_back(oldVectorPtr[index]);                           \
-    std::cout << "hello... : " << GetHashCode<T>() << std::endl;           \
+#define MOVE_COMPONENT(T, search, from, to, index)                                                \
+  if (std::find(search.begin(), search.end(), GetHashCode<T>()) != search.end())                  \
+  {                                                                                               \
+    auto& oldKeyPtr = GetArchetypeComponentMap(from);                                             \
+    auto& newKeyPtr = GetArchetypeComponentMap(to);                                               \
+                                                                                                  \
+    auto& oldVectorPtr = GetVectorFromArchetypeComponentMap<T>(oldKeyPtr);                        \
+    auto& newVectorPtr = GetVectorFromArchetypeComponentMap<T>(newKeyPtr);                        \
+                                                                                                  \
+    /* Add the new data */                                                                        \
+    newVectorPtr.push_back(oldVectorPtr[index]);                                                  \
+                                                                                                  \
+    /* Remove the old data */                                                                     \
+    oldVectorPtr.erase(oldVectorPtr.begin() + index);                                             \
+                                                                                                  \
+    /* Update the new entity index mapping through the macro */ /* As it has access to the type*/ \
+    newIndexMapping = newVectorPtr.size() - 1;                                                    \
   }
-
-// TODO : ColliderCube, ColliderSphere, ColliderPolygon has issues hen moving
-#define MOVE_ALL_COMPONENTS(from, to, index)      \
-  MOVE_COMPONENT(Transform, from, to, index)      \
-  MOVE_COMPONENT(RigidBody, from, to, index)      \
-  MOVE_COMPONENT(Animation, from, to, index)      \
-  MOVE_COMPONENT(SoundEffect, from, to, index)    \
-  MOVE_COMPONENT(Music, from, to, index)          \
-  MOVE_COMPONENT(Cube, from, to, index)           \
-  MOVE_COMPONENT(Sphere, from, to, index)         \
-  MOVE_COMPONENT(Model, from, to, index)          \
-  MOVE_COMPONENT(Test, from, to, index)           \
-  MOVE_COMPONENT(ColliderCube, from, to, index)   \
-  MOVE_COMPONENT(ColliderSphere, from, to, index) \
-  MOVE_COMPONENT(ColliderPolygon, from, to, index)
-
-#define REGISTER_COMPONENT_CREATE(archetype, keyPtr)          \
-  CREATE_COMPONENT_VECTOR(Transform, archetype, keyPtr)       \
-  CREATE_COMPONENT_VECTOR(RigidBody, archetype, keyPtr)       \
-  CREATE_COMPONENT_VECTOR(Animation, archetype, keyPtr)       \
-  CREATE_COMPONENT_VECTOR(SoundEffect, archetype, keyPtr)     \
-  CREATE_COMPONENT_VECTOR(Music, archetype, keyPtr)           \
-  CREATE_COMPONENT_VECTOR(Cube, archetype, keyPtr)            \
-  CREATE_COMPONENT_VECTOR(Sphere, archetype, keyPtr)          \
-  CREATE_COMPONENT_VECTOR(Model, archetype, keyPtr)           \
-  CREATE_COMPONENT_VECTOR(ColliderCube, archetype, keyPtr)    \
-  CREATE_COMPONENT_VECTOR(ColliderSphere, archetype, keyPtr)  \
-  CREATE_COMPONENT_VECTOR(ColliderPolygon, archetype, keyPtr) \
-  CREATE_COMPONENT_VECTOR(Test, archetype, keyPtr)
 
 /*
    This header file will define all that is needed for the ecs structure to
@@ -287,11 +265,6 @@ class ComponentVectorContainer
       std::apply(function, tuple);
     }
 
-    // for (size_t i = 0; i < componentVectors.size(); i++)
-    // {
-    //   delete componentVectors[i];
-    // }
-
     delete this;
   }
 
@@ -374,9 +347,6 @@ class Registry
   // }
   std::unordered_map<uint32_t, uint32_t> entityIndexMap;
 
-  // This is to keep track of the entities that have been moved and needs to be flushed
-  std::unordered_map<uint32_t, std::vector<ComponentMovementStatus>> flushCache;
-
   // ComponentType/ArcheType -> unordered_map<uint32_t,
   // vector<Component>> Archetypes are the key, as a vector of unsigned
   // ints. Values is an unordered_map with keys being the hashcodes of the
@@ -406,27 +376,27 @@ class Registry
   };
   ~Registry();
 
-  // Very useful utility functions
-  std::unordered_map<uint32_t, void*>& GetArchetypeComponentMap(Archetype archetype)
+  // Useful utility functions
+  inline std::unordered_map<uint32_t, void*>& GetArchetypeComponentMap(Archetype archetype)
   {
     return *(static_cast<std::unordered_map<uint32_t, void*>*>(archetypeComponentMap[archetype]));
   }
 
   // Use case for when using a for range loop over the archetypeComponentMap
-  std::unordered_map<uint32_t, void*>& GetArchetypeComponentMap(void* pairIterSecond)
+  inline std::unordered_map<uint32_t, void*>& GetArchetypeComponentMap(void* pairIterSecond)
   {
     return *(static_cast<std::unordered_map<uint32_t, void*>*>(pairIterSecond));
   }
 
   template <typename Component>
-  std::vector<Component>& GetVectorFromArchetypeComponentMap(
+  inline std::vector<Component>& GetVectorFromArchetypeComponentMap(
       std::unordered_map<uint32_t, void*> keyPtr, uint32_t hashCode)
   {
     return *(static_cast<std::vector<Component>*>(keyPtr[hashCode]));
   }
 
   template <typename Component>
-  std::vector<Component>& GetVectorFromArchetypeComponentMap(
+  inline std::vector<Component>& GetVectorFromArchetypeComponentMap(
       std::unordered_map<uint32_t, void*> keyPtr)
   {
     return *(static_cast<std::vector<Component>*>(keyPtr[GetHashCode<Component>()]));
@@ -448,9 +418,6 @@ class Registry
 
     return id;
   };
-
-  // TODO : This needs to work as well
-  void DeleteEntity(Entity entity);
 
   template <typename Component>
   bool EntityHasComponent(Entity id)
@@ -562,6 +529,10 @@ class Registry
     entityIndexMap[id] = entityVectorPtr.size() - 1;
   }
 
+  void DeleteEntity(Entity id)
+  {
+  }
+
   // General method to convert (Component) to an uint32_t
   template <typename Component>
   uint32_t GetHashCode(Component component)
@@ -622,69 +593,8 @@ class Registry
     }
   }
 
-  // This will explain how this will really work
-  // In each entity, they will belong to a single archetype
-  // By adding a new component to the entity, the entity will now belong to another archetype
-  // i.e. (previous archetype) + (new component) = new/existing archetype
   template <typename Component>
   void AddComponent(Entity entity)
-  {
-    // Convert the component
-    uint32_t componentHashCode = GetHashCode<Component>();
-
-    // Get the entity's current archetype
-    Archetype& archetype = entityComponentMap[entity];
-
-    // Check that the new component does not already exist
-    bool exists = false;
-    for (uint32_t hashCode : archetype)
-    {
-      if (hashCode == componentHashCode)
-      {
-        exists = true;
-      }
-    }
-
-    // TODO : Is this actually needed?
-    if (exists)
-    {
-      std::cout << "Error : Component for this entity already exists" << std::endl;
-      return;
-    }
-
-    uint32_t entityIndex = entityIndexMap[entity];
-
-    // Update the archetype hashcode
-    archetype.push_back(componentHashCode);
-
-    bool reconstruct = false;
-    // If the archetype does not exist, it should be created
-    if (archetypeComponentMap.find(archetype) == archetypeComponentMap.end())
-    {
-      // Create the new component vector first, after Flush() is called, then
-      // the rest of the data will be moved over.
-      archetypeComponentMap[archetype] = new std::unordered_map<uint32_t, void*>();
-      InitializeArchetypeVector<Component>(archetype);
-      reconstruct = true;
-    }
-
-    // Add the data to the archetype
-    auto& keyPtr = GetArchetypeComponentMap(archetype);
-    auto& vectorPtr = GetVectorFromArchetypeComponentMap<Component>(keyPtr, componentHashCode);
-
-    // Note that even though this is for each vector component, this should
-    // not matter as every component goes through this, resulting in the
-    // size (i.e. index) being all the same.
-    // flushCache[entity] = {true, reconstruct, componentHashCode, entityIndexMap[entity]};
-    flushCache[entity].push_back(
-        {Move::ADD, reconstruct, componentHashCode, entityIndexMap[entity]});
-    entityIndexMap[entity] = vectorPtr.size();
-
-    vectorPtr.push_back(Component());
-  }
-
-  template <typename Component>
-  void AddComponentTest(Entity entity)
   {
     // Convert the component
     uint32_t componentHashCode = GetHashCode<Component>();
@@ -693,6 +603,7 @@ class Registry
     Archetype oldArchetype = entityComponentMap[entity];
     Archetype& archetype = entityComponentMap[entity];
 
+    // Get entityIndex before modifying it later down the line
     uint32_t entityIndex = entityIndexMap[entity];
 
     // Add the data to the archetype
@@ -701,6 +612,7 @@ class Registry
     // Update the archetype hashcode
     archetype.push_back(componentHashCode);
 
+    // If the archetype does not yet exist
     if (archetypeComponentMap.find(archetype) == archetypeComponentMap.end())
     {
       archetypeComponentMap[archetype] = new std::unordered_map<uint32_t, void*>();
@@ -708,14 +620,34 @@ class Registry
 
     auto& newKeyPtr = GetArchetypeComponentMap(archetype);
 
+    uint32_t newIndexMapping = 0;
     CREATE_ALL_COMPONENT_VECTORS_IN_ARCHETYPE(archetype, newKeyPtr);
-    MOVE_ALL_COMPONENTS(oldArchetype, archetype, entityIndex);
+    MOVE_ALL_COMPONENTS(oldArchetype, oldArchetype, archetype, entityIndex);
 
     // Update the entity index based on the size.
     auto& componentVector = GetVectorFromArchetypeComponentMap<Component>(newKeyPtr);
+
+    // Add the new component into the vector
     componentVector.push_back(Component());
 
-    entityIndexMap[entity] = componentVector.size() - 1;
+    entityIndexMap[entity] = newIndexMapping;
+
+    // After moving the entity components, re-order the entity indexes
+    // e.g. [1, 2],
+    // 1 gets removed (original index 0)
+    // 2 becomes index 0
+    auto& oldArchetypePtr = GetArchetypeComponentMap(oldArchetype);
+    auto& idComponentVector = GetVectorFromArchetypeComponentMap<uint32_t>(oldArchetypePtr);
+
+    // For every entity that has an index that is higher than the current, move it back by one
+    // as the entity has been moved, so the index alignment will need to match up again.
+    for (uint32_t& id : idComponentVector)
+    {
+      if (id > entityIndex && id != entity)
+      {
+        entityIndexMap[id]--;
+      }
+    }
   }
 
   // Likewise for RemoveComponent, it is very similar to AddComponent
@@ -724,99 +656,58 @@ class Registry
   template <typename Component>
   void RemoveComponent(Entity entity)
   {
-  }
+    // Convert the component
+    uint32_t componentHashCode = GetHashCode<Component>();
 
-  // This will make all the changes to the entity.
-  // For now, this is assuming that all entities are only using AddComponent and not
-  // RemoveComponent
-  template <typename... Components>
-  void FlushEntity(Entity entity)
-  {
-    // If trying to flush an entity that has no prior AddComponent or RemoveComponent
-    if (flushCache.find(entity) == flushCache.end())
+    // Get the entity's current archetype
+    Archetype oldArchetype = entityComponentMap[entity];
+    Archetype& archetype = entityComponentMap[entity];
+
+    // Get entityIndex before modifying it later down the line
+    uint32_t entityIndex = entityIndexMap[entity];
+
+    auto& keyPtr = GetArchetypeComponentMap(archetype);
+
+    // Update the archetype hashcode
+    uint32_t archetypeIndex = 0;
+    for (size_t i = 0; i < archetype.size(); i++)
     {
-      std::cout << "Warning : Tried to flush an entity id that did not have any operations on it"
-                << std::endl;
-      return;
-    }
-
-    for (ComponentMovementStatus& status : flushCache[entity])
-    {
-      Archetype archetype = entityComponentMap[entity];
-      Archetype remainderArchetype;
-
-      if (status.move == Move::ADD)
+      if (archetype[i] == componentHashCode)
       {
-        for (size_t i = 0; i < archetype.size(); i++)
-        {
-          if (archetype[i] != status.componentHash)
-          {
-            remainderArchetype.push_back(archetype[i]);
-          }
-        }
+        archetypeIndex = i;
+        break;
       }
-      else if (status.move == Move::REMOVE)
-      {  // TODO : Remove
-      }
+    }
+    archetype.erase(archetype.begin() + archetypeIndex);
 
-      // Reconstruct the vectors if needed
-      if (status.reconstructArchetype)
+    // If the archetype does not yet exist
+    if (archetypeComponentMap.find(archetype) == archetypeComponentMap.end())
+    {
+      archetypeComponentMap[archetype] = new std::unordered_map<uint32_t, void*>();
+    }
+
+    auto& newKeyPtr = GetArchetypeComponentMap(archetype);
+
+    CREATE_ALL_COMPONENT_VECTORS_IN_ARCHETYPE(archetype, newKeyPtr);
+
+    uint32_t newIndexMapping = 0;
+    // Since this is removing, set the new archetype as the 'from' target
+    // and set the older archetype as the 'to' target
+    MOVE_ALL_COMPONENTS(archetype, oldArchetype, archetype, entityIndex);
+
+    entityIndexMap[entity] = newIndexMapping;
+
+    auto& oldArchetypePtr = GetArchetypeComponentMap(oldArchetype);
+    auto& idComponentVector = GetVectorFromArchetypeComponentMap<uint32_t>(oldArchetypePtr);
+
+    // For every entity that has an index that is higher than the current, move it back by one
+    // as the entity has been moved, so the index alignment will need to match up again.
+    for (uint32_t& id : idComponentVector)
+    {
+      if (id > entityIndex && id != entity)
       {
-        auto p = {(InitializeArchetypeVector<Components>(archetype), 0)...};
-        (void)p;
-        auto c = {(CreateDefaultComponentValue<Components>(entity, archetype), 0)...};
-        (void)c;
+        entityIndexMap[id]--;
       }
-
-      // Move the components from the old archetype to the new archetype
-      uint32_t previousIndex = status.previousIndex;
-
-      auto& previousPtr = GetArchetypeComponentMap(remainderArchetype);
-      auto& currentPtr = GetArchetypeComponentMap(archetype);
-
-      // Move the components around
-      auto p = {(MoveComponent<Components>(status.previousIndex, entityIndexMap[entity],
-                                           previousPtr, currentPtr, status.componentHash),
-                 0)...};
-      (void)p;
-
-      // After moving the components from the previous archetype to the new archetype
-      // To keep things packed, the space in the previous archetype needs to be filled
-      // To fill this space, the latest entity can take its place
-      // auto d = {(ReorderComponentVector<Components>(status.previousIndex, previousPtr), 0)...};
-      // (void)d;
-    }
-  }
-
-  template <typename Component>
-  void MoveComponent(uint32_t previousIndex, uint32_t currentIndex,
-                     std::unordered_map<uint32_t, void*> from,
-                     std::unordered_map<uint32_t, void*> to, uint32_t exclude)
-  {
-    if (GetHashCode<Component>() == exclude)
-    {
-      return;
-    }
-
-    uint32_t hashCode = GetHashCode<Component>();
-
-    auto& fromComponentVector = GetVectorFromArchetypeComponentMap<Component>(from, hashCode);
-    auto& toComponentVector = GetVectorFromArchetypeComponentMap<Component>(to, hashCode);
-
-    toComponentVector[currentIndex] = fromComponentVector[previousIndex];
-  }
-
-  template <typename Component>
-  void ReorderComponentVector(uint32_t fillIndex, std::unordered_map<uint32_t, void*> keyPtr)
-  {
-    uint32_t hashCode = GetHashCode<Component>();
-
-    auto& componentVector = GetVectorFromArchetypeComponentMap<Component>(keyPtr, hashCode);
-
-    // Cannot move elements around to do anything
-    if (componentVector.size() <= 1)
-    {
-      return;
     }
   }
 
@@ -970,6 +861,37 @@ class Registry
   }
 
   template <typename... Components>
+  std::vector<void*> GetComponentsExactWithID()
+  {
+    Archetype hashCodes = {(GetHashCode<Components>())...};
+    std::vector<void*> componentVectors = {(MakeComponentVector<Components>())...};
+
+    // For the entity IDs
+    componentVectors.push_back(new ComponentVector<uint32_t>());
+
+    // archetype : std::unordered_map<hashcode, void*>
+    for (auto& archetypePair : archetypeComponentMap)
+    {
+      Archetype archetype = archetypePair.first;
+      // I don't think there is a way to do this in a fast way as
+      // iterators can only find one element at a time. So this has to be
+      // done in separate iterator find calls equal to the number of
+      // hashes that exist
+      // The flag will turn false if any of the elements dont match
+      if (archetype == hashCodes)
+      {
+        int componentIndex = 0;
+        auto p = {
+            (FillComponentVector<Components>(archetype, componentVectors, componentIndex), 0)...};
+        (void)p;
+        FillComponentVector<uint32_t>(archetype, componentVectors, componentIndex);
+        componentIndex++;
+      }
+    }
+    return componentVectors;
+  }
+
+  template <typename... Components>
   ComponentVectorContainer<Components...>* GetComponentsIter()
   {
     // ComponentVectorContainer<Components...>* container =
@@ -1076,6 +998,7 @@ class Registry
     // Cannot find the entity given the archetype
     std::cout << "GetEntityIDFromArchetype cannot find entity given index of : " << index
               << std::endl;
+    return 0;
   }
 
   bool SubsetOfArchetype(Archetype& archetype, Archetype& archetypeOther)

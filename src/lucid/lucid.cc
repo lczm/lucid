@@ -1,9 +1,5 @@
 #include "lucid.h"
 
-struct Test
-{
-};
-
 Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window)
 {
   Lucid::registry = registry;
@@ -35,11 +31,12 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window)
   ImGui_ImplGlfw_InitForOpenGL(window, true);
   ImGui_ImplOpenGL3_Init(GLSL_VERSION);
 
-  InitializeArchetypes();
-  InitializeBuiltInEntities();
+  InitArchetypes(registry);
+  InitEngineComponents(registry);
+
   InitializeBuiltInSystems();
 
-  // InitializeModelEntities();
+  InitializeModelEntities();
   // InitializeSystems();
 
   // Please remove this in the future, for batch rendering tests only
@@ -101,89 +98,14 @@ void Lucid::Update()
     // Note that this systems update has to be ran in the order of what the original systems
     // are ran in
     registry->UpdateSystem(dt, input, "ui");
+
+    // TODO : Get rid of this in the future, this is just for debugging
+    registry->UpdateSystem(dt, input, "animation");
+
     registry->UpdateSystem(dt, input, "render");
   }
 
   frameCount++;
-}
-
-void Lucid::InitializeArchetypes()
-{
-  // Note that the archetypes registered under here and that are not
-  // under the #if DEBUG flag are the ones that will also exist
-  // in the release build of the game.
-  registry->RegisterArchetype<ShaderResource>();
-  registry->RegisterArchetype<PrimitiveBatchIds>();
-  registry->RegisterArchetype<Model, Transform>();
-  registry->RegisterArchetype<QuatCamera>();
-  registry->RegisterArchetype<SphereVerticesIndices>();
-  registry->RegisterArchetype<Line, Transform>();
-  registry->RegisterArchetype<GameEngineState>();
-  registry->RegisterArchetype<RendererStats>();
-
-  // Register the necessary archetypes
-  // Note that this should be using `ColliderCube` but it is hardcoded like this for now.
-  registry->RegisterArchetype<Cube, Transform, RigidBody>();
-  registry->RegisterArchetype<Cube, Transform, RigidBody, ColliderCube>();
-  registry->RegisterArchetype<Sphere, Transform, RigidBody, ColliderCube>();
-  registry->RegisterArchetype<PongRules>();
-
-  // Default archetypes for gui interface
-  registry->RegisterArchetype<Sphere, Transform>();
-  registry->RegisterArchetype<Cube, Transform>();
-
-  registry->RegisterArchetype<SoundEffect, Transform>();
-  registry->RegisterArchetype<Music>();
-
-  registry->RegisterArchetype<RigidBodyConfiguration>();
-
-#if DEBUG
-  registry->RegisterArchetype<SceneRender>();
-  registry->RegisterArchetype<DevDebug>();
-  registry->RegisterArchetype<WidgetLayout>();
-  registry->RegisterArchetype<GridLine, Transform>();
-#endif
-}
-
-void Lucid::InitializeBuiltInEntities()
-{
-  Entity primitiveBatchID = registry->GetAvailableEntityId();
-  Entity shaderResourceID = registry->GetAvailableEntityId();
-
-  registry->CreateEntity<PrimitiveBatchIds>(primitiveBatchID);
-  registry->CreateEntity<ShaderResource>(shaderResourceID);
-
-  ShaderResource& shaderResource = registry->GetComponent<ShaderResource>();
-  shaderResource.modelShader.CreateShader(MODEL_VERTEX_SHADER, MODEL_FRAGMENT_SHADER);
-  shaderResource.triangleShader.CreateShader(TRIANGLE_VERTEX_SHADER, TRIANGLE_FRAGMENT_SHADER);
-  shaderResource.primitiveShader.CreateShader(PRIMITIVE_VERTEX_SHADER, PRIMITIVE_FRAGMENT_SHADER);
-  shaderResource.primitiveShaderBatch.CreateShader(PRIMITIVE_LINE_SHADER,
-                                                   PRIMITIVE_FRAGMENT_SHADER);
-  shaderResource.cubeShaderBatch.CreateShader(PRIMITIVE_CUBE_SHADER, PRIMITIVE_FRAGMENT_SHADER);
-  // Note : using the primitive cube shader for now? If there turns out to not be a need
-  // for the sphere and cubes to use different shaders, then simplify the shader names.
-  shaderResource.sphereShaderBatch.CreateShader(PRIMITIVE_CUBE_SHADER, PRIMITIVE_FRAGMENT_SHADER);
-
-  Entity sphereVerticesIndicesID = registry->GetAvailableEntityId();
-  registry->CreateEntity<SphereVerticesIndices>(sphereVerticesIndicesID);
-
-  Entity gameEngineStateID = registry->GetAvailableEntityId();
-  registry->CreateEntity<GameEngineState>(gameEngineStateID);
-
-  Entity rigidBodyConfigurationID = registry->GetAvailableEntityId();
-  registry->CreateEntity<RigidBodyConfiguration>(rigidBodyConfigurationID);
-
-#if DEBUG
-  Entity sceneRenderID = registry->GetAvailableEntityId();
-  Entity devDebugID = registry->GetAvailableEntityId();
-  Entity widgetLayoutID = registry->GetAvailableEntityId();
-  Entity rendererStatsID = registry->GetAvailableEntityId();
-
-  registry->CreateEntity<SceneRender>(sceneRenderID);
-  registry->CreateEntity<DevDebug>(devDebugID);
-  registry->CreateEntity<WidgetLayout>(widgetLayoutID);
-  registry->CreateEntity<RendererStats>(rendererStatsID);
-#endif
 }
 
 void Lucid::InitializeBuiltInSystems()
@@ -211,48 +133,29 @@ void Lucid::InitializeBuiltInSystems()
   registry->RegisterSystem(new PongSystem(), "pong");
   // Demo end
 
+  registry->RegisterSystem(new AnimationSystem(), "animation");
+
   registry->RegisterSystem(new RenderSystem(registry), "render");
   registry->RegisterSystem(new AudioSystem(), "audio");
 }
 
 void Lucid::InitializeModelEntities()
 {
-  /*
-    Entity modelID = registry->GetAvailableEntityId();
-    Entity modelID2 = registry->GetAvailableEntityId();
-    Entity modelID3 = registry->GetAvailableEntityId();
-
-    registry->CreateEntity<Model, Transform>(modelID);
-    registry->CreateEntity<Model, Transform>(modelID2);
-    registry->CreateEntity<Model, Transform>(modelID3);
-
-    registry->AddComponentData<Model>(modelID, Model(MICROPHONE_MODEL));
-    registry->AddComponentData<Model>(modelID2, Model(SCIFIHELMET_MODEL));
-    registry->AddComponentData<Model>(modelID3, Model(AVOCADO_MODEL));
-
-    registry->AddComponentData<Transform>(modelID, {
-                                                       {3.0f, 3.0f, 3.0f},  // position
-                                                       {0.0f, 0.0f, 0.0f},  // rotation
-                                                       {1.0f, 1.0f, 1.0f},  // scale
-                                                   });
-    registry->AddComponentData<Transform>(modelID2, {
-                                                        {6.0f, 6.0f, 6.0f},  // position
-                                                        {0.0f, 0.0f, 0.0f},  // rotation
-                                                        {1.0f, 1.0f, 1.0f},  // scale
-                                                    });
-    registry->AddComponentData<Transform>(modelID3, {
-                                                        {1.0f, 1.0f, 1.0f},  // position
-                                                        {0.0f, 0.0f, 0.0f},  // rotation
-                                                        {1.0f, 1.0f, 1.0f},  // scale
-                                                    });
-  */
-
-  Entity polyBirdID = registry->GetAvailableEntityId();
-  registry->CreateEntity<Model, Transform>(polyBirdID);
-  registry->AddComponentData<Model>(polyBirdID, Model(POLYBIRD_MODEL));
+  Entity polyFoxID = registry->GetAvailableEntityId();
+  registry->CreateEntity<Model, Transform>(polyFoxID);
+  registry->AddComponentData<Model>(polyFoxID, Model(POLYFOX_MODEL));
 
   // Move the bird up 3 world units
-  registry->GetComponent<Transform>(polyBirdID)->position = {0.0f, 3.0f, 0.0f};
+  registry->GetComponent<Transform>(polyFoxID)->position = {0.0f, 1.0f, 0.0f};
+  registry->GetComponent<Transform>(polyFoxID)->scale /= 15.0f;
+
+  registry->GetComponent<Transform>(polyFoxID)->rotation.x = glm::radians(90.0f);
+  registry->GetComponent<Transform>(polyFoxID)->rotation.y = glm::radians(0.0f);
+
+  // Entity polyFoxID = registry->GetAvailableEntityId();
+  // registry->CreateEntity<Model, Transform>(polyFoxID);
+  // registry->AddComponentData<Model>(polyFoxID, Model(POLYFOX_MODEL));
+  // registry->GetComponent<Transform>(polyFoxID)->position = {3.0f, 3.0f, 0.0f};
 }
 
 void Lucid::InitializeSystems()
@@ -286,7 +189,7 @@ void Lucid::InitializeDemoPongEntities()
   Entity pongRulesID = registry->GetAvailableEntityId();
 
   // Note to add back collidercube back to playerpaddle after addcomponent debugging
-  registry->CreateEntity<Cube, Transform, RigidBody>(playerPaddleID);
+  registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(playerPaddleID);
   registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(aiPaddleID);
   registry->CreateEntity<Sphere, Transform, RigidBody, ColliderCube>(ballID);
   registry->CreateEntity<PongRules>(pongRulesID);
@@ -302,49 +205,17 @@ void Lucid::InitializeDemoPongEntities()
 
   // TODO : registry->GetComponent<Transform> should return a reference not a pointer
   // Move around the transforms of each
-  playerTransform->position = {-10.0f, 10.0f, -10.0f};
-  ballTransform->position = {0.0f, 10.0f, -10.0f};
-  aiTransform->position = {10.0f, 10.0f, 0.0f};
+  playerTransform->position = {-10.0f, 5.0f, -10.0f};
+  ballTransform->position = {0.0f, 5.0f, -10.0f};
+  aiTransform->position = {10.0f, 5.0f, 0.0f};
 
   RigidBody* ballRigidBody = registry->GetComponent<RigidBody>(ballID);
-  // note 0.05f is just harded 'movement speed'
   ballRigidBody->velocity =
       glm::normalize(playerTransform->position - ballTransform->position) * 0.020f;
 
-  // Entity platformID = registry->GetAvailableEntityId();
-  // registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(platformID);
-
-  // // Change the colour so that it is more immediately visible
-  // registry->GetComponent<Cube>(platformID)->color = {0.5f, 0.0f, 0.0f};
-
-  // // Set that this platform does not have gravity apply on it.
-  // registry->GetComponent<RigidBody>(platformID)->applyGravity = false;
-
-  // Transform* platformTransform = registry->GetComponent<Transform>(platformID);
-  // platformTransform->position = {0.0f, 1.0f, -10.0f};
-  // platformTransform->scale = {20.0f, 1.0f, 20.0f};
-
-
-  // Testing purposes
-  // registry->AddComponentTest<Test>(playerPaddleID);
-
-  // registry->GetComponentsIter<Test>()->Each(
-  //     [&](Test& test) { std::cout << "hello from loop" << std::endl; });
-
-  // Entity soundEffectID = registry->GetAvailableEntityId();
-  // Entity musicID = registry->GetAvailableEntityId();
-
-  // registry->CreateEntity<SoundEffect, Transform>(soundEffectID);
-  // registry->CreateEntity<Music>(musicID);
-
-  // Transform* soundEffectTransform = registry->GetComponent<Transform>(soundEffectID);
-  // soundEffectTransform->position = {0, 0, 0};
-
-  // SoundEffect* soundEffect = registry->GetComponent<SoundEffect>(soundEffectID);
-  // soundEffect->filePath = GRUNT_SOUND;
-
-  // Music* music = registry->GetComponent<Music>(musicID);
-  // music->filePath = PIANO_MUSIC;
+  registry->GetComponent<RigidBody>(playerPaddleID)->applyGravity = false;
+  registry->GetComponent<RigidBody>(aiPaddleID)->applyGravity = false;
+  registry->GetComponent<RigidBody>(ballID)->applyGravity = false;
 }
 
 void Lucid::InitializeDemoPongSystems()

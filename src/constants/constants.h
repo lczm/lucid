@@ -23,6 +23,7 @@ const char TRIANGLE_VERTEX_SHADER[] = "../src/shaders/triangle.vert";
 const char TRIANGLE_FRAGMENT_SHADER[] = "../src/shaders/triangle.frag";
 
 const char MODEL_VERTEX_SHADER[] = "../src/shaders/model.vert";
+const char MODEL_ANIMATED_VERTEX_SHADER[] = "../src/shaders/modelAnimated.vert";
 const char MODEL_FRAGMENT_SHADER[] = "../src/shaders/model.frag";
 
 const char PRIMITIVE_VERTEX_SHADER[] = "../src/shaders/primitive.vert";
@@ -37,6 +38,7 @@ const char SCIFIHELMET_MODEL[] = "../assets/helmet/ScifiHelmet.gltf";
 const char FOX_MODEL[] = "../assets/fox/Fox.gltf";
 const char AVOCADO_MODEL[] = "../assets/avocado/Avocado.gltf";
 const char POLYBIRD_MODEL[] = "../assets/low-poly-bird-animated/source/Bird_Asset.fbx";
+const char POLYFOX_MODEL[] = "../assets/low-poly-fox-by-pixelmannen-animated/source/animations.fbx";
 
 // Images
 const char AIRMAN_IMAGE[] = "../assets/images/air-man.png";

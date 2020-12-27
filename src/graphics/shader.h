@@ -9,6 +9,7 @@
 #include "stb_image.h"
 #include "constants.h"
 #include "glm.hpp"
+#include "gtc/type_ptr.hpp"
 
 typedef struct Vertex
 {
@@ -61,4 +62,5 @@ class Shader
 
   void SetUniformVecFloat3(const std::string& name, glm::vec3 v3);
   void SetUniformMatFloat4(const std::string& name, glm::mat4 mat);
+  void SetUniformMatFloat4(const std::string& name, uint32_t count, std::vector<glm::mat4> mats);
 };

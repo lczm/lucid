@@ -11,7 +11,27 @@ PhysicsSystem::~PhysicsSystem()
 void PhysicsSystem::Update(float dt, Registry* registry, Input* input)
 {
   UpdateAllRigidbodies(dt, registry, input);
+  UpdateCollisions(dt, registry, input);
+}
 
+void PhysicsSystem::UpdateAllRigidbodies(float dt, Registry* registry, Input* input)
+{
+  RigidBodyConfiguration& rigidBodyConfiguration = registry->GetComponent<RigidBodyConfiguration>();
+
+  registry->GetComponentsIter<Transform, RigidBody>()->Each(
+      [&](Transform& transform, RigidBody& rigidBody) {
+        transform.position += rigidBody.velocity;
+
+        // If the rigidbody component has applyGravity, then apply the gravity.
+        if (rigidBody.applyGravity)
+        {
+          transform.position.y -= rigidBodyConfiguration.gravityRate;
+        }
+      });
+}
+
+void PhysicsSystem::UpdateCollisions(float dt, Registry* registry, Input* input)
+{
   std::vector<void*> components = registry->GetComponents<Transform, RigidBody, ColliderCube>();
 
   auto* transformComponents = static_cast<ComponentVector<Transform>*>(components[0]);
@@ -65,22 +85,10 @@ void PhysicsSystem::Update(float dt, Registry* registry, Input* input)
       }
     }
   }
-}
 
-void PhysicsSystem::UpdateAllRigidbodies(float dt, Registry* registry, Input* input)
-{
-  RigidBodyConfiguration& rigidBodyConfiguration = registry->GetComponent<RigidBodyConfiguration>();
-
-  registry->GetComponentsIter<Transform, RigidBody>()->Each(
-      [&](Transform& transform, RigidBody& rigidBody) {
-        transform.position += rigidBody.velocity;
-
-        // If the rigidbody component has applyGravity, then apply the gravity.
-        if (rigidBody.applyGravity)
-        {
-          transform.position.y -= rigidBodyConfiguration.gravityRate;
-        }
-      });
+  delete transformComponents;
+  delete rigidBodyComponents;
+  delete colliderCubeComponents;
 }
 
 bool PhysicsSystem::CheckCollision(ColliderCube colliderCube, Transform& transform,

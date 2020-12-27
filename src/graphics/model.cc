@@ -1,27 +1,75 @@
 #include "model.h"
 
-Model::Model(){};
+// TODO : Temporary
+Namer::Namer()
+{
+  Clear();
+}
+
+Namer::~Namer()
+{
+}
+
+void Namer::Clear()
+{
+  map.clear();
+  total = 0;
+}
+
+uint32_t Namer::Name(const std::string& name)
+{
+  if (map.count(name))
+  {
+    return map[name];
+  }
+  return map[name] = total++;
+}
+
+uint32_t Namer::Total() const
+{
+  return total;
+}
+
+std::map<std::string, uint32_t>& Namer::Map()
+{
+  return map;
+}
+
+Model::Model()
+{
+}
 
 Model::Model(std::string path)
 {
-  LoadModel(path);
-}
-
-void Model::LoadModel(std::string path)
-{
-  Assimp::Importer importer;
-  const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+  importer = new Assimp::Importer();
+  scene = importer->ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
 
   if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
   {
-    std::cout << "Error : " << importer.GetErrorString() << std::endl;
+    std::cout << "(Model Loading) Error : " << importer->GetErrorString() << std::endl;
     return;
+  }
+
+  for (size_t i = 0; i < scene->mNumAnimations; i++)
+  {
+    auto animation = scene->mAnimations[i];
+    for (size_t j = 0; j < animation->mNumChannels; j++)
+    {
+      // for every animation, channel add it to the mapping
+      auto channel = animation->mChannels[j];
+      animationMapping[std::pair<uint32_t, std::string>(i, channel->mNodeName.C_Str())] = j;
+    }
   }
 
   directory = path.substr(0, path.find_last_of('/'));
   ProcessNode(scene->mRootNode, scene);
 
-  // CalculateModelBoundingBox();
+  // Resize boneMatrices
+  boneMatrices.resize(boneNamer.Total());
+}
+
+Model::~Model()
+{
 }
 
 std::vector<Mesh> Model::GetMeshes()
@@ -47,23 +95,19 @@ void Model::ProcessNode(aiNode* node, const aiScene* scene)
 
 Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 {
+  // MeshVertex : {position, normals, texcoords}
   std::vector<MeshVertex> vertices;
   std::vector<uint32_t> indices;
   std::vector<MeshTexture> textures;
 
+  // Populate and process MeshVertex(s)
   for (size_t i = 0; i < mesh->mNumVertices; i++)
   {
     MeshVertex vertex;
 
     // Process vertex positions, normals, texture coordinates
-    // glm::vec3 position;
-    // position.x = mesh->mVertices[i].x;
-    // position.y = mesh->mVertices[i].y;
-    // position.z = mesh->mVertices[i].z;
-    // vertex.position = position;
-    vertex.position = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
-
-    vertex.normal = glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
+    vertex.position = glm::make_vec3(&mesh->mVertices[i].x);
+    vertex.normal = glm::make_vec3(&mesh->mNormals[i].x);
 
     if (mesh->mTextureCoords[0])
     {
@@ -77,7 +121,7 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
     vertices.push_back(vertex);
   }
 
-  // Process indices
+  // Populate and process indices
   for (size_t i = 0; i < mesh->mNumFaces; i++)
   {
     aiFace face = mesh->mFaces[i];
@@ -87,7 +131,7 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
     }
   }
 
-  // Process material
+  // Populate and process material
   if (mesh->mMaterialIndex >= 0)
   {
     aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
@@ -101,7 +145,66 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
     textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
   }
 
-  return Mesh(vertices, indices, textures);
+  // Populate and process bones
+  for (size_t i = 0; i < mesh->mNumBones; i++)
+  {
+    auto bone = mesh->mBones[i];
+    auto id = boneNamer.Name(bone->mName.C_Str());
+
+    boneOffsets.resize(std::max(id + 1, static_cast<uint32_t>(boneOffsets.size())));
+    boneOffsets[id] = CastToGlmMat4(bone->mOffsetMatrix);
+
+    for (size_t j = 0; j < bone->mNumWeights; j++)
+    {
+      auto weight = bone->mWeights[j];
+      vertices[weight.mVertexId].AddBone(id, weight.mWeight);
+    }
+  }
+
+  return Mesh(vertices, indices, textures, scene);
+}
+
+void Model::UpdateBoneMatrices(float dt, uint32_t animationId, aiNode* node, glm::mat4 transform)
+{
+  std::string nodeName = node->mName.C_Str();
+  auto animation = scene->mAnimations[animationId];
+
+  glm::mat4 currentTransform;
+
+  if (animationMapping.count(std::pair<uint32_t, std::string>(animationId, nodeName)))
+  {
+    uint32_t channelId = animationMapping[std::pair<uint32_t, std::string>(animationId, nodeName)];
+    auto channel = animation->mChannels[channelId];
+
+    // translation matrix
+    glm::mat4 translationMatrix =
+        InterpolateTranslationMatrix(dt, channel->mPositionKeys, channel->mNumPositionKeys);
+
+    // rotation matrix
+    glm::mat4 rotationMatrix =
+        InterpolateRotationMatrix(dt, channel->mRotationKeys, channel->mNumRotationKeys);
+
+    // scaling matrix
+    glm::mat4 scalingMatrix =
+        InterpolateScalingMatrix(dt, channel->mScalingKeys, channel->mNumScalingKeys);
+
+    currentTransform = translationMatrix * rotationMatrix * scalingMatrix;
+  }
+  else
+  {
+    currentTransform = CastToGlmMat4(node->mTransformation);
+  }
+
+  if (boneNamer.Map().count(nodeName))
+  {
+    uint32_t i = boneNamer.Map()[nodeName];
+    boneMatrices[i] = transform * currentTransform * boneOffsets[i];
+  }
+
+  for (size_t i = 0; i < node->mNumChildren; i++)
+  {
+    UpdateBoneMatrices(dt, animationId, node->mChildren[i], transform * currentTransform);
+  }
 }
 
 std::vector<MeshTexture> Model::LoadMaterialTextures(aiMaterial* material, aiTextureType type,
@@ -180,22 +283,107 @@ uint32_t Model::TextureFromFile(const char* path, const std::string& directory, 
   return textureID;
 }
 
-// void Model::CalculateModelBoundingBox() {
-//   BoundingBox boundingBox;
-//
-//   for (size_t i = 0; i < meshes.size(); i++) {
-//     std::vector<MeshVertex>& vertices = meshes[i].vertices;
-//     for (size_t j = 0; j < vertices.size(); j++) {
-//       boundingBox.minX = glm::min(boundingBox.minX, vertices[j].position.x);
-//       boundingBox.maxX = glm::max(boundingBox.maxX, vertices[j].position.x);
-//
-//       boundingBox.minY = glm::min(boundingBox.minY, vertices[j].position.y);
-//       boundingBox.maxY = glm::max(boundingBox.maxY, vertices[j].position.y);
-//
-//       boundingBox.minZ = glm::min(boundingBox.minZ, vertices[j].position.z);
-//       boundingBox.maxZ = glm::max(boundingBox.maxZ, vertices[j].position.z);
-//     }
-//   }
-//
-//   Model::boundingBox = boundingBox;
-// }
+glm::mat4 Model::InterpolateTranslationMatrix(float dt, aiVectorKey* keys, uint32_t n)
+{
+  if (n == 0)
+  {
+    return glm::mat4(1.0f);
+  }
+
+  if (n == 1)
+  {
+    return CastToGlmMat4(keys->mValue);
+  }
+
+  if (dt <= keys[0].mTime)
+  {
+    return CastToGlmMat4(keys[0].mValue);
+  }
+
+  if (keys[n - 1].mTime <= dt)
+  {
+    return CastToGlmMat4(keys[n - 1].mValue);
+  }
+
+  aiVectorKey anchor;
+  anchor.mTime = dt;
+
+  auto rightPtr = std::upper_bound(
+      keys, keys + n, anchor,
+      [](const aiVectorKey& a, const aiVectorKey& b) { return a.mTime < b.mTime; });
+  auto leftPtr = rightPtr - 1;
+
+  float factor = static_cast<float>((dt - leftPtr->mTime) / (rightPtr->mTime - leftPtr->mTime));
+  return CastToGlmMat4(leftPtr->mValue * (1.0f - factor) + rightPtr->mValue * factor);
+}
+
+glm::mat4 Model::InterpolateRotationMatrix(float dt, aiQuatKey* keys, uint32_t n)
+{
+  if (n == 0)
+  {
+    return glm::mat4(1.0f);
+  }
+
+  if (n == 1)
+  {
+    return CastToGlmMat4(keys->mValue);
+  }
+
+  if (dt <= keys[0].mTime)
+  {
+    return CastToGlmMat4(keys[0].mValue);
+  }
+
+  if (keys[n - 1].mTime <= dt)
+  {
+    return CastToGlmMat4(keys[n - 1].mValue);
+  }
+
+  aiQuatKey anchor;
+  anchor.mTime = dt;
+
+  auto rightPtr =
+      std::upper_bound(keys, keys + n, anchor,
+                       [](const aiQuatKey& a, const aiQuatKey& b) { return a.mTime < b.mTime; });
+  auto leftPtr = rightPtr - 1;
+
+  float factor = static_cast<float>((dt - leftPtr->mTime) / (rightPtr->mTime - leftPtr->mTime));
+
+  aiQuaternion out;
+  aiQuaternion::Interpolate(out, leftPtr->mValue, rightPtr->mValue, factor);
+  return CastToGlmMat4(out);
+}
+
+glm::mat4 Model::InterpolateScalingMatrix(float dt, aiVectorKey* keys, uint32_t n)
+{
+  if (n == 0)
+  {
+    return glm::mat4(1.0f);
+  }
+
+  if (n == 1)
+  {
+    return CastToGlmMat4(keys->mValue);
+  }
+
+  if (dt <= keys[0].mTime)
+  {
+    return CastToGlmMat4(keys[0].mValue);
+  }
+
+  if (keys[n - 1].mTime <= dt)
+  {
+    return CastToGlmMat4(keys[n - 1].mValue);
+  }
+
+  aiVectorKey anchor;
+  anchor.mTime = dt;
+
+  auto rightPtr = std::upper_bound(
+      keys, keys + n, anchor,
+      [](const aiVectorKey& a, const aiVectorKey& b) { return a.mTime < b.mTime; });
+  auto leftPtr = rightPtr - 1;
+
+  float factor = static_cast<float>((dt - leftPtr->mTime) / (rightPtr->mTime - leftPtr->mTime));
+  return CastToGlmMat4(leftPtr->mValue * (1.0f - factor) + rightPtr->mValue * factor);
+}

@@ -43,11 +43,13 @@ void RenderSystem::Update(float dt, Registry* registry, Input* input)
   if (devDebug.drawWireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
   DrawAllLines(dt, registry, input);
-  // DrawAllModels(dt, registry, input);
+  DrawAllModels(dt, registry, input);
   DrawAllCubes(dt, registry, input);
   DrawAllSpheres(dt, registry, input);
 
-  if (devDebug.drawColliders) DrawAllBoundingBoxes(dt, registry, input);
+  DrawActiveEntityBoundingBox(dt, registry, input);
+
+  if (devDebug.drawColliders) DrawAllColldiers(dt, registry, input);
   if (devDebug.drawWireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -297,27 +299,74 @@ bool RenderSystem::HandleMousePick(float dt, Registry* registry, Input* input)
   std::vector<Entity> entityIds;
   std::vector<BoundingBox> boundingBoxes;
   // Calculate all the positions, assume that there is a BoundingBoxCube around it.
-  registry->GetComponentsIter<Transform>()->EachWithID([&](Entity id, Transform& transform) {
-    if (transform.scale.x == 1.0f)
+  registry->GetComponentsIter<Cube, Transform>()->EachWithID([&](Entity id, Cube& cube,
+                                                                 Transform& transform) {
+    // Calculate the model matrix
+    auto modelMatrix = GetModelMatrix(transform);
+    // auto modelMatrix = GetModelMatrixWithoutRotation(transform);
+
+    std::vector<glm::vec4> verticesCollection;
+    verticesCollection.reserve(boundingBoxCubeVertices.size() / 3);
+
+    for (size_t i = 0; i < boundingBoxCubeVertices.size(); i += 3)
     {
-      // Calculate the model matrix
-      auto modelMatrix = GetModelMatrixWithoutRotation(transform);
-
-      std::vector<glm::vec4> verticesCollection;
-      verticesCollection.reserve(boundingBoxCubeVertices.size() / 3);
-
-      for (size_t i = 0; i < boundingBoxCubeVertices.size(); i += 3)
-      {
-        verticesCollection.push_back(modelMatrix * glm::vec4(boundingBoxCubeVertices[i],
-                                                             boundingBoxCubeVertices[i + 1],
-                                                             boundingBoxCubeVertices[i + 2], 1.0f));
-      }
-
-      BoundingBox bb = GetBoundingBox(verticesCollection);
-      boundingBoxes.push_back(bb);
-
-      entityIds.push_back(id);
+      verticesCollection.push_back(modelMatrix * glm::vec4(boundingBoxCubeVertices[i],
+                                                           boundingBoxCubeVertices[i + 1],
+                                                           boundingBoxCubeVertices[i + 2], 1.0f));
     }
+
+    BoundingBox bb = GetBoundingBox(verticesCollection);
+    boundingBoxes.push_back(bb);
+
+    entityIds.push_back(id);
+  });
+
+  registry->GetComponentsIter<Sphere, Transform>()->EachWithID([&](Entity id, Sphere& sphere,
+                                                                   Transform& transform) {
+    // Calculate the model matrix
+    auto modelMatrix = GetModelMatrix(transform);
+    // auto modelMatrix = GetModelMatrixWithoutRotation(transform);
+
+    std::vector<glm::vec4> verticesCollection;
+    verticesCollection.reserve(boundingBoxCubeVertices.size() / 3);
+
+    for (size_t i = 0; i < boundingBoxCubeVertices.size(); i += 3)
+    {
+      verticesCollection.push_back(modelMatrix * glm::vec4(boundingBoxCubeVertices[i],
+                                                           boundingBoxCubeVertices[i + 1],
+                                                           boundingBoxCubeVertices[i + 2], 1.0f));
+    }
+
+    BoundingBox bb = GetBoundingBox(verticesCollection);
+    boundingBoxes.push_back(bb);
+
+    entityIds.push_back(id);
+  });
+
+  registry->GetComponentsIter<Model, Transform>()->EachWithID([&](Entity id, Model& model,
+                                                                  Transform& transform) {
+    // Calculate the model matrix
+    auto modelMatrix = GetModelMatrix(transform);
+    // auto modelMatrix = GetModelMatrixWithoutRotation(transform);
+
+    std::vector<glm::vec4> verticesCollection;
+
+    for (auto& mesh : model.GetMeshes())
+    {
+      // verticesCollection.reserve(mesh.vertices.size() / 3);
+      verticesCollection.reserve(mesh.vertices.size());
+      for (size_t i = 0; i < mesh.vertices.size(); i++)
+      {
+        verticesCollection.push_back(modelMatrix * glm::vec4(mesh.vertices[i].position.x,
+                                                             mesh.vertices[i].position.y,
+                                                             mesh.vertices[i].position.z, 1.0f));
+      }
+    }
+
+    BoundingBox bb = GetBoundingBox(verticesCollection);
+    boundingBoxes.push_back(bb);
+
+    entityIds.push_back(id);
   });
 
   // Calculate the distance between the ray origin and the bounding box?
@@ -427,38 +476,28 @@ void RenderSystem::DrawAllModels(float dt, Registry* registry, Input* input)
 {
   ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
 
-  shaderResource.modelShader.Bind();
-  shaderResource.modelShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
-  shaderResource.modelShader.SetUniformMatFloat4("view", quatCamera->GetView());
+  float currentTime = static_cast<float>(glfwGetTime());
+
+  shaderResource.modelAnimatedShader.Bind();
+  shaderResource.modelAnimatedShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
+  shaderResource.modelAnimatedShader.SetUniformMatFloat4("view", quatCamera->GetView());
 
   registry->GetComponentsIter<Model, Transform>()->Each([&](Model& model, Transform& transform) {
+    auto time = static_cast<float>(currentTime * model.scene->mAnimations[0]->mTicksPerSecond);
+    model.UpdateBoneMatrices(time, 0, model.scene->mRootNode, glm::mat4(1.0f));
     auto modelMatrix = GetModelMatrix(transform);
 
-    shaderResource.modelShader.SetUniformMatFloat4("model", modelMatrix);
-    renderer->DrawModel(model, shaderResource.modelShader);
+    shaderResource.modelAnimatedShader.SetUniformMatFloat4("model", modelMatrix);
+    shaderResource.modelAnimatedShader.SetUniformMatFloat4("boneMatrices", 100, model.boneMatrices);
+    renderer->DrawModel(model, shaderResource.modelAnimatedShader);
   });
 
-  shaderResource.modelShader.Unbind();
+  shaderResource.modelAnimatedShader.Unbind();
 }
 
 void RenderSystem::DrawAllCubes(float dt, Registry* registry, Input* input)
 {
   ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
-
-  // shaderResource.primitiveShader.Bind();
-  // shaderResource.primitiveShader.SetUniformMatFloat4("projection", quatCamera->projection);
-  // shaderResource.primitiveShader.SetUniformMatFloat4("view", quatCamera->GetView());
-
-  // registry->GetComponentsIter<Cube, Transform>()->Each([&](Cube& cube, Transform& transform) {
-  //   auto modelMatrix = GetModelMatrix(transform);
-
-  //   shaderResource.primitiveShader.SetUniformMatFloat4("model", modelMatrix);
-  //   shaderResource.primitiveShader.SetUniformVecFloat3("uColor", cube.color);
-
-  //   renderer->DrawCube(cube, shaderResource.primitiveShader);
-  // });
-
-  // shaderResource.primitiveShader.Unbind();
 
   shaderResource.cubeShaderBatch.Bind();
   shaderResource.cubeShaderBatch.SetUniformMatFloat4("projection", quatCamera->GetProjection());
@@ -481,21 +520,6 @@ void RenderSystem::DrawAllSpheres(float dt, Registry* registry, Input* input)
 {
   ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
 
-  // shaderResource.primitiveShader.Bind();
-  // shaderResource.primitiveShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
-  // shaderResource.primitiveShader.SetUniformMatFloat4("view", quatCamera->GetView());
-
-  // registry->GetComponentsIter<Sphere, Transform>()->Each([&](Sphere& sphere, Transform&
-  // transform) {
-  //   auto modelMatrix = GetModelMatrix(transform);
-
-  //   shaderResource.primitiveShader.SetUniformMatFloat4("model", modelMatrix);
-  //   shaderResource.primitiveShader.SetUniformVecFloat3("uColor", sphere.color);
-  //   renderer->DrawSphere(sphere, shaderResource.primitiveShader);
-  // });
-
-  // shaderResource.primitiveShader.Unbind();
-
   shaderResource.sphereShaderBatch.Bind();
   shaderResource.sphereShaderBatch.SetUniformMatFloat4("projection", quatCamera->GetProjection());
   shaderResource.sphereShaderBatch.SetUniformMatFloat4("view", quatCamera->GetView());
@@ -513,7 +537,7 @@ void RenderSystem::DrawAllSpheres(float dt, Registry* registry, Input* input)
   shaderResource.sphereShaderBatch.Unbind();
 }
 
-void RenderSystem::DrawAllBoundingBoxes(float dt, Registry* registry, Input* input)
+void RenderSystem::DrawAllColldiers(float dt, Registry* registry, Input* input)
 {
   ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
 
@@ -524,15 +548,27 @@ void RenderSystem::DrawAllBoundingBoxes(float dt, Registry* registry, Input* inp
   glLineWidth(5.0f);
   glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+  // Render ColliderCubes
   renderer->StartBatch();
-
-  registry->GetComponentsIter<Transform>()->Each([&](Transform& transform) {
-    auto modelMatrix = GetModelMatrixWithoutRotation(transform);
-    renderer->PushGenericBufferWithColor(modelMatrix, {1.0f, 0.0f, 0.0f}, DrawType::Cube);
-  });
+  registry->GetComponentsIter<Transform, ColliderCube>()->Each(
+      [&](Transform& transform, ColliderCube& colliderCube) {
+        auto modelMatrix = GetModelMatrixWithoutRotation(transform);
+        renderer->PushGenericBufferWithColor(modelMatrix, {1.0f, 0.0f, 0.0f}, DrawType::Cube);
+      });
 
   PrimitiveBatchIds primitiveBatchIds = registry->GetComponent<PrimitiveBatchIds>();
   renderer->FlushBatch(primitiveBatchIds, DrawType::Cube);
+
+  // Render ColliderSpheres
+  renderer->StartBatch();
+  registry->GetComponentsIter<Transform, ColliderSphere>()->Each(
+      [&](Transform& transform, ColliderSphere& colliderSphere) {
+        auto modelMatrix = GetModelMatrixWithoutRotation(transform);
+        renderer->PushGenericBufferWithColor(modelMatrix, {1.0f, 0.0f, 0.0f}, DrawType::Sphere);
+      });
+  renderer->FlushBatch(primitiveBatchIds, DrawType::Sphere);
+
+  // TODO : Render ColliderPolygons
 
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   glLineWidth(1.0f);
@@ -540,8 +576,42 @@ void RenderSystem::DrawAllBoundingBoxes(float dt, Registry* registry, Input* inp
   shaderResource.cubeShaderBatch.Unbind();
 }
 
-void RenderSystem::DrawAllColldiers(float dt, Registry* registry, Input* input)
+void RenderSystem::DrawActiveEntityBoundingBox(float dt, Registry* registry, Input* input)
 {
+  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+
+  // Only proceed if there is an active entity that is being selected on the screen
+  if (devDebug.activeEntity == 0)
+  {
+    return;
+  }
+
+  // Get the transform of said entity
+  Transform& transform = *(registry->GetComponent<Transform>(devDebug.activeEntity));
+
+  // Check if the entity is a cube/sphere (primitive) or a model
+  // the difference is that if it is a model, then the meshes have to be
+  // iterated over to get the maximum bounding box
+  if (registry->EntityHasComponent<Cube>(devDebug.activeEntity) ||
+      registry->EntityHasComponent<Sphere>(devDebug.activeEntity))
+  {
+    std::vector<glm::vec4> verticesCollection;
+    verticesCollection.reserve(boundingBoxCubeVertices.size() / 3);
+    auto modelMatrix = GetModelMatrix(transform);
+
+    for (size_t i = 0; i < boundingBoxCubeVertices.size(); i += 3)
+    {
+      verticesCollection.push_back(modelMatrix * glm::vec4(boundingBoxCubeVertices[i],
+                                                           boundingBoxCubeVertices[i + 1],
+                                                           boundingBoxCubeVertices[i + 2], 1.0f));
+    }
+
+    BoundingBox bb = GetBoundingBox(verticesCollection);
+  }
+  // TODO : When a component for animated component is added here -  add another check
+  else if (registry->EntityHasComponent<Model>(devDebug.activeEntity))
+  {
+  }
 }
 
 // bool : true if collided, false if not collided

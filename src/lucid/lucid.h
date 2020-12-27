@@ -13,6 +13,8 @@
 #include "input.h"
 #include "constants.h"
 #include "utils.h"
+#include "startup.h"
+#include "engineStartup.h"
 
 #if DEBUG
 #include "engineComponents.h"
@@ -44,6 +46,7 @@
 #include "audioSystem.h"
 #include "uiSystem.h"
 #include "physicsSystem.h"
+#include "animationSystem.h"
 
 class Lucid
 {
@@ -66,8 +69,6 @@ class Lucid
 
   void Update();
 
-  void InitializeArchetypes();
-  void InitializeBuiltInEntities();
   void InitializeBuiltInSystems();
 
   void InitializeModelEntities();
