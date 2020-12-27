@@ -434,7 +434,7 @@ void RenderSystem::DrawAllModels(float dt, Registry* registry, Input* input)
   shaderResource.modelAnimatedShader.SetUniformMatFloat4("view", quatCamera->GetView());
 
   registry->GetComponentsIter<Model, Transform>()->Each([&](Model& model, Transform& transform) {
-    auto time = currentTime * model.scene->mAnimations[0]->mTicksPerSecond;
+    auto time = static_cast<float>(currentTime * model.scene->mAnimations[0]->mTicksPerSecond);
     model.UpdateBoneMatrices(time, 0, model.scene->mRootNode, glm::mat4(1.0f));
     auto modelMatrix = GetModelMatrix(transform);
 

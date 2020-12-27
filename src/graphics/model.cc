@@ -313,7 +313,7 @@ glm::mat4 Model::InterpolateTranslationMatrix(float dt, aiVectorKey* keys, uint3
       [](const aiVectorKey& a, const aiVectorKey& b) { return a.mTime < b.mTime; });
   auto leftPtr = rightPtr - 1;
 
-  float factor = (dt - leftPtr->mTime) / (rightPtr->mTime - leftPtr->mTime);
+  float factor = static_cast<float>((dt - leftPtr->mTime) / (rightPtr->mTime - leftPtr->mTime));
   return CastToGlmMat4(leftPtr->mValue * (1.0f - factor) + rightPtr->mValue * factor);
 }
 
@@ -347,7 +347,7 @@ glm::mat4 Model::InterpolateRotationMatrix(float dt, aiQuatKey* keys, uint32_t n
                        [](const aiQuatKey& a, const aiQuatKey& b) { return a.mTime < b.mTime; });
   auto leftPtr = rightPtr - 1;
 
-  double factor = (dt - leftPtr->mTime) / (rightPtr->mTime - leftPtr->mTime);
+  float factor = static_cast<float>((dt - leftPtr->mTime) / (rightPtr->mTime - leftPtr->mTime));
 
   aiQuaternion out;
   aiQuaternion::Interpolate(out, leftPtr->mValue, rightPtr->mValue, factor);
@@ -384,6 +384,6 @@ glm::mat4 Model::InterpolateScalingMatrix(float dt, aiVectorKey* keys, uint32_t 
       [](const aiVectorKey& a, const aiVectorKey& b) { return a.mTime < b.mTime; });
   auto leftPtr = rightPtr - 1;
 
-  float factor = (dt - leftPtr->mTime) / (rightPtr->mTime - leftPtr->mTime);
+  float factor = static_cast<float>((dt - leftPtr->mTime) / (rightPtr->mTime - leftPtr->mTime));
   return CastToGlmMat4(leftPtr->mValue * (1.0f - factor) + rightPtr->mValue * factor);
 }
