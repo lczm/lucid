@@ -40,6 +40,7 @@ const char POLYBIRD_MODEL[] = "../assets/low-poly-bird-animated/source/Bird_Asse
 const char POLYFOX_MODEL[] = "../assets/low-poly-fox-by-pixelmannen-animated/source/animations.fbx";
 const char SHIBA_INU_MODEL[] = "../assets/animated_dog_shiba_inu_gltf/scene.gltf";
 const char EAGLE_MODEL[] = "../assets/animated_eagle/scene.gltf";
+const char GAME_CAMERA_MODEL[] = "../assets/low_poly_camera/scene.gltf";
 
 // Images
 const char AIRMAN_IMAGE[] = "../assets/images/air-man.png";

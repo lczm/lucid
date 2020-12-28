@@ -61,6 +61,11 @@ Model::Model(std::string path)
     }
   }
 
+  if (scene->mNumAnimations > 0)
+  {
+    hasAnimations = true;
+  }
+
   directory = path.substr(0, path.find_last_of('/'));
   ProcessNode(scene->mRootNode, scene);
 

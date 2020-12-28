@@ -52,6 +52,8 @@ class Model
 
   std::vector<glm::mat4> boneMatrices;
   std::vector<glm::mat4> boneOffsets;
+  bool hasAnimations = false;
+  bool toAnimate = false;
 
  public:
   Model();

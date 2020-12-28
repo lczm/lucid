@@ -606,7 +606,6 @@ void UiSystem::HandleGizmoInput(Registry* registry, Input* input)
   if (devDebug.activeEntity != 0)
   {
     ImGuizmo::BeginFrame();
-    // ImGuizmo::EndFrame();
 
     ImGuizmo::SetOrthographic(false);
     ImGuizmo::SetDrawlist();

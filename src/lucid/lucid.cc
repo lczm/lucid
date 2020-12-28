@@ -141,22 +141,27 @@ void Lucid::InitializeBuiltInSystems()
 
 void Lucid::InitializeModelEntities()
 {
+  Entity gameCameraId = registry->GetAvailableEntityId();
+  registry->CreateEntity<Model, Transform>(gameCameraId);
+  registry->AddComponentData<Model>(gameCameraId, Model(GAME_CAMERA_MODEL));
+
   Entity polyFoxId = registry->GetAvailableEntityId();
   registry->CreateEntity<Model, Transform>(polyFoxId);
   registry->AddComponentData<Model>(polyFoxId, Model(POLYFOX_MODEL));
 
-  registry->GetComponent<Transform>(polyFoxId)->position = {3.0f, 1.0f, 0.0f};
+  registry->GetComponent<Model>(polyFoxId)->toAnimate = true;
+  registry->GetComponent<Transform>(polyFoxId)->position = {3.0f, 10.0f, 0.0f};
   registry->GetComponent<Transform>(polyFoxId)->scale /= 15.0f;
-
   registry->GetComponent<Transform>(polyFoxId)->rotation.x = glm::radians(90.0f);
   registry->GetComponent<Transform>(polyFoxId)->rotation.y = glm::radians(0.0f);
 
-  Entity helmetId = registry->GetAvailableEntityId();
-  registry->CreateEntity<Model, Transform>(helmetId);
-  registry->AddComponentData<Model>(helmetId, Model(EAGLE_MODEL));
+  Entity eagleId = registry->GetAvailableEntityId();
+  registry->CreateEntity<Model, Transform>(eagleId);
+  registry->AddComponentData<Model>(eagleId, Model(EAGLE_MODEL));
 
-  registry->GetComponent<Transform>(helmetId)->position = {0.0f, 0.0f, 0.0f};
-  registry->GetComponent<Transform>(helmetId)->scale /= 15.0f;
+  registry->GetComponent<Model>(eagleId)->toAnimate = true;
+  registry->GetComponent<Transform>(eagleId)->position = {0.0f, 10.0f, 0.0f};
+  registry->GetComponent<Transform>(eagleId)->scale /= 15.0f;
 }
 
 void Lucid::InitializeSystems()
