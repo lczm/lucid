@@ -342,31 +342,25 @@ bool RenderSystem::HandleMousePick(float dt, Registry* registry, Input* input)
     entityIds.push_back(id);
   });
 
-  registry->GetComponentsIter<Model, Transform>()->EachWithID([&](Entity id, Model& model,
-                                                                  Transform& transform) {
-    // Calculate the model matrix
-    auto modelMatrix = GetModelMatrix(transform);
-    // auto modelMatrix = GetModelMatrixWithoutRotation(transform);
+  registry->GetComponentsIter<Model, Transform>()->EachWithID(
+      [&](Entity id, Model& model, Transform& transform) {
+        // Calculate the model matrix
+        auto modelMatrix = GetModelMatrix(transform);
+        // auto modelMatrix = GetModelMatrixWithoutRotation(transform);
 
-    std::vector<glm::vec4> verticesCollection;
+        std::vector<glm::vec4> verticesCollection;
+        verticesCollection.reserve(model.vertices.size());
 
-    for (auto& mesh : model.GetMeshes())
-    {
-      // verticesCollection.reserve(mesh.vertices.size() / 3);
-      verticesCollection.reserve(mesh.vertices.size());
-      for (size_t i = 0; i < mesh.vertices.size(); i++)
-      {
-        verticesCollection.push_back(modelMatrix * glm::vec4(mesh.vertices[i].position.x,
-                                                             mesh.vertices[i].position.y,
-                                                             mesh.vertices[i].position.z, 1.0f));
-      }
-    }
+        for (auto& vec : model.vertices)
+        {
+          verticesCollection.push_back(modelMatrix * vec);
+        }
 
-    BoundingBox bb = GetBoundingBox(verticesCollection);
-    boundingBoxes.push_back(bb);
+        BoundingBox bb = GetBoundingBox(verticesCollection);
+        boundingBoxes.push_back(bb);
 
-    entityIds.push_back(id);
-  });
+        entityIds.push_back(id);
+      });
 
   // Calculate the distance between the ray origin and the bounding box?
   auto origin = quatCamera->GetPositionInWorld();
