@@ -6,13 +6,12 @@
 struct ShaderResource
 {
   Shader modelShader;
-  Shader triangleShader;
-  Shader primitiveShader;
-  Shader primitiveShaderBatch;
-  Shader cubeShaderBatch;
-  Shader sphereShaderBatch;
-  Shader boundingBoxShader;
-
-  // Animated model
   Shader modelAnimatedShader;
+
+  // Generic primitive shader
+  Shader primitiveShader;
+
+  Shader lineShader;
+  Shader cubeShader;
+  Shader sphereShader;
 };
