@@ -222,7 +222,6 @@ std::vector<MeshTexture> Model::LoadMaterialTextures(aiMaterial* material, aiTex
                                                      std::string typeName)
 {
   std::vector<MeshTexture> textures;
-  std::cout << "texture count : " << material->GetTextureCount(type) << std::endl;
 
   for (size_t i = 0; i < material->GetTextureCount(type); i++)
   {
@@ -288,7 +287,7 @@ uint32_t Model::TextureFromFile(const char* path, const std::string& directory, 
   }
   else
   {
-    std::cout << "Texture failed to load at path: " << path << std::endl;
+    std::cout << "(Model::TextureFromFile) : Texture failed to load at path: " << path << std::endl;
     stbi_image_free(data);
   }
 

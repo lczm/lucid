@@ -141,15 +141,15 @@ void Lucid::InitializeBuiltInSystems()
 
 void Lucid::InitializeModelEntities()
 {
-  // Entity polyFoxId = registry->GetAvailableEntityId();
-  // registry->CreateEntity<Model, Transform>(polyFoxId);
-  // registry->AddComponentData<Model>(polyFoxId, Model(POLYFOX_MODEL));
+  Entity polyFoxId = registry->GetAvailableEntityId();
+  registry->CreateEntity<Model, Transform>(polyFoxId);
+  registry->AddComponentData<Model>(polyFoxId, Model(POLYFOX_MODEL));
 
-  // registry->GetComponent<Transform>(polyFoxId)->position = {0.0f, 1.0f, 0.0f};
-  // registry->GetComponent<Transform>(polyFoxId)->scale /= 15.0f;
+  registry->GetComponent<Transform>(polyFoxId)->position = {3.0f, 1.0f, 0.0f};
+  registry->GetComponent<Transform>(polyFoxId)->scale /= 15.0f;
 
-  // registry->GetComponent<Transform>(polyFoxId)->rotation.x = glm::radians(90.0f);
-  // registry->GetComponent<Transform>(polyFoxId)->rotation.y = glm::radians(0.0f);
+  registry->GetComponent<Transform>(polyFoxId)->rotation.x = glm::radians(90.0f);
+  registry->GetComponent<Transform>(polyFoxId)->rotation.y = glm::radians(0.0f);
 
   Entity helmetId = registry->GetAvailableEntityId();
   registry->CreateEntity<Model, Transform>(helmetId);

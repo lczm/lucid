@@ -475,6 +475,7 @@ void RenderSystem::DrawAllModels(float dt, Registry* registry, Input* input)
 
   registry->GetComponentsIter<Model, Transform>()->Each([&](Model& model, Transform& transform) {
     auto time = static_cast<float>(currentTime * model.scene->mAnimations[0]->mTicksPerSecond);
+    // auto time = static_cast<float>(dt * currentTime);
     model.UpdateBoneMatrices(time, 0, model.scene->mRootNode, glm::mat4(1.0f));
     auto modelMatrix = GetModelMatrix(transform);
 
