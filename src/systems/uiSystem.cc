@@ -5,7 +5,7 @@ UiSystem::UiSystem()
   ImGuiIO& io = ImGui::GetIO();
   io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;  // Enable Docking
   io.IniFilename = NULL;                             // Disable imgui.ini
-  io.ConfigWindowsMoveFromTitleBarOnly |= ImGuiWindowFlags_NoMove;
+  io.ConfigWindowsMoveFromTitleBarOnly |= true;
   drawSceneOnly = false;
   (void)io;
 }
