@@ -622,6 +622,36 @@ void RenderSystem::DrawActiveEntityBoundingBox(float dt, Registry* registry, Inp
   // TODO : When a component for animated component is added here -  add another check
   else if (registry->EntityHasComponent<Model>(devDebug.activeEntity))
   {
+    std::vector<glm::vec4> verticesCollection;
+    auto modelMatrix = GetModelMatrix(transform);
+
+    Model* model = registry->GetComponent<Model>(devDebug.activeEntity);
+    for (auto& mesh : model->GetMeshes())
+    {
+      verticesCollection.reserve(mesh.vertices.size());
+      for (size_t i = 0; i < mesh.vertices.size(); i++)
+      {
+        verticesCollection.push_back(modelMatrix * glm::vec4(mesh.vertices[i].position.x,
+                                                             mesh.vertices[i].position.y,
+                                                             mesh.vertices[i].position.z, 1.0f));
+      }
+    }
+
+    ShaderResource& shaderResource = registry->GetComponent<ShaderResource>();
+    shaderResource.lineShader.Bind();
+    shaderResource.cubeShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
+    shaderResource.cubeShader.SetUniformMatFloat4("view", quatCamera->GetView());
+
+    glLineWidth(3.0f);
+    renderer->StartBatch();
+
+    BoundingBox bb = GetBoundingBox(verticesCollection);
+    renderer->DrawBoundingBox(bb);
+
+    PrimitiveBatchIds primitiveBatchIds = registry->GetComponent<PrimitiveBatchIds>();
+    renderer->FlushBatch(primitiveBatchIds, DrawType::Line);
+
+    glLineWidth(1.0f);
   }
 }
 

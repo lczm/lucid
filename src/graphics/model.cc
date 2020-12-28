@@ -64,11 +64,7 @@ Model::Model(std::string path)
   directory = path.substr(0, path.find_last_of('/'));
   ProcessNode(scene->mRootNode, scene);
 
-  // TODO : resize this to 100 as opengl is passing in a uniform of 100
-  // if it is not 100 there will be gl errors
-  // Resize boneMatrices
-  // boneMatrices.resize(boneNamer.Total());
-  boneMatrices.resize(100);
+  boneMatrices.resize(boneNamer.Total());
 }
 
 Model::~Model()
@@ -214,6 +210,7 @@ std::vector<MeshTexture> Model::LoadMaterialTextures(aiMaterial* material, aiTex
                                                      std::string typeName)
 {
   std::vector<MeshTexture> textures;
+  std::cout << "texture count : " << material->GetTextureCount(type) << std::endl;
 
   for (size_t i = 0; i < material->GetTextureCount(type); i++)
   {
