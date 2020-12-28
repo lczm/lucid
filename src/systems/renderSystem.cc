@@ -46,7 +46,6 @@ void RenderSystem::Update(float dt, Registry* registry, Input* input)
   DrawAllModels(dt, registry, input);
   DrawAllCubes(dt, registry, input);
   DrawAllSpheres(dt, registry, input);
-
   DrawActiveEntityBoundingBox(dt, registry, input);
 
   if (devDebug.drawColliders) DrawAllColldiers(dt, registry, input);
@@ -604,7 +603,21 @@ void RenderSystem::DrawActiveEntityBoundingBox(float dt, Registry* registry, Inp
                                                            boundingBoxCubeVertices[i + 2], 1.0f));
     }
 
+    ShaderResource& shaderResource = registry->GetComponent<ShaderResource>();
+    shaderResource.lineShader.Bind();
+    shaderResource.cubeShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
+    shaderResource.cubeShader.SetUniformMatFloat4("view", quatCamera->GetView());
+
+    glLineWidth(3.0f);
+    renderer->StartBatch();
+
     BoundingBox bb = GetBoundingBox(verticesCollection);
+    renderer->DrawBoundingBox(bb);
+
+    PrimitiveBatchIds primitiveBatchIds = registry->GetComponent<PrimitiveBatchIds>();
+    renderer->FlushBatch(primitiveBatchIds, DrawType::Line);
+
+    glLineWidth(1.0f);
   }
   // TODO : When a component for animated component is added here -  add another check
   else if (registry->EntityHasComponent<Model>(devDebug.activeEntity))

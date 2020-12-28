@@ -214,18 +214,80 @@ void Renderer::DrawLineIndexed(const PrimitiveBatchIds primitiveBatchIds)
   // There are no indices in lines
 }
 
-void Renderer::DrawBoundingBox(const BoundingBox boundingBox)
+void Renderer::DrawBoundingBox(const BoundingBox bb)
 {
-}
+  Transform transform;
+  glm::mat4 lineModelMatrix;
 
-// void Renderer::DrawBoundingBox(ColliderCube colliderCube, Shader& shader)
-// {
-//   glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-//   glBindVertexArray(colliderCube.VAO);
-//   glDrawElements(GL_TRIANGLES, boundingBoxCubeIndices.size(), GL_UNSIGNED_INT, 0);
-//   glBindVertexArray(0);
-//   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-// }
+  // Draw top surface
+  {
+    transform.position = glm::vec3(bb.minX, bb.maxY, bb.minZ);
+    transform.scale = glm::vec3(bb.minX, bb.maxY, bb.maxZ) - glm::vec3(bb.minX, bb.maxY, bb.minZ);
+    lineModelMatrix = GetModelMatrix(transform);
+    PushGenericBufferWithColor(lineModelMatrix, {1.0f, 0.0f, 0.0f}, DrawType::Line);
+
+    transform.position = glm::vec3(bb.maxX, bb.maxY, bb.minZ);
+    transform.scale = glm::vec3(bb.maxX, bb.maxY, bb.maxZ) - glm::vec3(bb.maxX, bb.maxY, bb.minZ);
+    lineModelMatrix = GetModelMatrix(transform);
+    PushGenericBufferWithColor(lineModelMatrix, {1.0f, 0.0f, 0.0f}, DrawType::Line);
+
+    transform.position = glm::vec3(bb.minX, bb.maxY, bb.minZ);
+    transform.scale = glm::vec3(bb.maxX, bb.maxY, bb.minZ) - glm::vec3(bb.minX, bb.maxY, bb.minZ);
+    lineModelMatrix = GetModelMatrix(transform);
+    PushGenericBufferWithColor(lineModelMatrix, {1.0f, 0.0f, 0.0f}, DrawType::Line);
+
+    transform.position = glm::vec3(bb.minX, bb.maxY, bb.maxZ);
+    transform.scale = glm::vec3(bb.maxX, bb.maxY, bb.maxZ) - glm::vec3(bb.minX, bb.maxY, bb.maxZ);
+    lineModelMatrix = GetModelMatrix(transform);
+    PushGenericBufferWithColor(lineModelMatrix, {1.0f, 0.0f, 0.0f}, DrawType::Line);
+  }
+
+  // Draw bottom surface
+  {
+    transform.position = glm::vec3(bb.minX, bb.minY, bb.minZ);
+    transform.scale = glm::vec3(bb.minX, bb.minY, bb.maxZ) - glm::vec3(bb.minX, bb.minY, bb.minZ);
+    lineModelMatrix = GetModelMatrix(transform);
+    PushGenericBufferWithColor(lineModelMatrix, {1.0f, 0.0f, 0.0f}, DrawType::Line);
+
+    transform.position = glm::vec3(bb.maxX, bb.minY, bb.minZ);
+    transform.scale = glm::vec3(bb.maxX, bb.minY, bb.maxZ) - glm::vec3(bb.maxX, bb.minY, bb.minZ);
+    lineModelMatrix = GetModelMatrix(transform);
+    PushGenericBufferWithColor(lineModelMatrix, {1.0f, 0.0f, 0.0f}, DrawType::Line);
+
+    transform.position = glm::vec3(bb.minX, bb.minY, bb.minZ);
+    transform.scale = glm::vec3(bb.maxX, bb.minY, bb.minZ) - glm::vec3(bb.minX, bb.minY, bb.minZ);
+    lineModelMatrix = GetModelMatrix(transform);
+    PushGenericBufferWithColor(lineModelMatrix, {1.0f, 0.0f, 0.0f}, DrawType::Line);
+
+    transform.position = glm::vec3(bb.minX, bb.minY, bb.maxZ);
+    transform.scale = glm::vec3(bb.maxX, bb.minY, bb.maxZ) - glm::vec3(bb.minX, bb.minY, bb.maxZ);
+    lineModelMatrix = GetModelMatrix(transform);
+    PushGenericBufferWithColor(lineModelMatrix, {1.0f, 0.0f, 0.0f}, DrawType::Line);
+  }
+
+  // Draw top-bottom, bottom-top lines
+  {
+    transform.position = glm::vec3(bb.minX, bb.minY, bb.maxZ);
+    transform.scale = glm::vec3(bb.minX, bb.maxY, bb.maxZ) - glm::vec3(bb.minX, bb.minY, bb.maxZ);
+    lineModelMatrix = GetModelMatrix(transform);
+    PushGenericBufferWithColor(lineModelMatrix, {1.0f, 0.0f, 0.0f}, DrawType::Line);
+
+    transform.position = glm::vec3(bb.maxX, bb.minY, bb.maxZ);
+    transform.scale = glm::vec3(bb.maxX, bb.maxY, bb.maxZ) - glm::vec3(bb.maxX, bb.minY, bb.maxZ);
+    lineModelMatrix = GetModelMatrix(transform);
+    PushGenericBufferWithColor(lineModelMatrix, {1.0f, 0.0f, 0.0f}, DrawType::Line);
+
+    transform.position = glm::vec3(bb.minX, bb.minY, bb.minZ);
+    transform.scale = glm::vec3(bb.minX, bb.maxY, bb.minZ) - glm::vec3(bb.minX, bb.minY, bb.minZ);
+    lineModelMatrix = GetModelMatrix(transform);
+    PushGenericBufferWithColor(lineModelMatrix, {1.0f, 0.0f, 0.0f}, DrawType::Line);
+
+    transform.position = glm::vec3(bb.maxX, bb.minY, bb.minZ);
+    transform.scale = glm::vec3(bb.maxX, bb.maxY, bb.minZ) - glm::vec3(bb.maxX, bb.minY, bb.minZ);
+    lineModelMatrix = GetModelMatrix(transform);
+    PushGenericBufferWithColor(lineModelMatrix, {1.0f, 0.0f, 0.0f}, DrawType::Line);
+  }
+}
 
 void Renderer::StartBatch()
 {
