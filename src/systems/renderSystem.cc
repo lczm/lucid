@@ -622,19 +622,16 @@ void RenderSystem::DrawActiveEntityBoundingBox(float dt, Registry* registry, Inp
   // TODO : When a component for animated component is added here -  add another check
   else if (registry->EntityHasComponent<Model>(devDebug.activeEntity))
   {
-    std::vector<glm::vec4> verticesCollection;
+    // std::vector<glm::vec4> verticesCollection;
     auto modelMatrix = GetModelMatrix(transform);
 
     Model* model = registry->GetComponent<Model>(devDebug.activeEntity);
-    for (auto& mesh : model->GetMeshes())
+    std::vector<glm::vec4> verticesCollection;
+    verticesCollection.reserve(model->vertices.size());
+
+    for (auto& vec : model->vertices)
     {
-      verticesCollection.reserve(mesh.vertices.size());
-      for (size_t i = 0; i < mesh.vertices.size(); i++)
-      {
-        verticesCollection.push_back(modelMatrix * glm::vec4(mesh.vertices[i].position.x,
-                                                             mesh.vertices[i].position.y,
-                                                             mesh.vertices[i].position.z, 1.0f));
-      }
+      verticesCollection.push_back(modelMatrix * vec);
     }
 
     ShaderResource& shaderResource = registry->GetComponent<ShaderResource>();

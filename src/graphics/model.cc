@@ -65,6 +65,18 @@ Model::Model(std::string path)
   ProcessNode(scene->mRootNode, scene);
 
   boneMatrices.resize(boneNamer.Total());
+
+  // After processing everything, generate a standalone vertices bounding box
+  for (auto& mesh : GetMeshes())
+  {
+    // Reserve some space in advance
+    vertices.reserve(mesh.vertices.size());
+    for (size_t i = 0; i < mesh.vertices.size(); i++)
+    {
+      vertices.push_back(glm::vec4(mesh.vertices[i].position.x, mesh.vertices[i].position.y,
+                                   mesh.vertices[i].position.z, 1.0f));
+    }
+  }
 }
 
 Model::~Model()

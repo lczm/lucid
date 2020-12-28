@@ -103,7 +103,10 @@ int main(void)
 
   glEnable(GL_DEBUG_OUTPUT);
   glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-  glDebugMessageCallback(MessageCallback, nullptr);
+
+  // Note : for whatever reason, setting this will crash on windows + gpu, windows + igpu will work
+  // perfectly fine
+  // glDebugMessageCallback(MessageCallback, nullptr);
   // glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, NULL,
   //                       GL_FALSE);
 
