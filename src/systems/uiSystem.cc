@@ -127,8 +127,7 @@ void UiSystem::PresetLayout(ImGuiID dockSpaceID)
       ImGui::DockBuilderSplitNode(dockMainID, ImGuiDir_Right, 0.2f, NULL, &dockMainID);
   ImGuiID dockBottomID =
       ImGui::DockBuilderSplitNode(dockMainID, ImGuiDir_Down, 0.3f, NULL, &dockMainID);
-  ImGuiID dockTopID =
-      ImGui::DockBuilderSplitNode(dockMainID, ImGuiDir_Up, 0.05f, NULL, &dockMainID);
+  ImGuiID dockTopID = ImGui::DockBuilderSplitNode(dockMainID, ImGuiDir_Up, 0.7f, NULL, &dockMainID);
   ImGuiID dockMiddleID =
       ImGui::DockBuilderSplitNode(dockTopID, ImGuiDir_Down, 0.95f, NULL, &dockTopID);
   ImGuiID dockBottomLeftID =
@@ -281,13 +280,8 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
 
   UpdateWindowFocus(registry, WindowType::Inspector, "Inspector", input, WindowType::Scene);
   UpdateWindowFocus(registry, WindowType::Scene, "Scene", input);
-  UpdateInputActiveWindow(input, WindowType::Scene);
-  ImVec2 scenePos = ImGui::GetWindowPos();
-  widgetLayout.topWindowHeight = scenePos.y;
-  widgetLayout.leftWindowWidth = scenePos.x;
-  widgetLayout.bottomWindowHeight = SCREEN_HEIGHT - (scenePos.y + wsize.y);
-  widgetLayout.rightWindowWidth = SCREEN_WIDTH - (scenePos.x + wsize.x);
 
+  UpdateInputActiveWindow(input, WindowType::Scene);
   ImGui::EndChild();
 
   // Drag n drop from default assets
@@ -326,6 +320,13 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
     }
     ImGui::EndDragDropTarget();
   }
+  ImVec2 sceneWindowSize = ImGui::GetWindowSize();
+  ImVec2 scenePos = ImGui::GetWindowPos();
+  widgetLayout.menuBarHeight = 0;
+  widgetLayout.topWindowHeight = scenePos.y;
+  widgetLayout.leftWindowWidth = scenePos.x;
+  widgetLayout.bottomWindowHeight = SCREEN_HEIGHT - (scenePos.y + sceneWindowSize.y);
+  widgetLayout.rightWindowWidth = SCREEN_WIDTH - (scenePos.x + sceneWindowSize.x);
   ImGui::End();
 }
 
