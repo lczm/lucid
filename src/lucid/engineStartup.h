@@ -65,18 +65,19 @@ static void InitEngineComponents(Registry* registry)
   registry->CreateEntity<ShaderResource>(shaderResourceID);
 
   ShaderResource& shaderResource = registry->GetComponent<ShaderResource>();
-  shaderResource.modelShader.CreateShader(MODEL_VERTEX_SHADER, MODEL_FRAGMENT_SHADER);
-  shaderResource.triangleShader.CreateShader(TRIANGLE_VERTEX_SHADER, TRIANGLE_FRAGMENT_SHADER);
-  shaderResource.primitiveShader.CreateShader(PRIMITIVE_VERTEX_SHADER, PRIMITIVE_FRAGMENT_SHADER);
-  shaderResource.primitiveShaderBatch.CreateShader(PRIMITIVE_LINE_SHADER,
-                                                   PRIMITIVE_FRAGMENT_SHADER);
-  shaderResource.cubeShaderBatch.CreateShader(PRIMITIVE_CUBE_SHADER, PRIMITIVE_FRAGMENT_SHADER);
-  // Note : using the primitive cube shader for now? If there turns out to not be a need
-  // for the sphere and cubes to use different shaders, then simplify the shader names.
-  shaderResource.sphereShaderBatch.CreateShader(PRIMITIVE_CUBE_SHADER, PRIMITIVE_FRAGMENT_SHADER);
 
+  // TODO : Check if the modelShader needs to have both model and modelAnimated
+  shaderResource.modelShader.CreateShader(MODEL_VERTEX_SHADER, MODEL_FRAGMENT_SHADER);
   shaderResource.modelAnimatedShader.CreateShader(MODEL_ANIMATED_VERTEX_SHADER,
                                                   MODEL_FRAGMENT_SHADER);
+
+  shaderResource.primitiveShader.CreateShader(PRIMITIVE_VERTEX_SHADER, PRIMITIVE_FRAGMENT_SHADER);
+  shaderResource.lineShader.CreateShader(PRIMITIVE_LINE_SHADER, PRIMITIVE_FRAGMENT_SHADER);
+
+  shaderResource.cubeShader.CreateShader(PRIMITIVE_INSTANCED_SHADER, PRIMITIVE_FRAGMENT_SHADER);
+  // Note : using the primitive cube shader for now? If there turns out to not be a need
+  // for the sphere and cubes to use different shaders, then simplify the shader names.
+  shaderResource.sphereShader.CreateShader(PRIMITIVE_INSTANCED_SHADER, PRIMITIVE_FRAGMENT_SHADER);
 
   Entity sphereVerticesIndicesID = registry->GetAvailableEntityId();
   registry->CreateEntity<SphereVerticesIndices>(sphereVerticesIndicesID);

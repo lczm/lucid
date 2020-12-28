@@ -29,6 +29,12 @@ static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, i
 void MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
                      const GLchar* message, const void* userParam)
 {
+  // This is the wide glLineWidth depreciation warning.
+  if (type == 0x824d)
+  {
+    return;
+  }
+
   // 0x826B is just a notification, which is what is printing out most of the
   // time. To keep the output verbose, only print out when there is a explicitly
   // defined severity error.
@@ -98,8 +104,8 @@ int main(void)
   glEnable(GL_DEBUG_OUTPUT);
   glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
   glDebugMessageCallback(MessageCallback, nullptr);
-  glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, NULL,
-                        GL_FALSE);
+  // glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, NULL,
+  //                       GL_FALSE);
 
   std::cout << "OpenGL Version : " << glGetString(GL_VERSION) << std::endl;
 

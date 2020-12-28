@@ -28,8 +28,7 @@ const char MODEL_FRAGMENT_SHADER[] = "../src/shaders/model.frag";
 
 const char PRIMITIVE_VERTEX_SHADER[] = "../src/shaders/primitive.vert";
 const char PRIMITIVE_LINE_SHADER[] = "../src/shaders/line.vert";
-const char PRIMITIVE_CUBE_SHADER[] = "../src/shaders/cube.vert";
-
+const char PRIMITIVE_INSTANCED_SHADER[] = "../src/shaders/primitiveInstanced.vert";
 const char PRIMITIVE_FRAGMENT_SHADER[] = "../src/shaders/primitive.frag";
 
 // Models
@@ -39,6 +38,8 @@ const char FOX_MODEL[] = "../assets/fox/Fox.gltf";
 const char AVOCADO_MODEL[] = "../assets/avocado/Avocado.gltf";
 const char POLYBIRD_MODEL[] = "../assets/low-poly-bird-animated/source/Bird_Asset.fbx";
 const char POLYFOX_MODEL[] = "../assets/low-poly-fox-by-pixelmannen-animated/source/animations.fbx";
+const char SHIBA_INU_MODEL[] = "../assets/animated_dog_shiba_inu_gltf/scene.gltf";
+const char EAGLE_MODEL[] = "../assets/animated_eagle/scene.gltf";
 
 // Images
 const char AIRMAN_IMAGE[] = "../assets/images/air-man.png";

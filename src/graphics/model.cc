@@ -64,7 +64,6 @@ Model::Model(std::string path)
   directory = path.substr(0, path.find_last_of('/'));
   ProcessNode(scene->mRootNode, scene);
 
-  // Resize boneMatrices
   boneMatrices.resize(boneNamer.Total());
 }
 
@@ -211,6 +210,7 @@ std::vector<MeshTexture> Model::LoadMaterialTextures(aiMaterial* material, aiTex
                                                      std::string typeName)
 {
   std::vector<MeshTexture> textures;
+  std::cout << "texture count : " << material->GetTextureCount(type) << std::endl;
 
   for (size_t i = 0; i < material->GetTextureCount(type); i++)
   {
