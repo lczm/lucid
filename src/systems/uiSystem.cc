@@ -509,14 +509,14 @@ void UiSystem::DrawDefaultAssets(float dt, Registry* registry, Input* input)
 
 void UiSystem::DrawToolBar(float dt, Registry* registry, Input* input)
 {
-  ImGuiWindowClass* windowClass = new ImGuiWindowClass();
+  ImGuiWindowClass windowClass;
   ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse;
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
   float buttonWidth = 60.0f;
   float totalPadding = 16;
 
-  windowClass->DockNodeFlagsOverrideSet = ImGuiDockNodeFlags_NoTabBar;
-  ImGui::SetNextWindowClass(windowClass);
+  windowClass.DockNodeFlagsOverrideSet = ImGuiDockNodeFlags_NoTabBar;
+  ImGui::SetNextWindowClass(&windowClass);
   ImGui::Begin("ToolBar", (bool*)0, windowFlags);
   ImVec2 wSize = ImGui::GetWindowSize();
 
