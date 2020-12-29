@@ -77,7 +77,7 @@ void Lucid::Update()
   if (secondDt >= 1.0f)
   {
     // Update the internal fps counter before resetting it back to 0
-    DevDebug& devDebug = registry->GetComponent<DevDebug>();
+    DevDebug& devDebug = registry->GetResource<DevDebug>();
     devDebug.fps = frameCount;
 
     secondDt -= 1.0f;
@@ -85,7 +85,7 @@ void Lucid::Update()
   }
 
   // Get the current game state
-  GameEngineState& gameEngineState = registry->GetComponent<GameEngineState>();
+  GameEngineState& gameEngineState = registry->GetResource<GameEngineState>();
 
   // Only if the game state is 'playing', then update the systems.
   if (gameEngineState.gameState == GameState::PLAYING)

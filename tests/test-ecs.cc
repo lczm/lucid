@@ -715,12 +715,11 @@ TEST_F(TestsGL, SetGetResource)
 
   Registry* registry = new Registry();
 
-  TestSetResource* resource = new TestSetResource();
-
-  registry->SetResource<TestSetResource>(resource);
+  registry->CreateResource<TestSetResource>();
 
   TestSetResource& get = registry->GetResource<TestSetResource>();
   ASSERT_EQ(get.a, 10);
+
   get.a = 20;
 
   TestSetResource& get2 = registry->GetResource<TestSetResource>();

@@ -982,9 +982,9 @@ class Registry
   }
 
   template <typename Resource>
-  void SetResource(Resource* resource)
+  void CreateResource()
   {
-    resourceMap[GetHashCode<Resource>()] = resource;
+    resourceMap[GetHashCode<Resource>()] = new Resource();
   }
 
   template <typename Resource>

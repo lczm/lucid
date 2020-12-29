@@ -16,7 +16,7 @@ void PhysicsSystem::Update(float dt, Registry* registry, Input* input)
 
 void PhysicsSystem::UpdateAllRigidbodies(float dt, Registry* registry, Input* input)
 {
-  RigidBodyConfiguration& rigidBodyConfiguration = registry->GetComponent<RigidBodyConfiguration>();
+  RigidBodyConfiguration& rigidBodyConfiguration = registry->GetResource<RigidBodyConfiguration>();
 
   registry->GetComponentsIter<Transform, RigidBody>()->Each(
       [&](Transform& transform, RigidBody& rigidBody) {

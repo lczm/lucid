@@ -59,7 +59,7 @@ static glm::mat4 GetModelMatrixWithoutRotation(const Transform transform)
 static glm::vec3 GetRayDirection(Registry* registry, Input* input)
 {
 #if DEBUG
-  WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
+  WidgetLayout& widgetLayout = registry->GetResource<WidgetLayout>();
   float mouseX = static_cast<float>(input->GetMouseX() - widgetLayout.leftWindowWidth);
   float mouseY = static_cast<float>(input->GetMouseYAbsolute() - widgetLayout.menuBarHeight -
                                     widgetLayout.topWindowHeight);
@@ -91,7 +91,7 @@ static glm::vec3 GetRayDirection(Registry* registry, Input* input)
   // homogeneous clip coordinates
   glm::vec4 rayClip = glm::vec4(rayNds.x, rayNds.y, -1.0f, 1.0f);
 
-  QuatCamera& quatCamera = registry->GetComponent<QuatCamera>();
+  QuatCamera& quatCamera = registry->GetResource<QuatCamera>();
 
   // convert to eye/camera coordinates
   glm::vec4 rayEye = glm::inverse(quatCamera.GetProjection()) * rayClip;
