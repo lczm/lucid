@@ -420,7 +420,15 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
       Transform* transform = registry->GetComponent<Transform>(devDebug.activeEntity);
       ImGui::InputFloat("x position", &(transform->position.x), 0.25f, 1.0f);
       ImGui::InputFloat("y position", &(transform->position.y), 0.25f, 1.0f);
-      ImGui::InputFloat("z position", &(transform->position.x), 0.25f, 1.0f);
+      ImGui::InputFloat("z position", &(transform->position.z), 0.25f, 1.0f);
+
+      ImGui::InputFloat("x rotation", &(transform->rotation.x), 0.25f, 1.0f);
+      ImGui::InputFloat("y rotation", &(transform->rotation.y), 0.25f, 1.0f);
+      ImGui::InputFloat("z rotation", &(transform->rotation.z), 0.25f, 1.0f);
+
+      ImGui::InputFloat("x scale", &(transform->scale.x), 0.25f, 1.0f);
+      ImGui::InputFloat("y scale", &(transform->scale.y), 0.25f, 1.0f);
+      ImGui::InputFloat("z scale", &(transform->scale.z), 0.25f, 1.0f);
     }
   }
 
