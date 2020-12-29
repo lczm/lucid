@@ -356,6 +356,10 @@ class Registry
   // Store all the systems that are in use
   std::vector<System*> systems;
 
+  // Store single use structs (i.e. resources)
+  // mapping : GetHashCode<T> : void* (T)
+  std::unordered_map<uint32_t, void*> resourceMap;
+
  public:
   Registry()
   {
@@ -975,6 +979,18 @@ class Registry
     uint32_t entityIndex = entityIndexMap[id];
     return &vectorPtr.at(entityIndex);
     // return &vectorPtr.at(entityVectorPtr[entityIndex]);
+  }
+
+  template <typename Resource>
+  void SetResource(Resource* resource)
+  {
+    resourceMap[GetHashCode<Resource>()] = resource;
+  }
+
+  template <typename Resource>
+  Resource& GetResource()
+  {
+    return *(static_cast<Resource*>(resourceMap[GetHashCode<Resource>()]));
   }
 
   // Given an archetype and the index that the user wants,

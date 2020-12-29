@@ -70,6 +70,7 @@ Model::Model(std::string path)
   ProcessNode(scene->mRootNode, scene);
 
   boneMatrices.resize(boneNamer.Total());
+  std::cout << "boneMatrices size : " << boneMatrices.size() << std::endl;
 
   // After processing everything, generate a standalone vertices bounding box
   for (auto& mesh : GetMeshes())

@@ -141,9 +141,10 @@ void Lucid::InitializeBuiltInSystems()
 
 void Lucid::InitializeModelEntities()
 {
-  Entity gameCameraId = registry->GetAvailableEntityId();
-  registry->CreateEntity<Model, Transform>(gameCameraId);
-  registry->AddComponentData<Model>(gameCameraId, Model(GAME_CAMERA_MODEL));
+  // Entity gameCameraId = registry->GetAvailableEntityId();
+  // registry->CreateEntity<Model, Transform>(gameCameraId);
+  // registry->AddComponentData<Model>(gameCameraId, Model(GAME_CAMERA_MODEL));
+  // registry->GetComponent<Transform>(gameCameraId)->scale /= 15.0f;
 
   Entity polyFoxId = registry->GetAvailableEntityId();
   registry->CreateEntity<Model, Transform>(polyFoxId);
