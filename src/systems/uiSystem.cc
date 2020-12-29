@@ -5,7 +5,7 @@ UiSystem::UiSystem()
   ImGuiIO& io = ImGui::GetIO();
   io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;  // Enable Docking
   io.IniFilename = NULL;                             // Disable imgui.ini
-  io.ConfigWindowsMoveFromTitleBarOnly |= ImGuiWindowFlags_NoMove;
+  io.ConfigWindowsMoveFromTitleBarOnly = true;
   drawSceneOnly = false;
   (void)io;
 }
@@ -127,8 +127,7 @@ void UiSystem::PresetLayout(ImGuiID dockSpaceID)
       ImGui::DockBuilderSplitNode(dockMainID, ImGuiDir_Right, 0.2f, NULL, &dockMainID);
   ImGuiID dockBottomID =
       ImGui::DockBuilderSplitNode(dockMainID, ImGuiDir_Down, 0.3f, NULL, &dockMainID);
-  ImGuiID dockTopID =
-      ImGui::DockBuilderSplitNode(dockMainID, ImGuiDir_Up, 0.05f, NULL, &dockMainID);
+  ImGuiID dockTopID = ImGui::DockBuilderSplitNode(dockMainID, ImGuiDir_Up, 0.7f, NULL, &dockMainID);
   ImGuiID dockMiddleID =
       ImGui::DockBuilderSplitNode(dockTopID, ImGuiDir_Down, 0.95f, NULL, &dockTopID);
   ImGuiID dockBottomLeftID =
@@ -281,13 +280,8 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
 
   UpdateWindowFocus(registry, WindowType::Inspector, "Inspector", input, WindowType::Scene);
   UpdateWindowFocus(registry, WindowType::Scene, "Scene", input);
-  UpdateInputActiveWindow(input, WindowType::Scene);
-  ImVec2 scenePos = ImGui::GetWindowPos();
-  widgetLayout.topWindowHeight = scenePos.y;
-  widgetLayout.leftWindowWidth = scenePos.x;
-  widgetLayout.bottomWindowHeight = SCREEN_HEIGHT - (scenePos.y + wsize.y);
-  widgetLayout.rightWindowWidth = SCREEN_WIDTH - (scenePos.x + wsize.x);
 
+  UpdateInputActiveWindow(input, WindowType::Scene);
   ImGui::EndChild();
 
   // Drag n drop from default assets
@@ -326,6 +320,13 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
     }
     ImGui::EndDragDropTarget();
   }
+  ImVec2 sceneWindowSize = ImGui::GetWindowSize();
+  ImVec2 scenePos = ImGui::GetWindowPos();
+  widgetLayout.menuBarHeight = 0;
+  widgetLayout.topWindowHeight = scenePos.y;
+  widgetLayout.leftWindowWidth = scenePos.x;
+  widgetLayout.bottomWindowHeight = SCREEN_HEIGHT - (scenePos.y + sceneWindowSize.y);
+  widgetLayout.rightWindowWidth = SCREEN_WIDTH - (scenePos.x + sceneWindowSize.x);
   ImGui::End();
 }
 
@@ -508,14 +509,14 @@ void UiSystem::DrawDefaultAssets(float dt, Registry* registry, Input* input)
 
 void UiSystem::DrawToolBar(float dt, Registry* registry, Input* input)
 {
-  ImGuiWindowClass* windowClass = new ImGuiWindowClass();
+  ImGuiWindowClass windowClass;
   ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse;
   DevDebug& devDebug = registry->GetComponent<DevDebug>();
   float buttonWidth = 60.0f;
   float totalPadding = 16;
 
-  windowClass->DockNodeFlagsOverrideSet = ImGuiDockNodeFlags_NoTabBar;
-  ImGui::SetNextWindowClass(windowClass);
+  windowClass.DockNodeFlagsOverrideSet = ImGuiDockNodeFlags_NoTabBar;
+  ImGui::SetNextWindowClass(&windowClass);
   ImGui::Begin("ToolBar", (bool*)0, windowFlags);
   ImVec2 wSize = ImGui::GetWindowSize();
 
