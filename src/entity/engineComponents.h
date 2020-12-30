@@ -58,7 +58,7 @@ struct WidgetLayout
   float topWindowHeight = 0;
 
   float menuBarWidth = 0;
-  float menuBarHeight = 19;
+  float menuBarHeight = 0;
 };
 
 struct PrimitiveBatchIds
