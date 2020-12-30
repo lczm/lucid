@@ -43,6 +43,7 @@ const char EAGLE_MODEL[] = "../assets/animated_eagle/scene.gltf";
 const char GAME_CAMERA_MODEL[] = "../assets/low_poly_camera/scene.gltf";
 const char KING_BOO_MODEL[] = "../assets/king_boo_idle_animation/scene.gltf";
 const char HAPPY_SHARK_MODEL[] = "../assets/happy_shark_swimming/scene.gltf";
+const char CHEESE_CAKE_MODEL[] = "../assets/cheesecake/scene.gltf";
 
 // Images
 const char AIRMAN_IMAGE[] = "../assets/images/air-man.png";

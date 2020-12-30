@@ -484,8 +484,8 @@ void RenderSystem::DrawAllModels(float dt, Registry* registry, Input* input)
   registry->GetComponentsIter<Model, Transform>()->Each([&](Model& model, Transform& transform) {
     if (model.hasAnimations && model.toAnimate)
     {
-      // auto time = static_cast<float>(currentTime * model.scene->mAnimations[0]->mTicksPerSecond);
-      // model.UpdateBoneMatrices(time, 0, model.scene->mRootNode, glm::mat4(1.0f));
+      auto time = static_cast<float>(currentTime * model.scene->mAnimations[0]->mTicksPerSecond);
+      model.UpdateBoneMatrices(time, 0, model.scene->mRootNode, glm::mat4(1.0f));
       shaderResource.modelAnimatedShader.SetUniformMatFloat4("boneMatrices", 100,
                                                              model.boneMatrices);
     }

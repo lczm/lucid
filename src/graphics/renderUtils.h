@@ -137,6 +137,11 @@ static inline glm::mat4 CastToGlmMat4(aiVector3D from)
   return glm::translate(glm::mat4(1.0f), glm::vec3(from.x, from.y, from.z));
 }
 
+static inline glm::mat4 CastToGlmMat4Scale(aiVector3D from)
+{
+  return glm::scale(glm::mat4(1.0f), glm::vec3(from.x, from.y, from.z));
+}
+
 // TODO : Check if this is correct
 static inline glm::mat4 CastToGlmMat4(aiQuaternion from)
 {

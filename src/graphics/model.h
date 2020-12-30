@@ -50,6 +50,9 @@ class Model
   // Bone name mappings
   Namer boneNamer;
 
+  glm::mat4 globalInverseTransform;
+
+  std::string path;
   std::vector<glm::mat4> boneMatrices;
   std::vector<glm::mat4> boneOffsets;
   bool hasAnimations = false;

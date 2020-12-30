@@ -41,8 +41,11 @@ Model::Model()
 
 Model::Model(std::string path) : boneMatrices(100)
 {
+  Model::path = path;
+
   importer = new Assimp::Importer();
-  scene = importer->ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+  scene = importer->ReadFile(
+      path, aiProcess_CalcTangentSpace | aiProcess_Triangulate | aiProcess_FlipUVs);
 
   if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
   {
@@ -50,6 +53,10 @@ Model::Model(std::string path) : boneMatrices(100)
     return;
   }
 
+  globalInverseTransform = CastToGlmMat4(scene->mRootNode->mTransformation);
+  globalInverseTransform = glm::inverse(globalInverseTransform);
+
+  // animationMapping.clear();
   for (size_t i = 0; i < scene->mNumAnimations; i++)
   {
     auto animation = scene->mAnimations[i];
@@ -70,21 +77,6 @@ Model::Model(std::string path) : boneMatrices(100)
   ProcessNode(scene->mRootNode, scene);
 
   // boneMatrices.resize(boneNamer.Total());
-
-  // if (boneMatrices.size() < 100)
-  // {
-  //   boneMatrices.resize(100);
-  // }
-
-  // if (boneMatrices.size() > 100)
-  // {
-  //   std::cout << "(More than 100) : boneMatrices size : " << boneMatrices.size() << std::endl;
-  // }
-
-  // for (size_t i = 0; i < boneMatrices.size(); i++)
-  // {
-  //   boneMatrices[i] = glm::mat4(1.0f);
-  // }
 
   // After processing everything, generate a standalone vertices bounding box
   for (auto& mesh : GetMeshes())
@@ -114,6 +106,7 @@ void Model::ProcessNode(aiNode* node, const aiScene* scene)
   for (size_t i = 0; i < node->mNumMeshes; i++)
   {
     aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
+    // meshes.push_back(ProcessMesh(mesh, scene, path, boneNamer, boneOffsets));
     meshes.push_back(ProcessMesh(mesh, scene));
   }
 
@@ -137,8 +130,18 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
     MeshVertex vertex;
 
     // Process vertex positions, normals, texture coordinates
-    vertex.position = glm::make_vec3(&mesh->mVertices[i].x);
-    vertex.normal = glm::make_vec3(&mesh->mNormals[i].x);
+    // vertex.position = glm::make_vec3(&mesh->mVertices[i].x);
+    vertex.position = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
+
+    if (mesh->mNormals)
+    {
+      // vertex.normal = glm::make_vec3(&mesh->mNormals[i].x);
+      vertex.normal = glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
+    }
+    else
+    {
+      vertex.normal = glm::vec3(0.0f);
+    }
 
     if (mesh->mTextureCoords[0])
     {
@@ -197,10 +200,11 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 
 void Model::UpdateBoneMatrices(float dt, uint32_t animationId, aiNode* node, glm::mat4 transform)
 {
-  std::string nodeName = node->mName.C_Str();
   auto animation = scene->mAnimations[animationId];
+  dt = fmod(dt, scene->mAnimations[animationId]->mDuration);
 
-  glm::mat4 currentTransform;
+  std::string nodeName = node->mName.C_Str();
+  glm::mat4 currentTransform = glm::mat4(1.0f);
 
   if (animationMapping.count(std::pair<uint32_t, std::string>(animationId, nodeName)))
   {
@@ -226,15 +230,17 @@ void Model::UpdateBoneMatrices(float dt, uint32_t animationId, aiNode* node, glm
     currentTransform = CastToGlmMat4(node->mTransformation);
   }
 
+  glm::mat4 globalTransformation = transform * currentTransform;
+
   if (boneNamer.Map().count(nodeName))
   {
     uint32_t i = boneNamer.Map()[nodeName];
-    boneMatrices[i] = transform * currentTransform * boneOffsets[i];
+    boneMatrices[i] = globalTransformation * boneOffsets[i];
   }
 
   for (size_t i = 0; i < node->mNumChildren; i++)
   {
-    UpdateBoneMatrices(dt, animationId, node->mChildren[i], transform * currentTransform);
+    UpdateBoneMatrices(dt, animationId, node->mChildren[i], globalTransformation);
   }
 }
 
@@ -394,17 +400,17 @@ glm::mat4 Model::InterpolateScalingMatrix(float dt, aiVectorKey* keys, uint32_t 
 
   if (n == 1)
   {
-    return CastToGlmMat4(keys->mValue);
+    return CastToGlmMat4Scale(keys->mValue);
   }
 
   if (dt <= keys[0].mTime)
   {
-    return CastToGlmMat4(keys[0].mValue);
+    return CastToGlmMat4Scale(keys[0].mValue);
   }
 
   if (keys[n - 1].mTime <= dt)
   {
-    return CastToGlmMat4(keys[n - 1].mValue);
+    return CastToGlmMat4Scale(keys[n - 1].mValue);
   }
 
   aiVectorKey anchor;
@@ -416,5 +422,5 @@ glm::mat4 Model::InterpolateScalingMatrix(float dt, aiVectorKey* keys, uint32_t 
   auto leftPtr = rightPtr - 1;
 
   float factor = static_cast<float>((dt - leftPtr->mTime) / (rightPtr->mTime - leftPtr->mTime));
-  return CastToGlmMat4(leftPtr->mValue * (1.0f - factor) + rightPtr->mValue * factor);
+  return CastToGlmMat4Scale(leftPtr->mValue * (1.0f - factor) + rightPtr->mValue * factor);
 }
