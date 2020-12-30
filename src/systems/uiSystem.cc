@@ -489,14 +489,12 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
         bool selected = (currentItem == addComponentItems.at(i));
         if (ImGui::Selectable(addComponentItems.at(i).c_str(), selected))
           currentItem = addComponentItems.at(i);
-        if (selected)
-          ImGui::SetItemDefaultFocus();
+        if (selected) ImGui::SetItemDefaultFocus();
       }
       ImGui::EndCombo();
     }
     if (ImGui::Button("Add"))
     {
-
     }
   }
 
@@ -610,6 +608,15 @@ void UiSystem::DrawToolBar(float dt, Registry* registry, Input* input)
   ImGui::SameLine();
   if (ImGui::Button("Restart", ImVec2(buttonWidth, 0.0f)))
   {
+  }
+
+  ImGui::SameLine(ImGui::GetWindowContentRegionMax().x - 60);
+  if (ImGui::Button("Reset", ImVec2(buttonWidth, 0.0f)))
+  {
+    QuatCamera* quatCamera = &registry->GetResource<QuatCamera>();
+    quatCamera->position = glm::vec3(0.0f, 0.0f, 0.0f);
+    quatCamera->orientation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+    quatCamera->TranslateInWorld({0.0f, 1.0f, 20.0f});
   }
 
   // WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
