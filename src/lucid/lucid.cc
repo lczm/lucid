@@ -77,7 +77,7 @@ void Lucid::Update()
   if (secondDt >= 1.0f)
   {
     // Update the internal fps counter before resetting it back to 0
-    DevDebug& devDebug = registry->GetComponent<DevDebug>();
+    DevDebug& devDebug = registry->GetResource<DevDebug>();
     devDebug.fps = frameCount;
 
     secondDt -= 1.0f;
@@ -85,7 +85,7 @@ void Lucid::Update()
   }
 
   // Get the current game state
-  GameEngineState& gameEngineState = registry->GetComponent<GameEngineState>();
+  GameEngineState& gameEngineState = registry->GetResource<GameEngineState>();
 
   // Only if the game state is 'playing', then update the systems.
   if (gameEngineState.gameState == GameState::PLAYING)
@@ -141,22 +141,50 @@ void Lucid::InitializeBuiltInSystems()
 
 void Lucid::InitializeModelEntities()
 {
-  // Entity polyFoxId = registry->GetAvailableEntityId();
-  // registry->CreateEntity<Model, Transform>(polyFoxId);
-  // registry->AddComponentData<Model>(polyFoxId, Model(POLYFOX_MODEL));
+  // Entity gameCameraId = registry->GetAvailableEntityId();
+  // registry->CreateEntity<Model, Transform>(gameCameraId);
+  // registry->AddComponentData<Model>(gameCameraId, Model(GAME_CAMERA_MODEL));
+  // registry->GetComponent<Transform>(gameCameraId)->scale /= 15.0f;
 
-  // registry->GetComponent<Transform>(polyFoxId)->position = {0.0f, 1.0f, 0.0f};
-  // registry->GetComponent<Transform>(polyFoxId)->scale /= 15.0f;
+  // {
+  //   Entity polyFoxId = registry->GetAvailableEntityId();
+  //   registry->CreateEntity<Model, Transform>(polyFoxId);
+  //   registry->AddComponentData<Model>(polyFoxId, Model(POLYFOX_MODEL));
 
-  // registry->GetComponent<Transform>(polyFoxId)->rotation.x = glm::radians(90.0f);
-  // registry->GetComponent<Transform>(polyFoxId)->rotation.y = glm::radians(0.0f);
+  //   registry->GetComponent<Model>(polyFoxId)->toAnimate = false;
+  //   registry->GetComponent<Transform>(polyFoxId)->position = {3.0f, 10.0f, 0.0f};
+  //   registry->GetComponent<Transform>(polyFoxId)->scale /= 15.0f;
+  //   registry->GetComponent<Transform>(polyFoxId)->rotation.x = glm::radians(90.0f);
+  //   registry->GetComponent<Transform>(polyFoxId)->rotation.y = glm::radians(0.0f);
+  // }
 
-  Entity helmetId = registry->GetAvailableEntityId();
-  registry->CreateEntity<Model, Transform>(helmetId);
-  registry->AddComponentData<Model>(helmetId, Model(EAGLE_MODEL));
+  // {
+  //   Entity eagleId = registry->GetAvailableEntityId();
+  //   registry->CreateEntity<Model, Transform>(eagleId);
+  //   registry->AddComponentData<Model>(eagleId, Model(EAGLE_MODEL));
 
-  registry->GetComponent<Transform>(helmetId)->position = {0.0f, 0.0f, 0.0f};
-  registry->GetComponent<Transform>(helmetId)->scale /= 15.0f;
+  //   registry->GetComponent<Model>(eagleId)->toAnimate = false;
+  //   registry->GetComponent<Transform>(eagleId)->position = {0.0f, 10.0f, 0.0f};
+  //   registry->GetComponent<Transform>(eagleId)->scale /= 15.0f;
+  // }
+
+  {
+    Entity kingBooId = registry->GetAvailableEntityId();
+    registry->CreateEntity<Model, Transform>(kingBooId);
+    registry->AddComponentData<Model>(kingBooId, Model(KING_BOO_MODEL));
+    registry->GetComponent<Model>(kingBooId)->toAnimate = true;
+    registry->GetComponent<Transform>(kingBooId)->position = {0.0f, 3.0f, 0.0f};
+    registry->GetComponent<Transform>(kingBooId)->scale /= 150.0f;
+  }
+
+  // {
+  //   Entity happySharkId = registry->GetAvailableEntityId();
+  //   registry->CreateEntity<Model, Transform>(happySharkId);
+  //   registry->AddComponentData<Model>(happySharkId, Model(HAPPY_SHARK_MODEL));
+  //   registry->GetComponent<Model>(happySharkId)->toAnimate = true;
+  //   registry->GetComponent<Transform>(happySharkId)->position = {0.0f, 10.0f, 0.0f};
+  //   registry->GetComponent<Transform>(happySharkId)->scale /= 150.0f;
+  // }
 }
 
 void Lucid::InitializeSystems()

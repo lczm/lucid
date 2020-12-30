@@ -705,3 +705,23 @@ TEST_F(TestsGL, RemoveComponent)
   // ASSERT_EQ(registry->entityIndexMap[id2], 0);
   // ASSERT_EQ(registry->entityIndexMap[id1], 0);
 }
+
+TEST_F(TestsGL, SetGetResource)
+{
+  struct TestSetResource
+  {
+    int a = 10;
+  };
+
+  Registry* registry = new Registry();
+
+  registry->CreateResource<TestSetResource>();
+
+  TestSetResource& get = registry->GetResource<TestSetResource>();
+  ASSERT_EQ(get.a, 10);
+
+  get.a = 20;
+
+  TestSetResource& get2 = registry->GetResource<TestSetResource>();
+  ASSERT_EQ(get2.a, 20);
+}

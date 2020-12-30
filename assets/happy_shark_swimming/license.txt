@@ -1,0 +1,11 @@
+Model Information:
+* title:	Happy Shark Swimming
+* source:	https://sketchfab.com/3d-models/happy-shark-swimming-520f35e6b00e490a9343e7086885ed2e
+* author:	Lucky_ (https://sketchfab.com/lucky_)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Happy Shark Swimming" (https://sketchfab.com/3d-models/happy-shark-swimming-520f35e6b00e490a9343e7086885ed2e) by Lucky_ (https://sketchfab.com/lucky_) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

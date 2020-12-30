@@ -32,10 +32,10 @@ void RenderSystem::Update(float dt, Registry* registry, Input* input)
   glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  SceneRender& sceneRender = registry->GetComponent<SceneRender>();
+  SceneRender& sceneRender = registry->GetResource<SceneRender>();
   sceneRender.textureID = texture;
 
-  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  DevDebug& devDebug = registry->GetResource<DevDebug>();
 
   // TODO : wireframe drawing should have its own shaders
   // Draw wireframe
@@ -86,18 +86,22 @@ void RenderSystem::InitRenderBuffers()
 
 void RenderSystem::InitSceneCameraComponent(Registry* registry)
 {
-  Entity cameraID = registry->GetAvailableEntityId();
-  registry->CreateEntity<QuatCamera>(cameraID);
+  // Entity cameraID = registry->GetAvailableEntityId();
+  // registry->CreateEntity<QuatCamera>(cameraID);
 
   // Just store a pointer to it as it is used very often
   // Translate the camera back a little bit so it makes more sense
-  RenderSystem::quatCamera = registry->GetComponent<QuatCamera>(cameraID);
+  // RenderSystem::quatCamera = registry->GetComponent<QuatCamera>(cameraID);
+  // quatCamera->TranslateInWorld({0.0f, 1.0f, 20.0f});
+
+  registry->CreateResource<QuatCamera>();
+  quatCamera = &registry->GetResource<QuatCamera>();
   quatCamera->TranslateInWorld({0.0f, 1.0f, 20.0f});
 }
 
 void RenderSystem::InitPrimitiveBuffers(Registry* registry)
 {
-  PrimitiveBatchIds& primitiveBatchIds = registry->GetComponent<PrimitiveBatchIds>();
+  PrimitiveBatchIds& primitiveBatchIds = registry->GetResource<PrimitiveBatchIds>();
 
   {  // Line buffers
     // Line : Generate VAO and VBO
@@ -161,7 +165,7 @@ void RenderSystem::InitPrimitiveBuffers(Registry* registry)
 
     // Sphere : Because a sphere is relatively special in terms of the vertices
     // The vertices and indices have to be computed before the buffer data can be added
-    SphereVerticesIndices& sphereVerticesIndices = registry->GetComponent<SphereVerticesIndices>();
+    SphereVerticesIndices& sphereVerticesIndices = registry->GetResource<SphereVerticesIndices>();
     InitSphereVerticesIndices(sphereVerticesIndices);
 
     // Sphere : Set VBO data
@@ -206,7 +210,7 @@ void RenderSystem::InitPrimitiveBuffers(Registry* registry)
 
 void RenderSystem::HandleMousePan(float dt, Registry* registry, Input* input)
 {
-  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  DevDebug& devDebug = registry->GetResource<DevDebug>();
   if (devDebug.onGizmo == true) return;
 
   if (input->IsMouseLDown() &&                //
@@ -292,7 +296,7 @@ bool RenderSystem::HandleMousePick(float dt, Registry* registry, Input* input)
   // Turn this off for this frame so that it doesn't generate hundreds of rays
   input->mouseKeys[MOUSE_LEFT] = false;
 
-  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  DevDebug& devDebug = registry->GetResource<DevDebug>();
   glm::vec3 rayDirection = GetRayDirection(registry, input);
 
   std::vector<Entity> entityIds;
@@ -342,31 +346,25 @@ bool RenderSystem::HandleMousePick(float dt, Registry* registry, Input* input)
     entityIds.push_back(id);
   });
 
-  registry->GetComponentsIter<Model, Transform>()->EachWithID([&](Entity id, Model& model,
-                                                                  Transform& transform) {
-    // Calculate the model matrix
-    auto modelMatrix = GetModelMatrix(transform);
-    // auto modelMatrix = GetModelMatrixWithoutRotation(transform);
+  registry->GetComponentsIter<Model, Transform>()->EachWithID(
+      [&](Entity id, Model& model, Transform& transform) {
+        // Calculate the model matrix
+        auto modelMatrix = GetModelMatrix(transform);
+        // auto modelMatrix = GetModelMatrixWithoutRotation(transform);
 
-    std::vector<glm::vec4> verticesCollection;
+        std::vector<glm::vec4> verticesCollection;
+        verticesCollection.reserve(model.vertices.size());
 
-    for (auto& mesh : model.GetMeshes())
-    {
-      // verticesCollection.reserve(mesh.vertices.size() / 3);
-      verticesCollection.reserve(mesh.vertices.size());
-      for (size_t i = 0; i < mesh.vertices.size(); i++)
-      {
-        verticesCollection.push_back(modelMatrix * glm::vec4(mesh.vertices[i].position.x,
-                                                             mesh.vertices[i].position.y,
-                                                             mesh.vertices[i].position.z, 1.0f));
-      }
-    }
+        for (auto& vec : model.vertices)
+        {
+          verticesCollection.push_back(modelMatrix * vec);
+        }
 
-    BoundingBox bb = GetBoundingBox(verticesCollection);
-    boundingBoxes.push_back(bb);
+        BoundingBox bb = GetBoundingBox(verticesCollection);
+        boundingBoxes.push_back(bb);
 
-    entityIds.push_back(id);
-  });
+        entityIds.push_back(id);
+      });
 
   // Calculate the distance between the ray origin and the bounding box?
   auto origin = quatCamera->GetPositionInWorld();
@@ -425,7 +423,7 @@ bool RenderSystem::HandleMousePick(float dt, Registry* registry, Input* input)
 
 void RenderSystem::DrawAllLines(float dt, Registry* registry, Input* input)
 {
-  ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
+  ShaderResource shaderResource = registry->GetResource<ShaderResource>();
 
   shaderResource.lineShader.Bind();
   shaderResource.lineShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
@@ -441,7 +439,7 @@ void RenderSystem::DrawAllLines(float dt, Registry* registry, Input* input)
     renderer->PushLineBuffer(modelMatrix, line);
   });
 
-  PrimitiveBatchIds& primitiveBatchIds = registry->GetComponent<PrimitiveBatchIds>();
+  PrimitiveBatchIds& primitiveBatchIds = registry->GetResource<PrimitiveBatchIds>();
   renderer->FlushBatch(primitiveBatchIds, DrawType::Line);
 
   shaderResource.lineShader.Unbind();
@@ -471,7 +469,7 @@ void RenderSystem::DrawAllLines(float dt, Registry* registry, Input* input)
 
 void RenderSystem::DrawAllModels(float dt, Registry* registry, Input* input)
 {
-  ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
+  ShaderResource shaderResource = registry->GetResource<ShaderResource>();
 
   float currentTime = static_cast<float>(glfwGetTime());
 
@@ -479,22 +477,33 @@ void RenderSystem::DrawAllModels(float dt, Registry* registry, Input* input)
   shaderResource.modelAnimatedShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
   shaderResource.modelAnimatedShader.SetUniformMatFloat4("view", quatCamera->GetView());
 
+  // shaderResource.modelShader.Bind();
+  // shaderResource.modelShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
+  // shaderResource.modelShader.SetUniformMatFloat4("view", quatCamera->GetView());
+
   registry->GetComponentsIter<Model, Transform>()->Each([&](Model& model, Transform& transform) {
-    auto time = static_cast<float>(currentTime * model.scene->mAnimations[0]->mTicksPerSecond);
-    model.UpdateBoneMatrices(time, 0, model.scene->mRootNode, glm::mat4(1.0f));
+    if (model.hasAnimations && model.toAnimate)
+    {
+      // auto time = static_cast<float>(currentTime * model.scene->mAnimations[0]->mTicksPerSecond);
+      // model.UpdateBoneMatrices(time, 0, model.scene->mRootNode, glm::mat4(1.0f));
+      shaderResource.modelAnimatedShader.SetUniformMatFloat4("boneMatrices", 100,
+                                                             model.boneMatrices);
+    }
     auto modelMatrix = GetModelMatrix(transform);
 
+    // shaderResource.modelShader.SetUniformMatFloat4("model", modelMatrix);
     shaderResource.modelAnimatedShader.SetUniformMatFloat4("model", modelMatrix);
-    shaderResource.modelAnimatedShader.SetUniformMatFloat4("boneMatrices", 100, model.boneMatrices);
+    // renderer->DrawModel(model, shaderResource.modelShader);
     renderer->DrawModel(model, shaderResource.modelAnimatedShader);
   });
 
+  // shaderResource.modelShader.Unbind();
   shaderResource.modelAnimatedShader.Unbind();
 }
 
 void RenderSystem::DrawAllCubes(float dt, Registry* registry, Input* input)
 {
-  ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
+  ShaderResource shaderResource = registry->GetResource<ShaderResource>();
 
   shaderResource.cubeShader.Bind();
   shaderResource.cubeShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
@@ -507,7 +516,7 @@ void RenderSystem::DrawAllCubes(float dt, Registry* registry, Input* input)
     renderer->PushCubeBuffer(modelMatrix, cube);
   });
 
-  PrimitiveBatchIds primitiveBatchIds = registry->GetComponent<PrimitiveBatchIds>();
+  PrimitiveBatchIds primitiveBatchIds = registry->GetResource<PrimitiveBatchIds>();
   renderer->FlushBatch(primitiveBatchIds, DrawType::Cube);
 
   shaderResource.cubeShader.Unbind();
@@ -515,7 +524,7 @@ void RenderSystem::DrawAllCubes(float dt, Registry* registry, Input* input)
 
 void RenderSystem::DrawAllSpheres(float dt, Registry* registry, Input* input)
 {
-  ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
+  ShaderResource shaderResource = registry->GetResource<ShaderResource>();
 
   shaderResource.sphereShader.Bind();
   shaderResource.sphereShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
@@ -528,7 +537,7 @@ void RenderSystem::DrawAllSpheres(float dt, Registry* registry, Input* input)
     renderer->PushSphereBuffer(modelMatrix, sphere);
   });
 
-  PrimitiveBatchIds primitiveBatchIds = registry->GetComponent<PrimitiveBatchIds>();
+  PrimitiveBatchIds primitiveBatchIds = registry->GetResource<PrimitiveBatchIds>();
   renderer->FlushBatch(primitiveBatchIds, DrawType::Sphere);
 
   shaderResource.sphereShader.Unbind();
@@ -536,7 +545,7 @@ void RenderSystem::DrawAllSpheres(float dt, Registry* registry, Input* input)
 
 void RenderSystem::DrawAllColldiers(float dt, Registry* registry, Input* input)
 {
-  ShaderResource shaderResource = registry->GetComponent<ShaderResource>();
+  ShaderResource shaderResource = registry->GetResource<ShaderResource>();
 
   shaderResource.cubeShader.Bind();
   shaderResource.cubeShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
@@ -553,7 +562,7 @@ void RenderSystem::DrawAllColldiers(float dt, Registry* registry, Input* input)
         renderer->PushGenericBufferWithColor(modelMatrix, {1.0f, 0.0f, 0.0f}, DrawType::Cube);
       });
 
-  PrimitiveBatchIds primitiveBatchIds = registry->GetComponent<PrimitiveBatchIds>();
+  PrimitiveBatchIds primitiveBatchIds = registry->GetResource<PrimitiveBatchIds>();
   renderer->FlushBatch(primitiveBatchIds, DrawType::Cube);
 
   // Render ColliderSpheres
@@ -575,7 +584,7 @@ void RenderSystem::DrawAllColldiers(float dt, Registry* registry, Input* input)
 
 void RenderSystem::DrawActiveEntityBoundingBox(float dt, Registry* registry, Input* input)
 {
-  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  DevDebug& devDebug = registry->GetResource<DevDebug>();
 
   // Only proceed if there is an active entity that is being selected on the screen
   if (devDebug.activeEntity == 0)
@@ -603,7 +612,7 @@ void RenderSystem::DrawActiveEntityBoundingBox(float dt, Registry* registry, Inp
                                                            boundingBoxCubeVertices[i + 2], 1.0f));
     }
 
-    ShaderResource& shaderResource = registry->GetComponent<ShaderResource>();
+    ShaderResource& shaderResource = registry->GetResource<ShaderResource>();
     shaderResource.lineShader.Bind();
     shaderResource.cubeShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
     shaderResource.cubeShader.SetUniformMatFloat4("view", quatCamera->GetView());
@@ -614,7 +623,7 @@ void RenderSystem::DrawActiveEntityBoundingBox(float dt, Registry* registry, Inp
     BoundingBox bb = GetBoundingBox(verticesCollection);
     renderer->DrawBoundingBox(bb);
 
-    PrimitiveBatchIds primitiveBatchIds = registry->GetComponent<PrimitiveBatchIds>();
+    PrimitiveBatchIds primitiveBatchIds = registry->GetResource<PrimitiveBatchIds>();
     renderer->FlushBatch(primitiveBatchIds, DrawType::Line);
 
     glLineWidth(1.0f);
@@ -622,22 +631,19 @@ void RenderSystem::DrawActiveEntityBoundingBox(float dt, Registry* registry, Inp
   // TODO : When a component for animated component is added here -  add another check
   else if (registry->EntityHasComponent<Model>(devDebug.activeEntity))
   {
-    std::vector<glm::vec4> verticesCollection;
+    // std::vector<glm::vec4> verticesCollection;
     auto modelMatrix = GetModelMatrix(transform);
 
     Model* model = registry->GetComponent<Model>(devDebug.activeEntity);
-    for (auto& mesh : model->GetMeshes())
+    std::vector<glm::vec4> verticesCollection;
+    verticesCollection.reserve(model->vertices.size());
+
+    for (auto& vec : model->vertices)
     {
-      verticesCollection.reserve(mesh.vertices.size());
-      for (size_t i = 0; i < mesh.vertices.size(); i++)
-      {
-        verticesCollection.push_back(modelMatrix * glm::vec4(mesh.vertices[i].position.x,
-                                                             mesh.vertices[i].position.y,
-                                                             mesh.vertices[i].position.z, 1.0f));
-      }
+      verticesCollection.push_back(modelMatrix * vec);
     }
 
-    ShaderResource& shaderResource = registry->GetComponent<ShaderResource>();
+    ShaderResource& shaderResource = registry->GetResource<ShaderResource>();
     shaderResource.lineShader.Bind();
     shaderResource.cubeShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
     shaderResource.cubeShader.SetUniformMatFloat4("view", quatCamera->GetView());
@@ -648,7 +654,7 @@ void RenderSystem::DrawActiveEntityBoundingBox(float dt, Registry* registry, Inp
     BoundingBox bb = GetBoundingBox(verticesCollection);
     renderer->DrawBoundingBox(bb);
 
-    PrimitiveBatchIds primitiveBatchIds = registry->GetComponent<PrimitiveBatchIds>();
+    PrimitiveBatchIds primitiveBatchIds = registry->GetResource<PrimitiveBatchIds>();
     renderer->FlushBatch(primitiveBatchIds, DrawType::Line);
 
     glLineWidth(1.0f);

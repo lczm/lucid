@@ -35,6 +35,7 @@ class Model
   Assimp::Importer* importer;
   const aiScene* scene;
 
+  std::vector<glm::vec4> vertices;
   std::vector<MeshTexture> loadedTextures;
   std::vector<Mesh> meshes;
   std::string directory;
@@ -51,6 +52,8 @@ class Model
 
   std::vector<glm::mat4> boneMatrices;
   std::vector<glm::mat4> boneOffsets;
+  bool hasAnimations = false;
+  bool toAnimate = false;
 
  public:
   Model();

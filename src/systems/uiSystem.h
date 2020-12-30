@@ -7,11 +7,11 @@
 #include "ecs.h"
 #include "utils.h"
 #include "renderer.h"
-#include "defaultAssetsEnum.h"
-#include "windowEnum.h"
 #include "renderUtils.h"
 #include "cube.h"
 #include "sphere.h"
+#include "windowEnum.h"
+#include "defaultAssetsEnum.h"
 
 #if DEBUG
 #include "quatCamera.h"

@@ -87,7 +87,7 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
 
       // TODO : Draw frametime
       // Draw FPS
-      DevDebug& devDebug = registry->GetComponent<DevDebug>();
+      DevDebug& devDebug = registry->GetResource<DevDebug>();
       std::string fpsCount = "FPS : " + std::to_string(devDebug.fps);
       ImGui::Text(fpsCount.c_str());
 
@@ -263,9 +263,9 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
   // Get the size of the current imgui window to draw in
   ImVec2 wsize = ImGui::GetWindowSize();
 
-  SceneRender sceneRender = registry->GetComponent<SceneRender>();
-  DevDebug& devDebug = registry->GetComponent<DevDebug>();
-  WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
+  SceneRender sceneRender = registry->GetResource<SceneRender>();
+  DevDebug& devDebug = registry->GetResource<DevDebug>();
+  WidgetLayout& widgetLayout = registry->GetResource<WidgetLayout>();
 
   //// if (devDebug.changeFocusWindow == WindowType::Scene) ImGui::SetWindowFocus();
 
@@ -320,13 +320,16 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
     }
     ImGui::EndDragDropTarget();
   }
+
   ImVec2 sceneWindowSize = ImGui::GetWindowSize();
   ImVec2 scenePos = ImGui::GetWindowPos();
+
   widgetLayout.menuBarHeight = 0;
   widgetLayout.topWindowHeight = scenePos.y;
   widgetLayout.leftWindowWidth = scenePos.x;
   widgetLayout.bottomWindowHeight = SCREEN_HEIGHT - (scenePos.y + sceneWindowSize.y);
   widgetLayout.rightWindowWidth = SCREEN_WIDTH - (scenePos.x + sceneWindowSize.x);
+
   ImGui::End();
 }
 
@@ -343,8 +346,8 @@ void UiSystem::DrawGameCamera(float dt, Registry* registry, Input* input)
   // Get the size of the current imgui window to draw in
   ImVec2 wsize = ImGui::GetWindowSize();
 
-  SceneRender sceneRender = registry->GetComponent<SceneRender>();
-  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  SceneRender sceneRender = registry->GetResource<SceneRender>();
+  DevDebug& devDebug = registry->GetResource<DevDebug>();
   // WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
 
   //// if (devDebug.changeFocusWindow == WindowType::Scene) ImGui::SetWindowFocus();
@@ -391,7 +394,7 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Inspector");
 
-  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  DevDebug& devDebug = registry->GetResource<DevDebug>();
   ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen;
   std::vector<std::string> addComponentItems;
   static std::string currentItem = "";
@@ -428,7 +431,15 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
       Transform* transform = registry->GetComponent<Transform>(devDebug.activeEntity);
       ImGui::InputFloat("x position", &(transform->position.x), 0.25f, 1.0f);
       ImGui::InputFloat("y position", &(transform->position.y), 0.25f, 1.0f);
-      ImGui::InputFloat("z position", &(transform->position.x), 0.25f, 1.0f);
+      ImGui::InputFloat("z position", &(transform->position.z), 0.25f, 1.0f);
+
+      ImGui::InputFloat("x rotation", &(transform->rotation.x), 0.25f, 1.0f);
+      ImGui::InputFloat("y rotation", &(transform->rotation.y), 0.25f, 1.0f);
+      ImGui::InputFloat("z rotation", &(transform->rotation.z), 0.25f, 1.0f);
+
+      ImGui::InputFloat("x scale", &(transform->scale.x), 0.25f, 1.0f);
+      ImGui::InputFloat("y scale", &(transform->scale.y), 0.25f, 1.0f);
+      ImGui::InputFloat("z scale", &(transform->scale.z), 0.25f, 1.0f);
       addComponentItems.push_back("Transform");
       if (ImGui::Button("Remove Component"))
       {
@@ -496,9 +507,9 @@ void UiSystem::DrawDevDebug(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("DevDebug");
 
-  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  DevDebug& devDebug = registry->GetResource<DevDebug>();
   // WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
-  RendererStats& rendererStats = registry->GetComponent<RendererStats>();
+  RendererStats& rendererStats = registry->GetResource<RendererStats>();
 
   // widgetLayout.rightWindowWidth = ImGui::GetWindowWidth();
   // if (devDebug.changeFocusWindow == WindowType::DevDebug) ImGui::SetWindowFocus();
@@ -548,7 +559,7 @@ void UiSystem::DrawToolBar(float dt, Registry* registry, Input* input)
 {
   ImGuiWindowClass windowClass;
   ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse;
-  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  DevDebug& devDebug = registry->GetResource<DevDebug>();
   float buttonWidth = 60.0f;
   float totalPadding = 16;
 
@@ -557,7 +568,7 @@ void UiSystem::DrawToolBar(float dt, Registry* registry, Input* input)
   ImGui::Begin("ToolBar", (bool*)0, windowFlags);
   ImVec2 wSize = ImGui::GetWindowSize();
 
-  GameEngineState& gameEngineState = registry->GetComponent<GameEngineState>();
+  GameEngineState& gameEngineState = registry->GetResource<GameEngineState>();
 
   if (devDebug.activeEntity != 0)
   {
@@ -639,12 +650,11 @@ void UiSystem::DrawProgressBar(float fraction, std::string message)
 
 void UiSystem::HandleGizmoInput(Registry* registry, Input* input)
 {
-  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  DevDebug& devDebug = registry->GetResource<DevDebug>();
 
   if (devDebug.activeEntity != 0)
   {
     ImGuizmo::BeginFrame();
-    // ImGuizmo::EndFrame();
 
     ImGuizmo::SetOrthographic(false);
     ImGuizmo::SetDrawlist();
@@ -658,7 +668,7 @@ void UiSystem::HandleGizmoInput(Registry* registry, Input* input)
 
     // TODO Create a utility method to compute this
     auto modelMatrix = GetModelMatrix(*(transform));
-    QuatCamera& quatCamera = registry->GetComponent<QuatCamera>();
+    QuatCamera& quatCamera = registry->GetResource<QuatCamera>();
     ImGuizmo::Manipulate(glm::value_ptr(quatCamera.GetView()),
                          glm::value_ptr(quatCamera.GetProjection()), devDebug.gizmoOperation,
                          ImGuizmo::LOCAL, glm::value_ptr(modelMatrix));
@@ -718,7 +728,7 @@ void UiSystem::UpdateSceneWindow(Registry* registry, Input* input)
 
 void UiSystem::UpdateGizmoType(Registry* registry, Input* input)
 {
-  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  DevDebug& devDebug = registry->GetResource<DevDebug>();
 
   if (input->IsKeyDown('1'))
     devDebug.gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
@@ -740,7 +750,7 @@ void UiSystem::UpdateInputActiveWindow(Input* input, WindowType windowType)
 void UiSystem::UpdateWindowFocus(Registry* registry, WindowType windowType, std::string focusWindow,
                                  Input* input, WindowType changeFocusWindow)
 {
-  DevDebug& devDebug = registry->GetComponent<DevDebug>();
+  DevDebug& devDebug = registry->GetResource<DevDebug>();
 
   if (devDebug.changeFocusWindow == windowType)
   {

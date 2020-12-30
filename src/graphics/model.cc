@@ -61,10 +61,42 @@ Model::Model(std::string path)
     }
   }
 
+  if (scene->mNumAnimations > 0)
+  {
+    hasAnimations = true;
+  }
+
   directory = path.substr(0, path.find_last_of('/'));
   ProcessNode(scene->mRootNode, scene);
 
   boneMatrices.resize(boneNamer.Total());
+
+  if (boneMatrices.size() < 100)
+  {
+    boneMatrices.resize(100);
+  }
+
+  if (boneMatrices.size() > 100)
+  {
+    std::cout << "(More than 100) : boneMatrices size : " << boneMatrices.size() << std::endl;
+  }
+
+  for (size_t i = 0; i < boneMatrices.size(); i++)
+  {
+    boneMatrices[i] = glm::mat4(1.0f);
+  }
+
+  // After processing everything, generate a standalone vertices bounding box
+  for (auto& mesh : GetMeshes())
+  {
+    // Reserve some space in advance
+    vertices.reserve(mesh.vertices.size());
+    for (size_t i = 0; i < mesh.vertices.size(); i++)
+    {
+      vertices.push_back(glm::vec4(mesh.vertices[i].position.x, mesh.vertices[i].position.y,
+                                   mesh.vertices[i].position.z, 1.0f));
+    }
+  }
 }
 
 Model::~Model()
@@ -210,7 +242,6 @@ std::vector<MeshTexture> Model::LoadMaterialTextures(aiMaterial* material, aiTex
                                                      std::string typeName)
 {
   std::vector<MeshTexture> textures;
-  std::cout << "texture count : " << material->GetTextureCount(type) << std::endl;
 
   for (size_t i = 0; i < material->GetTextureCount(type); i++)
   {
@@ -276,7 +307,7 @@ uint32_t Model::TextureFromFile(const char* path, const std::string& directory, 
   }
   else
   {
-    std::cout << "Texture failed to load at path: " << path << std::endl;
+    std::cout << "(Model::TextureFromFile) : Texture failed to load at path: " << path << std::endl;
     stbi_image_free(data);
   }
 

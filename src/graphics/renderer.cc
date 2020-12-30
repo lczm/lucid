@@ -6,7 +6,7 @@ Renderer::Renderer(Registry* registry)
       spherePrimitiveBuffer(MAX_BUFFER)
 {
   Renderer::registry = registry;
-  Renderer::stats = &registry->GetComponent<RendererStats>();
+  Renderer::stats = &registry->GetResource<RendererStats>();
 };
 
 Renderer::~Renderer() = default;
@@ -175,7 +175,7 @@ void Renderer::DrawSphereIndexed(const PrimitiveBatchIds primitiveBatchIds)
   glVertexAttribDivisor(4, 1);  // mat4 : vec3
   glVertexAttribDivisor(5, 1);  // mat4 : vec4
 
-  SphereVerticesIndices sphereVerticesIndices = registry->GetComponent<SphereVerticesIndices>();
+  SphereVerticesIndices sphereVerticesIndices = registry->GetResource<SphereVerticesIndices>();
 
   glDrawElementsInstanced(GL_TRIANGLES, sphereVerticesIndices.indices.size(), GL_UNSIGNED_INT, 0,
                           batchIndexCount);
@@ -307,7 +307,7 @@ void Renderer::PushLineBuffer(const glm::mat4 modelMatrix, const Line line)
   // If there is too much to add on, flush it down before adding
   if (batchIndexCount == MAX_BUFFER)
   {
-    PrimitiveBatchIds primitiveBatchIds = registry->GetComponent<PrimitiveBatchIds>();
+    PrimitiveBatchIds primitiveBatchIds = registry->GetResource<PrimitiveBatchIds>();
     FlushBatch(primitiveBatchIds, DrawType::Line);
   }
 
@@ -321,7 +321,7 @@ void Renderer::PushSphereBuffer(const glm::mat4 modelMatrix, const Sphere sphere
   // If there is too much to add on, flush it down before adding
   if (batchIndexCount == MAX_BUFFER)
   {
-    PrimitiveBatchIds primitiveBatchIds = registry->GetComponent<PrimitiveBatchIds>();
+    PrimitiveBatchIds primitiveBatchIds = registry->GetResource<PrimitiveBatchIds>();
     FlushBatch(primitiveBatchIds, DrawType::Sphere);
   }
 
@@ -335,7 +335,7 @@ void Renderer::PushCubeBuffer(const glm::mat4 modelMatrix, const Cube cube)
   // If there is too much to add on, flush it down before adding
   if (batchIndexCount == MAX_BUFFER)
   {
-    PrimitiveBatchIds primitiveBatchIds = registry->GetComponent<PrimitiveBatchIds>();
+    PrimitiveBatchIds primitiveBatchIds = registry->GetResource<PrimitiveBatchIds>();
     FlushBatch(primitiveBatchIds, DrawType::Cube);
   }
 
@@ -351,7 +351,7 @@ void Renderer::PushModelBuffer(const glm::mat4 modelMatrix, const Model model)
 void Renderer::PushGenericBufferWithColor(const glm::mat4 modelMatrix, const glm::vec3 color,
                                           const DrawType drawType)
 {
-  PrimitiveBatchIds primitiveBatchIds = registry->GetComponent<PrimitiveBatchIds>();
+  PrimitiveBatchIds primitiveBatchIds = registry->GetResource<PrimitiveBatchIds>();
   switch (drawType)
   {
     case DrawType::Line:
