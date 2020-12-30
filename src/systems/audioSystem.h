@@ -1,9 +1,11 @@
+#pragma once
+
 #include "ecs.h"
+#include "constants.h"
+#include "soundDevice.h"
+#include "musicBuffer.h"
 #include "soundEffectsLibrary.h"
 #include "soundEffectsPlayer.h"
-#include "soundDevice.h"
-#include "constants.h"
-#include "musicBuffer.h"
 
 class AudioSystem : public System
 {

@@ -8,7 +8,6 @@
 #include "ecs.h"
 #include "utils.h"
 #include "renderer.h"
-#include "camera.h"
 #include "shaderResource.h"
 #include "cube.h"
 #include "sphere.h"
@@ -16,6 +15,7 @@
 #include "quatCamera.h"
 #include "primitiveVertex.h"
 #include "engineComponents.h"
+#include "renderUtils.h"
 
 #include "gtx/string_cast.hpp"
 
@@ -23,7 +23,6 @@
 #include "imgui_internal.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
-#include "renderUtils.h"
 
 class RenderSystem : public System
 {

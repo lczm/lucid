@@ -477,20 +477,27 @@ void RenderSystem::DrawAllModels(float dt, Registry* registry, Input* input)
   shaderResource.modelAnimatedShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
   shaderResource.modelAnimatedShader.SetUniformMatFloat4("view", quatCamera->GetView());
 
+  // shaderResource.modelShader.Bind();
+  // shaderResource.modelShader.SetUniformMatFloat4("projection", quatCamera->GetProjection());
+  // shaderResource.modelShader.SetUniformMatFloat4("view", quatCamera->GetView());
+
   registry->GetComponentsIter<Model, Transform>()->Each([&](Model& model, Transform& transform) {
     if (model.hasAnimations && model.toAnimate)
     {
-      auto time = static_cast<float>(currentTime * model.scene->mAnimations[0]->mTicksPerSecond);
-      model.UpdateBoneMatrices(time, 0, model.scene->mRootNode, glm::mat4(1.0f));
+      // auto time = static_cast<float>(currentTime * model.scene->mAnimations[0]->mTicksPerSecond);
+      // model.UpdateBoneMatrices(time, 0, model.scene->mRootNode, glm::mat4(1.0f));
       shaderResource.modelAnimatedShader.SetUniformMatFloat4("boneMatrices", 100,
                                                              model.boneMatrices);
     }
     auto modelMatrix = GetModelMatrix(transform);
 
+    // shaderResource.modelShader.SetUniformMatFloat4("model", modelMatrix);
     shaderResource.modelAnimatedShader.SetUniformMatFloat4("model", modelMatrix);
+    // renderer->DrawModel(model, shaderResource.modelShader);
     renderer->DrawModel(model, shaderResource.modelAnimatedShader);
   });
 
+  // shaderResource.modelShader.Unbind();
   shaderResource.modelAnimatedShader.Unbind();
 }
 

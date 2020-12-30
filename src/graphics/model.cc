@@ -81,6 +81,11 @@ Model::Model(std::string path)
     std::cout << "(More than 100) : boneMatrices size : " << boneMatrices.size() << std::endl;
   }
 
+  for (size_t i = 0; i < boneMatrices.size(); i++)
+  {
+    boneMatrices[i] = glm::mat4(1.0f);
+  }
+
   // After processing everything, generate a standalone vertices bounding box
   for (auto& mesh : GetMeshes())
   {
