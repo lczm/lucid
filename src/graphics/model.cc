@@ -39,7 +39,7 @@ Model::Model()
 {
 }
 
-Model::Model(std::string path)
+Model::Model(std::string path) : boneMatrices(100)
 {
   importer = new Assimp::Importer();
   scene = importer->ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
@@ -69,22 +69,22 @@ Model::Model(std::string path)
   directory = path.substr(0, path.find_last_of('/'));
   ProcessNode(scene->mRootNode, scene);
 
-  boneMatrices.resize(boneNamer.Total());
+  // boneMatrices.resize(boneNamer.Total());
 
-  if (boneMatrices.size() < 100)
-  {
-    boneMatrices.resize(100);
-  }
+  // if (boneMatrices.size() < 100)
+  // {
+  //   boneMatrices.resize(100);
+  // }
 
-  if (boneMatrices.size() > 100)
-  {
-    std::cout << "(More than 100) : boneMatrices size : " << boneMatrices.size() << std::endl;
-  }
+  // if (boneMatrices.size() > 100)
+  // {
+  //   std::cout << "(More than 100) : boneMatrices size : " << boneMatrices.size() << std::endl;
+  // }
 
-  for (size_t i = 0; i < boneMatrices.size(); i++)
-  {
-    boneMatrices[i] = glm::mat4(1.0f);
-  }
+  // for (size_t i = 0; i < boneMatrices.size(); i++)
+  // {
+  //   boneMatrices[i] = glm::mat4(1.0f);
+  // }
 
   // After processing everything, generate a standalone vertices bounding box
   for (auto& mesh : GetMeshes())
