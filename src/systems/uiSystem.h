@@ -32,8 +32,8 @@
 class UiSystem : public System
 {
  private:
-  bool drawWireframe;
-  bool drawSceneOnly;
+  bool drawWireframe = false;
+  bool drawSceneOnly = false;
   const std::vector<std::pair<DefaultAssetsType, std::string>> defaultAssets = {
       {DefaultAssetsType::Cube, "Cube"},
       {DefaultAssetsType::Sphere, "Sphere"},
