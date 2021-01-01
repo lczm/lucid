@@ -9,11 +9,11 @@
 #include "engineComponents.h"
 #include "gtx/string_cast.hpp"
 
-enum class EvolveResult
+enum class Intersection
 {
-  NoIntersection,
-  FoundIntersection,
-  StillEvolving,
+  Unknown,
+  None,
+  Found,
 };
 
 class PhysicsSystem : public System
@@ -34,36 +34,10 @@ class PhysicsSystem : public System
 
   void UpdateAllRigidbodies(float dt, Registry* registry, Input* input);
   void UpdateCollisions(float dt, Registry* registry, Input* input);
-
-  void Test(float dt, Registry* registry, Input* input);
-  EvolveResult EvolveSimplex(Transform transformA, Transform transformB);
+  Intersection EvolveSimplex(Transform transformA, Transform transformB);
 
   glm::vec3 CalculateSupport(glm::vec3 direction);
   bool AddSupport(glm::vec3 direction);
-
-  // Cube : { Rest of the colliders };
-  bool CheckCollision(ColliderCube colliderCube, Transform& transform,
-                      ColliderCube colliderCubeOther, Transform& transformOther);
-  bool CheckCollision(ColliderCube colliderCube, Transform& transform,
-                      ColliderSphere colliderSphereOther, Transform& transformOther);
-  bool CheckCollision(ColliderCube colliderCube, Transform& transform,
-                      ColliderPolygon colliderPolygonOther, Transform& transformOther);
-
-  // Sphere : { Rest of the colliders }
-  bool CheckCollision(ColliderSphere colliderSphere, Transform& transform,
-                      ColliderSphere colliderSphereOther, Transform& transformOther);
-  bool CheckCollision(ColliderSphere colliderSphere, Transform& transform,
-                      ColliderCube colliderCubeOther, Transform& transformOther);
-  bool CheckCollision(ColliderSphere colliderSphere, Transform& transform,
-                      ColliderPolygon colliderPolygonOther, Transform& transformOther);
-
-  // Polygon : { Rest of the colliders }
-  bool CheckCollision(ColliderPolygon colliderPolygon, Transform& transform,
-                      ColliderPolygon colliderPolygonOther, Transform& transformOther);
-  bool CheckCollision(ColliderPolygon colliderPolygon, Transform& transform,
-                      ColliderCube colliderCubeOther, Transform& transformOther);
-  bool CheckCollision(ColliderPolygon colliderPolygon, Transform& transform,
-                      ColliderSphere colliderSphereOther, Transform& transformOther);
 
   glm::mat4 ApplyTransformation(Transform& transform);
   bool CheckCollisionBetweenBoundingBox(BoundingBox boundingBox, BoundingBox boundingBoxOther);
