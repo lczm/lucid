@@ -601,16 +601,8 @@ void RenderSystem::DrawActiveEntityBoundingBox(float dt, Registry* registry, Inp
   if (registry->EntityHasComponent<Cube>(devDebug.activeEntity) ||
       registry->EntityHasComponent<Sphere>(devDebug.activeEntity))
   {
-    std::vector<glm::vec4> verticesCollection;
-    verticesCollection.reserve(boundingBoxCubeVertices.size() / 3);
     auto modelMatrix = GetModelMatrix(transform);
-
-    for (size_t i = 0; i < boundingBoxCubeVertices.size(); i += 3)
-    {
-      verticesCollection.push_back(modelMatrix * glm::vec4(boundingBoxCubeVertices[i],
-                                                           boundingBoxCubeVertices[i + 1],
-                                                           boundingBoxCubeVertices[i + 2], 1.0f));
-    }
+    std::vector<glm::vec4> verticesCollection = GetCubeVertices(modelMatrix);
 
     ShaderResource& shaderResource = registry->GetResource<ShaderResource>();
     shaderResource.lineShader.Bind();

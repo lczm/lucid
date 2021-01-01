@@ -5,8 +5,15 @@
 #include "boundingBox.h"
 #include "component.h"
 #include "engineComponents.h"
+#include "renderUtils.h"
 
-class ColliderCube
+class Collider
+{
+ public:
+  virtual glm::vec3 Support(Transform& transform, glm::vec3 direction) = 0;
+};
+
+class ColliderCube : public Collider
 {
  public:
   Transform transform;
@@ -20,7 +27,7 @@ class ColliderCube
   glm::vec3 Support(Transform& transform, glm::vec3 direction);
 };
 
-class ColliderSphere
+class ColliderSphere : public Collider
 {
  public:
   Transform transform;
@@ -34,7 +41,7 @@ class ColliderSphere
   glm::vec3 Support(Transform& transform, glm::vec3 direction);
 };
 
-class ColliderPolygon
+class ColliderPolygon : public Collider
 {
  public:
   Transform transform;

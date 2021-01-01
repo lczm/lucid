@@ -179,3 +179,18 @@ static inline glm::vec3 CastToVec3(aiVector3D from)
 {
   return glm::vec3(from.x, from.y, from.z);
 }
+
+static std::vector<glm::vec4> GetCubeVertices(glm::mat4 modelMatrix)
+{
+  std::vector<glm::vec4> vertices;
+  vertices.reserve(boundingBoxCubeVertices.size() / 3);
+
+  for (size_t i = 0; i < boundingBoxCubeVertices.size(); i += 3)
+  {
+    vertices.push_back(modelMatrix * glm::vec4(boundingBoxCubeVertices[i],
+                                               boundingBoxCubeVertices[i + 1],
+                                               boundingBoxCubeVertices[i + 2], 1.0f));
+  }
+
+  return vertices;
+}
