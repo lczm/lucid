@@ -64,6 +64,7 @@ class Model
   ~Model();
 
   std::vector<Mesh> GetMeshes();
+  aiNode* GetRootNode();
 
   void ProcessNode(aiNode* node, const aiScene* scene);
   Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene);

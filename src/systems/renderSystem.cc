@@ -21,7 +21,6 @@ void RenderSystem::Update(float dt, Registry* registry, Input* input)
   HandleMousePick(dt, registry, input);
   HandleMousePan(dt, registry, input);
   HandleMouseScroll(dt, input);
-
   HandleKeyboardPan(dt, input);
 
   // Start the update call, so that the draw calls are reseted properly

@@ -100,6 +100,11 @@ std::vector<Mesh> Model::GetMeshes()
   return Model::meshes;
 }
 
+aiNode* Model::GetRootNode()
+{
+  return scene->mRootNode;
+}
+
 void Model::ProcessNode(aiNode* node, const aiScene* scene)
 {
   // Process all node meshes

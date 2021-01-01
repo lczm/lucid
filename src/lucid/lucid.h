@@ -46,7 +46,6 @@
 #include "audioSystem.h"
 #include "uiSystem.h"
 #include "physicsSystem.h"
-#include "animationSystem.h"
 
 class Lucid
 {
