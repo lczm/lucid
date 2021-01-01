@@ -557,7 +557,8 @@ void RenderSystem::DrawAllColldiers(float dt, Registry* registry, Input* input)
   renderer->StartBatch();
   registry->GetComponentsIter<Transform, ColliderCube>()->Each(
       [&](Transform& transform, ColliderCube& colliderCube) {
-        auto modelMatrix = GetModelMatrixWithoutRotation(transform);
+        auto modelMatrix = GetModelMatrix(transform);
+        modelMatrix = GetModelMatrix(modelMatrix, colliderCube.transform);
         renderer->PushGenericBufferWithColor(modelMatrix, {1.0f, 0.0f, 0.0f}, DrawType::Cube);
       });
 

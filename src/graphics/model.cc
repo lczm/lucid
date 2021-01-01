@@ -53,9 +53,6 @@ Model::Model(std::string path) : boneMatrices(100)
     return;
   }
 
-  globalInverseTransform = CastToGlmMat4(scene->mRootNode->mTransformation);
-  globalInverseTransform = glm::inverse(globalInverseTransform);
-
   // animationMapping.clear();
   for (size_t i = 0; i < scene->mNumAnimations; i++)
   {

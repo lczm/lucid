@@ -210,7 +210,14 @@ void Lucid::InitializeDemoPongEntities()
   pongRules.ballID = ballID;
 
   Transform& playerTransform = registry->GetComponent<Transform>(playerPaddleID);
+  Transform& playerColliderTransform =
+      registry->GetComponent<ColliderCube>(playerPaddleID).transform;
+  playerColliderTransform.scale *= 1.2;
+
   Transform& aiTransform = registry->GetComponent<Transform>(aiPaddleID);
+  Transform& aiColliderTransform = registry->GetComponent<ColliderCube>(aiPaddleID).transform;
+  aiColliderTransform.scale *= 1.2;
+
   Transform& ballTransform = registry->GetComponent<Transform>(ballID);
 
   // TODO : registry->GetComponent<Transform> should return a reference not a pointer
