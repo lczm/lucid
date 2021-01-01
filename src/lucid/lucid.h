@@ -15,6 +15,7 @@
 #include "utils.h"
 #include "startup.h"
 #include "engineStartup.h"
+#include "colliders.h"
 
 #if DEBUG
 #include "engineComponents.h"

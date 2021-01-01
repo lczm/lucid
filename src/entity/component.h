@@ -29,11 +29,6 @@ struct RigidBody
   glm::vec3 velocity = glm::vec3(0.0f);
 };
 
-// struct Collider {};
-// struct ColliderSphere {};
-// struct ColliderCube {};
-// struct ColliderModel {};
-
 struct Animation
 {
   float animCounter = 0;   // Counter on time passed

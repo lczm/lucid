@@ -5,6 +5,7 @@
 #include "cube.h"
 #include "sphere.h"
 #include "model.h"
+#include "colliders.h"
 #include "engineComponents.h"
 #include "gtx/string_cast.hpp"
 

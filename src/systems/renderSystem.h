@@ -16,6 +16,7 @@
 #include "primitiveVertex.h"
 #include "engineComponents.h"
 #include "renderUtils.h"
+#include "colliders.h"
 
 #include "gtx/string_cast.hpp"
 

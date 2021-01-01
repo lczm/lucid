@@ -3,7 +3,6 @@
 #include <limits>
 #include "glm.hpp"
 #include "shader.h"
-#include "glm.hpp"
 
 struct BoundingBox
 {
@@ -49,45 +48,4 @@ const std::vector<uint32_t> boundingBoxCubeIndices = {
     // top
     3, 2, 6,  //
     6, 7, 3,  //
-};
-
-class ColliderCube
-{
- public:
-  uint32_t VAO, VBO, EBO;
-
-  bool collided = false;
-  glm::vec3 color = {1.0f, 1.0f, 1.0f};
-
- public:
-  ColliderCube();
-  ~ColliderCube();
-
-  void Build();
-};
-
-class ColliderSphere
-{
- public:
-  uint32_t VAO, VBO, EBO;
-
-  bool collided = false;
-  glm::vec3 color = {1.0f, 1.0f, 1.0f};
-
- public:
-  ColliderSphere();
-  ~ColliderSphere();
-};
-
-class ColliderPolygon
-{
- public:
-  uint32_t VAO, VBO, EBO;
-
-  bool collided = false;
-  glm::vec3 color = {1.0f, 1.0f, 1.0f};
-
- public:
-  ColliderPolygon();
-  ~ColliderPolygon();
 };

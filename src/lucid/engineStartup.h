@@ -8,6 +8,7 @@
 #include "model.h"
 #include "shader.h"
 #include "sphere.h"
+#include "colliders.h"
 #include "quatCamera.h"
 #include "shaderResource.h"
 

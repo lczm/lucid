@@ -3,6 +3,7 @@
 #include "shader.h"
 #include "ecs.h"
 #include "sphere.h"
+#include "colliders.h"
 
 class PongSystem : public System
 {
