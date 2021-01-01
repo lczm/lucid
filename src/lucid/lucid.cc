@@ -145,27 +145,27 @@ void Lucid::InitializeModelEntities()
     Entity kingBooId = registry->GetAvailableEntityId();
     registry->CreateEntity<Model, Transform>(kingBooId);
     registry->AddComponentData<Model>(kingBooId, Model(KING_BOO_MODEL));
-    registry->GetComponent<Model>(kingBooId)->toAnimate = true;
-    registry->GetComponent<Transform>(kingBooId)->position = {0.0f, 0.0f, 0.0f};
-    registry->GetComponent<Transform>(kingBooId)->scale /= 150.0f;
+    registry->GetComponent<Model>(kingBooId).toAnimate = true;
+    registry->GetComponent<Transform>(kingBooId).position = {0.0f, 0.0f, 0.0f};
+    registry->GetComponent<Transform>(kingBooId).scale /= 150.0f;
   }
 
   {
     Entity happySharkId = registry->GetAvailableEntityId();
     registry->CreateEntity<Model, Transform>(happySharkId);
     registry->AddComponentData<Model>(happySharkId, Model(HAPPY_SHARK_MODEL));
-    registry->GetComponent<Model>(happySharkId)->toAnimate = true;
-    registry->GetComponent<Transform>(happySharkId)->position = {0.0f, 10.0f, 0.0f};
-    registry->GetComponent<Transform>(happySharkId)->scale /= 100.0f;
+    registry->GetComponent<Model>(happySharkId).toAnimate = true;
+    registry->GetComponent<Transform>(happySharkId).position = {0.0f, 10.0f, 0.0f};
+    registry->GetComponent<Transform>(happySharkId).scale /= 100.0f;
   }
 
   {
     Entity cheeseCakeId = registry->GetAvailableEntityId();
     registry->CreateEntity<Model, Transform>(cheeseCakeId);
     registry->AddComponentData<Model>(cheeseCakeId, Model(CHEESE_CAKE_MODEL));
-    registry->GetComponent<Model>(cheeseCakeId)->toAnimate = true;
-    registry->GetComponent<Transform>(cheeseCakeId)->position = {-3.0f, 0.0f, 0.0f};
-    registry->GetComponent<Transform>(cheeseCakeId)->scale /= 150.0f;
+    registry->GetComponent<Model>(cheeseCakeId).toAnimate = true;
+    registry->GetComponent<Transform>(cheeseCakeId).position = {-3.0f, 0.0f, 0.0f};
+    registry->GetComponent<Transform>(cheeseCakeId).scale /= 150.0f;
   }
 }
 
@@ -181,12 +181,12 @@ void Lucid::InitializeManyCubes()
     Entity cubeID = registry->GetAvailableEntityId();
     registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(cubeID);
 
-    Transform* transform = registry->GetComponent<Transform>(cubeID);
-    transform->position = {rand() % 100, rand() % 100, rand() % 100};
+    Transform& transform = registry->GetComponent<Transform>(cubeID);
+    transform.position = {rand() % 100, rand() % 100, rand() % 100};
 
     // normalize values for the fun of it
-    Cube* cube = registry->GetComponent<Cube>(cubeID);
-    cube->color = {0.5, 0.5, 0.5};
+    Cube& cube = registry->GetComponent<Cube>(cubeID);
+    cube.color = {0.5, 0.5, 0.5};
   }
 }
 
@@ -197,36 +197,35 @@ void Lucid::InitializeDemoPongEntities()
   Entity aiPaddleID = registry->GetAvailableEntityId();
   // The ball that will be used to be passed around
   Entity ballID = registry->GetAvailableEntityId();
-  Entity pongRulesID = registry->GetAvailableEntityId();
 
   // Note to add back collidercube back to playerpaddle after addcomponent debugging
   registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(playerPaddleID);
   registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(aiPaddleID);
   registry->CreateEntity<Sphere, Transform, RigidBody, ColliderCube>(ballID);
-  registry->CreateEntity<PongRules>(pongRulesID);
 
-  PongRules& pongRules = registry->GetComponent<PongRules>();
+  registry->CreateResource<PongRules>();
+  PongRules& pongRules = registry->GetResource<PongRules>();
   pongRules.playerPaddleID = playerPaddleID;
   pongRules.aiPaddleID = aiPaddleID;
   pongRules.ballID = ballID;
 
-  Transform* playerTransform = registry->GetComponent<Transform>(playerPaddleID);
-  Transform* aiTransform = registry->GetComponent<Transform>(aiPaddleID);
-  Transform* ballTransform = registry->GetComponent<Transform>(ballID);
+  Transform& playerTransform = registry->GetComponent<Transform>(playerPaddleID);
+  Transform& aiTransform = registry->GetComponent<Transform>(aiPaddleID);
+  Transform& ballTransform = registry->GetComponent<Transform>(ballID);
 
   // TODO : registry->GetComponent<Transform> should return a reference not a pointer
   // Move around the transforms of each
-  playerTransform->position = {-10.0f, 5.0f, -10.0f};
-  ballTransform->position = {0.0f, 5.0f, -10.0f};
-  aiTransform->position = {10.0f, 5.0f, 0.0f};
+  playerTransform.position = {-10.0f, 5.0f, -10.0f};
+  ballTransform.position = {0.0f, 5.0f, -10.0f};
+  aiTransform.position = {10.0f, 5.0f, 0.0f};
 
-  RigidBody* ballRigidBody = registry->GetComponent<RigidBody>(ballID);
-  ballRigidBody->velocity =
-      glm::normalize(playerTransform->position - ballTransform->position) * 0.020f;
+  RigidBody& ballRigidBody = registry->GetComponent<RigidBody>(ballID);
+  ballRigidBody.velocity =
+      glm::normalize(playerTransform.position - ballTransform.position) * 0.020f;
 
-  registry->GetComponent<RigidBody>(playerPaddleID)->applyGravity = false;
-  registry->GetComponent<RigidBody>(aiPaddleID)->applyGravity = false;
-  registry->GetComponent<RigidBody>(ballID)->applyGravity = false;
+  registry->GetComponent<RigidBody>(playerPaddleID).applyGravity = false;
+  registry->GetComponent<RigidBody>(aiPaddleID).applyGravity = false;
+  registry->GetComponent<RigidBody>(ballID).applyGravity = false;
 }
 
 void Lucid::InitializeDemoPongSystems()
@@ -243,9 +242,9 @@ void Lucid::InitializeSceneGridLines()
   registry->CreateEntity<GridLine, Transform>(yLineID);
   registry->CreateEntity<GridLine, Transform>(zLineID);
 
-  GridLine* xLine = registry->GetComponent<GridLine>(xLineID);
-  GridLine* yLine = registry->GetComponent<GridLine>(yLineID);
-  GridLine* zLine = registry->GetComponent<GridLine>(zLineID);
+  GridLine& xLine = registry->GetComponent<GridLine>(xLineID);
+  GridLine& yLine = registry->GetComponent<GridLine>(yLineID);
+  GridLine& zLine = registry->GetComponent<GridLine>(zLineID);
 
   // TODO : Either define maximum limit for a scene or find a compile time number for this
   // Note that if the number is too big, e.g. 100000.0f,
@@ -253,17 +252,17 @@ void Lucid::InitializeSceneGridLines()
   // the same size. Better to stick with a smaller number
   const float MAX_WORLD_COORDINATE_LIMIT = 100.0f;
 
-  xLine->line.color = {0.8f, 0.0f, 0.0f};
-  xLine->line.origin.x = -MAX_WORLD_COORDINATE_LIMIT;
-  xLine->line.destination.x = MAX_WORLD_COORDINATE_LIMIT;
+  xLine.line.color = {0.8f, 0.0f, 0.0f};
+  xLine.line.origin.x = -MAX_WORLD_COORDINATE_LIMIT;
+  xLine.line.destination.x = MAX_WORLD_COORDINATE_LIMIT;
 
-  yLine->line.color = {0.0f, 0.8f, 0.0f};
-  yLine->line.origin.y = -MAX_WORLD_COORDINATE_LIMIT;
-  yLine->line.destination.y = MAX_WORLD_COORDINATE_LIMIT;
+  yLine.line.color = {0.0f, 0.8f, 0.0f};
+  yLine.line.origin.y = -MAX_WORLD_COORDINATE_LIMIT;
+  yLine.line.destination.y = MAX_WORLD_COORDINATE_LIMIT;
 
-  zLine->line.color = {0.0f, 0.0f, 0.8f};
-  zLine->line.origin.z = -MAX_WORLD_COORDINATE_LIMIT;
-  zLine->line.destination.z = MAX_WORLD_COORDINATE_LIMIT;
+  zLine.line.color = {0.0f, 0.0f, 0.8f};
+  zLine.line.origin.z = -MAX_WORLD_COORDINATE_LIMIT;
+  zLine.line.destination.z = MAX_WORLD_COORDINATE_LIMIT;
 
   // Draw the x-z grid lines
   for (int i = -100; i < 100; i++)
@@ -271,14 +270,14 @@ void Lucid::InitializeSceneGridLines()
     Entity lineID = registry->GetAvailableEntityId();
     registry->CreateEntity<GridLine, Transform>(lineID);
 
-    GridLine* line = registry->GetComponent<GridLine>(lineID);
-    line->line.color = {0.2f, 0.2f, 0.2f};
+    GridLine& line = registry->GetComponent<GridLine>(lineID);
+    line.line.color = {0.2f, 0.2f, 0.2f};
 
-    line->line.origin.x = static_cast<float>(i);
-    line->line.origin.z = -MAX_WORLD_COORDINATE_LIMIT;
+    line.line.origin.x = static_cast<float>(i);
+    line.line.origin.z = -MAX_WORLD_COORDINATE_LIMIT;
 
-    line->line.destination.x = static_cast<float>(i);
-    line->line.destination.z = MAX_WORLD_COORDINATE_LIMIT;
+    line.line.destination.x = static_cast<float>(i);
+    line.line.destination.z = MAX_WORLD_COORDINATE_LIMIT;
   }
 
   // Draw the z-x grid lines
@@ -287,14 +286,14 @@ void Lucid::InitializeSceneGridLines()
     Entity lineID = registry->GetAvailableEntityId();
     registry->CreateEntity<GridLine, Transform>(lineID);
 
-    GridLine* line = registry->GetComponent<GridLine>(lineID);
-    line->line.color = {0.2f, 0.2f, 0.2f};
+    GridLine& line = registry->GetComponent<GridLine>(lineID);
+    line.line.color = {0.2f, 0.2f, 0.2f};
 
-    line->line.origin.x = -MAX_WORLD_COORDINATE_LIMIT;
-    line->line.origin.z = static_cast<float>(i);
+    line.line.origin.x = -MAX_WORLD_COORDINATE_LIMIT;
+    line.line.origin.z = static_cast<float>(i);
 
-    line->line.destination.x = MAX_WORLD_COORDINATE_LIMIT;
-    line->line.destination.z = static_cast<float>(i);
+    line.line.destination.x = MAX_WORLD_COORDINATE_LIMIT;
+    line.line.destination.z = static_cast<float>(i);
   }
 }
 

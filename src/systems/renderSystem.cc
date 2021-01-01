@@ -592,7 +592,7 @@ void RenderSystem::DrawActiveEntityBoundingBox(float dt, Registry* registry, Inp
   }
 
   // Get the transform of said entity
-  Transform& transform = *(registry->GetComponent<Transform>(devDebug.activeEntity));
+  Transform& transform = registry->GetComponent<Transform>(devDebug.activeEntity);
 
   // Check if the entity is a cube/sphere (primitive) or a model
   // the difference is that if it is a model, then the meshes have to be
@@ -633,11 +633,11 @@ void RenderSystem::DrawActiveEntityBoundingBox(float dt, Registry* registry, Inp
     // std::vector<glm::vec4> verticesCollection;
     auto modelMatrix = GetModelMatrix(transform);
 
-    Model* model = registry->GetComponent<Model>(devDebug.activeEntity);
+    Model& model = registry->GetComponent<Model>(devDebug.activeEntity);
     std::vector<glm::vec4> verticesCollection;
-    verticesCollection.reserve(model->vertices.size());
+    verticesCollection.reserve(model.vertices.size());
 
-    for (auto& vec : model->vertices)
+    for (auto& vec : model.vertices)
     {
       verticesCollection.push_back(modelMatrix * vec);
     }

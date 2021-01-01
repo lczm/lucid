@@ -926,59 +926,24 @@ class Registry
     return componentVectors;
   }
 
-  // This assumes that there is only one component passed into the the registry.
   template <typename Component>
-  Component& GetComponent()
+  Component& GetComponent(Entity id)
   {
     uint32_t hashCode = GetHashCode<Component>();
 
-    for (auto& pair : archetypeComponentMap)
-    {
-      if (pair.first.size() == 1 && pair.first[0] == hashCode)
-      {
-        auto& keyPtr = GetArchetypeComponentMap(pair.second);
-        auto& vectorPtr = GetVectorFromArchetypeComponentMap<Component>(keyPtr, pair.first[0]);
-
-        return vectorPtr.at(0);
-      }
-    }
-
-    // TODO : Find a better way to deal with this...? for now this can just return a default
-    // component
-    std::cout << "GetComponent() not able to retrieve component" << std::endl;
-
-    // TODO : This will return the default value to silence compiler warnings for now.
-    return *(new Component());
-  }
-
-  // This differs from getComponents() in the sense that getComponents is used
-  // as a way to batch collect all the components of a certain pattern.
-  // This exists as a way to get a component given the id.
-  template <typename Component>
-  Component* GetComponent(Entity id)
-  {
-    uint32_t hashCode = GetHashCode<Component>();
-
-    // Check that the entity has the said component in the first place.
     if (!EntityHasComponent<Component>(id))
     {
-      // std::cout << "Entity id : " << id << " does not have component!!" << std::endl;
-      return nullptr;
+      // TODO : End the program
+      std::cout << "GetComponent(" << id << ") does not have component." << std::endl;
+      std::exit(0);
     }
 
-    // get entity archetype
     Archetype archetype = entityComponentMap[id];
+
     auto& keyPtr = GetArchetypeComponentMap(archetype);
-
-    // Get a pointer to the vector of this type.
     auto& vectorPtr = GetVectorFromArchetypeComponentMap<Component>(keyPtr, hashCode);
-    // auto& entityVectorPtr =
-    //     GetVectorFromArchetypeComponentMap<uint32_t>(keyPtr, GetHashCode<uint32_t>());
 
-    // Get entity index
-    uint32_t entityIndex = entityIndexMap[id];
-    return &vectorPtr.at(entityIndex);
-    // return &vectorPtr.at(entityVectorPtr[entityIndex]);
+    return vectorPtr.at(entityIndexMap[id]);
   }
 
   template <typename Resource>

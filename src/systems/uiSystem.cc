@@ -298,16 +298,16 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
         {
           Entity cubeID = registry->GetAvailableEntityId();
           registry->CreateEntity<Cube, Transform>(cubeID);
-          QuatCamera& quatCamera = registry->GetComponent<QuatCamera>();
-          registry->GetComponent<Transform>(cubeID)->position = quatCamera.GetPositionInWorld();
+          QuatCamera& quatCamera = registry->GetResource<QuatCamera>();
+          registry->GetComponent<Transform>(cubeID).position = quatCamera.GetPositionInWorld();
         }
         break;
         case DefaultAssetsType::Sphere:
         {
           Entity sphereID = registry->GetAvailableEntityId();
           registry->CreateEntity<Sphere, Transform>(sphereID);
-          QuatCamera& quatCamera = registry->GetComponent<QuatCamera>();
-          registry->GetComponent<Transform>(sphereID)->position = quatCamera.GetPositionInWorld();
+          QuatCamera& quatCamera = registry->GetResource<QuatCamera>();
+          registry->GetComponent<Transform>(sphereID).position = quatCamera.GetPositionInWorld();
         }
         break;
         case DefaultAssetsType::Line:
@@ -409,8 +409,8 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
   {
     if (ImGui::CollapsingHeader("Color"), treeNodeFlags)
     {
-      Cube* cube = registry->GetComponent<Cube>(devDebug.activeEntity);
-      ImGui::ColorEdit3("Color", &(cube->color.x));
+      Cube& cube = registry->GetComponent<Cube>(devDebug.activeEntity);
+      ImGui::ColorEdit3("Color", &(cube.color.x));
     }
   }
 
@@ -418,8 +418,8 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
   {
     if (ImGui::CollapsingHeader("Color"), treeNodeFlags)
     {
-      Sphere* sphere = registry->GetComponent<Sphere>(devDebug.activeEntity);
-      ImGui::ColorEdit3("Color", &(sphere->color.x));
+      Sphere& sphere = registry->GetComponent<Sphere>(devDebug.activeEntity);
+      ImGui::ColorEdit3("Color", &(sphere.color.x));
     }
   }
 
@@ -427,18 +427,18 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
   {
     if (ImGui::CollapsingHeader("Transform"), treeNodeFlags)
     {
-      Transform* transform = registry->GetComponent<Transform>(devDebug.activeEntity);
-      ImGui::InputFloat("x position", &(transform->position.x), 0.25f, 1.0f);
-      ImGui::InputFloat("y position", &(transform->position.y), 0.25f, 1.0f);
-      ImGui::InputFloat("z position", &(transform->position.z), 0.25f, 1.0f);
+      Transform& transform = registry->GetComponent<Transform>(devDebug.activeEntity);
+      ImGui::InputFloat("x position", &(transform.position.x), 0.25f, 1.0f);
+      ImGui::InputFloat("y position", &(transform.position.y), 0.25f, 1.0f);
+      ImGui::InputFloat("z position", &(transform.position.z), 0.25f, 1.0f);
 
-      ImGui::InputFloat("x rotation", &(transform->rotation.x), 0.25f, 1.0f);
-      ImGui::InputFloat("y rotation", &(transform->rotation.y), 0.25f, 1.0f);
-      ImGui::InputFloat("z rotation", &(transform->rotation.z), 0.25f, 1.0f);
+      ImGui::InputFloat("x rotation", &(transform.rotation.x), 0.25f, 1.0f);
+      ImGui::InputFloat("y rotation", &(transform.rotation.y), 0.25f, 1.0f);
+      ImGui::InputFloat("z rotation", &(transform.rotation.z), 0.25f, 1.0f);
 
-      ImGui::InputFloat("x scale", &(transform->scale.x), 0.25f, 1.0f);
-      ImGui::InputFloat("y scale", &(transform->scale.y), 0.25f, 1.0f);
-      ImGui::InputFloat("z scale", &(transform->scale.z), 0.25f, 1.0f);
+      ImGui::InputFloat("x scale", &(transform.scale.x), 0.25f, 1.0f);
+      ImGui::InputFloat("y scale", &(transform.scale.y), 0.25f, 1.0f);
+      ImGui::InputFloat("z scale", &(transform.scale.z), 0.25f, 1.0f);
       addComponentItems.push_back("Transform");
       if (ImGui::Button("Remove Component"))
       {
@@ -451,11 +451,11 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
   {
     if (ImGui::CollapsingHeader("Rigid Body"), treeNodeFlags)
     {
-      RigidBody* rigidBody = registry->GetComponent<RigidBody>(devDebug.activeEntity);
-      ImGui::InputFloat("x velocity", &(rigidBody->velocity.x), 0.25f, 1.0f);
-      ImGui::InputFloat("y velocity", &(rigidBody->velocity.y), 0.25f, 1.0f);
-      ImGui::InputFloat("z velocity", &(rigidBody->velocity.z), 0.25f, 1.0f);
-      ImGui::Checkbox("Apply gravity", &(rigidBody->applyGravity));
+      RigidBody& rigidBody = registry->GetComponent<RigidBody>(devDebug.activeEntity);
+      ImGui::InputFloat("x velocity", &(rigidBody.velocity.x), 0.25f, 1.0f);
+      ImGui::InputFloat("y velocity", &(rigidBody.velocity.y), 0.25f, 1.0f);
+      ImGui::InputFloat("z velocity", &(rigidBody.velocity.z), 0.25f, 1.0f);
+      ImGui::Checkbox("Apply gravity", &(rigidBody.applyGravity));
       addComponentItems.push_back("Rigid Body");
       if (ImGui::Button("Remove Component"))
       {
@@ -468,9 +468,9 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
   {
     if (ImGui::CollapsingHeader("Animation"), treeNodeFlags)
     {
-      Animation* animation = registry->GetComponent<Animation>(devDebug.activeEntity);
-      ImGui::InputFloat("Animation Counter", &(animation->animCounter), 0.25f, 1.0f);
-      ImGui::InputFloat("Animation Interval", &(animation->animInterval), 0.25f, 1.0f);
+      Animation& animation = registry->GetComponent<Animation>(devDebug.activeEntity);
+      ImGui::InputFloat("Animation Counter", &(animation.animCounter), 0.25f, 1.0f);
+      ImGui::InputFloat("Animation Interval", &(animation.animInterval), 0.25f, 1.0f);
       addComponentItems.push_back("Animation");
       if (ImGui::Button("Remove Component"))
       {
@@ -670,10 +670,10 @@ void UiSystem::HandleGizmoInput(Registry* registry, Input* input)
 
     ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
 
-    Transform* transform = registry->GetComponent<Transform>(devDebug.activeEntity);
+    Transform& transform = registry->GetComponent<Transform>(devDebug.activeEntity);
 
     // TODO Create a utility method to compute this
-    auto modelMatrix = GetModelMatrix(*(transform));
+    auto modelMatrix = GetModelMatrix(transform);
     QuatCamera& quatCamera = registry->GetResource<QuatCamera>();
     ImGuizmo::Manipulate(glm::value_ptr(quatCamera.GetView()),
                          glm::value_ptr(quatCamera.GetProjection()), devDebug.gizmoOperation,
@@ -699,11 +699,11 @@ void UiSystem::HandleGizmoInput(Registry* registry, Input* input)
       // TODO : These rotation computations can just stay as quats for simplicity and not have to
       // be converted back into euler angles every time.
       glm::vec3 newRotation = glm::eulerAngles(rotation);
-      glm::vec3 deltaRotation = newRotation - transform->rotation;
+      glm::vec3 deltaRotation = newRotation - transform.rotation;
 
-      transform->position = position;
-      transform->rotation += deltaRotation;
-      transform->scale = scale;
+      transform.position = position;
+      transform.rotation += deltaRotation;
+      transform.scale = scale;
     }
     else
     {
