@@ -18,14 +18,6 @@ enum class Intersection
 
 class PhysicsSystem : public System
 {
- private:
-  std::vector<glm::vec3> vertices;
-  glm::vec3 direction;
-  Collider* colliderA;
-  Collider* colliderB;
-  Transform* transformA;
-  Transform* transformB;
-
  public:
   PhysicsSystem();
   ~PhysicsSystem();
@@ -34,11 +26,19 @@ class PhysicsSystem : public System
 
   void UpdateAllRigidbodies(float dt, Registry* registry, Input* input);
   void UpdateCollisions(float dt, Registry* registry, Input* input);
-  Intersection EvolveSimplex(Transform transformA, Transform transformB);
 
-  glm::vec3 CalculateSupport(glm::vec3 direction);
-  bool AddSupport(glm::vec3 direction);
+  bool CheckCollision(Collider& colliderA, Transform transformA, Collider& colliderB,
+                      Transform transformB);
 
-  glm::mat4 ApplyTransformation(Transform& transform);
+  Intersection EvolveSimplex(std::vector<glm::vec3>& vertices, glm::vec3 direction,
+                             Collider& colliderA, Transform transformA, Collider& colliderB,
+                             Transform transformB);
+
+  glm::vec3 CalculateSupport(glm::vec3 direction, Collider& colliderA, const Transform transformA,
+                             Collider& colliderB, const Transform transformB);
+
+  bool AddSupport(std::vector<glm::vec3>& vertices, glm::vec3 direction, Collider& colliderA,
+                  Transform transformA, Collider& colliderB, Transform transformB);
+
   bool CheckCollisionBetweenBoundingBox(BoundingBox boundingBox, BoundingBox boundingBoxOther);
 };

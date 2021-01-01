@@ -39,27 +39,46 @@ void PhysicsSystem::UpdateCollisions(float dt, Registry* registry, Input* input)
   auto* transformComponents = static_cast<ComponentVector<Transform>*>(components[0]);
   auto* colliderCubeComponents = static_cast<ComponentVector<ColliderCube>*>(components[1]);
 
-  // Start to test collision
-  vertices.clear();
-  colliderA = &(colliderCubeComponents->At(0));
-  colliderB = &(colliderCubeComponents->At(1));
-  transformA = &(transformComponents->At(0));
-  transformB = &(transformComponents->At(1));
+  // TODO : cache i, j pairs so that checking i, j means checking j, i
+  for (size_t i = 0; i < colliderCubeComponents->Size(); i++)
+  {
+    for (size_t j = 0; j < colliderCubeComponents->Size(); j++)
+    {
+      // If they are the same, dont check for collisions
+      if (i == j) continue;
+
+      bool collided = CheckCollision(colliderCubeComponents->At(i), transformComponents->At(i),
+                                     colliderCubeComponents->At(j), transformComponents->At(j));
+
+      if (collided)
+      {
+        // std::cout << "Collided!" << std::endl;
+        // colliderCubeComponents->At(i).collided = true;
+        // colliderCubeComponents->At(i).color.r = 1.0f;
+      }
+    }
+  }
+}
+
+bool PhysicsSystem::CheckCollision(Collider& colliderA, Transform transformA, Collider& colliderB,
+                                   Transform transformB)
+{
+  std::vector<glm::vec3> vertices;
+  glm::vec3 direction = glm::vec3(0.0f);
 
   Intersection result = Intersection::Unknown;
   while (result == Intersection::Unknown)
   {
-    result = EvolveSimplex(*(transformA), *(transformB));
+    result = EvolveSimplex(vertices, direction, colliderA, transformA, colliderB, transformB);
   }
 
   bool intersected = result == Intersection::Found;
-  if (intersected)
-  {
-    std::cout << "Cube intersected" << std::endl;
-  }
+  return intersected;
 }
 
-Intersection PhysicsSystem::EvolveSimplex(Transform transformA, Transform transformB)
+Intersection PhysicsSystem::EvolveSimplex(std::vector<glm::vec3>& vertices, glm::vec3 direction,
+                                          Collider& colliderA, Transform transformA,
+                                          Collider& colliderB, Transform transformB)
 {
   {
     switch (vertices.size())
@@ -142,23 +161,30 @@ Intersection PhysicsSystem::EvolveSimplex(Transform transformA, Transform transf
         }
       }
     }
-    return AddSupport(direction) ? Intersection::Unknown : Intersection::None;
+
+    return AddSupport(vertices, direction, colliderA, transformA, colliderB, transformB)
+               ? Intersection::Unknown
+               : Intersection::None;
   }
 }
 
-glm::vec3 PhysicsSystem::CalculateSupport(glm::vec3 direction)
+glm::vec3 PhysicsSystem::CalculateSupport(glm::vec3 direction, Collider& colliderA,
+                                          Transform transformA, Collider& colliderB,
+                                          Transform transformB)
 {
   glm::vec3 oppositeDirection = direction;
   oppositeDirection *= -1;
 
-  glm::vec3 newVertex = colliderA->Support(*(transformA), direction) -
-                        colliderB->Support(*(transformB), oppositeDirection);
+  glm::vec3 newVertex =
+      colliderA.Support(transformA, direction) - colliderB.Support(transformB, oppositeDirection);
   return newVertex;
 }
 
-bool PhysicsSystem::AddSupport(glm::vec3 direction)
+bool PhysicsSystem::AddSupport(std::vector<glm::vec3>& vertices, glm::vec3 direction,
+                               Collider& colliderA, Transform transformA, Collider& colliderB,
+                               Transform transformB)
 {
-  glm::vec3 newVertex = CalculateSupport(direction);
+  glm::vec3 newVertex = CalculateSupport(direction, colliderA, transformA, colliderB, transformB);
   vertices.push_back(newVertex);
   return glm::dot(direction, newVertex) >= 0;
 }

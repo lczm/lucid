@@ -40,7 +40,7 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window)
   // InitializeSystems();
 
   // Please remove this in the future, for batch rendering tests only
-  // InitializeManyCubes();
+  InitializeManyCubes();
 
 #if DEBUG
   InitializeSceneGridLines();
@@ -176,7 +176,7 @@ void Lucid::InitializeSystems()
 void Lucid::InitializeManyCubes()
 {
   // srand(time(NULL));
-  for (size_t i = 1; i < 1500; i++)
+  for (size_t i = 1; i < 10; i++)
   {
     Entity cubeID = registry->GetAvailableEntityId();
     registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(cubeID);
