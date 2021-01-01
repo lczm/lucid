@@ -8,10 +8,6 @@ ColliderCube::~ColliderCube()
 {
 }
 
-void ColliderCube::Build()
-{
-}
-
 ColliderSphere::ColliderSphere()
 {
 }

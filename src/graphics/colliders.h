@@ -7,23 +7,17 @@
 class ColliderCube
 {
  public:
-  uint32_t VAO, VBO, EBO;
-
   bool collided = false;
   glm::vec3 color = {1.0f, 1.0f, 1.0f};
 
  public:
   ColliderCube();
   ~ColliderCube();
-
-  void Build();
 };
 
 class ColliderSphere
 {
  public:
-  uint32_t VAO, VBO, EBO;
-
   bool collided = false;
   glm::vec3 color = {1.0f, 1.0f, 1.0f};
 
@@ -35,8 +29,6 @@ class ColliderSphere
 class ColliderPolygon
 {
  public:
-  uint32_t VAO, VBO, EBO;
-
   bool collided = false;
   glm::vec3 color = {1.0f, 1.0f, 1.0f};
 
