@@ -9,7 +9,7 @@
 #include "shader.h"
 #include "sphere.h"
 #include "colliders.h"
-#include "quatCamera.h"
+#include "camera.h"
 #include "shaderResource.h"
 
 #if DEBUG
@@ -26,7 +26,7 @@ static void InitArchetypes(Registry* registry)
   registry->RegisterArchetype<ShaderResource>();
   registry->RegisterArchetype<PrimitiveBatchIds>();
   registry->RegisterArchetype<Model, Transform>();
-  registry->RegisterArchetype<QuatCamera>();
+  registry->RegisterArchetype<Camera>();
   registry->RegisterArchetype<SphereVerticesIndices>();
   registry->RegisterArchetype<Line, Transform>();
   registry->RegisterArchetype<GameEngineState>();

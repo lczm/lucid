@@ -2,36 +2,30 @@
 
 Camera::Camera()
 {
-  yaw = 0.0f;
-  pitch = 0.0f;
-  lastX = 0;
-  lastY = 0;
-
-  fov = 45.0f;
-  near = 0.1f;
-  far = 100.0f;
-
-  // The camera's up vector is pointing towards the y-axis
-  cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-  cameraFront =
-      glm::vec3(cos(glm::radians(yaw)) * cos(glm::radians(pitch)), sin(glm::radians(pitch)),
-                sin(glm::radians(yaw)) * cos(glm::radians(pitch)));
-
-  cameraPos = glm::normalize(glm::cross(cameraFront, cameraUp));
-  cameraUp = glm::normalize(glm::cross(cameraPos, cameraFront));
+  const float fov = 45.0f;
+  const float near = 0.1f;
+  const float far = 250.0f;
 
   projection = glm::perspective(
       glm::radians(fov), static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT), near,
       far);
 }
 
-Camera::~Camera()
+Camera::~Camera() = default;
+
+glm::vec3 Camera::GetPosition()
 {
+  return position;
 }
 
-glm::mat4 Camera::GetView()
+glm::vec3 Camera::GetPositionInWorld()
 {
-  return view;
+  return {-position.x, -position.y, -position.z};
+}
+
+glm::quat Camera::GetOrientation()
+{
+  return orientation;
 }
 
 glm::mat4 Camera::GetProjection()
@@ -39,40 +33,76 @@ glm::mat4 Camera::GetProjection()
   return projection;
 }
 
-glm::vec3 Camera::GetCameraPos()
+glm::mat4 Camera::GetView()
 {
-  return cameraPos;
+  return glm::translate(glm::mat4_cast(orientation), position);
 }
 
-void Camera::UpdateView()
+void Camera::Translate(const glm::vec3 vec)
 {
-  view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+  position += vec * orientation;
 }
 
-void Camera::UpdateCameraVector(float xOffset, float yOffset)
+void Camera::TranslateInWorld(const glm::vec3 vec)
 {
-  xOffset *= CAMERA_SENSITIVITY;
-  yOffset *= CAMERA_SENSITIVITY;
-
-  yaw += xOffset;
-  pitch += yOffset;
-
-  if (pitch > 89.0f) pitch = 89.0f;
-  if (pitch < -89.0f) pitch = -89.0f;
-
-  glm::vec3 front;
-  front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-  front.y = sin(glm::radians(pitch));
-  front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-  cameraFront = glm::normalize(front);
-
-  // Note: not too sure if this is needed... update camera to a free camera
-  // before changing
-  glm::vec3 cameraRight = glm::normalize(glm::cross(cameraFront, cameraUp));
-  cameraUp = glm::normalize(glm::cross(cameraRight, cameraFront));
+  position += -vec * orientation;
 }
 
-void Camera::MoveCamera(glm::vec3 offset)
+void Camera::Rotate(const float angle, const glm::vec3 axis)
 {
-  cameraPos += offset;
+  orientation *= glm::angleAxis(angle, axis * orientation);
+}
+
+void Camera::Rotate(const float angle, const float x, const float y, const float z)
+{
+  orientation *= glm::angleAxis(angle, glm::vec3(x, y, z) * orientation);
+}
+
+// x-axis
+void Camera::Pitch(const float angle)
+{
+  Rotate(angle, 1.0f, 0.0f, 0.0f);
+}
+
+// y-axis
+void Camera::Yaw(const float angle)
+{
+  Rotate(angle, 0.0f, 1.0f, 0.0f);
+}
+
+// z-axis
+void Camera::Roll(const float angle)
+{
+  Rotate(angle, 0.0f, 0.0f, 1.0f);
+}
+
+void Camera::PanCamera(float dt, float offsetX, float offsetY)
+{
+  const float damp = 0.00005f;
+
+  offsetX *= CAMERA_SENSITIVITY * dt;
+  // This is always negative so that 'moving' the camera downwards feels natural
+  // As when it is 'right -clicked', it is in the opposite direction
+  offsetY *= -(CAMERA_SENSITIVITY * dt);
+
+  yaw += offsetX;
+  pitch += offsetY;
+
+  if (pitch > twoPi)
+    pitch -= twoPi;
+  else if (pitch < -twoPi)
+    pitch += twoPi;
+
+  if (yaw > twoPi)
+    yaw -= twoPi;
+  else if (yaw < -twoPi)
+    yaw += twoPi;
+
+  if (pitch != 0.0f) Pitch(pitch);
+  if (yaw != 0.0f) Yaw(yaw);
+  if (roll != 0.0f) Roll(roll);
+
+  pitch *= damp;
+  yaw *= damp;
+  roll *= damp;
 }

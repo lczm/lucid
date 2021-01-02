@@ -8,7 +8,7 @@
 #include "gtc/type_ptr.hpp"
 #include "component.h"
 #include "engineComponents.h"
-#include "quatCamera.h"
+#include "camera.h"
 
 #include <assimp/scene.h>
 #include <assimp/Importer.hpp>
@@ -108,17 +108,17 @@ static glm::vec3 GetRayDirection(Registry* registry, Input* input)
   // homogeneous clip coordinates
   glm::vec4 rayClip = glm::vec4(rayNds.x, rayNds.y, -1.0f, 1.0f);
 
-  QuatCamera& quatCamera = registry->GetResource<QuatCamera>();
+  Camera& camera = registry->GetResource<Camera>();
 
   // convert to eye/camera coordinates
-  glm::vec4 rayEye = glm::inverse(quatCamera.GetProjection()) * rayClip;
+  glm::vec4 rayEye = glm::inverse(camera.GetProjection()) * rayClip;
 
   // unproject the x, z part
   rayEye = glm::vec4(rayEye.x, rayEye.y, -1.0f, 0.0f);
 
   // 4d world coordinates
   // normalize the vector as well
-  glm::vec3 rayWorld = glm::vec3(glm::normalize(glm::inverse(quatCamera.GetView()) * rayEye));
+  glm::vec3 rayWorld = glm::vec3(glm::normalize(glm::inverse(camera.GetView()) * rayEye));
   // lucid::Log(glm::to_string(rayWorld));
 
   // Scale this by a fairly huge amount

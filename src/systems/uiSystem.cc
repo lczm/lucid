@@ -298,16 +298,16 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
         {
           Entity cubeID = registry->GetAvailableEntityId();
           registry->CreateEntity<Cube, Transform>(cubeID);
-          QuatCamera& quatCamera = registry->GetResource<QuatCamera>();
-          registry->GetComponent<Transform>(cubeID).position = quatCamera.GetPositionInWorld();
+          Camera& camera = registry->GetResource<Camera>();
+          registry->GetComponent<Transform>(cubeID).position = camera.GetPositionInWorld();
         }
         break;
         case DefaultAssetsType::Sphere:
         {
           Entity sphereID = registry->GetAvailableEntityId();
           registry->CreateEntity<Sphere, Transform>(sphereID);
-          QuatCamera& quatCamera = registry->GetResource<QuatCamera>();
-          registry->GetComponent<Transform>(sphereID).position = quatCamera.GetPositionInWorld();
+          Camera& camera = registry->GetResource<Camera>();
+          registry->GetComponent<Transform>(sphereID).position = camera.GetPositionInWorld();
         }
         break;
         case DefaultAssetsType::Line:
@@ -612,10 +612,10 @@ void UiSystem::DrawToolBar(float dt, Registry* registry, Input* input)
   ImGui::SameLine(ImGui::GetWindowContentRegionMax().x - 60);
   if (ImGui::Button("Reset", ImVec2(buttonWidth, 0.0f)))
   {
-    QuatCamera* quatCamera = &registry->GetResource<QuatCamera>();
-    quatCamera->position = glm::vec3(0.0f, 0.0f, 0.0f);
-    quatCamera->orientation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
-    quatCamera->TranslateInWorld({0.0f, 1.0f, 20.0f});
+    Camera* camera = &registry->GetResource<Camera>();
+    camera->position = glm::vec3(0.0f, 0.0f, 0.0f);
+    camera->orientation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+    camera->TranslateInWorld({0.0f, 1.0f, 20.0f});
   }
 
   // WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
@@ -674,10 +674,9 @@ void UiSystem::HandleGizmoInput(Registry* registry, Input* input)
 
     // TODO Create a utility method to compute this
     auto modelMatrix = GetModelMatrix(transform);
-    QuatCamera& quatCamera = registry->GetResource<QuatCamera>();
-    ImGuizmo::Manipulate(glm::value_ptr(quatCamera.GetView()),
-                         glm::value_ptr(quatCamera.GetProjection()), devDebug.gizmoOperation,
-                         ImGuizmo::LOCAL, glm::value_ptr(modelMatrix));
+    Camera& camera = registry->GetResource<Camera>();
+    ImGuizmo::Manipulate(glm::value_ptr(camera.GetView()), glm::value_ptr(camera.GetProjection()),
+                         devDebug.gizmoOperation, ImGuizmo::LOCAL, glm::value_ptr(modelMatrix));
 
     if (ImGuizmo::IsUsing())
     {

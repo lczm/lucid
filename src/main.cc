@@ -92,6 +92,7 @@ int main(void)
   glfwMakeContextCurrent(window);
 
   // EnableVSync();
+  DisableVSync();
 
   // Load gl with glad
   gladLoadGL(glfwGetProcAddress);

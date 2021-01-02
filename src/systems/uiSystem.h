@@ -15,7 +15,7 @@
 #include "colliders.h"
 
 #if DEBUG
-#include "quatCamera.h"
+#include "camera.h"
 #include "engineComponents.h"
 #endif
 

@@ -12,7 +12,7 @@
 #include "cube.h"
 #include "sphere.h"
 #include "line.h"
-#include "quatCamera.h"
+#include "camera.h"
 #include "primitiveVertex.h"
 #include "engineComponents.h"
 #include "renderUtils.h"
@@ -31,7 +31,7 @@ class RenderSystem : public System
   Renderer* renderer;
 
 #if DEBUG
-  QuatCamera* quatCamera;
+  Camera* camera;
 #endif
 
   uint32_t fbo, rbo;
