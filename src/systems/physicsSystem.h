@@ -34,11 +34,11 @@ class PhysicsSystem : public System
                              Collider& colliderA, Transform transformA, Collider& colliderB,
                              Transform transformB);
 
-  glm::vec3 CalculateSupport(glm::vec3 direction, Collider& colliderA, const Transform transformA,
-                             Collider& colliderB, const Transform transformB);
-
   bool AddSupport(std::vector<glm::vec3>& vertices, glm::vec3 direction, Collider& colliderA,
                   Transform transformA, Collider& colliderB, Transform transformB);
+
+  glm::vec3 CalculateSupport(glm::vec3 direction, Collider& colliderA, const Transform transformA,
+                             Collider& colliderB, const Transform transformB);
 
   bool CheckCollisionBetweenBoundingBox(BoundingBox boundingBox, BoundingBox boundingBoxOther);
 };

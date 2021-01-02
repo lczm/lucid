@@ -168,6 +168,15 @@ Intersection PhysicsSystem::EvolveSimplex(std::vector<glm::vec3>& vertices, glm:
   }
 }
 
+bool PhysicsSystem::AddSupport(std::vector<glm::vec3>& vertices, glm::vec3 direction,
+                               Collider& colliderA, Transform transformA, Collider& colliderB,
+                               Transform transformB)
+{
+  glm::vec3 newVertex = CalculateSupport(direction, colliderA, transformA, colliderB, transformB);
+  vertices.push_back(newVertex);
+  return glm::dot(direction, newVertex) >= 0;
+}
+
 glm::vec3 PhysicsSystem::CalculateSupport(glm::vec3 direction, Collider& colliderA,
                                           Transform transformA, Collider& colliderB,
                                           Transform transformB)
@@ -178,15 +187,6 @@ glm::vec3 PhysicsSystem::CalculateSupport(glm::vec3 direction, Collider& collide
   glm::vec3 newVertex =
       colliderA.Support(transformA, direction) - colliderB.Support(transformB, oppositeDirection);
   return newVertex;
-}
-
-bool PhysicsSystem::AddSupport(std::vector<glm::vec3>& vertices, glm::vec3 direction,
-                               Collider& colliderA, Transform transformA, Collider& colliderB,
-                               Transform transformB)
-{
-  glm::vec3 newVertex = CalculateSupport(direction, colliderA, transformA, colliderB, transformB);
-  vertices.push_back(newVertex);
-  return glm::dot(direction, newVertex) >= 0;
 }
 
 bool PhysicsSystem::CheckCollisionBetweenBoundingBox(const BoundingBox boundingBox,
