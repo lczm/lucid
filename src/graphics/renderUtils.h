@@ -64,18 +64,29 @@ static glm::mat4 GetModelMatrix(const Transform transform)
   return matrixModel;
 }
 
+// static glm::mat4 GetModelMatrix(glm::mat4 matrixModel, const Transform transform)
+// {
+//   glm::mat4 rotationMatrix = glm::mat4(1.0f);
+//
+//   matrixModel = glm::translate(matrixModel, transform.position);
+//   matrixModel = glm::scale(matrixModel, transform.scale);
+//
+//   // Rotation matrix
+//   rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[0], glm::vec3(1.0, 0.0, 0.0));
+//   rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[1], glm::vec3(0.0, 1.0, 0.0));
+//   rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[2], glm::vec3(0.0, 0.0, 1.0));
+//
+//   matrixModel *= rotationMatrix;
+//
+//   return matrixModel;
+// }
+
 static glm::mat4 GetModelMatrix(glm::mat4 matrixModel, const Transform transform)
 {
-  glm::mat4 rotationMatrix = glm::mat4(1.0f);
+  glm::mat4 rotationMatrix = glm::toMat4(transform.rotation);
 
   matrixModel = glm::translate(matrixModel, transform.position);
   matrixModel = glm::scale(matrixModel, transform.scale);
-
-  // Rotation matrix
-  rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[0], glm::vec3(1.0, 0.0, 0.0));
-  rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[1], glm::vec3(0.0, 1.0, 0.0));
-  rotationMatrix = glm::rotate(rotationMatrix, transform.rotation[2], glm::vec3(0.0, 0.0, 1.0));
-
   matrixModel *= rotationMatrix;
 
   return matrixModel;

@@ -6,11 +6,12 @@
       "configurationType": "Debug",
       "buildRoot": "${projectDir}\\build",
       "installRoot": "${projectDir}\\out\\install\\${name}",
-      "cmakeCommandArgs": "",
+      "cmakeCommandArgs": "CMAKE_BUILD_TYPE=RELEASE",
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
-      "inheritEnvironments": [ "msvc_x86" ],
-      "variables": []
-    },
+      "inheritEnvironments": [
+        "msvc_x86"
+      ]
+    }
   ]
 }
