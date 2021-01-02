@@ -135,7 +135,7 @@ add_executable(lucid
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     target_link_libraries(lucid glfw assimp sndfile OpenAL32)
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    target_link_libraries(lucid glfw assimp* sndfile OpenAL32)
+    target_link_libraries(lucid glfw assimp* sndfile OpenAL32 user32.lib gdi32.lib shell32.lib vcruntime.lib msvcrt.lib)
 endif()
 
 # Tests
