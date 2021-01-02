@@ -176,7 +176,7 @@ void Lucid::InitializeSystems()
 void Lucid::InitializeManyCubes()
 {
   // srand(time(NULL));
-  for (size_t i = 1; i < 10; i++)
+  for (size_t i = 1; i < 30; i++)
   {
     Entity cubeID = registry->GetAvailableEntityId();
     registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(cubeID);
