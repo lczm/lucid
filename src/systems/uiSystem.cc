@@ -695,13 +695,8 @@ void UiSystem::HandleGizmoInput(Registry* registry, Input* input)
       (void)skew;
       (void)perspective;
 
-      // TODO : These rotation computations can just stay as quats for simplicity and not have to
-      // be converted back into euler angles every time.
-      glm::vec3 newRotation = glm::eulerAngles(rotation);
-      glm::vec3 deltaRotation = newRotation - transform.rotation;
-
       transform.position = position;
-      transform.rotation += deltaRotation;
+      transform.rotation = rotation;
       transform.scale = scale;
     }
     else
