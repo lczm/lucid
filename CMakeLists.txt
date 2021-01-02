@@ -3,9 +3,9 @@ cmake_minimum_required(VERSION 3.10)
 project(lucid)
 
 # Default to debug build if release is not specified
-# if(NOT CMAKE_BUILD_TYPE)
-#     set(CMAKE_BUILD_TYPE RELEASE)
-# endif()
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Debug)
+endif(NOT CMAKE_BUILD_TYPE)
 
 set(CMAKE_CXX_FLAGS "-Wall")
 set(CMAKE_CXX_FLAGS_RELEASE "-O2")
@@ -135,9 +135,12 @@ add_executable(lucid
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     target_link_libraries(lucid glfw assimp sndfile OpenAL32)
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    # target_link_libraries(lucid glfw assimp* sndfile OpenAL32)
-    target_link_libraries(lucid glfw assimp* sndfile OpenAL32 user32.lib gdi32.lib shell32.lib vcruntime.lib msvcrt.lib)
-endif()
+    if (CMAKE_BUILD_TYPE STREQUAL "Release")
+        target_link_libraries(lucid glfw assimp* sndfile OpenAL32 user32.lib gdi32.lib shell32.lib vcruntime.lib msvcrt.lib)
+    else()
+        target_link_libraries(lucid glfw assimp* sndfile OpenAL32)
+    endif(CMAKE_BUILD_TYPE STREQUAL "Release")
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 # Tests
 # Add the all the source files to the executable as well
