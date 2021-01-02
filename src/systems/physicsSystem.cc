@@ -34,30 +34,78 @@ void PhysicsSystem::UpdateAllRigidbodies(float dt, Registry* registry, Input* in
 void PhysicsSystem::UpdateCollisions(float dt, Registry* registry, Input* input)
 {
   // Try to check collisions between cubes only
-  std::vector<void*> components = registry->GetComponents<Transform, ColliderCube>();
+  // tcc = {T}ransform-{C}ollider{C}ube
+  std::vector<void*> tccComponents = registry->GetComponents<Transform, ColliderCube>();
+  auto* tccTransformComponents = static_cast<ComponentVector<Transform>*>(tccComponents[0]);
+  auto* tccColliderCubeComponents = static_cast<ComponentVector<ColliderCube>*>(tccComponents[1]);
 
-  auto* transformComponents = static_cast<ComponentVector<Transform>*>(components[0]);
-  auto* colliderCubeComponents = static_cast<ComponentVector<ColliderCube>*>(components[1]);
+  // tcs = {T}ransform-{C}ollider{S}phere
+  std::vector<void*> tcsComponents = registry->GetComponents<Transform, ColliderSphere>();
+  auto* tcsTransformComponents = static_cast<ComponentVector<Transform>*>(tcsComponents[0]);
+  auto* tcsColliderSphereComponents =
+      static_cast<ComponentVector<ColliderSphere>*>(tcsComponents[1]);
+
+  // tcs = {T}ransform-{C}ollider{P}olygon
+  std::vector<void*> tcpComponents = registry->GetComponents<Transform, ColliderPolygon>();
+  auto* tcpTransformComponents = static_cast<ComponentVector<Transform>*>(tcpComponents[0]);
+  auto* tcpColliderPolygonComponents =
+      static_cast<ComponentVector<ColliderPolygon>*>(tcpComponents[1]);
 
   // TODO : cache i, j pairs so that checking i, j means checking j, i
-  for (size_t i = 0; i < colliderCubeComponents->Size(); i++)
+  for (size_t i = 0; i < tccColliderCubeComponents->Size(); i++)
   {
-    for (size_t j = 0; j < colliderCubeComponents->Size(); j++)
+    for (size_t j = 0; j < tccColliderCubeComponents->Size(); j++)
     {
       // If they are the same, dont check for collisions
       if (i == j) continue;
 
-      bool collided = CheckCollision(colliderCubeComponents->At(i), transformComponents->At(i),
-                                     colliderCubeComponents->At(j), transformComponents->At(j));
+      bool collided =
+          CheckCollision(tccColliderCubeComponents->At(i), tccTransformComponents->At(i),
+                         tccColliderCubeComponents->At(j), tccTransformComponents->At(j));
 
       if (collided)
       {
-        std::cout << "Collided!" << std::endl;
-        // colliderCubeComponents->At(i).collided = true;
-        // colliderCubeComponents->At(i).color.r = 1.0f;
+        std::cout << "(Cube - Cube) : Collided!" << std::endl;
+      }
+    }
+
+    // Temporary commented out because the support function for ColliderSpheres have not been worked
+    // out just yet.
+    /*
+        for (size_t j = 0; j < tcsColliderSphereComponents->Size(); j++)
+        {
+          bool collided =
+              CheckCollision(tccColliderCubeComponents->At(i), tccTransformComponents->At(i),
+                             tcsColliderSphereComponents->At(j), tcsTransformComponents->At(j));
+
+          if (collided)
+          {
+            std::cout << "Collided!" << std::endl;
+          }
+        }
+    */
+
+    for (size_t j = 0; j < tcpColliderPolygonComponents->Size(); j++)
+    {
+      bool collided =
+          CheckCollision(tccColliderCubeComponents->At(i), tccTransformComponents->At(i),
+                         tcpColliderPolygonComponents->At(j), tcpTransformComponents->At(j));
+
+      if (collided)
+      {
+        std::cout << "(Cube - Polygon) : Collided!" << std::endl;
       }
     }
   }
+
+  // delete tcsTransformComponents;
+  // delete tccColliderCubeComponents;
+
+  // delete tcsTransformComponents;
+  // delete tcsColliderSphereComponents;
+
+  // delete tcpTransformComponents;
+  // delete tcpColliderPolygonComponents;
 }
 
 bool PhysicsSystem::CheckCollision(Collider& colliderA, Transform transformA, Collider& colliderB,

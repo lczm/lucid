@@ -143,11 +143,14 @@ void Lucid::InitializeModelEntities()
 
   {
     Entity kingBooId = registry->GetAvailableEntityId();
-    registry->CreateEntity<Model, Transform>(kingBooId);
+    registry->CreateEntity<Model, Transform, ColliderPolygon>(kingBooId);
     registry->AddComponentData<Model>(kingBooId, Model(KING_BOO_MODEL));
     registry->GetComponent<Model>(kingBooId).toAnimate = true;
     registry->GetComponent<Transform>(kingBooId).position = {0.0f, 0.0f, 0.0f};
     registry->GetComponent<Transform>(kingBooId).scale /= 150.0f;
+
+    registry->GetComponent<ColliderPolygon>(kingBooId).SetVertices(
+        registry->GetComponent<Model>(kingBooId).vertices);
   }
 
   {
@@ -176,7 +179,7 @@ void Lucid::InitializeSystems()
 void Lucid::InitializeManyCubes()
 {
   // srand(time(NULL));
-  for (size_t i = 1; i < 100; i++)
+  for (size_t i = 1; i < 0; i++)
   {
     Entity cubeID = registry->GetAvailableEntityId();
     registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(cubeID);

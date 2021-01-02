@@ -66,5 +66,28 @@ void ColliderPolygon::SetVertices(std::vector<glm::vec4> vertices)
 
 glm::vec3 ColliderPolygon::Support(Transform& transform, glm::vec3 direction)
 {
-  return glm::vec3(0.0f);
+  auto modelMatrix = GetModelMatrix(transform, ColliderPolygon::transform);
+
+  glm::vec4 maxVertex = glm::vec4(1.0f);
+  float maxDistance = -std::numeric_limits<float>::infinity();
+
+  for (glm::vec4 vertex : vertices)
+  {
+    // Get the updated vertex with the just transformed modelMatrix
+    // Note that `*=` cannot be used here, as that would be parsed
+    // into a = a * b which is not what vector multiplication is trying
+    // to acheive
+    vertex = modelMatrix * vertex;
+
+    float distance = glm::dot(vertex, glm::vec4(direction, 1.0f));
+    if (distance > maxDistance)
+    {
+      maxDistance = distance;
+      maxVertex = vertex;
+    }
+  }
+
+  // TODO : return vec3 or vec4?
+  // return maxVertex;
+  return glm::vec3(maxVertex.x, maxVertex.y, maxVertex.z);
 }
