@@ -11,8 +11,9 @@ ColliderCube::~ColliderCube()
 // TODO : Take in vec3 or vec4 direction?
 glm::vec3 ColliderCube::Support(Transform& transform, glm::vec3 direction)
 {
-  auto modelMatrix = GetModelMatrix(transform);
-  modelMatrix = GetModelMatrix(modelMatrix, ColliderCube::transform);
+  // auto modelMatrix = GetModelMatrix(transform);
+  // modelMatrix = GetModelMatrix(modelMatrix, ColliderCube::transform);
+  auto modelMatrix = GetModelMatrix(transform, ColliderCube::transform);
 
   std::vector<glm::vec4> vertices = GetCubeVertices(modelMatrix);
 

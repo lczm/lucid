@@ -52,7 +52,7 @@ void PhysicsSystem::UpdateCollisions(float dt, Registry* registry, Input* input)
 
       if (collided)
       {
-        // std::cout << "Collided!" << std::endl;
+        std::cout << "Collided!" << std::endl;
         // colliderCubeComponents->At(i).collided = true;
         // colliderCubeComponents->At(i).color.r = 1.0f;
       }

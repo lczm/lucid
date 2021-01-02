@@ -92,6 +92,23 @@ static glm::mat4 GetModelMatrix(glm::mat4 matrixModel, const Transform transform
   return matrixModel;
 }
 
+static glm::mat4 GetModelMatrix(Transform transformA, Transform transformB)
+{
+  glm::mat4 matrixModel = glm::mat4(1.0f);
+
+  // Transform A
+  matrixModel = glm::translate(matrixModel, transformA.position);
+  matrixModel = glm::scale(matrixModel, transformA.scale);
+  matrixModel *= glm::mat4_cast(transformA.rotation);
+
+  // Transform B
+  matrixModel = glm::translate(matrixModel, transformB.position);
+  matrixModel = glm::scale(matrixModel, transformB.scale);
+  matrixModel *= glm::mat4_cast(transformB.rotation);
+
+  return matrixModel;
+}
+
 // This will be useful in the situation in (e.g.) trying to get a gigantic
 // axis aligned bounding box, without the rotations
 static glm::mat4 GetModelMatrixWithoutRotation(const Transform transform)
