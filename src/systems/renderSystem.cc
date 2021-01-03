@@ -1,6 +1,6 @@
 #include "renderSystem.h"
 
-RenderSystem::RenderSystem(Registry* registry)
+RenderSystem::RenderSystem(Registry* registry) : defaultBoneMatrices(100, glm::mat4(1.0f))
 {
   RenderSystem::renderer = new Renderer(registry);
 
@@ -480,6 +480,12 @@ void RenderSystem::DrawAllModels(float dt, Registry* registry, Input* input)
       shaderResource.modelAnimatedShader.SetUniformMatFloat4("boneMatrices", 100,
                                                              model.boneMatrices);
     }
+    else
+    {
+      shaderResource.modelAnimatedShader.SetUniformMatFloat4("boneMatrices", 100,
+                                                             defaultBoneMatrices);
+    }
+
     auto modelMatrix = GetModelMatrix(transform);
 
     // shaderResource.modelShader.SetUniformMatFloat4("model", modelMatrix);

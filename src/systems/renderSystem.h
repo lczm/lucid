@@ -37,6 +37,9 @@ class RenderSystem : public System
   uint32_t fbo, rbo;
   uint32_t texture;
 
+  // This will be for the
+  std::vector<glm::mat4> defaultBoneMatrices;
+
  public:
   RenderSystem(Registry* registry);
   ~RenderSystem();
