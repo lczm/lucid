@@ -681,23 +681,6 @@ std::tuple<bool, float> RenderSystem::RayBoundingBoxCollisionCheck(glm::vec3 ori
   return std::tuple(true, length);
 }
 
-BoundingBox RenderSystem::GetBoundingBox(std::vector<glm::vec4> vertices)
-{
-  BoundingBox bb;
-  for (size_t i = 0; i < vertices.size(); i++)
-  {
-    bb.minX = glm::min(vertices[i].x, bb.minX);
-    bb.maxX = glm::max(vertices[i].x, bb.maxX);
-
-    bb.minY = glm::min(vertices[i].y, bb.minY);
-    bb.maxY = glm::max(vertices[i].y, bb.maxY);
-
-    bb.minZ = glm::min(vertices[i].z, bb.minZ);
-    bb.maxZ = glm::max(vertices[i].z, bb.maxZ);
-  }
-  return bb;
-}
-
 void RenderSystem::InitSphereVerticesIndices(SphereVerticesIndices& sphereVerticesIndices)
 {
   // vertex positions

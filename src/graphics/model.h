@@ -21,9 +21,8 @@ class Model
   std::string path;
   std::string directory;
 
-  std::vector<glm::vec4> vertices;
-  std::vector<MeshTexture> loadedTextures;
   std::vector<Mesh> meshes;
+  std::vector<MeshTexture> loadedTextures;
 
   // Animation mapping
   std::map<std::pair<uint32_t, std::string>, uint32_t> animationMapping;
@@ -33,6 +32,12 @@ class Model
 
   std::vector<glm::mat4> boneMatrices;
   std::vector<glm::mat4> boneOffsets;
+
+  // All the vertices of the model
+  std::vector<glm::vec4> vertices;
+
+  // Bounding box of the model, this is to help free up further computation
+  BoundingBox boundingBox;
 
  public:  // State checks by the systems
   bool hasAnimations = false;

@@ -65,8 +65,6 @@ class RenderSystem : public System
   std::tuple<bool, float> RayBoundingBoxCollisionCheck(glm::vec3 origin, glm::vec3 ray,
                                                        BoundingBox boundingBox);
 
-  BoundingBox GetBoundingBox(std::vector<glm::vec4> vertices);
-
  private:
   void InitSphereVerticesIndices(SphereVerticesIndices& sphereVerticesIndices);
 };

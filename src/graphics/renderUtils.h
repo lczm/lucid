@@ -167,17 +167,11 @@ static glm::vec3 GetRayDirection(Registry* registry, Input* input)
   // 4d world coordinates
   // normalize the vector as well
   glm::vec3 rayWorld = glm::vec3(glm::normalize(glm::inverse(camera.GetView()) * rayEye));
-  // lucid::Log(glm::to_string(rayWorld));
 
+  // Note : Do this for visibility, to visualize the ray,
+  // the scale of the ray does not affect what it is used for.
   // Scale this by a fairly huge amount
-  rayWorld *= 1000.0f;
-
-  // Re-inverse the y-values since input->GetMouseY() {abs(SCREEN_HEIGHT - y)}
-  // TODO : Find out why i have to invert this for whatever reason...
-
-  // rayWorld.x = -rayWorld.x;
-  // rayWorld.y = rayWorld.y;
-  // rayWorld.z = -15.0f;
+  // rayWorld *= 1000.0f;
 
   return rayWorld;
 }
@@ -241,4 +235,21 @@ static std::vector<glm::vec4> GetCubeVertices(glm::mat4 modelMatrix)
   }
 
   return vertices;
+}
+
+static BoundingBox GetBoundingBox(std::vector<glm::vec4> vertices)
+{
+  BoundingBox bb;
+  for (size_t i = 0; i < vertices.size(); i++)
+  {
+    bb.minX = glm::min(vertices[i].x, bb.minX);
+    bb.maxX = glm::max(vertices[i].x, bb.maxX);
+
+    bb.minY = glm::min(vertices[i].y, bb.minY);
+    bb.maxY = glm::max(vertices[i].y, bb.maxY);
+
+    bb.minZ = glm::min(vertices[i].z, bb.minZ);
+    bb.maxZ = glm::max(vertices[i].z, bb.maxZ);
+  }
+  return bb;
 }

@@ -47,6 +47,9 @@ Model::Model(std::string path) : boneMatrices(100)
                                    mesh.vertices[i].position.z, 1.0f));
     }
   }
+
+  // Initialize the bounding box
+  boundingBox = GetBoundingBox(vertices);
 }
 
 Model::~Model()
@@ -69,7 +72,6 @@ void Model::ProcessNode(aiNode* node, const aiScene* scene)
   for (size_t i = 0; i < node->mNumMeshes; i++)
   {
     aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-    // meshes.push_back(ProcessMesh(mesh, scene, path, boneNamer, boneOffsets));
     meshes.push_back(ProcessMesh(mesh, scene));
   }
 
