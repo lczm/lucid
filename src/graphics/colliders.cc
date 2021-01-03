@@ -42,12 +42,18 @@ ColliderSphere::ColliderSphere()
 glm::vec3 ColliderSphere::Support(Transform& transform, glm::vec3 direction)
 {
   // Center of a collider sphere is transform.position
-  glm::vec3 center = transform.position;
-  // Standardized, TODO : Whether this needs to be scaled or not
+  glm::vec3 center = ColliderSphere::transform.position + transform.position;
   float radius = 1.0f;
+  // float radius = 1.0f * (transform.scale.x + transform.scale.y + transform.scale.z) / 3;
 
-  return glm::vec3(0.0f);
-  // return center + radius * glm::normalize(direction);
+  // If the direction is a {0.0f, 0.0f, 0.0f} vector, then it cannot
+  // be normalized
+  if (direction != glm::vec3(0.0f))
+  {
+    direction = glm::normalize(direction);
+  }
+
+  return center + radius * direction;
 }
 
 ColliderSphere::~ColliderSphere()

@@ -208,7 +208,7 @@ void Lucid::InitializeDemoPongEntities()
   // Note to add back collidercube back to playerpaddle after addcomponent debugging
   registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(playerPaddleID);
   registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(aiPaddleID);
-  registry->CreateEntity<Sphere, Transform, RigidBody, ColliderCube>(ballID);
+  registry->CreateEntity<Sphere, Transform, RigidBody, ColliderSphere>(ballID);
 
   registry->CreateResource<PongRules>();
   PongRules& pongRules = registry->GetResource<PongRules>();

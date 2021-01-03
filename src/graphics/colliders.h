@@ -18,6 +18,7 @@ class ColliderCube : public Collider
  public:
   Transform transform;
   std::vector<float> vertices;
+
   bool collided = false;
   glm::vec3 color = {0.0f, 0.0f, 0.0f};
 
@@ -33,6 +34,7 @@ class ColliderSphere : public Collider
 {
  public:
   Transform transform;
+
   bool collided = false;
   glm::vec3 color = {0.0f, 0.0f, 0.0f};
 
