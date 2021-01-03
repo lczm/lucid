@@ -2,17 +2,22 @@
 
 ColliderCube::ColliderCube()
 {
+  vertices = boundingBoxCubeVertices;
 }
 
 ColliderCube::~ColliderCube()
 {
 }
 
-// TODO : Take in vec3 or vec4 direction?
+void ColliderCube::SetVertices(std::vector<float> vertices)
+{
+  ColliderCube::vertices = vertices;
+}
+
 glm::vec3 ColliderCube::Support(Transform& transform, glm::vec3 direction)
 {
   auto modelMatrix = GetModelMatrix(transform, ColliderCube::transform);
-  std::vector<glm::vec4> vertices = GetCubeVertices(modelMatrix);
+  std::vector<glm::vec4> vertices = GetCubeVertices(modelMatrix, ColliderCube::vertices);
 
   glm::vec4 maxVertex = glm::vec4(1.0f);
   float maxDistance = -std::numeric_limits<float>::infinity();
@@ -27,8 +32,6 @@ glm::vec3 ColliderCube::Support(Transform& transform, glm::vec3 direction)
     }
   }
 
-  // TODO : return vec3 or vec4?
-  // return maxVertex;
   return glm::vec3(maxVertex.x, maxVertex.y, maxVertex.z);
 }
 

@@ -201,7 +201,6 @@ static inline glm::mat4 CastToGlmMat4Scale(aiVector3D from)
   return glm::scale(glm::mat4(1.0f), glm::vec3(from.x, from.y, from.z));
 }
 
-// TODO : Check if this is correct
 static inline glm::mat4 CastToGlmMat4(aiQuaternion from)
 {
   return CastToGlmMat4(from.GetMatrix());
@@ -237,6 +236,20 @@ static std::vector<glm::vec4> GetCubeVertices(glm::mat4 modelMatrix)
   return vertices;
 }
 
+static std::vector<glm::vec4> GetCubeVertices(glm::mat4 modelMatrix, std::vector<float> vertices)
+{
+  std::vector<glm::vec4> newVertices;
+  newVertices.reserve(vertices.size() / 3);
+
+  for (size_t i = 0; i < vertices.size(); i += 3)
+  {
+    newVertices.push_back(modelMatrix *
+                          glm::vec4(vertices[i], vertices[i + 1], vertices[i + 2], 1.0f));
+  }
+
+  return newVertices;
+}
+
 static BoundingBox GetBoundingBox(std::vector<glm::vec4> vertices)
 {
   BoundingBox bb;
@@ -252,4 +265,28 @@ static BoundingBox GetBoundingBox(std::vector<glm::vec4> vertices)
     bb.maxZ = glm::max(vertices[i].z, bb.maxZ);
   }
   return bb;
+}
+
+static std::vector<float> GetBoundingBoxVertices(BoundingBox bb)
+{
+  return std::vector<float>{
+      bb.minX, bb.minY, bb.maxZ, bb.maxX, bb.minY, bb.maxZ,
+      bb.maxX, bb.maxY, bb.maxZ, bb.minX, bb.maxY, bb.maxZ,
+
+      bb.minX, bb.minY, bb.minZ, bb.maxX, bb.minY, bb.minZ,
+      bb.maxX, bb.maxY, bb.minZ, bb.minX, bb.maxY, bb.minZ,
+  };
+}
+
+static std::vector<glm::vec4> ConvertFloatToVecVertices(std::vector<float> vertices)
+{
+  std::vector<glm::vec4> newVertices;
+  newVertices.reserve(vertices.size() / 3);
+
+  for (size_t i = 0; i < vertices.size(); i += 3)
+  {
+    newVertices.push_back(glm::vec4(vertices[i], vertices[i + 1], vertices[i + 2], 1.0f));
+  }
+
+  return newVertices;
 }
