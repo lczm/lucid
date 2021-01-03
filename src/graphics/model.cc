@@ -30,6 +30,7 @@ Model::Model(std::string path) : boneMatrices(100)
         auto channel = animation->mChannels[j];
         animationMapping[std::pair<uint32_t, std::string>(i, channel->mNodeName.C_Str())] = j;
       }
+      animationIdMapping[animation->mName.C_Str()] = i;
     }
   }
 

@@ -26,6 +26,7 @@ class Model
 
   // Animation mapping
   std::map<std::pair<uint32_t, std::string>, uint32_t> animationMapping;
+  std::unordered_map<std::string, uint32_t> animationIdMapping;
 
   // Bone name mappings
   std::unordered_map<std::string, uint32_t> boneMapping;

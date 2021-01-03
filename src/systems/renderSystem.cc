@@ -476,6 +476,8 @@ void RenderSystem::DrawAllModels(float dt, Registry* registry, Input* input)
     if (model.hasAnimations && model.toAnimate)
     {
       auto time = static_cast<float>(currentTime * model.scene->mAnimations[0]->mTicksPerSecond);
+      // TODO : UpdateBoneMatrices should take in some form of animation string tag
+      // and it should be auto converted into animationId within the model itself.
       model.UpdateBoneMatrices(time, 0, model.scene->mRootNode, glm::mat4(1.0f));
       shaderResource.modelAnimatedShader.SetUniformMatFloat4("boneMatrices", 100,
                                                              model.boneMatrices);
