@@ -12,47 +12,29 @@
 #include "boundingBox.h"
 #include "renderUtils.h"
 
-// TODO : Figure this out as well
-class Namer
-{
- private:
-  std::map<std::string, uint32_t> map;
-  uint32_t total;
-
- public:
-  Namer();
-  ~Namer();
-
-  uint32_t Name(const std::string& name);
-  uint32_t Total() const;
-  std::map<std::string, uint32_t>& Map();
-  void Clear();
-};
-
 class Model
 {
  public:
   Assimp::Importer* importer;
   const aiScene* scene;
 
+  std::string path;
+  std::string directory;
+
   std::vector<glm::vec4> vertices;
   std::vector<MeshTexture> loadedTextures;
   std::vector<Mesh> meshes;
-  std::string directory;
-
-  // Bone processing maps
-  // Maps a bone name to the its
-  std::unordered_map<std::string, uint32_t> boneMapping;
 
   // Animation mapping
   std::map<std::pair<uint32_t, std::string>, uint32_t> animationMapping;
 
   // Bone name mappings
-  Namer boneNamer;
+  std::unordered_map<std::string, uint32_t> boneMapping;
 
-  std::string path;
   std::vector<glm::mat4> boneMatrices;
   std::vector<glm::mat4> boneOffsets;
+
+ public:  // State checks by the systems
   bool hasAnimations = false;
   bool toAnimate = false;
 

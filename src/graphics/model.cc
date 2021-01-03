@@ -1,40 +1,5 @@
 #include "model.h"
 
-// TODO : Temporary
-Namer::Namer()
-{
-  Clear();
-}
-
-Namer::~Namer()
-{
-}
-
-void Namer::Clear()
-{
-  map.clear();
-  total = 0;
-}
-
-uint32_t Namer::Name(const std::string& name)
-{
-  if (map.count(name))
-  {
-    return map[name];
-  }
-  return map[name] = total++;
-}
-
-uint32_t Namer::Total() const
-{
-  return total;
-}
-
-std::map<std::string, uint32_t>& Namer::Map()
-{
-  return map;
-}
-
 Model::Model()
 {
 }
@@ -72,8 +37,6 @@ Model::Model(std::string path) : boneMatrices(100)
 
   directory = path.substr(0, path.find_last_of('/'));
   ProcessNode(scene->mRootNode, scene);
-
-  // boneMatrices.resize(boneNamer.Total());
 
   // After processing everything, generate a standalone vertices bounding box
   for (auto& mesh : GetMeshes())
@@ -185,7 +148,16 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
   for (size_t i = 0; i < mesh->mNumBones; i++)
   {
     auto bone = mesh->mBones[i];
-    auto id = boneNamer.Name(bone->mName.C_Str());
+    uint32_t id = 0;
+    if (boneMapping.count(bone->mName.C_Str()))
+    {
+      id = boneMapping[bone->mName.C_Str()];
+    }
+    else
+    {
+      boneMapping[bone->mName.C_Str()] = boneMapping.size() + 1;
+      id = boneMapping.size();
+    }
 
     boneOffsets.resize(std::max(id + 1, static_cast<uint32_t>(boneOffsets.size())));
     boneOffsets[id] = CastToGlmMat4(bone->mOffsetMatrix);
@@ -234,9 +206,15 @@ void Model::UpdateBoneMatrices(float dt, uint32_t animationId, aiNode* node, glm
 
   glm::mat4 globalTransformation = transform * currentTransform;
 
-  if (boneNamer.Map().count(nodeName))
+  // if (boneNamer.Map().count(nodeName))
+  // {
+  //   uint32_t i = boneNamer.Map()[nodeName];
+  //   boneMatrices[i] = globalTransformation * boneOffsets[i];
+  // }
+
+  if (boneMapping.count(nodeName))
   {
-    uint32_t i = boneNamer.Map()[nodeName];
+    uint32_t i = boneMapping[nodeName];
     boneMatrices[i] = globalTransformation * boneOffsets[i];
   }
 
