@@ -435,7 +435,7 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
 
   if (registry->EntityHasComponent<Cube>(devDebug.activeEntity))
   {
-    if (ImGui::CollapsingHeader("Color"), treeNodeFlags)
+    if (ImGui::CollapsingHeader("Color", treeNodeFlags))
     {
       Cube& cube = registry->GetComponent<Cube>(devDebug.activeEntity);
       ImGui::ColorEdit3("Color", &(cube.color.x));
@@ -444,7 +444,7 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
 
   if (registry->EntityHasComponent<Sphere>(devDebug.activeEntity))
   {
-    if (ImGui::CollapsingHeader("Color"), treeNodeFlags)
+    if (ImGui::CollapsingHeader("Color", treeNodeFlags))
     {
       Sphere& sphere = registry->GetComponent<Sphere>(devDebug.activeEntity);
       ImGui::ColorEdit3("Color", &(sphere.color.x));
@@ -453,7 +453,7 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
 
   if (registry->EntityHasComponent<Transform>(devDebug.activeEntity))
   {
-    if (ImGui::CollapsingHeader("Transform"), treeNodeFlags)
+    if (ImGui::CollapsingHeader("Transform", treeNodeFlags))
     {
       Transform& transform = registry->GetComponent<Transform>(devDebug.activeEntity);
       ImGui::InputFloat("x position", &(transform.position.x), 0.25f, 1.0f);
@@ -477,7 +477,7 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
 
   if (registry->EntityHasComponent<RigidBody>(devDebug.activeEntity))
   {
-    if (ImGui::CollapsingHeader("Rigid Body"), treeNodeFlags)
+    if (ImGui::CollapsingHeader("Rigid Body", treeNodeFlags))
     {
       RigidBody& rigidBody = registry->GetComponent<RigidBody>(devDebug.activeEntity);
       ImGui::InputFloat("x velocity", &(rigidBody.velocity.x), 0.25f, 1.0f);
@@ -494,7 +494,7 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
 
   if (registry->EntityHasComponent<Animation>(devDebug.activeEntity))
   {
-    if (ImGui::CollapsingHeader("Animation"), treeNodeFlags)
+    if (ImGui::CollapsingHeader("Animation", treeNodeFlags))
     {
       Animation& animation = registry->GetComponent<Animation>(devDebug.activeEntity);
       ImGui::InputFloat("Animation Counter", &(animation.animCounter), 0.25f, 1.0f);
@@ -507,7 +507,7 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
     }
   }
 
-  if (ImGui::CollapsingHeader("Add Component"), treeNodeFlags)
+  if (ImGui::CollapsingHeader("Add Component", treeNodeFlags))
   {
     if (ImGui::BeginCombo("##Add Component", currentItem.c_str()))
     {
