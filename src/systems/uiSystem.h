@@ -38,7 +38,7 @@ class UiSystem : public System
  private:
   bool drawWireframe = false;
   bool drawSceneOnly = false;
-  Node* projectRoot = NewNode("");
+  Node* projectRoot = NewNode("", true);
   const std::vector<std::pair<DefaultAssetsType, std::string>> defaultAssets = {
       {DefaultAssetsType::Cube, "Cube"},
       {DefaultAssetsType::Sphere, "Sphere"},

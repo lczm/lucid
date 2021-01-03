@@ -71,8 +71,10 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
           nfdresult_t result = NFD_PickFolder(&projectPath, NULL);
           if (result == NFD_OKAY)
           {
-            projectRoot = NewNode(projectPath);
+            projectRoot = NewNode(projectPath, true);
             AddFilesAndDirectoriesToRoot(projectRoot);
+            SortFilesAndDirectories(projectRoot);
+            NFD_Quit();
           }
           else if (result == NFD_CANCEL)
           {
