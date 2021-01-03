@@ -440,6 +440,7 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
       Cube& cube = registry->GetComponent<Cube>(devDebug.activeEntity);
       ImGui::ColorEdit3("Color", &(cube.color.x));
     }
+    ImGui::Separator();
   }
 
   if (registry->EntityHasComponent<Sphere>(devDebug.activeEntity))
@@ -449,6 +450,7 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
       Sphere& sphere = registry->GetComponent<Sphere>(devDebug.activeEntity);
       ImGui::ColorEdit3("Color", &(sphere.color.x));
     }
+    ImGui::Separator();
   }
 
   if (registry->EntityHasComponent<Transform>(devDebug.activeEntity))
@@ -473,6 +475,7 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
         registry->RemoveComponent<Transform>(devDebug.activeEntity);
       }
     }
+    ImGui::Separator();
   }
 
   if (registry->EntityHasComponent<RigidBody>(devDebug.activeEntity))
@@ -490,6 +493,7 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
         registry->RemoveComponent<RigidBody>(devDebug.activeEntity);
       }
     }
+    ImGui::Separator();
   }
 
   if (registry->EntityHasComponent<Animation>(devDebug.activeEntity))
@@ -505,6 +509,7 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
         registry->RemoveComponent<Animation>(devDebug.activeEntity);
       }
     }
+    ImGui::Separator();
   }
 
   if (ImGui::CollapsingHeader("Add Component", treeNodeFlags))
@@ -520,9 +525,11 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
       }
       ImGui::EndCombo();
     }
+    ImGui::SameLine(0);
     if (ImGui::Button("Add"))
     {
     }
+    ImGui::Separator();
   }
 
   ImGui::End();
