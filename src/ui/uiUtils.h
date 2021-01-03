@@ -30,14 +30,16 @@ static void AddFilesAndDirectoriesToRoot(Node*& node)
 
   for (const auto& entry : std::filesystem::directory_iterator(node->path))
   {
-    if (entry.is_regular_file())
+    if (!std::filesystem::is_directory(entry))
     {
-      node->isDirectory = false;
-      node->child.push_back(NewNode(entry));
+      Node* temp = NewNode(entry);
+      temp->isDirectory = false;
+      node->child.push_back(temp);
     }
     else
     {
-      node->isDirectory = true;
+      Node* temp = NewNode(entry);
+      temp->isDirectory = true;
       node->child.push_back(NewNode(entry));
       Node* directoryNode = node->child.back();
       AddFilesAndDirectoriesToRoot(directoryNode);
