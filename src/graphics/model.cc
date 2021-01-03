@@ -18,21 +18,19 @@ Model::Model(std::string path) : boneMatrices(100)
     return;
   }
 
-  // animationMapping.clear();
-  for (size_t i = 0; i < scene->mNumAnimations; i++)
-  {
-    auto animation = scene->mAnimations[i];
-    for (size_t j = 0; j < animation->mNumChannels; j++)
-    {
-      // for every animation, channel add it to the mapping
-      auto channel = animation->mChannels[j];
-      animationMapping[std::pair<uint32_t, std::string>(i, channel->mNodeName.C_Str())] = j;
-    }
-  }
-
   if (scene->mNumAnimations > 0)
   {
     hasAnimations = true;
+    for (size_t i = 0; i < scene->mNumAnimations; i++)
+    {
+      auto animation = scene->mAnimations[i];
+      for (size_t j = 0; j < animation->mNumChannels; j++)
+      {
+        // for every animation, channel add it to the mapping
+        auto channel = animation->mChannels[j];
+        animationMapping[std::pair<uint32_t, std::string>(i, channel->mNodeName.C_Str())] = j;
+      }
+    }
   }
 
   directory = path.substr(0, path.find_last_of('/'));

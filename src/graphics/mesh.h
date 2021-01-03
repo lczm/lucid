@@ -5,8 +5,8 @@
 
 #include "shader.h"
 #include "glm.hpp"
-#include <assimp/scene.h>
 #include <algorithm>
+#include <assimp/scene.h>
 
 const uint32_t NUM_MAX_BONES_PER_VERTEX = 4;
 struct MeshVertex
@@ -15,20 +15,8 @@ struct MeshVertex
   glm::vec3 normal;
   glm::vec2 texCoords;
 
-  // int boneIds[NUM_MAX_BONES_PER_VERTEX] = {0, 0, 0, 0};
-  // float boneWeights[NUM_MAX_BONES_PER_VERTEX] = {0.0f, 0.0f, 0.0f, 0.0f};
-
-  int boneIds[NUM_MAX_BONES_PER_VERTEX];
-  float boneWeights[NUM_MAX_BONES_PER_VERTEX];
-
-  MeshVertex()
-  {
-    for (size_t i = 0; i < NUM_MAX_BONES_PER_VERTEX; i++)
-    {
-      boneIds[i] = 0;
-      boneWeights[i] = 0;
-    }
-  }
+  int boneIds[NUM_MAX_BONES_PER_VERTEX] = {0, 0, 0, 0};
+  float boneWeights[NUM_MAX_BONES_PER_VERTEX] = {0.0f, 0.0f, 0.0f, 0.0f};
 
   void AddBone(int id, float weight)
   {
