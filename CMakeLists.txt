@@ -71,6 +71,7 @@ include_directories(src/entity)
 include_directories(src/lucid)
 include_directories(src/shaders)
 include_directories(src/systems)
+include_directories(src/ui)
 
 # Example directories
 include_directories(src/examples/pong)
@@ -106,6 +107,10 @@ include_directories(lib/assimp/include)
 # Setup ImGuizmo
 include_directories(lib/ImGuizmo)
 
+# Setup nativefiledialog-extended
+add_subdirectory(lib/nativefiledialog-extended)
+include_directories(lib/nativefiledialog-extended/src/include)
+
 # Setup glfw
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
@@ -133,12 +138,12 @@ add_executable(lucid
 
 # Link the executable to glfw
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    target_link_libraries(lucid glfw assimp sndfile OpenAL32)
+    target_link_libraries(lucid glfw assimp sndfile OpenAL32 nfd)
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     if (CMAKE_BUILD_TYPE STREQUAL "Release")
-        target_link_libraries(lucid glfw assimp* sndfile OpenAL32 user32.lib gdi32.lib shell32.lib vcruntime.lib msvcrt.lib)
+        target_link_libraries(lucid glfw assimp* sndfile OpenAL32 nfd user32.lib gdi32.lib shell32.lib vcruntime.lib msvcrt.lib)
     else()
-        target_link_libraries(lucid glfw assimp* sndfile OpenAL32)
+        target_link_libraries(lucid glfw assimp* sndfile OpenAL32 nfd)
     endif(CMAKE_BUILD_TYPE STREQUAL "Release")
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 

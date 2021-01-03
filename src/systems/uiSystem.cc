@@ -64,6 +64,24 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
     {
       if (ImGui::BeginMenu("File"))
       {
+        if (ImGui::MenuItem("Open Folder"))
+        {
+          NFD_Init();
+          nfdchar_t* projectPath = NULL;
+          nfdresult_t result = NFD_PickFolder(&projectPath, NULL);
+          if (result == NFD_OKAY)
+          {
+            projectRoot = NewNode(projectPath);
+            AddFilesAndDirectoriesToRoot(projectRoot);
+          }
+          else if (result == NFD_CANCEL)
+          {
+          }
+          else
+          {
+            std::cout << "NFD Error : " << NFD_GetError() << std::endl;
+          }
+        }
         ImGui::EndMenu();
       }
       if (ImGui::BeginMenu("Edit"))
@@ -368,12 +386,20 @@ void UiSystem::DrawGameCamera(float dt, Registry* registry, Input* input)
 void UiSystem::DrawProject(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Project");
-
   // DevDebug& devDebug = registry->GetComponent<DevDebug>();
   // if (devDebug.changeFocusWindow == WindowType::Scene) ImGui::SetWindowFocus();
 
-  ImGui::Text("This is the project");
   UpdateInputActiveWindow(input, WindowType::Project);
+
+  // Check if a folder has been selected
+  if (!std::filesystem::exists(projectRoot->path))
+  {
+    ImGui::End();
+    return;
+  }
+
+  DrawFileTree(projectRoot);
+
   ImGui::End();
 }
 
@@ -612,10 +638,10 @@ void UiSystem::DrawToolBar(float dt, Registry* registry, Input* input)
   ImGui::SameLine(ImGui::GetWindowContentRegionMax().x - 60);
   if (ImGui::Button("Reset", ImVec2(buttonWidth, 0.0f)))
   {
-    Camera* camera = &registry->GetResource<Camera>();
-    camera->position = glm::vec3(0.0f, 0.0f, 0.0f);
-    camera->orientation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
-    camera->TranslateInWorld({0.0f, 1.0f, 20.0f});
+    Camera& camera = registry->GetResource<Camera>();
+    camera.position = glm::vec3(0.0f, 0.0f, 0.0f);
+    camera.orientation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+    camera.TranslateInWorld({0.0f, 1.0f, 20.0f});
   }
 
   // WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();

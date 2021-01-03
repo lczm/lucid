@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <iostream>
+#include <filesystem>
 
 #include "shader.h"
 #include "ecs.h"
@@ -29,12 +30,15 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 #include "ImGuizmo.h"
+#include "nfd.h"
+#include "uiUtils.h"
 
 class UiSystem : public System
 {
  private:
   bool drawWireframe = false;
   bool drawSceneOnly = false;
+  Node* projectRoot = NewNode("");
   const std::vector<std::pair<DefaultAssetsType, std::string>> defaultAssets = {
       {DefaultAssetsType::Cube, "Cube"},
       {DefaultAssetsType::Sphere, "Sphere"},
