@@ -66,6 +66,21 @@ class UiSystem : public System
   void DrawDefaultAssets(float dt, Registry* registry, Input* input);
   void DrawGameConfiguration(float dt, Registry* registry, Input* input);
   void DrawProgressBar(float fraction, std::string message);
+  void DrawInspectorCubeComponent(
+      Registry* registry, DevDebug& devDebug,
+      ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen);
+  void DrawInspectorSphereComponent(
+      Registry* registry, DevDebug& devDebug,
+      ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen);
+  void DrawInspectorTransformComponent(
+      Registry* registry, DevDebug& devDebug,
+      ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen);
+  void DrawInspectorRigidBodyComponent(
+      Registry* registry, DevDebug& devDebug,
+      ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen);
+  void DrawInspectorAnimationComponent(
+      Registry* registry, DevDebug& devDebug,
+      ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen);
 
   void HandleGizmoInput(Registry* registry, Input* input);
   void UpdateSceneWindow(Registry* registry, Input* input);

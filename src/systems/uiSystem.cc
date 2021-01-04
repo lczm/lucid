@@ -423,7 +423,6 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
 
   DevDebug& devDebug = registry->GetResource<DevDebug>();
   ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen;
-  std::vector<std::string> addComponentItems;
   static std::string currentItem = "";
 
   UpdateInputActiveWindow(input, WindowType::Inspector);
@@ -433,96 +432,16 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
     return;
   }
 
-  if (registry->EntityHasComponent<Cube>(devDebug.activeEntity))
-  {
-    if (ImGui::CollapsingHeader("Color", treeNodeFlags))
-    {
-      Cube& cube = registry->GetComponent<Cube>(devDebug.activeEntity);
-      ImGui::ColorEdit3("Color", &(cube.color.x));
-    }
-    ImGui::Separator();
-  }
-
-  if (registry->EntityHasComponent<Sphere>(devDebug.activeEntity))
-  {
-    if (ImGui::CollapsingHeader("Color", treeNodeFlags))
-    {
-      Sphere& sphere = registry->GetComponent<Sphere>(devDebug.activeEntity);
-      ImGui::ColorEdit3("Color", &(sphere.color.x));
-    }
-    ImGui::Separator();
-  }
-
-  if (registry->EntityHasComponent<Transform>(devDebug.activeEntity))
-  {
-    if (ImGui::CollapsingHeader("Transform", treeNodeFlags))
-    {
-      Transform& transform = registry->GetComponent<Transform>(devDebug.activeEntity);
-      ImGui::InputFloat("x position", &(transform.position.x), 0.25f, 1.0f);
-      ImGui::InputFloat("y position", &(transform.position.y), 0.25f, 1.0f);
-      ImGui::InputFloat("z position", &(transform.position.z), 0.25f, 1.0f);
-
-      ImGui::InputFloat("x rotation", &(transform.rotation.x), 0.25f, 1.0f);
-      ImGui::InputFloat("y rotation", &(transform.rotation.y), 0.25f, 1.0f);
-      ImGui::InputFloat("z rotation", &(transform.rotation.z), 0.25f, 1.0f);
-
-      ImGui::InputFloat("x scale", &(transform.scale.x), 0.25f, 1.0f);
-      ImGui::InputFloat("y scale", &(transform.scale.y), 0.25f, 1.0f);
-      ImGui::InputFloat("z scale", &(transform.scale.z), 0.25f, 1.0f);
-      addComponentItems.push_back("Transform");
-      if (ImGui::Button("Remove Component"))
-      {
-        registry->RemoveComponent<Transform>(devDebug.activeEntity);
-      }
-    }
-    ImGui::Separator();
-  }
-
-  if (registry->EntityHasComponent<RigidBody>(devDebug.activeEntity))
-  {
-    if (ImGui::CollapsingHeader("Rigid Body", treeNodeFlags))
-    {
-      RigidBody& rigidBody = registry->GetComponent<RigidBody>(devDebug.activeEntity);
-      ImGui::InputFloat("x velocity", &(rigidBody.velocity.x), 0.25f, 1.0f);
-      ImGui::InputFloat("y velocity", &(rigidBody.velocity.y), 0.25f, 1.0f);
-      ImGui::InputFloat("z velocity", &(rigidBody.velocity.z), 0.25f, 1.0f);
-      ImGui::Checkbox("Apply gravity", &(rigidBody.applyGravity));
-      addComponentItems.push_back("Rigid Body");
-      if (ImGui::Button("Remove Component"))
-      {
-        registry->RemoveComponent<RigidBody>(devDebug.activeEntity);
-      }
-    }
-    ImGui::Separator();
-  }
-
-  if (registry->EntityHasComponent<Animation>(devDebug.activeEntity))
-  {
-    if (ImGui::CollapsingHeader("Animation", treeNodeFlags))
-    {
-      Animation& animation = registry->GetComponent<Animation>(devDebug.activeEntity);
-      ImGui::InputFloat("Animation Counter", &(animation.animCounter), 0.25f, 1.0f);
-      ImGui::InputFloat("Animation Interval", &(animation.animInterval), 0.25f, 1.0f);
-      addComponentItems.push_back("Animation");
-      if (ImGui::Button("Remove Component"))
-      {
-        registry->RemoveComponent<Animation>(devDebug.activeEntity);
-      }
-    }
-    ImGui::Separator();
-  }
+  DrawInspectorCubeComponent(registry, devDebug);
+  DrawInspectorSphereComponent(registry, devDebug);
+  DrawInspectorTransformComponent(registry, devDebug);
+  DrawInspectorRigidBodyComponent(registry, devDebug);
+  DrawInspectorAnimationComponent(registry, devDebug);
 
   if (ImGui::CollapsingHeader("Add Component", treeNodeFlags))
   {
     if (ImGui::BeginCombo("##Add Component", currentItem.c_str()))
     {
-      for (size_t i = 0; i < addComponentItems.size(); i++)
-      {
-        bool selected = (currentItem == addComponentItems.at(i));
-        if (ImGui::Selectable(addComponentItems.at(i).c_str(), selected))
-          currentItem = addComponentItems.at(i);
-        if (selected) ImGui::SetItemDefaultFocus();
-      }
       ImGui::EndCombo();
     }
     ImGui::SameLine(0);
@@ -687,6 +606,113 @@ void UiSystem::DrawProgressBar(float fraction, std::string message)
   ImGui::TextWrapped("%s %c", castedMessage, "|/-\\"[(int)(ImGui::GetTime() / 0.05f) & 3]);
   ImGui::ProgressBar(fraction);
   ImGui::End();
+}
+
+void UiSystem::DrawInspectorCubeComponent(Registry* registry, DevDebug& devDebug,
+                                          ImGuiTreeNodeFlags treeNodeFlags)
+{
+  if (registry->EntityHasComponent<Cube>(devDebug.activeEntity))
+  {
+    if (ImGui::CollapsingHeader("Color", treeNodeFlags))
+    {
+      Cube& cube = registry->GetComponent<Cube>(devDebug.activeEntity);
+      ImGui::ColorEdit3("Color", &(cube.color.x));
+    }
+    ImGui::Separator();
+  }
+}
+
+void UiSystem::DrawInspectorSphereComponent(Registry* registry, DevDebug& devDebug,
+                                            ImGuiTreeNodeFlags treeNodeFlags)
+{
+  if (registry->EntityHasComponent<Sphere>(devDebug.activeEntity))
+  {
+    if (ImGui::CollapsingHeader("Color", treeNodeFlags))
+    {
+      Sphere& sphere = registry->GetComponent<Sphere>(devDebug.activeEntity);
+      ImGui::ColorEdit3("Color", &(sphere.color.x));
+    }
+    ImGui::Separator();
+  }
+}
+
+void UiSystem::DrawInspectorTransformComponent(Registry* registry, DevDebug& devDebug,
+                                               ImGuiTreeNodeFlags treeNodeFlags)
+{
+  if (registry->EntityHasComponent<Transform>(devDebug.activeEntity))
+  {
+    if (ImGui::CollapsingHeader("Transform", treeNodeFlags))
+    {
+      Transform& transform = registry->GetComponent<Transform>(devDebug.activeEntity);
+      ImGui::InputFloat("x position", &(transform.position.x), 0.25f, 1.0f);
+      ImGui::InputFloat("y position", &(transform.position.y), 0.25f, 1.0f);
+      ImGui::InputFloat("z position", &(transform.position.z), 0.25f, 1.0f);
+
+      ImGui::InputFloat("x rotation", &(transform.rotation.x), 0.25f, 1.0f);
+      ImGui::InputFloat("y rotation", &(transform.rotation.y), 0.25f, 1.0f);
+      ImGui::InputFloat("z rotation", &(transform.rotation.z), 0.25f, 1.0f);
+
+      ImGui::InputFloat("x scale", &(transform.scale.x), 0.25f, 1.0f);
+      ImGui::InputFloat("y scale", &(transform.scale.y), 0.25f, 1.0f);
+      ImGui::InputFloat("z scale", &(transform.scale.z), 0.25f, 1.0f);
+    }
+    ImGui::Separator();
+  }
+}
+
+void UiSystem::DrawInspectorRigidBodyComponent(Registry* registry, DevDebug& devDebug,
+                                               ImGuiTreeNodeFlags treeNodeFlags)
+{
+  if (registry->EntityHasComponent<RigidBody>(devDebug.activeEntity))
+  {
+    if (ImGui::CollapsingHeader("Rigid Body", treeNodeFlags))
+    {
+      RigidBody& rigidBody = registry->GetComponent<RigidBody>(devDebug.activeEntity);
+      ImGui::InputFloat("x velocity", &(rigidBody.velocity.x), 0.25f, 1.0f);
+      ImGui::InputFloat("y velocity", &(rigidBody.velocity.y), 0.25f, 1.0f);
+      ImGui::InputFloat("z velocity", &(rigidBody.velocity.z), 0.25f, 1.0f);
+      ImGui::Checkbox("Apply gravity", &(rigidBody.applyGravity));
+
+      // right click to remove component
+      // if (ImGui::BeginPopupContextItem("rigidbody context menu"))
+      // {
+      //   if (input->activeWindow != WindowType::Inspector)
+      //   {
+      //     ImGui::SetWindowFocus("Inspector");
+      //     input->activeWindow = WindowType::Inspector;
+      //   }
+      //   if (ImGui::MenuItem("Remove Component"))
+      //   {
+      //     registry->RemoveComponent<RigidBody>(devDebug.activeEntity);
+      //   }
+
+      //   ImGui::EndPopup();
+      // }
+    }
+    ImGui::Separator();
+  }
+}
+
+void UiSystem::DrawInspectorAnimationComponent(Registry* registry, DevDebug& devDebug,
+                                               ImGuiTreeNodeFlags treeNodeFlags)
+{
+  if (registry->EntityHasComponent<Animation>(devDebug.activeEntity))
+  {
+    if (ImGui::CollapsingHeader("Animation", treeNodeFlags))
+    {
+      Animation& animation = registry->GetComponent<Animation>(devDebug.activeEntity);
+      ImGui::InputFloat("Animation Counter", &(animation.animCounter), 0.25f, 1.0f);
+      ImGui::InputFloat("Animation Interval", &(animation.animInterval), 0.25f, 1.0f);
+      if (ImGui::BeginPopupContextWindow())
+      {
+        if (ImGui::MenuItem("Remove Component"))
+        {
+          registry->RemoveComponent<Animation>(devDebug.activeEntity);
+        }
+      }
+    }
+    ImGui::Separator();
+  }
 }
 
 void UiSystem::HandleGizmoInput(Registry* registry, Input* input)
