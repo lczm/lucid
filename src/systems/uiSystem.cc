@@ -758,7 +758,30 @@ void UiSystem::HandleGizmoInput(Registry* registry, Input* input)
 
       transform.position = position;
       transform.rotation = rotation;
-      transform.scale = scale;
+      if (scale.x < 0.1)
+      {
+        transform.scale.x = 0.1;
+      }
+      else
+      {
+        transform.scale.x = scale.x;
+      }
+      if (scale.y < 0.1)
+      {
+        transform.scale.y = 0.1;
+      }
+      else
+      {
+        transform.scale.y = scale.y;
+      }
+      if (scale.z < 0.1)
+      {
+        transform.scale.z = 0.1;
+      }
+      else
+      {
+        transform.scale.z = scale.z;
+      }
     }
     else
     {
