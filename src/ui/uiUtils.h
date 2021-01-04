@@ -70,28 +70,40 @@ static void SortFilesAndDirectories(Node*& node)
 
 static void DrawFileTree(Node* node)
 {
+  ImGui::ShowDemoWindow();
+  Node* nodeClicked = NULL;
+  static Node* selectionMask = NULL;
   for (size_t i = 0; i < node->child.size(); i++)
   {
     ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_OpenOnArrow |
                                        ImGuiTreeNodeFlags_OpenOnDoubleClick |
                                        ImGuiTreeNodeFlags_SpanAvailWidth;
+    const bool isSelected = (selectionMask == node->child.at(i));
+    if (isSelected) treeNodeFlags |= ImGuiTreeNodeFlags_Selected;
     if (node->child.at(i)->isDirectory == false)
     {
       treeNodeFlags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
       std::string stringFilePath = node->child.at(i)->path.filename().string();
       const char* charFilePath = stringFilePath.c_str();
       ImGui::TreeNodeEx(charFilePath, treeNodeFlags);
+      if (ImGui::IsItemClicked()) nodeClicked = node->child.at(i);
     }
     else
     {
       std::string stringFilePath = node->child.at(i)->path.filename().string();
       const char* charFilePath = stringFilePath.c_str();
       bool nodeOpen = ImGui::TreeNodeEx(charFilePath, treeNodeFlags);
+      if (ImGui::IsItemClicked()) nodeClicked = node->child.at(i);
       if (nodeOpen)
       {
         DrawFileTree(node->child.at(i));
         ImGui::TreePop();
       }
     }
+  }
+
+  if (nodeClicked != NULL)
+  {
+    selectionMask = nodeClicked;
   }
 }
