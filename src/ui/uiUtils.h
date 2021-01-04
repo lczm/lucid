@@ -70,7 +70,6 @@ static void SortFilesAndDirectories(Node*& node)
 
 static void DrawFileTree(Node* node)
 {
-  ImGui::ShowDemoWindow();
   Node* nodeClicked = NULL;
   static Node* selectionMask = NULL;
   for (size_t i = 0; i < node->child.size(); i++)
@@ -93,6 +92,34 @@ static void DrawFileTree(Node* node)
       std::string stringFilePath = node->child.at(i)->path.filename().string();
       const char* charFilePath = stringFilePath.c_str();
       bool nodeOpen = ImGui::TreeNodeEx(charFilePath, treeNodeFlags);
+      if (isSelected)
+      {
+        ImGui::Begin("Assets");
+        Node* selectedDirectory = node->child.at(i);
+        // for each of the files in the selected directory
+        for (size_t j = 0; j < selectedDirectory->child.size(); j++)
+        {
+          Node* currentFile = selectedDirectory->child.at(j);
+          if (currentFile->path.extension() == ".gltf")
+          {
+            std::string stringCurrentFileName = currentFile->path.stem().string();
+            const char* charCurrentFileName = stringCurrentFileName.c_str();
+            ImGui::PushID(j);
+            if ((j % 10) != 0) ImGui::SameLine();
+            ImGui::Button(charCurrentFileName, ImVec2(60, 60));
+
+            // Set buttons as drag and drop source
+            if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
+            {
+              ImGui::SetDragDropPayload("Project", currentFile, sizeof(Node));
+              ImGui::Text(charCurrentFileName);
+              ImGui::EndDragDropSource();
+            }
+            ImGui::PopID();
+          }
+        }
+        ImGui::End();
+      }
       if (ImGui::IsItemClicked()) nodeClicked = node->child.at(i);
       if (nodeOpen)
       {

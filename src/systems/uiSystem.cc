@@ -264,7 +264,6 @@ void UiSystem::DrawAssets(float dt, Registry* registry, Input* input)
   // widgetLayout.bottomWindowWidth = wsize.x;
   // widgetLayout.bottomWindowHeight = wsize.y;
 
-  ImGui::Text("This is the assets");
   UpdateInputActiveWindow(input, WindowType::Assets);
   ImGui::End();
 }
@@ -336,6 +335,20 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
 
       devDebug.changeFocusWindow = WindowType::Scene;
       UpdateWindowFocus(registry, WindowType::DefaultAssets, "Scene", input);
+    }
+    // Check if payload is from project window
+    else if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Project"))
+    {
+      IM_ASSERT(payload->DataSize == sizeof(Node));
+      Node payloadN = *(const Node*)payload->Data;
+      // placeholders to confirm that dragging and dropping models works
+      Entity assetId = registry->GetAvailableEntityId();
+      Camera& camera = registry->GetResource<Camera>();
+      registry->CreateEntity<Model, Transform, ColliderPolygon>(assetId);
+      registry->AddComponentData<Model>(assetId, Model(payloadN.path.string()));
+      registry->GetComponent<Model>(assetId).toAnimate = false;
+      registry->GetComponent<Transform>(assetId).position = camera.GetPositionInWorld();
+      registry->GetComponent<Transform>(assetId).scale /= 150.0f;
     }
     ImGui::EndDragDropTarget();
   }
