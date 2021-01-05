@@ -85,6 +85,23 @@ static void DrawFileTree(Node* node)
       std::string stringFilePath = node->child.at(i)->path.filename().string();
       const char* charFilePath = stringFilePath.c_str();
       ImGui::TreeNodeEx(charFilePath, treeNodeFlags);
+      if (isSelected)
+      {
+        Node* currentFile = node->child.at(i);
+        if (currentFile->path.extension() == ".gltf")
+        {
+          // Filename without extension
+          std::string stringCurrentFileName = currentFile->path.stem().string();
+          const char* charCurrentFileName = stringCurrentFileName.c_str();
+
+          // Set tree node as drag and drop source
+          if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
+          {
+            ImGui::SetDragDropPayload("Project", currentFile, sizeof(Node));
+            ImGui::EndDragDropSource();
+          }
+        }
+      }
       if (ImGui::IsItemClicked()) nodeClicked = node->child.at(i);
     }
     else
