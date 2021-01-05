@@ -179,11 +179,11 @@ TEST_F(TestsGL, DefaultValues)
   registry->CreateEntity<TestAddStruct1>(entity1);
 
   // Get the transform component of the entity
-  TestAddStruct1* transformComponent = registry->GetComponent<TestAddStruct1>(entity1);
+  TestAddStruct1& transformComponent = registry->GetComponent<TestAddStruct1>(entity1);
 
   // Do some assertions that of the default values.
-  ASSERT_EQ(transformComponent->a, 0);
-  ASSERT_EQ(transformComponent->b, 0);
+  ASSERT_EQ(transformComponent.a, 0);
+  ASSERT_EQ(transformComponent.b, 0);
 }
 
 /*
@@ -211,11 +211,11 @@ TEST_F(TestsGL, AddComponentData)
   registry->AddComponentData<TestAddStruct1>(entity1, updatedComponent);
 
   // Get the transform component of the entity
-  TestAddStruct1* transformComponent = registry->GetComponent<TestAddStruct1>(entity1);
+  TestAddStruct1& transformComponent = registry->GetComponent<TestAddStruct1>(entity1);
 
   // Do some assertions that of the default values.
-  ASSERT_EQ(transformComponent->a, 500);
-  ASSERT_EQ(transformComponent->b, 500);
+  ASSERT_EQ(transformComponent.a, 500);
+  ASSERT_EQ(transformComponent.b, 500);
 }
 
 TEST_F(TestsGL, GetComponentExact)
@@ -249,56 +249,6 @@ TEST_F(TestsGL, GetComponentExact)
       static_cast<ComponentVector<TestAddStruct2>*>(transformTestAddStruct2Components[1]);
   ASSERT_EQ(transformImageComponentVector->Size(), 1);
   ASSERT_EQ(animationComponentVector->Size(), 1);
-}
-
-TEST_F(TestsGL, GetComponentSingle)
-{
-  Registry* registry = new Registry();
-
-  // Create one archetype
-  registry->RegisterArchetype<TestAddStruct1>();
-
-  // Get some entities
-  Entity entity1 = registry->GetAvailableEntityId();
-
-  // Create some entities
-  registry->CreateEntity<TestAddStruct1>(entity1);
-  registry->AddComponentData<TestAddStruct1>(entity1, {10, 20});
-
-  // Get the struct
-  TestAddStruct1 testStruct = registry->GetComponent<TestAddStruct1>();
-
-  ASSERT_EQ(testStruct.a, 10);
-  ASSERT_EQ(testStruct.b, 20);
-}
-
-TEST_F(TestsGL, GetComponentSingleAndModify)
-{
-  Registry* registry = new Registry();
-
-  // Create one archetype
-  registry->RegisterArchetype<TestAddStruct1>();
-
-  // Get some entities
-  Entity entity1 = registry->GetAvailableEntityId();
-
-  // Create some entities
-  registry->CreateEntity<TestAddStruct1>(entity1);
-  registry->AddComponentData<TestAddStruct1>(entity1, {10, 20});
-
-  // Get the struct
-  TestAddStruct1& testStruct = registry->GetComponent<TestAddStruct1>();
-
-  ASSERT_EQ(testStruct.a, 10);
-  ASSERT_EQ(testStruct.b, 20);
-
-  testStruct.a = 500;
-  testStruct.b = 1000;
-
-  TestAddStruct1& testStructModified = registry->GetComponent<TestAddStruct1>();
-
-  ASSERT_EQ(testStructModified.a, 500);
-  ASSERT_EQ(testStructModified.b, 1000);
 }
 
 TEST_F(TestsGL, GetComponentsLambdaSingleIteration)
@@ -622,7 +572,7 @@ TEST_F(TestsGL, AddComponent)
   Entity id2 = registry->GetAvailableEntityId();
   registry->CreateEntity<Cube, Transform>(id2);
 
-  registry->GetComponent<Transform>(id1)->position = {5.0f, 0.0f, 0.0f};
+  registry->GetComponent<Transform>(id1).position = {5.0f, 0.0f, 0.0f};
 
   ASSERT_TRUE(registry->EntityHasComponent<Cube>(id1));
   ASSERT_TRUE(registry->EntityHasComponent<Transform>(id1));
@@ -677,7 +627,7 @@ TEST_F(TestsGL, RemoveComponent)
 
   ASSERT_EQ(count, 2);
 
-  registry->GetComponent<Transform>(id1)->position = {5.0f, 0.0f, 0.0f};
+  registry->GetComponent<Transform>(id1).position = {5.0f, 0.0f, 0.0f};
 
   ASSERT_TRUE(registry->EntityHasComponent<Cube>(id1));
   ASSERT_TRUE(registry->EntityHasComponent<Transform>(id1));

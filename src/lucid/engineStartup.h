@@ -26,6 +26,7 @@ static void InitArchetypes(Registry* registry)
   registry->RegisterArchetype<ShaderResource>();
   registry->RegisterArchetype<PrimitiveBatchIds>();
   registry->RegisterArchetype<Model, Transform>();
+  registry->RegisterArchetype<Model, Transform, ColliderCube>();
   registry->RegisterArchetype<Model, Transform, ColliderPolygon>();
   registry->RegisterArchetype<Camera>();
   registry->RegisterArchetype<SphereVerticesIndices>();
@@ -39,6 +40,7 @@ static void InitArchetypes(Registry* registry)
   registry->RegisterArchetype<Cube, Transform, RigidBody, ColliderCube>();
   registry->RegisterArchetype<Cube, Transform, RigidBody, ColliderSphere>();
   registry->RegisterArchetype<Sphere, Transform, RigidBody, ColliderCube>();
+  registry->RegisterArchetype<Sphere, Transform, RigidBody, ColliderSphere>();
   registry->RegisterArchetype<PongRules>();
 
   // Default archetypes for gui interface

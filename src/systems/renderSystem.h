@@ -37,6 +37,9 @@ class RenderSystem : public System
   uint32_t fbo, rbo;
   uint32_t texture;
 
+  // This will be for the
+  std::vector<glm::mat4> defaultBoneMatrices;
+
  public:
   RenderSystem(Registry* registry);
   ~RenderSystem();
@@ -64,8 +67,6 @@ class RenderSystem : public System
   // a vector as input/output
   std::tuple<bool, float> RayBoundingBoxCollisionCheck(glm::vec3 origin, glm::vec3 ray,
                                                        BoundingBox boundingBox);
-
-  BoundingBox GetBoundingBox(std::vector<glm::vec4> vertices);
 
  private:
   void InitSphereVerticesIndices(SphereVerticesIndices& sphereVerticesIndices);

@@ -136,21 +136,25 @@ void Lucid::InitializeBuiltInSystems()
 
 void Lucid::InitializeModelEntities()
 {
-  // Entity gameCameraId = registry->GetAvailableEntityId();
-  // registry->CreateEntity<Model, Transform>(gameCameraId);
-  // registry->AddComponentData<Model>(gameCameraId, Model(GAME_CAMERA_MODEL));
-  // registry->GetComponent<Transform>(gameCameraId)->scale /= 15.0f;
+  // {
+  //   Entity gameCameraId = registry->GetAvailableEntityId();
+  //   registry->CreateEntity<Model, Transform>(gameCameraId);
+  //   registry->AddComponentData<Model>(gameCameraId, Model(GAME_CAMERA_MODEL));
+  //   registry->GetComponent<Transform>(gameCameraId).scale *= 15.0f;
+  // }
 
   {
     Entity kingBooId = registry->GetAvailableEntityId();
-    registry->CreateEntity<Model, Transform, ColliderPolygon>(kingBooId);
+    registry->CreateEntity<Model, Transform, ColliderCube>(kingBooId);
     registry->AddComponentData<Model>(kingBooId, Model(KING_BOO_MODEL));
     registry->GetComponent<Model>(kingBooId).toAnimate = true;
     registry->GetComponent<Transform>(kingBooId).position = {0.0f, 0.0f, 0.0f};
     registry->GetComponent<Transform>(kingBooId).scale /= 150.0f;
 
-    registry->GetComponent<ColliderPolygon>(kingBooId).SetVertices(
-        registry->GetComponent<Model>(kingBooId).vertices);
+    // registry->GetComponent<ColliderPolygon>(kingBooId).SetVertices(
+    //     registry->GetComponent<Model>(kingBooId).vertices);
+    registry->GetComponent<ColliderCube>(kingBooId).SetVertices(
+        GetBoundingBoxVertices(registry->GetComponent<Model>(kingBooId).boundingBox));
   }
 
   {
@@ -204,7 +208,7 @@ void Lucid::InitializeDemoPongEntities()
   // Note to add back collidercube back to playerpaddle after addcomponent debugging
   registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(playerPaddleID);
   registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(aiPaddleID);
-  registry->CreateEntity<Sphere, Transform, RigidBody, ColliderCube>(ballID);
+  registry->CreateEntity<Sphere, Transform, RigidBody, ColliderSphere>(ballID);
 
   registry->CreateResource<PongRules>();
   PongRules& pongRules = registry->GetResource<PongRules>();

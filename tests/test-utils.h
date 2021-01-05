@@ -5,12 +5,15 @@
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
 
-static GLFWwindow* SetUpWindow() {
-  if (!glfwInit()) {
+static GLFWwindow* SetUpWindow()
+{
+  if (!glfwInit())
+  {
     exit(EXIT_FAILURE);
   }
   GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Lucid", NULL, NULL);
-  if (!window) {
+  if (!window)
+  {
     glfwTerminate();
     exit(EXIT_FAILURE);
   }
@@ -27,20 +30,24 @@ static GLFWwindow* SetUpWindow() {
   return window;
 }
 
-static void TearDownWindow(GLFWwindow* window) {
+static void TearDownWindow(GLFWwindow* window)
+{
   glfwDestroyWindow(window);
   glfwTerminate();
   exit(EXIT_SUCCESS);
 }
 
-class TestsGL : public testing::Test {
+class TestsGL : public testing::Test
+{
  protected:
   static GLFWwindow* window;
-  static void SetUpTestSuite() {
+  static void SetUpTestSuite()
+  {
     window = SetUpWindow();
   }
 
-  static void TearDownTestSuite() {
+  static void TearDownTestSuite()
+  {
     TearDownWindow(window);
   }
 };

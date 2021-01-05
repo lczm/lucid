@@ -69,21 +69,17 @@ void PhysicsSystem::UpdateCollisions(float dt, Registry* registry, Input* input)
       }
     }
 
-    // Temporary commented out because the support function for ColliderSpheres have not been worked
-    // out just yet.
-    /*
-        for (size_t j = 0; j < tcsColliderSphereComponents->Size(); j++)
-        {
-          bool collided =
-              CheckCollision(tccColliderCubeComponents->At(i), tccTransformComponents->At(i),
-                             tcsColliderSphereComponents->At(j), tcsTransformComponents->At(j));
+    for (size_t j = 0; j < tcsColliderSphereComponents->Size(); j++)
+    {
+      bool collided =
+          CheckCollision(tccColliderCubeComponents->At(i), tccTransformComponents->At(i),
+                         tcsColliderSphereComponents->At(j), tcsTransformComponents->At(j));
 
-          if (collided)
-          {
-            std::cout << "Collided!" << std::endl;
-          }
-        }
-    */
+      if (collided)
+      {
+        std::cout << "(Cube - Sphere) : Collided!" << std::endl;
+      }
+    }
 
     for (size_t j = 0; j < tcpColliderPolygonComponents->Size(); j++)
     {

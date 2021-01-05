@@ -36,11 +36,11 @@ TEST_F(TestsGL, BoxBoxColliding)
   registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(first);
   registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(second);
 
-  Transform* firstTransform = registry->GetComponent<Transform>(first);
-  Transform* secondTransform = registry->GetComponent<Transform>(second);
+  Transform& firstTransform = registry->GetComponent<Transform>(first);
+  Transform& secondTransform = registry->GetComponent<Transform>(second);
 
-  firstTransform->position = {0.0f, 0.0f, 0.0f};
-  secondTransform->position = {1.0f, 0.0f, 0.0f};
+  firstTransform.position = {0.0f, 0.0f, 0.0f};
+  secondTransform.position = {1.0f, 0.0f, 0.0f};
 
   // Arbitrary value, does not really matter
   const double dt = 0.005f;
@@ -75,11 +75,11 @@ TEST_F(TestsGL, BoxBoxNotColliding)
   registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(first);
   registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(second);
 
-  Transform* firstTransform = registry->GetComponent<Transform>(first);
-  Transform* secondTransform = registry->GetComponent<Transform>(second);
+  Transform& firstTransform = registry->GetComponent<Transform>(first);
+  Transform& secondTransform = registry->GetComponent<Transform>(second);
 
-  firstTransform->position = {0.0f, 0.0f, 0.0f};
-  secondTransform->position = {10.0f, 0.0f, 0.0f};
+  firstTransform.position = {0.0f, 0.0f, 0.0f};
+  secondTransform.position = {10.0f, 0.0f, 0.0f};
 
   // Arbitrary value, does not really matter
   const double dt = 0.005f;
@@ -106,8 +106,8 @@ TEST_F(TestsGL, RayBoxColliding)
   Entity first = registry->GetAvailableEntityId();
   registry->CreateEntity<Cube, Transform>(first);
 
-  Transform* transform = registry->GetComponent<Transform>(first);
-  transform->position = {0.0f, 0.0f, 0.0f};
+  Transform& transform = registry->GetComponent<Transform>(first);
+  transform.position = {0.0f, 0.0f, 0.0f};
 
   // Origin faces towards the origin of the world but a little further back?
   auto origin = glm::vec3(0.0f, 0.0f, 10.0f);
@@ -115,8 +115,8 @@ TEST_F(TestsGL, RayBoxColliding)
   auto ray = glm::vec3(0.0f, 0.0f, -1.0f);
 
   glm::mat4 matrixModel = glm::mat4(1.0f);
-  matrixModel = glm::translate(matrixModel, transform->position);
-  matrixModel = glm::scale(matrixModel, transform->scale);
+  matrixModel = glm::translate(matrixModel, transform.position);
+  matrixModel = glm::scale(matrixModel, transform.scale);
 
   std::vector<glm::vec4> vertices;
   vertices.reserve(boundingBoxCubeVertices.size() / 3);
@@ -146,8 +146,8 @@ TEST_F(TestsGL, RayBoxNotColliding)
   Entity first = registry->GetAvailableEntityId();
   registry->CreateEntity<Cube, Transform>(first);
 
-  Transform* transform = registry->GetComponent<Transform>(first);
-  transform->position = {0.0f, 0.0f, 0.0f};
+  Transform& transform = registry->GetComponent<Transform>(first);
+  transform.position = {0.0f, 0.0f, 0.0f};
 
   // Origin faces towards the origin of the world but a little further back?
   auto origin = glm::vec3(0.0f, 0.0f, 10.0f);
@@ -155,8 +155,8 @@ TEST_F(TestsGL, RayBoxNotColliding)
   auto ray = glm::vec3(0.0f, 0.0f, 1.0f);
 
   glm::mat4 matrixModel = glm::mat4(1.0f);
-  matrixModel = glm::translate(matrixModel, transform->position);
-  matrixModel = glm::scale(matrixModel, transform->scale);
+  matrixModel = glm::translate(matrixModel, transform.position);
+  matrixModel = glm::scale(matrixModel, transform.scale);
 
   std::vector<glm::vec4> vertices;
   vertices.reserve(boundingBoxCubeVertices.size() / 3);

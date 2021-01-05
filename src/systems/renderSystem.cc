@@ -1,6 +1,6 @@
 #include "renderSystem.h"
 
-RenderSystem::RenderSystem(Registry* registry)
+RenderSystem::RenderSystem(Registry* registry) : defaultBoneMatrices(100, glm::mat4(1.0f))
 {
   RenderSystem::renderer = new Renderer(registry);
 
@@ -476,10 +476,18 @@ void RenderSystem::DrawAllModels(float dt, Registry* registry, Input* input)
     if (model.hasAnimations && model.toAnimate)
     {
       auto time = static_cast<float>(currentTime * model.scene->mAnimations[0]->mTicksPerSecond);
+      // TODO : UpdateBoneMatrices should take in some form of animation string tag
+      // and it should be auto converted into animationId within the model itself.
       model.UpdateBoneMatrices(time, 0, model.scene->mRootNode, glm::mat4(1.0f));
       shaderResource.modelAnimatedShader.SetUniformMatFloat4("boneMatrices", 100,
                                                              model.boneMatrices);
     }
+    else
+    {
+      shaderResource.modelAnimatedShader.SetUniformMatFloat4("boneMatrices", 100,
+                                                             defaultBoneMatrices);
+    }
+
     auto modelMatrix = GetModelMatrix(transform);
 
     // shaderResource.modelShader.SetUniformMatFloat4("model", modelMatrix);
@@ -679,23 +687,6 @@ std::tuple<bool, float> RenderSystem::RayBoundingBoxCollisionCheck(glm::vec3 ori
 
   length = tmin;
   return std::tuple(true, length);
-}
-
-BoundingBox RenderSystem::GetBoundingBox(std::vector<glm::vec4> vertices)
-{
-  BoundingBox bb;
-  for (size_t i = 0; i < vertices.size(); i++)
-  {
-    bb.minX = glm::min(vertices[i].x, bb.minX);
-    bb.maxX = glm::max(vertices[i].x, bb.maxX);
-
-    bb.minY = glm::min(vertices[i].y, bb.minY);
-    bb.maxY = glm::max(vertices[i].y, bb.maxY);
-
-    bb.minZ = glm::min(vertices[i].z, bb.minZ);
-    bb.maxZ = glm::max(vertices[i].z, bb.maxZ);
-  }
-  return bb;
 }
 
 void RenderSystem::InitSphereVerticesIndices(SphereVerticesIndices& sphereVerticesIndices)
