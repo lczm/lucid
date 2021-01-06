@@ -356,7 +356,7 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
   ImVec2 sceneWindowSize = ImGui::GetWindowSize();
   ImVec2 scenePos = ImGui::GetWindowPos();
 
-  widgetLayout.menuBarHeight = 0;
+  widgetLayout.menuBarHeight = 19;
   widgetLayout.topWindowHeight = scenePos.y;
   widgetLayout.leftWindowWidth = scenePos.x;
   widgetLayout.bottomWindowHeight = SCREEN_HEIGHT - (scenePos.y + sceneWindowSize.y);
