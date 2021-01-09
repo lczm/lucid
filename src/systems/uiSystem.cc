@@ -413,6 +413,13 @@ void UiSystem::DrawProject(float dt, Registry* registry, Input* input)
     return;
   }
 
+  // Tentative button will probably change to right click menu soon
+  if (ImGui::Button("Refresh"))
+  {
+    projectRoot = NewNode(projectRoot->path, true);
+    AddFilesAndDirectoriesToRoot(projectRoot);
+    SortFilesAndDirectories(projectRoot);
+  }
   DrawFileTree(projectRoot);
 
   ImGui::End();

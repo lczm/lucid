@@ -46,6 +46,61 @@ static void AddFilesAndDirectoriesToRoot(Node*& node)
   }
 }
 
+static std::vector<std::string> GetFilesAndDirectoriesFromPath(std::filesystem::path path)
+{
+  std::vector<std::string> filesAndDirectories;
+
+  if (std::filesystem::is_empty(path))
+  {
+    return filesAndDirectories;
+  }
+
+  for (const auto& entry : std::filesystem::directory_iterator(path))
+  {
+    if (!std::filesystem::is_directory(entry))
+    {
+      filesAndDirectories.push_back(entry.path().string());
+    }
+    else
+    {
+      filesAndDirectories.push_back(entry.path().string());
+      std::vector<std::string> directoryFiles = GetFilesAndDirectoriesFromPath(entry.path());
+      filesAndDirectories.insert(filesAndDirectories.end(), directoryFiles.begin(),
+                                 directoryFiles.end());
+    }
+  }
+
+  return filesAndDirectories;
+}
+
+static std::vector<std::string> GetFilesAndDirectoriesFromPath(std::string path)
+{
+  std::vector<std::string> filesAndDirectories;
+
+  if (std::filesystem::is_empty(path))
+  {
+    return filesAndDirectories;
+  }
+
+  for (const auto& entry : std::filesystem::directory_iterator(path))
+  {
+    if (!std::filesystem::is_directory(entry))
+    {
+      filesAndDirectories.push_back(entry.path().string());
+    }
+    else
+    {
+      filesAndDirectories.push_back(entry.path().string());
+      std::vector<std::string> directoryFiles =
+          GetFilesAndDirectoriesFromPath(entry.path().string());
+      filesAndDirectories.insert(filesAndDirectories.end(), directoryFiles.begin(),
+                                 directoryFiles.end());
+    }
+  }
+
+  return filesAndDirectories;
+}
+
 static void SortFilesAndDirectories(Node*& node)
 {
   std::vector<Node*> directories;
