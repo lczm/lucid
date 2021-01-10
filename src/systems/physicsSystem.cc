@@ -52,48 +52,136 @@ void PhysicsSystem::UpdateCollisions(float dt, Registry* registry, Input* input)
       static_cast<ComponentVector<ColliderPolygon>*>(tcpComponents[1]);
 
   // TODO : cache i, j pairs so that checking i, j means checking j, i
-  for (size_t i = 0; i < tccColliderCubeComponents->Size(); i++)
-  {
-    for (size_t j = 0; j < tccColliderCubeComponents->Size(); j++)
+
+  {  // Sphere - ... Collisions
+    for (size_t i = 0; i < tccColliderCubeComponents->Size(); i++)
     {
-      // If they are the same, dont check for collisions
-      if (i == j) continue;
-
-      bool collided =
-          CheckCollision(tccColliderCubeComponents->At(i), tccTransformComponents->At(i),
-                         tccColliderCubeComponents->At(j), tccTransformComponents->At(j));
-
-      if (collided)
+      for (size_t j = 0; j < tccColliderCubeComponents->Size(); j++)
       {
-        std::cout << "(Cube - Cube) : Collided!" << std::endl;
+        // If they are the same, dont check for collisions
+        if (i == j) continue;
+
+        bool collided =
+            CheckCollision(tccColliderCubeComponents->At(i), tccTransformComponents->At(i),
+                           tccColliderCubeComponents->At(j), tccTransformComponents->At(j));
+
+        if (collided)
+        {
+          std::cout << "(Cube - Cube) : Collided!" << std::endl;
+        }
       }
-    }
 
-    for (size_t j = 0; j < tcsColliderSphereComponents->Size(); j++)
-    {
-      bool collided =
-          CheckCollision(tccColliderCubeComponents->At(i), tccTransformComponents->At(i),
-                         tcsColliderSphereComponents->At(j), tcsTransformComponents->At(j));
-
-      if (collided)
+      for (size_t j = 0; j < tcsColliderSphereComponents->Size(); j++)
       {
-        std::cout << "(Cube - Sphere) : Collided!" << std::endl;
+        bool collided =
+            CheckCollision(tccColliderCubeComponents->At(i), tccTransformComponents->At(i),
+                           tcsColliderSphereComponents->At(j), tcsTransformComponents->At(j));
+
+        if (collided)
+        {
+          std::cout << "(Cube - Sphere) : Collided!" << std::endl;
+        }
       }
-    }
 
-    for (size_t j = 0; j < tcpColliderPolygonComponents->Size(); j++)
-    {
-      bool collided =
-          CheckCollision(tccColliderCubeComponents->At(i), tccTransformComponents->At(i),
-                         tcpColliderPolygonComponents->At(j), tcpTransformComponents->At(j));
-
-      if (collided)
+      for (size_t j = 0; j < tcpColliderPolygonComponents->Size(); j++)
       {
-        std::cout << "(Cube - Polygon) : Collided!" << std::endl;
+        bool collided =
+            CheckCollision(tccColliderCubeComponents->At(i), tccTransformComponents->At(i),
+                           tcpColliderPolygonComponents->At(j), tcpTransformComponents->At(j));
+
+        if (collided)
+        {
+          std::cout << "(Cube - Polygon) : Collided!" << std::endl;
+        }
       }
     }
   }
 
+  {  // Sphere - ... Collisions
+    for (size_t i = 0; i < tcsColliderSphereComponents->Size(); i++)
+    {
+      for (size_t j = 0; j < tccColliderCubeComponents->Size(); j++)
+      {
+        bool collided =
+            CheckCollision(tcsColliderSphereComponents->At(i), tcsTransformComponents->At(i),
+                           tccColliderCubeComponents->At(j), tccTransformComponents->At(j));
+
+        if (collided)
+        {
+          std::cout << "(Cube - Sphere) : Collided!" << std::endl;
+        }
+      }
+
+      for (size_t j = 0; j < tcsColliderSphereComponents->Size(); j++)
+      {
+        if (i == j) continue;
+
+        bool collided =
+            CheckCollision(tcsColliderSphereComponents->At(i), tcsTransformComponents->At(i),
+                           tcsColliderSphereComponents->At(j), tcsTransformComponents->At(j));
+
+        if (collided)
+        {
+          std::cout << "(Sphere - Sphere) : Collided!" << std::endl;
+        }
+      }
+
+      for (size_t j = 0; j < tcpColliderPolygonComponents->Size(); j++)
+      {
+        bool collided =
+            CheckCollision(tcsColliderSphereComponents->At(i), tcsTransformComponents->At(i),
+                           tcpColliderPolygonComponents->At(j), tcpTransformComponents->At(j));
+
+        if (collided)
+        {
+          std::cout << "(Sphere - Polygon) : Collided!" << std::endl;
+        }
+      }
+    }
+  }
+
+  {  // Polygon - ... Collisions
+    for (size_t i = 0; i < tcpColliderPolygonComponents->Size(); i++)
+    {
+      for (size_t j = 0; tccColliderCubeComponents->Size(); j++)
+      {
+        bool collided =
+            CheckCollision(tcpColliderPolygonComponents->At(i), tcpTransformComponents->At(i),
+                           tccColliderCubeComponents->At(j), tccTransformComponents->At(j));
+
+        if (collided)
+        {
+          std::cout << "(Cube - Polygon) : Collided!" << std::endl;
+        }
+      }
+
+      for (size_t j = 0; j < tcsColliderSphereComponents->Size(); j++)
+      {
+        bool collided =
+            CheckCollision(tcpColliderPolygonComponents->At(i), tcpTransformComponents->At(i),
+                           tcsColliderSphereComponents->At(j), tcsTransformComponents->At(j));
+
+        if (collided)
+        {
+          std::cout << "(Sphere - Polygon) : Collided!" << std::endl;
+        }
+      }
+
+      for (size_t j = 0; j < tcsColliderSphereComponents->Size(); j++)
+      {
+        if (i == j) continue;
+
+        bool collided =
+            CheckCollision(tcpColliderPolygonComponents->At(i), tcpTransformComponents->At(i),
+                           tcpColliderPolygonComponents->At(j), tcpTransformComponents->At(j));
+
+        if (collided)
+        {
+          std::cout << "(Polygon- Polygon) : Collided!" << std::endl;
+        }
+      }
+    }
+  }
   // delete tcsTransformComponents;
   // delete tccColliderCubeComponents;
 
