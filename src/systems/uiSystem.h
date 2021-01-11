@@ -2,7 +2,6 @@
 
 #include <vector>
 #include <iostream>
-#include <filesystem>
 
 #include "shader.h"
 #include "ecs.h"
@@ -33,11 +32,14 @@
 #include "nfd.h"
 #include "uiUtils.h"
 
+namespace fs = std::filesystem;
+
 class UiSystem : public System
 {
  private:
   bool drawWireframe = false;
   bool drawSceneOnly = false;
+  bool drawSelectFolderPopup = false;
   Node* projectRoot = NewNode("", true);
   const std::vector<std::pair<DefaultAssetsType, std::string>> defaultAssets = {
       {DefaultAssetsType::Cube, "Cube"},

@@ -64,7 +64,7 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
     {
       if (ImGui::BeginMenu("File"))
       {
-        if (ImGui::MenuItem("Open Folder"))
+        if (ImGui::MenuItem("Open Project"))
         {
           NFD_Init();
           nfdchar_t* projectPath = NULL;
@@ -83,6 +83,10 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
           {
             std::cout << "NFD Error : " << NFD_GetError() << std::endl;
           }
+        }
+        if (ImGui::MenuItem("Create Project"))
+        {
+          drawSelectFolderPopup = true;
         }
         ImGui::EndMenu();
       }
@@ -112,6 +116,95 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
 
       ImGui::EndMainMenuBar();
     }
+  }
+
+  if (drawSelectFolderPopup == true)
+  {
+    ImGui::OpenPopup("Select Folder");
+    drawSelectFolderPopup = false;
+  }
+
+  if (ImGui::BeginPopupModal("Select Folder"))
+  {
+    // 260 size cause thats the maximum path length in windows
+    static char directoryPath[260] = "";
+    static char projectName[30] = "";
+    static bool displayDirectoryError = false;
+    static bool displayNameError = false;
+    nfdchar_t* createProjectPath = NULL;
+    ImGui::InputTextWithHint("##ProjectName", "Write a name for your project", projectName,
+                             IM_ARRAYSIZE(projectName));
+    ImGui::InputTextWithHint("##SelectDirectory", "Select a directory to create your project",
+                             directoryPath, IM_ARRAYSIZE(directoryPath),
+                             ImGuiInputTextFlags_ReadOnly);
+    ImGui::SameLine();
+    if (ImGui::Button("Open"))
+    {
+      NFD_Init();
+      nfdresult_t result = NFD_PickFolder(&createProjectPath, NULL);
+      if (result == NFD_OKAY)
+      {
+        displayDirectoryError = false;
+        strcpy(directoryPath, createProjectPath);
+        NFD_Quit();
+      }
+      else if (result == NFD_CANCEL)
+      {
+      }
+      else
+      {
+        std::cout << "NFD Error : " << NFD_GetError() << std::endl;
+      }
+    }
+    if (ImGui::Button("Confirm"))
+    {
+      fs::path path = directoryPath;
+      if (fs::exists(path))
+      {
+        // Check if user inputted a project name
+        if (projectName[0] != '\0')
+        {
+          fs::path projectNameFolder = projectName;
+          fs::path folder = "assets";
+          fs::path assetPath = path / projectNameFolder / folder;
+          fs::create_directories(assetPath);
+          folder = ("systems");
+          fs::path systemPath = path / projectNameFolder / folder;
+          fs::create_directory(systemPath);
+          strcpy(projectName, "");
+          strcpy(directoryPath, "");
+          displayNameError = false;
+          displayDirectoryError = false;
+          ImGui::CloseCurrentPopup();
+        }
+        else
+        {
+          displayNameError = true;
+        }
+      }
+      else
+      {
+        displayDirectoryError = true;
+      }
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Cancel"))
+    {
+      strcpy(projectName, "");
+      strcpy(directoryPath, "");
+      displayNameError = false;
+      displayDirectoryError = false;
+      ImGui::CloseCurrentPopup();
+    }
+    if (displayDirectoryError == true)
+    {
+      ImGui::TextWrapped("Directory not found, please try again.");
+    }
+    if (displayNameError == true)
+    {
+      ImGui::TextWrapped("Please input a project name.");
+    }
+    ImGui::EndPopup();
   }
 
   // Check whether to draw maximized scene
@@ -407,7 +500,7 @@ void UiSystem::DrawProject(float dt, Registry* registry, Input* input)
   UpdateInputActiveWindow(input, WindowType::Project);
 
   // Check if a folder has been selected
-  if (!std::filesystem::exists(projectRoot->path))
+  if (!fs::exists(projectRoot->path))
   {
     ImGui::End();
     return;

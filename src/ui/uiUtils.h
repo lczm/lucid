@@ -5,15 +5,17 @@
 #include "imgui.h"
 #include "nfd.h"
 
+namespace fs = std::filesystem;
+
 struct Node
 {
-  std::filesystem::path path;
+  fs::path path;
   bool isDirectory;
 
   std::vector<Node*> child;
 };
 
-static Node* NewNode(std::filesystem::path path, bool isDirectory)
+static Node* NewNode(fs::path path, bool isDirectory)
 {
   Node* temp = new Node;
   temp->path = path;
@@ -24,14 +26,14 @@ static Node* NewNode(std::filesystem::path path, bool isDirectory)
 // Recursively populates the project root with files and directories
 static void AddFilesAndDirectoriesToRoot(Node*& node)
 {
-  if (std::filesystem::is_empty(node->path))
+  if (fs::is_empty(node->path))
   {
     return;
   }
 
-  for (const auto& entry : std::filesystem::directory_iterator(node->path))
+  for (const auto& entry : fs::directory_iterator(node->path))
   {
-    if (!std::filesystem::is_directory(entry))
+    if (!fs::is_directory(entry))
     {
       Node* temp = NewNode(entry, false);
       node->child.push_back(temp);
@@ -46,18 +48,18 @@ static void AddFilesAndDirectoriesToRoot(Node*& node)
   }
 }
 
-static std::vector<std::string> GetFilesAndDirectoriesFromPath(std::filesystem::path path)
+static std::vector<std::string> GetFilesAndDirectoriesFromPath(fs::path path)
 {
   std::vector<std::string> filesAndDirectories;
 
-  if (std::filesystem::is_empty(path))
+  if (fs::is_empty(path))
   {
     return filesAndDirectories;
   }
 
-  for (const auto& entry : std::filesystem::directory_iterator(path))
+  for (const auto& entry : fs::directory_iterator(path))
   {
-    if (!std::filesystem::is_directory(entry))
+    if (!fs::is_directory(entry))
     {
       filesAndDirectories.push_back(entry.path().string());
     }
@@ -77,14 +79,14 @@ static std::vector<std::string> GetFilesAndDirectoriesFromPath(std::string path)
 {
   std::vector<std::string> filesAndDirectories;
 
-  if (std::filesystem::is_empty(path))
+  if (fs::is_empty(path))
   {
     return filesAndDirectories;
   }
 
-  for (const auto& entry : std::filesystem::directory_iterator(path))
+  for (const auto& entry : fs::directory_iterator(path))
   {
-    if (!std::filesystem::is_directory(entry))
+    if (!fs::is_directory(entry))
     {
       filesAndDirectories.push_back(entry.path().string());
     }
