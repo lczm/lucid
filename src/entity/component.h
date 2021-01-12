@@ -5,6 +5,9 @@
 #include "glm.hpp"
 #include "boundingBox.h"
 
+// Serialization
+#include "cereal/archives/json.hpp"
+
 /*
    A common place to store components.
    Components should just be defined as POD (Plain Old Data)
