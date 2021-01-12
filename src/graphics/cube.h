@@ -4,6 +4,7 @@
 
 #include "shader.h"
 #include "glm.hpp"
+#include "cereal/archives/json.hpp"
 
 const std::vector<float> cubeVertices = {
     // front
@@ -42,12 +43,20 @@ const std::vector<uint32_t> cubeIndices = {
 class Cube
 {
  public:
-  uint32_t VAO, VBO, EBO;
-
   // Default color to grey
   glm::vec3 color = {0.5f, 0.5f, 0.5f};
 
  public:
   Cube();
   ~Cube();
+
+  template <class Archive>
+  void serialize(Archive& archive)
+  {
+    archive(                                   //
+        cereal::make_nvp("color.r", color.r),  //
+        cereal::make_nvp("color.g", color.g),  //
+        cereal::make_nvp("color.b", color.b)   //
+    );
+  }
 };

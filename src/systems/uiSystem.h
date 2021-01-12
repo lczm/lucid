@@ -81,9 +81,6 @@ class UiSystem : public System
   void DrawInspectorRigidBodyComponent(
       Registry* registry, DevDebug& devDebug,
       ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen);
-  void DrawInspectorAnimationComponent(
-      Registry* registry, DevDebug& devDebug,
-      ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen);
 
   void HandleGizmoInput(Registry* registry, Input* input);
   void UpdateSceneWindow(Registry* registry, Input* input);

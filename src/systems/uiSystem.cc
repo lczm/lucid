@@ -560,7 +560,6 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
   DrawInspectorSphereComponent(registry, devDebug);
   DrawInspectorTransformComponent(registry, devDebug);
   DrawInspectorRigidBodyComponent(registry, devDebug);
-  DrawInspectorAnimationComponent(registry, devDebug);
 
   if (ImGui::CollapsingHeader("Add Component", treeNodeFlags))
   {
@@ -812,28 +811,6 @@ void UiSystem::DrawInspectorRigidBodyComponent(Registry* registry, DevDebug& dev
 
       //   ImGui::EndPopup();
       // }
-    }
-    ImGui::Separator();
-  }
-}
-
-void UiSystem::DrawInspectorAnimationComponent(Registry* registry, DevDebug& devDebug,
-                                               ImGuiTreeNodeFlags treeNodeFlags)
-{
-  if (registry->EntityHasComponent<Animation>(devDebug.activeEntity))
-  {
-    if (ImGui::CollapsingHeader("Animation", treeNodeFlags))
-    {
-      Animation& animation = registry->GetComponent<Animation>(devDebug.activeEntity);
-      ImGui::InputFloat("Animation Counter", &(animation.animCounter), 0.25f, 1.0f);
-      ImGui::InputFloat("Animation Interval", &(animation.animInterval), 0.25f, 1.0f);
-      if (ImGui::BeginPopupContextWindow())
-      {
-        if (ImGui::MenuItem("Remove Component"))
-        {
-          registry->RemoveComponent<Animation>(devDebug.activeEntity);
-        }
-      }
     }
     ImGui::Separator();
   }

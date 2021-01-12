@@ -7,7 +7,7 @@
 
 // Serialization
 #include <sstream>
-#include <cereal/archives/json.hpp>
+#include "cereal/archives/json.hpp"
 
 /*
    A common place to store components.
@@ -64,16 +64,6 @@ struct RigidBody
         cereal::make_nvp("velocity.z", velocity.z)   //
     );
   }
-};
-
-struct Animation
-{
-  float animCounter = 0;   // Counter on time passed
-  float animInterval = 1;  // Counter on the threshold of each animation
-
-  int spriteCurrent = 0;  // Current sprite
-  int spriteStart = 0;
-  int spriteEnd = 0;
 };
 
 struct SoundEffect

@@ -14,7 +14,6 @@
   MOVE_COMPONENT(uint32_t, search, from, to, index)       \
   MOVE_COMPONENT(Transform, search, from, to, index)      \
   MOVE_COMPONENT(RigidBody, search, from, to, index)      \
-  MOVE_COMPONENT(Animation, search, from, to, index)      \
   MOVE_COMPONENT(SoundEffect, search, from, to, index)    \
   MOVE_COMPONENT(Music, search, from, to, index)          \
   MOVE_COMPONENT(Cube, search, from, to, index)           \
@@ -28,7 +27,6 @@
   CREATE_COMPONENT_VECTOR(uint32_t, archetype, keyPtr)       \
   CREATE_COMPONENT_VECTOR(Transform, archetype, keyPtr)      \
   CREATE_COMPONENT_VECTOR(RigidBody, archetype, keyPtr)      \
-  CREATE_COMPONENT_VECTOR(Animation, archetype, keyPtr)      \
   CREATE_COMPONENT_VECTOR(SoundEffect, archetype, keyPtr)    \
   CREATE_COMPONENT_VECTOR(Music, archetype, keyPtr)          \
   CREATE_COMPONENT_VECTOR(Cube, archetype, keyPtr)           \
@@ -41,12 +39,13 @@
 #define SERIALIZE_ALL_COMPONENTS(entity) \
   SERIALIZE_COMPONENT(Transform, entity) \
   SERIALIZE_COMPONENT(RigidBody, entity) \
-  // SERIALIZE_COMPONENT(Animation, entity)      \
-  // SERIALIZE_COMPONENT(SoundEffect, entity)\
-  // SERIALIZE_COMPONENT(Music, entity)          \
-  // SERIALIZE_COMPONENT(Cube, entity)           \
+  SERIALIZE_COMPONENT(Cube, entity)      \
   // SERIALIZE_COMPONENT(Sphere, entity)         \
   // SERIALIZE_COMPONENT(Model, entity)          \
   // SERIALIZE_COMPONENT(ColliderCube, entity)   \
   // SERIALIZE_COMPONENT(ColliderSphere, entity) \
   // SERIALIZE_COMPONENT(ColliderPolygon, entity)
+
+// TODO : Jasper
+// SERIALIZE_COMPONENT(SoundEffect, entity)\
+// SERIALIZE_COMPONENT(Music, entity)          \

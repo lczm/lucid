@@ -5,7 +5,7 @@
 
 #include <string>
 #include <sstream>
-#include <cereal/archives/json.hpp>
+#include "cereal/archives/json.hpp"
 #include "glm.hpp"
 #include "gtx/string_cast.hpp"
 
@@ -27,7 +27,7 @@ static void SerializeAll(Registry* registry)
 
       // When compiled with -O2 (Release), if using
       // `oarchive.setNextName(std::to_string(entity).c_str());`
-      // this will bug out for whatever reason, I think its an MSVC 
+      // this will bug out for whatever reason, I think its an MSVC
       // bug, this fixes the problem
       std::string entityString = std::to_string(entity);
       oarchive.setNextName(entityString.c_str());
