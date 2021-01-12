@@ -6,7 +6,8 @@
 #include "boundingBox.h"
 
 // Serialization
-#include "cereal/archives/json.hpp"
+#include <sstream>
+#include <cereal/archives/json.hpp>
 
 /*
    A common place to store components.
@@ -22,6 +23,26 @@ struct Transform
   glm::vec3 position = glm::vec3(0.0f);
   glm::quat rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
   glm::vec3 scale = glm::vec3(1.0f);
+
+  template <class Archive>
+  void serialize(Archive& archive)
+  {
+    archive(
+        // position
+        cereal::make_nvp("position.x", position.x),  //
+        cereal::make_nvp("position.y", position.y),  //
+        cereal::make_nvp("position.z", position.z),  //
+        // rotation
+        cereal::make_nvp("rotation.w", rotation.w),  //
+        cereal::make_nvp("rotation.x", rotation.x),  //
+        cereal::make_nvp("rotation.y", rotation.y),  //
+        cereal::make_nvp("rotation.z", rotation.z),  //
+        // scale
+        cereal::make_nvp("scale.x", scale.x),  //
+        cereal::make_nvp("scale.y", scale.y),  //
+        cereal::make_nvp("scale.z", scale.z)   //
+    );
+  }
 };
 
 // For now, RigidBody will also act as a collider
