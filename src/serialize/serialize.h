@@ -25,14 +25,14 @@ static void SerializeAll(Registry* registry)
       // oarchive(cereal::make_nvp("entity", entity));
       // oarchive(cereal::make_map_item("entity", entity));
 
-      oarchive.setNextName(std::to_string(entity).c_str());
+      // When compiled with -O2 (Release), if using
+      // `oarchive.setNextName(std::to_string(entity).c_str());`
+      // this will bug out for whatever reason, I think its an MSVC 
+      // bug, this fixes the problem
+      std::string entityString = std::to_string(entity);
+      oarchive.setNextName(entityString.c_str());
       oarchive.startNode();
 
-      // if (registry->EntityHasComponent<Transform>(entity))
-      // {
-      //   Transform transform = registry->GetComponent<Transform>(entity);
-      //   oarchive(cereal::make_nvp("transform", transform));
-      // }
       SERIALIZE_ALL_COMPONENTS(entity);
 
       oarchive.finishNode();

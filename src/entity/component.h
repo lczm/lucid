@@ -51,6 +51,19 @@ struct RigidBody
 {
   bool applyGravity = true;
   glm::vec3 velocity = glm::vec3(0.0f);
+
+  template <class Archive>
+  void serialize(Archive& archive)
+  {
+    archive(
+        // applyGravity
+        cereal::make_nvp("applyGravity", applyGravity),  //
+        // velocity
+        cereal::make_nvp("velocity.x", velocity.x),  //
+        cereal::make_nvp("velocity.y", velocity.y),  //
+        cereal::make_nvp("velocity.z", velocity.z)   //
+    );
+  }
 };
 
 struct Animation

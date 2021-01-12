@@ -40,7 +40,7 @@
 
 #define SERIALIZE_ALL_COMPONENTS(entity) \
   SERIALIZE_COMPONENT(Transform, entity) \
-  // SERIALIZE_COMPONENT(RigidBody, entity)      \
+  SERIALIZE_COMPONENT(RigidBody, entity) \
   // SERIALIZE_COMPONENT(Animation, entity)      \
   // SERIALIZE_COMPONENT(SoundEffect, entity)\
   // SERIALIZE_COMPONENT(Music, entity)          \
