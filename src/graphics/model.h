@@ -6,6 +6,7 @@
 #include <assimp/scene.h>
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
+#include <cereal/types/string.hpp>
 
 #include "shader.h"
 #include "mesh.h"
@@ -64,4 +65,12 @@ class Model
   glm::mat4 InterpolateTranslationMatrix(float dt, aiVectorKey* keys, uint32_t n);
   glm::mat4 InterpolateRotationMatrix(float dt, aiQuatKey* keys, uint32_t n);
   glm::mat4 InterpolateScalingMatrix(float dt, aiVectorKey* keys, uint32_t n);
+
+  template <class Archive>
+  void serialize(Archive& archive)
+  {
+    archive(              //
+        CEREAL_NVP(path)  //
+    );
+  }
 };
