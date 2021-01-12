@@ -537,6 +537,22 @@ class Registry
   {
   }
 
+  // Get all entity ids
+  std::vector<Entity> GetAllEntityIds()
+  {
+    // Reserve the entity vector ahead of time, since we know how many entities
+    // are currently being used
+    std::vector<Entity> entities;
+    entities.reserve(entityIndexMap.size());
+
+    for (auto pair : entityIndexMap)
+    {
+      entities.push_back(pair.first);
+    }
+
+    return entities;
+  }
+
   // General method to convert (Component) to an uint32_t
   template <typename Component>
   uint32_t GetHashCode(Component component)
