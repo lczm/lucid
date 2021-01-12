@@ -40,7 +40,7 @@
   SERIALIZE_COMPONENT(Transform, entity) \
   SERIALIZE_COMPONENT(RigidBody, entity) \
   SERIALIZE_COMPONENT(Cube, entity)      \
-  // SERIALIZE_COMPONENT(Sphere, entity)         \
+  SERIALIZE_COMPONENT(Sphere, entity)    \
   // SERIALIZE_COMPONENT(Model, entity)          \
   // SERIALIZE_COMPONENT(ColliderCube, entity)   \
   // SERIALIZE_COMPONENT(ColliderSphere, entity) \

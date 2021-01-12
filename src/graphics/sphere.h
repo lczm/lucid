@@ -14,4 +14,14 @@ class Sphere
  public:
   Sphere();
   ~Sphere();
+
+  template <class Archive>
+  void serialize(Archive& archive)
+  {
+    archive(                                   //
+        cereal::make_nvp("color.r", color.r),  //
+        cereal::make_nvp("color.g", color.g),  //
+        cereal::make_nvp("color.b", color.b)   //
+    );
+  }
 };
