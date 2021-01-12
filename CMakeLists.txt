@@ -111,6 +111,10 @@ include_directories(lib/ImGuizmo)
 add_subdirectory(lib/nativefiledialog-extended)
 include_directories(lib/nativefiledialog-extended/src/include)
 
+# Setup Ceral (Serialization)
+add_subdirectory(lib/cereal)
+add_subdirectory(lib/cereal/include)
+
 # Setup glfw
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)

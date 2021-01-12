@@ -27,3 +27,8 @@
 	path = lib/nativefiledialog-extended
 	url = https://github.com/btzy/nativefiledialog-extended
 		ignore = dirty
+
+[submodule "lib/cereal"]
+	path = lib/cereal
+	url = https://github.com/USCiLab/cereal
+		ignore = dirty
