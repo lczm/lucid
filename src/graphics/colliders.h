@@ -28,6 +28,30 @@ class ColliderCube : public Collider
 
   void SetVertices(std::vector<float> vertices);
   glm::vec3 Support(Transform& transform, glm::vec3 direction);
+
+  template <class Archive>
+  void serialize(Archive& archive)
+  {
+    archive(
+        // position
+        cereal::make_nvp("transform.position.x", transform.position.x),  //
+        cereal::make_nvp("transform.position.y", transform.position.y),  //
+        cereal::make_nvp("transform.position.z", transform.position.z),  //
+        // rotation
+        cereal::make_nvp("transform.rotation.w", transform.rotation.w),  //
+        cereal::make_nvp("transform.rotation.x", transform.rotation.x),  //
+        cereal::make_nvp("transform.rotation.y", transform.rotation.y),  //
+        cereal::make_nvp("transform.rotation.z", transform.rotation.z),  //
+        // scale
+        cereal::make_nvp("transform.scale.x", transform.scale.x),  //
+        cereal::make_nvp("transform.scale.y", transform.scale.y),  //
+        cereal::make_nvp("transform.scale.z", transform.scale.z),  //
+
+        cereal::make_nvp("color.r", color.r),  //
+        cereal::make_nvp("color.g", color.g),  //
+        cereal::make_nvp("color.b", color.b)   //
+    );
+  }
 };
 
 class ColliderSphere : public Collider
@@ -43,6 +67,30 @@ class ColliderSphere : public Collider
   ~ColliderSphere();
 
   glm::vec3 Support(Transform& transform, glm::vec3 direction);
+
+  template <class Archive>
+  void serialize(Archive& archive)
+  {
+    archive(
+        // position
+        cereal::make_nvp("transform.position.x", transform.position.x),  //
+        cereal::make_nvp("transform.position.y", transform.position.y),  //
+        cereal::make_nvp("transform.position.z", transform.position.z),  //
+        // rotation
+        cereal::make_nvp("transform.rotation.w", transform.rotation.w),  //
+        cereal::make_nvp("transform.rotation.x", transform.rotation.x),  //
+        cereal::make_nvp("transform.rotation.y", transform.rotation.y),  //
+        cereal::make_nvp("transform.rotation.z", transform.rotation.z),  //
+        // scale
+        cereal::make_nvp("transform.scale.x", transform.scale.x),  //
+        cereal::make_nvp("transform.scale.y", transform.scale.y),  //
+        cereal::make_nvp("transform.scale.z", transform.scale.z),  //
+
+        cereal::make_nvp("color.r", color.r),  //
+        cereal::make_nvp("color.g", color.g),  //
+        cereal::make_nvp("color.b", color.b)   //
+    );
+  }
 };
 
 class ColliderPolygon : public Collider
@@ -64,4 +112,28 @@ class ColliderPolygon : public Collider
   // collider polygons for the shapes.
   void SetVertices(std::vector<glm::vec4> vertices);
   glm::vec3 Support(Transform& transform, glm::vec3 direction);
+
+  template <class Archive>
+  void serialize(Archive& archive)
+  {
+    archive(
+        // position
+        cereal::make_nvp("transform.position.x", transform.position.x),  //
+        cereal::make_nvp("transform.position.y", transform.position.y),  //
+        cereal::make_nvp("transform.position.z", transform.position.z),  //
+        // rotation
+        cereal::make_nvp("transform.rotation.w", transform.rotation.w),  //
+        cereal::make_nvp("transform.rotation.x", transform.rotation.x),  //
+        cereal::make_nvp("transform.rotation.y", transform.rotation.y),  //
+        cereal::make_nvp("transform.rotation.z", transform.rotation.z),  //
+        // scale
+        cereal::make_nvp("transform.scale.x", transform.scale.x),  //
+        cereal::make_nvp("transform.scale.y", transform.scale.y),  //
+        cereal::make_nvp("transform.scale.z", transform.scale.z),  //
+
+        cereal::make_nvp("color.r", color.r),  //
+        cereal::make_nvp("color.g", color.g),  //
+        cereal::make_nvp("color.b", color.b)   //
+    );
+  }
 };

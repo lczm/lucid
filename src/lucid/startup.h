@@ -36,15 +36,15 @@
   CREATE_COMPONENT_VECTOR(ColliderSphere, archetype, keyPtr) \
   CREATE_COMPONENT_VECTOR(ColliderPolygon, archetype, keyPtr)
 
-#define SERIALIZE_ALL_COMPONENTS(entity) \
-  SERIALIZE_COMPONENT(Transform, entity) \
-  SERIALIZE_COMPONENT(RigidBody, entity) \
-  SERIALIZE_COMPONENT(Cube, entity)      \
-  SERIALIZE_COMPONENT(Sphere, entity)    \
-  SERIALIZE_COMPONENT(Model, entity)     \
-  // SERIALIZE_COMPONENT(ColliderCube, entity)   \
-  // SERIALIZE_COMPONENT(ColliderSphere, entity) \
-  // SERIALIZE_COMPONENT(ColliderPolygon, entity)
+#define SERIALIZE_ALL_COMPONENTS(entity)      \
+  SERIALIZE_COMPONENT(Transform, entity)      \
+  SERIALIZE_COMPONENT(RigidBody, entity)      \
+  SERIALIZE_COMPONENT(Cube, entity)           \
+  SERIALIZE_COMPONENT(Sphere, entity)         \
+  SERIALIZE_COMPONENT(Model, entity)          \
+  SERIALIZE_COMPONENT(ColliderCube, entity)   \
+  SERIALIZE_COMPONENT(ColliderSphere, entity) \
+  SERIALIZE_COMPONENT(ColliderPolygon, entity)
 
 // TODO : Jasper
 // SERIALIZE_COMPONENT(SoundEffect, entity)\
