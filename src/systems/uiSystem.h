@@ -31,6 +31,7 @@
 #include "ImGuizmo.h"
 #include "nfd.h"
 #include "uiUtils.h"
+#include "serialize.h"
 
 namespace fs = std::filesystem;
 

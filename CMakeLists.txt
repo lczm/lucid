@@ -72,6 +72,7 @@ include_directories(src/lucid)
 include_directories(src/shaders)
 include_directories(src/systems)
 include_directories(src/ui)
+include_directories(src/serialize)
 
 # Example directories
 include_directories(src/examples/pong)

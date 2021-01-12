@@ -90,10 +90,12 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
         }
         ImGui::EndMenu();
       }
+
       if (ImGui::BeginMenu("Edit"))
       {
         ImGui::EndMenu();
       }
+
       if (ImGui::BeginMenu("Help"))
       {
         ImGui::Text("WASD - Move the camera");
@@ -106,6 +108,11 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
         ImGui::Text("2 : Rotation Gizmo");
         ImGui::Text("3 : Scale Gizmo");
         ImGui::EndMenu();
+      }
+
+      if (ImGui::MenuItem("Build"))
+      {
+        SerializeAll(registry);
       }
 
       // TODO : Draw frametime
