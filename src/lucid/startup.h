@@ -7,7 +7,7 @@
 /*
  *  User Guide
  *  For every new component that is defined and that will be used within
- *  the engine, please add them to the two macros defined below.
+ *  the engine, please add them to the macros defined below.
  */
 
 #define MOVE_ALL_COMPONENTS(search, from, to, index)      \
