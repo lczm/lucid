@@ -28,11 +28,12 @@ static void SerializeAll(Registry* registry)
       oarchive.setNextName(std::to_string(entity).c_str());
       oarchive.startNode();
 
-      if (registry->EntityHasComponent<Transform>(entity))
-      {
-        Transform transform = registry->GetComponent<Transform>(entity);
-        oarchive(cereal::make_nvp("transform", transform));
-      }
+      // if (registry->EntityHasComponent<Transform>(entity))
+      // {
+      //   Transform transform = registry->GetComponent<Transform>(entity);
+      //   oarchive(cereal::make_nvp("transform", transform));
+      // }
+      SERIALIZE_ALL_COMPONENTS(entity);
 
       oarchive.finishNode();
     }

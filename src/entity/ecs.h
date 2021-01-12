@@ -27,7 +27,6 @@
     }                                                                                     \
   }
 
-// TODO : This can be optimized, take in the keyptr instead of
 // searching for it every for every component
 #define MOVE_COMPONENT(T, search, from, to, index)                                                \
   if (std::find(search.begin(), search.end(), GetHashCode<T>()) != search.end())                  \
@@ -46,6 +45,13 @@
                                                                                                   \
     /* Update the new entity index mapping through the macro */ /* As it has access to the type*/ \
     newIndexMapping = newVectorPtr.size() - 1;                                                    \
+  }
+
+#define SERIALIZE_COMPONENT(T, entity)                                 \
+  if (registry->EntityHasComponent<T>(entity))                         \
+  {                                                                    \
+    T t = registry->GetComponent<T>(entity);                           \
+    oarchive(cereal::make_nvp(registry->GetTypeName<T>().c_str(), t)); \
   }
 
 /*
@@ -565,6 +571,18 @@ class Registry
   uint32_t GetHashCode()
   {
     return typeid(Component).hash_code();
+  }
+
+  template <typename Component>
+  std::string GetTypeName(Component component)
+  {
+    return typeid(Component).name();
+  }
+
+  template <typename Component>
+  std::string GetTypeName()
+  {
+    return typeid(Component).name();
   }
 
   template <typename Component>
