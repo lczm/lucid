@@ -36,11 +36,25 @@ static void SerializeAllOut(Registry* registry)
   }
 }
 
-// static void SerializeAllIn(Registry* registry)
-// {
-//   std::ifstream is("test.json");
+static void SerializeAllIn(Registry* registry)
+{
+  std::ifstream is("test.json");
 
-//   {
-//     cereal::JSONInputArchive archive(is);
-//   }
-// }
+  std::cout << "Test serialize in" << std::endl;
+
+  {
+    cereal::JSONInputArchive archive(is);
+
+    bool cont = true;
+    while (cont)
+    {
+      if (archive.getNodeName() == nullptr)
+      {
+        cont = false;
+        break;
+      }
+
+      std::string nodeName = archive.getNodeName();
+    }
+  }
+}

@@ -119,6 +119,11 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
         SerializeAllOut(registry);
       }
 
+      if (input->IsKeyDown(GLFW_KEY_F6))
+      {
+        SerializeAllIn(registry);
+      }
+
       // TODO : Draw frametime
       // Draw FPS
       DevDebug& devDebug = registry->GetResource<DevDebug>();
