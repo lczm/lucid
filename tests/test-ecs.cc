@@ -628,6 +628,14 @@ TEST_F(TestsGL, AddComponentManyTimes)
   registry->AddComponent<ColliderCube>(id);
 }
 
+TEST_F(TestsGL, AddComponentWithoutRegisteringArchetype)
+{
+  Registry* registry = new Registry();
+
+  Entity id = registry->GetAvailableEntityId();
+  registry->CreateEntity(id);
+}
+
 TEST_F(TestsGL, RemoveComponent)
 {
   Registry* registry = new Registry();

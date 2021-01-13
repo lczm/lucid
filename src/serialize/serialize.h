@@ -72,15 +72,7 @@ static void SerializeAllIn(Registry* registry)
       while (archive.getNodeName() != nullptr)
       {
         std::string currentComponent = archive.getNodeName();
-
-        // Transform test;
-        // archive(cereal::make_nvp(registry->GetTypeName<Transform>(), test));
-        // registry->AddComponent<Transform>(entity);
-        // registry->AddComponentData<Transform>(entity, test);
-
-        // std::cout << glm::to_string(test.position) << std::endl;
-        // std::cout << glm::to_string(test.rotation) << std::endl;
-        // std::cout << glm::to_string(test.scale) << std::endl;
+        // std::cout << "CurrentComponent : " << currentComponent << std::endl;
 
         SERIALIZE_ALL_COMPONENTS_IN(entity);
       }

@@ -54,23 +54,26 @@
     archive(cereal::make_nvp(registry->GetTypeName<T>().c_str(), t)); \
   }
 
-#define SERIALIZE_COMPONENT_IN(T, entity)                         \
-  if (registry->GetTypeName<Model>() == currentComponent)         \
-  {                                                               \
-    std::cout << "Model..." << std::endl;                         \
-    Model m;                                                      \
-    archive(cereal::make_nvp(registry->GetTypeName<Model>(), m)); \
-    m.Load();                                                     \
-    registry->AddComponent<Model>(entity);                        \
-    registry->AddComponentData<Model>(entity, m);                 \
-  }                                                               \
-  else if (registry->GetTypeName<T>() == currentComponent)        \
-  {                                                               \
-    T t;                                                          \
-    archive(cereal::make_nvp(registry->GetTypeName<T>(), t));     \
-    std::cout << registry->GetTypeName<T>() << std::endl;         \
-    registry->AddComponent<T>(entity);                            \
-    registry->AddComponentData<T>(entity, t);                     \
+#define SERIALIZE_COMPONENT_IN(T, entity)                           \
+  if (registry->GetTypeName<T>() == currentComponent)               \
+  {                                                                 \
+    if (registry->GetTypeName<Model>() == currentComponent)         \
+    {                                                               \
+      Model m;                                                      \
+      archive(cereal::make_nvp(registry->GetTypeName<Model>(), m)); \
+      m.Load();                                                     \
+      registry->AddComponent<Model>(entity);                        \
+      registry->AddComponentData<Model>(entity, m);                 \
+      std::cout << registry->GetTypeName<T>() << std::endl;         \
+    }                                                               \
+    else                                                            \
+    {                                                               \
+      T t;                                                          \
+      archive(cereal::make_nvp(registry->GetTypeName<T>(), t));     \
+      registry->AddComponent<T>(entity);                            \
+      registry->AddComponentData<T>(entity, t);                     \
+      std::cout << registry->GetTypeName<T>() << std::endl;         \
+    }                                                               \
   }
 
 /*
@@ -535,8 +538,10 @@ class Registry
     // If the archetype is not found
     if (archetypeComponentMap.find(archetype) == archetypeComponentMap.end())
     {
-      std::cout << "Archetype for entity : " << id << " is not found, please create it"
-                << std::endl;
+      // std::cout << "Archetype for entity : " << id << " is not found, please create it"
+      //           << std::endl;
+
+      RegisterArchetype<Components...>();
       return;
     }
 
@@ -567,8 +572,9 @@ class Registry
     // If the archetype is not found
     if (archetypeComponentMap.find(archetype) == archetypeComponentMap.end())
     {
-      std::cout << "Archetype for entity : " << id << " is not found, please create it"
-                << std::endl;
+      // std::cout << "Archetype for entity : " << id << " is not found, please create it"
+      //           << std::endl;
+      RegisterEmptyArchetype();
       return;
     }
 
@@ -665,6 +671,17 @@ class Registry
     return;
   }
 
+  void RegisterArchetype(Archetype archetype)
+  {
+    archetypeComponentMap[archetype] = new std::unordered_map<uint32_t, void*>();
+
+    // auto p = {(InitializeArchetypeVector<Components>(archetype), 0)...};
+    // (void)p;  // To silence the compiler warning about unused vars
+
+    // Create vector that holds entity ids
+    InitializeArchetypeVector<uint32_t>(archetype);
+  }
+
   void RegisterEmptyArchetype()
   {
     Archetype archetype = {};
@@ -712,7 +729,8 @@ class Registry
     // If the archetype does not yet exist
     if (archetypeComponentMap.find(archetype) == archetypeComponentMap.end())
     {
-      archetypeComponentMap[archetype] = new std::unordered_map<uint32_t, void*>();
+      // archetypeComponentMap[archetype] = new std::unordered_map<uint32_t, void*>();
+      RegisterArchetype(archetype);
     }
 
     auto& newKeyPtr = GetArchetypeComponentMap(archetype);
