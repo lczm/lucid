@@ -9,33 +9,38 @@
 #include "glm.hpp"
 #include "gtx/string_cast.hpp"
 
-static void SerializeAll(Registry* registry)
+static void SerializeAllOut(Registry* registry)
 {
   std::ofstream os("test.json");
   std::vector<Entity> entities = registry->GetAllEntityIds();
 
   {
     // Create a json output archive
-    cereal::JSONOutputArchive oarchive(os);
+    cereal::JSONOutputArchive archive(os);
 
     // For every entity
     for (Entity entity : entities)
     {
-      // Try only the entities with transform components
-      // oarchive(cereal::make_nvp("entity", entity));
-      // oarchive(cereal::make_map_item("entity", entity));
-
       // When compiled with -O2 (Release), if using
       // `oarchive.setNextName(std::to_string(entity).c_str());`
       // this will bug out for whatever reason, I think its an MSVC
       // bug, this fixes the problem
       std::string entityString = std::to_string(entity);
-      oarchive.setNextName(entityString.c_str());
-      oarchive.startNode();
+      archive.setNextName(entityString.c_str());
+      archive.startNode();
 
       SERIALIZE_ALL_COMPONENTS(entity);
 
-      oarchive.finishNode();
+      archive.finishNode();
     }
   }
 }
+
+// static void SerializeAllIn(Registry* registry)
+// {
+//   std::ifstream is("test.json");
+
+//   {
+//     cereal::JSONInputArchive archive(is);
+//   }
+// }

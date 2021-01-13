@@ -47,11 +47,11 @@
     newIndexMapping = newVectorPtr.size() - 1;                                                    \
   }
 
-#define SERIALIZE_COMPONENT(T, entity)                                 \
-  if (registry->EntityHasComponent<T>(entity))                         \
-  {                                                                    \
-    T t = registry->GetComponent<T>(entity);                           \
-    oarchive(cereal::make_nvp(registry->GetTypeName<T>().c_str(), t)); \
+#define SERIALIZE_COMPONENT(T, entity)                                \
+  if (registry->EntityHasComponent<T>(entity))                        \
+  {                                                                   \
+    T t = registry->GetComponent<T>(entity);                          \
+    archive(cereal::make_nvp(registry->GetTypeName<T>().c_str(), t)); \
   }
 
 /*

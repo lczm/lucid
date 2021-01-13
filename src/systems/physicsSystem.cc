@@ -182,6 +182,7 @@ void PhysicsSystem::UpdateCollisions(float dt, Registry* registry, Input* input)
       }
     }
   }
+
   // delete tcsTransformComponents;
   // delete tccColliderCubeComponents;
 

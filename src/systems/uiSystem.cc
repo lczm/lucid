@@ -112,11 +112,11 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
 
       if (ImGui::MenuItem("Build"))
       {
-        SerializeAll(registry);
+        SerializeAllOut(registry);
       }
       if (input->IsKeyDown(GLFW_KEY_F5))
       {
-        SerializeAll(registry);
+        SerializeAllOut(registry);
       }
 
       // TODO : Draw frametime
