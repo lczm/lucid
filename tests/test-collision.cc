@@ -15,6 +15,7 @@
 #include "physicsSystem.h"
 #include "test-utils.h"
 
+/*
 TEST_F(TestsGL, BoxBoxColliding)
 {
   Registry* registry = new Registry();
@@ -173,3 +174,4 @@ TEST_F(TestsGL, RayBoxNotColliding)
 
   ASSERT_FALSE(std::get<bool>(collidedAndLength));
 }
+*/

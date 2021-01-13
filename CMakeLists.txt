@@ -164,5 +164,5 @@ add_executable(tests
     ${IMGUIZMO_HEADERS})
 
 # Link test executable against gtest & gtest_main
-target_link_libraries(tests gtest gtest_main glfw assimp* sndfile OpenAL32)
+target_link_libraries(tests gtest gtest_main glfw assimp* sndfile OpenAL32 nfd)
 add_test(tests tests)

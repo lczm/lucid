@@ -610,6 +610,24 @@ TEST_F(TestsGL, AddComponent)
   ASSERT_EQ(registry->entityIndexMap[id1], 0);
 }
 
+TEST_F(TestsGL, AddComponentManyTimes)
+{
+  Registry* registry = new Registry();
+
+  registry->RegisterEmptyArchetype();
+  registry->RegisterArchetype<Transform>();
+  registry->RegisterArchetype<Transform, Model>();
+  registry->RegisterArchetype<Transform, ColliderCube>();
+
+  // Create an empty entity
+  Entity id = registry->GetAvailableEntityId();
+  registry->CreateEntity(id);
+
+  registry->AddComponent<Transform>(id);
+  registry->AddComponent<Model>(id);
+  registry->AddComponent<ColliderCube>(id);
+}
+
 TEST_F(TestsGL, RemoveComponent)
 {
   Registry* registry = new Registry();
