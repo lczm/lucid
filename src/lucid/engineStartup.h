@@ -23,6 +23,7 @@ static void InitArchetypes(Registry* registry)
   // Note that the archetypes registered under here and that are not
   // under the #if DEBUG flag are the ones that will also exist
   // in the release build of the game.
+  registry->RegisterEmptyArchetype();
   registry->RegisterArchetype<ShaderResource>();
   registry->RegisterArchetype<PrimitiveBatchIds>();
   registry->RegisterArchetype<Model, Transform>();

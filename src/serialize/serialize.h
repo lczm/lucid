@@ -6,6 +6,7 @@
 #include <string>
 #include <sstream>
 #include "cereal/archives/json.hpp"
+#include "cereal/types/string.hpp"
 #include "glm.hpp"
 #include "gtx/string_cast.hpp"
 
@@ -29,7 +30,7 @@ static void SerializeAllOut(Registry* registry)
       archive.setNextName(entityString.c_str());
       archive.startNode();
 
-      SERIALIZE_ALL_COMPONENTS(entity);
+      SERIALIZE_ALL_COMPONENTS_OUT(entity);
 
       archive.finishNode();
     }
@@ -51,10 +52,40 @@ static void SerializeAllIn(Registry* registry)
       if (archive.getNodeName() == nullptr)
       {
         cont = false;
+        std::cout << "broke" << std::endl;
         break;
       }
 
+      // Get the entity id and create the entiy
       std::string nodeName = archive.getNodeName();
+      Entity entity = std::stoul(nodeName, nullptr, 0);
+      registry->CreateEntity(entity);
+
+      std::cout << "Entity : " << entity << std::endl;
+
+      archive.startNode();
+
+      // std::cout << "got to after start node" << std::endl;
+      // std::cout << std::string(archive.getNodeName()) << std::endl;
+
+      // While the entity still has component that can be serialized in
+      while (archive.getNodeName() != nullptr)
+      {
+        std::string currentComponent = archive.getNodeName();
+
+        // Transform test;
+        // archive(cereal::make_nvp(registry->GetTypeName<Transform>(), test));
+        // registry->AddComponent<Transform>(entity);
+        // registry->AddComponentData<Transform>(entity, test);
+
+        // std::cout << glm::to_string(test.position) << std::endl;
+        // std::cout << glm::to_string(test.rotation) << std::endl;
+        // std::cout << glm::to_string(test.scale) << std::endl;
+
+        SERIALIZE_ALL_COMPONENTS_IN(entity);
+      }
+
+      archive.finishNode();
     }
   }
 }

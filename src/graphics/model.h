@@ -50,6 +50,8 @@ class Model
   Model(std::string path);
   ~Model();
 
+  void Load();
+
   std::vector<Mesh> GetMeshes();
   aiNode* GetRootNode();
 

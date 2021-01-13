@@ -1,6 +1,6 @@
 #include "model.h"
 
-Model::Model()
+Model::Model() : boneMatrices(100)
 {
 }
 
@@ -55,6 +55,53 @@ Model::Model(std::string path) : boneMatrices(100)
 
 Model::~Model()
 {
+}
+
+void Model::Load()
+{
+  importer = new Assimp::Importer();
+  scene = importer->ReadFile(
+      path, aiProcess_CalcTangentSpace | aiProcess_Triangulate | aiProcess_FlipUVs);
+
+  if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+  {
+    std::cout << "(Model Loading) Error : " << importer->GetErrorString() << std::endl;
+    return;
+  }
+
+  if (scene->mNumAnimations > 0)
+  {
+    hasAnimations = true;
+    for (size_t i = 0; i < scene->mNumAnimations; i++)
+    {
+      auto animation = scene->mAnimations[i];
+      for (size_t j = 0; j < animation->mNumChannels; j++)
+      {
+        // for every animation, channel add it to the mapping
+        auto channel = animation->mChannels[j];
+        animationMapping[std::pair<uint32_t, std::string>(i, channel->mNodeName.C_Str())] = j;
+      }
+      animationIdMapping[animation->mName.C_Str()] = i;
+    }
+  }
+
+  directory = path.substr(0, path.find_last_of('/'));
+  ProcessNode(scene->mRootNode, scene);
+
+  // After processing everything, generate a standalone vertices bounding box
+  for (auto& mesh : GetMeshes())
+  {
+    // Reserve some space in advance
+    vertices.reserve(mesh.vertices.size());
+    for (size_t i = 0; i < mesh.vertices.size(); i++)
+    {
+      vertices.push_back(glm::vec4(mesh.vertices[i].position.x, mesh.vertices[i].position.y,
+                                   mesh.vertices[i].position.z, 1.0f));
+    }
+  }
+
+  // Initialize the bounding box
+  boundingBox = GetBoundingBox(vertices);
 }
 
 std::vector<Mesh> Model::GetMeshes()

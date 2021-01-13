@@ -36,19 +36,19 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window)
 
   InitializeBuiltInSystems();
 
-  InitializeModelEntities();
+  // InitializeModelEntities();
   // InitializeSystems();
 
   // Please remove this in the future, for batch rendering tests only
-  InitializeManyCubes();
+  // InitializeManyCubes();
 
-#if DEBUG
-  InitializeSceneGridLines();
-#endif
+  // #if DEBUG
+  //   InitializeSceneGridLines();
+  // #endif
 
   // TODO : This should be abstracted out into a user system
   // Demo pong
-  InitializeDemoPongEntities();
+  // InitializeDemoPongEntities();
   InitializeDemoPongSystems();
 }
 

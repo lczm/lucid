@@ -47,11 +47,30 @@
     newIndexMapping = newVectorPtr.size() - 1;                                                    \
   }
 
-#define SERIALIZE_COMPONENT(T, entity)                                \
+#define SERIALIZE_COMPONENT_OUT(T, entity)                            \
   if (registry->EntityHasComponent<T>(entity))                        \
   {                                                                   \
     T t = registry->GetComponent<T>(entity);                          \
     archive(cereal::make_nvp(registry->GetTypeName<T>().c_str(), t)); \
+  }
+
+#define SERIALIZE_COMPONENT_IN(T, entity)                         \
+  if (registry->GetTypeName<Model>() == currentComponent)         \
+  {                                                               \
+    std::cout << "Model..." << std::endl;                         \
+    Model m;                                                      \
+    archive(cereal::make_nvp(registry->GetTypeName<Model>(), m)); \
+    m.Load();                                                     \
+    registry->AddComponent<Model>(entity);                        \
+    registry->AddComponentData<Model>(entity, m);                 \
+  }                                                               \
+  else if (registry->GetTypeName<T>() == currentComponent)        \
+  {                                                               \
+    T t;                                                          \
+    archive(cereal::make_nvp(registry->GetTypeName<T>(), t));     \
+    std::cout << registry->GetTypeName<T>() << std::endl;         \
+    registry->AddComponent<T>(entity);                            \
+    registry->AddComponentData<T>(entity, t);                     \
   }
 
 /*
@@ -539,6 +558,34 @@ class Registry
     entityIndexMap[id] = entityVectorPtr.size() - 1;
   }
 
+  // Create an entity without any components attached to it
+  void CreateEntity(Entity id)
+  {
+    Archetype archetype = {};
+
+    // Check if the archetype actually exists before first
+    // If the archetype is not found
+    if (archetypeComponentMap.find(archetype) == archetypeComponentMap.end())
+    {
+      std::cout << "Archetype for entity : " << id << " is not found, please create it"
+                << std::endl;
+      return;
+    }
+
+    auto& keyPtr = GetArchetypeComponentMap(archetype);
+    auto& entityVectorPtr =
+        GetVectorFromArchetypeComponentMap<uint32_t>(keyPtr, GetHashCode<uint32_t>());
+
+    // Update the entity component to the archetype
+    entityComponentMap[id] = archetype;
+
+    // Add entityID into vector that keeps track of the ids
+    entityVectorPtr.push_back(id);
+
+    // Update the size
+    entityIndexMap[id] = entityVectorPtr.size() - 1;
+  }
+
   void DeleteEntity(Entity id)
   {
   }
@@ -616,6 +663,18 @@ class Registry
     InitializeArchetypeVector<uint32_t>(archetype);
 
     return;
+  }
+
+  void RegisterEmptyArchetype()
+  {
+    Archetype archetype = {};
+
+    // This archetype will then be a pointer to a dictionary of vectors
+    // where the vectors are each component of the archetype.
+    archetypeComponentMap[archetype] = new std::unordered_map<uint32_t, void*>();
+
+    // Create vector that holds entity ids
+    InitializeArchetypeVector<uint32_t>(archetype);
   }
 
   // Print out all the archetypes through their hashcodes
