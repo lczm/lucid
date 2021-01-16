@@ -80,4 +80,38 @@ static void SerializeAllIn(Registry* registry)
       archive.finishNode();
     }
   }
+
+  auto ids = registry->GetAllEntityIds();
+  for (auto id : ids)
+  {
+    std::cout << id << std::endl;
+  }
+
+  std::vector<void*> components = registry->GetComponents<Cube, Transform>();
+  auto* cubes = static_cast<ComponentVector<Cube>*>(components[0]);
+  auto* transforms = static_cast<ComponentVector<Transform>*>(components[1]);
+
+  std::cout << cubes->Size() << std::endl;
+  std::cout << transforms->Size() << std::endl;
+
+  std::vector<void*> cs = registry->GetComponents<Transform, Cube>();
+  auto* t = static_cast<ComponentVector<Transform>*>(cs[0]);
+  auto* c = static_cast<ComponentVector<Cube>*>(cs[1]);
+
+  std::cout << t->Size() << std::endl;
+  std::cout << c->Size() << std::endl;
+
+  int i = 0;
+  registry->GetComponentsIter<Cube, Transform>()->Each([&](Cube& cube, Transform& transform) {
+    std::cout << i << std::endl;
+    i++;
+  });
+
+  // registry->GetComponentsIter<Transform, Cube>()->EachWithID(
+  //     [&](Entity id, Transform& transform, Cube& cube) { std::cout << id << std::endl; });
+
+  // registry->PrintRegisteredArchetypes();
+  // std::cout << "---" << std::endl;
+  // registry->RemoveEmptyArchetypes();
+  // registry->PrintRegisteredArchetypes();
 }

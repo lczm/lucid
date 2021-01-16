@@ -477,7 +477,7 @@ class Registry
   template <typename... Components>
   bool EntityHasComponents(Entity id)
   {
-    Archetype paramArchetype = {(GetHashCode<Components>())...};
+    Archetype paramArchetype = SortArchetype({(GetHashCode<Components>())...});
 
     // Get entity archetype
     if (entityComponentMap.find(id) == entityComponentMap.end())
@@ -532,7 +532,16 @@ class Registry
   template <typename... Components>
   void CreateEntity(Entity id)
   {
-    Archetype archetype = {(GetHashCode<Components>())...};
+    // if (std::find(availablePool.begin(), availablePool.end(), id) != availablePool.end())
+    // {
+    //   auto index = std::find(availablePool.begin(), availablePool.end(), id);
+
+    //   // Remove from available pool and add to unavailable pool
+    //   availablePool.erase(index);
+    //   unavailablePool.push_back(id);
+    // }
+
+    Archetype archetype = SortArchetype({(GetHashCode<Components>())...});
 
     // Check if the archetype actually exists before first
     // If the archetype is not found
@@ -566,6 +575,16 @@ class Registry
   // Create an entity without any components attached to it
   void CreateEntity(Entity id)
   {
+    // If the id that is passed in is generated from being serialized
+    // if (std::find(availablePool.begin(), availablePool.end(), id) != availablePool.end())
+    // {
+    //   auto index = std::find(availablePool.begin(), availablePool.end(), id);
+
+    //   // Remove from available pool and add to unavailable pool
+    //   availablePool.erase(index);
+    //   unavailablePool.push_back(id);
+    // }
+
     Archetype archetype = {};
 
     // Check if the archetype actually exists before first
@@ -653,7 +672,7 @@ class Registry
     // can also be a std::initializer_list<uint32_t> but in this
     // case where getHashCode returns uint32_ts, this will work
     // fine.
-    Archetype archetype = {(GetHashCode<Components>())...};
+    Archetype archetype = SortArchetype({(GetHashCode<Components>())...});
 
     // This archetype will then be a pointer to a dictionary of vectors
     // where the vectors are each component of the archetype.
@@ -715,7 +734,7 @@ class Registry
 
     // Get the entity's current archetype
     Archetype oldArchetype = entityComponentMap[entity];
-    Archetype& archetype = entityComponentMap[entity];
+    Archetype archetype = entityComponentMap[entity];
 
     // Get entityIndex before modifying it later down the line
     uint32_t entityIndex = entityIndexMap[entity];
@@ -725,6 +744,8 @@ class Registry
 
     // Update the archetype hashcode
     archetype.push_back(componentHashCode);
+    archetype = SortArchetype(archetype);
+    entityComponentMap[entity] = archetype;
 
     // If the archetype does not yet exist
     if (archetypeComponentMap.find(archetype) == archetypeComponentMap.end())
@@ -763,6 +784,13 @@ class Registry
         entityIndexMap[id]--;
       }
     }
+
+    // If there are no elements anymore, remove the archetype
+    // if (idComponentVector.size() == 0)
+    // {
+    //   archetypeComponentMap.erase(oldArchetype);
+    // }
+    // RemoveEmptyArchetypes();
   }
 
   // Likewise for RemoveComponent, it is very similar to AddComponent
@@ -794,6 +822,7 @@ class Registry
       }
     }
     archetype.erase(archetype.begin() + archetypeIndex);
+    // SortArchetype(archetype);
 
     // If the archetype does not yet exist
     if (archetypeComponentMap.find(archetype) == archetypeComponentMap.end())
@@ -871,7 +900,7 @@ class Registry
     ComponentVector<Component>& componentVectorPtr =
         *(static_cast<ComponentVector<Component>*>(componentVectors[componentIndex]));
 
-    auto& keyPtr = GetArchetypeComponentMap(archetype);
+    auto& keyPtr = GetArchetypeComponentMap(SortArchetype(archetype));
     auto& vectorPtr = GetVectorFromArchetypeComponentMap<Component>(keyPtr, hashCode);
 
     // Add to componentvector if only the size is more than 0;
@@ -886,6 +915,36 @@ class Registry
     componentIndex++;
   }
 
+  // void RemoveEmptyArchetypes()
+  // {
+  //   std::vector<Archetype> remove;
+  //   // For every archetype
+  //   for (auto& archetypePair : archetypeComponentMap)
+  //   {
+  //     // Get the uint32_t index
+  //     Archetype archetype = archetypePair.first;
+
+  //     auto& keyPtr = GetArchetypeComponentMap(archetype);
+  //     auto& vectorPtr =
+  //         GetVectorFromArchetypeComponentMap<uint32_t>(keyPtr, GetHashCode<uint32_t>());
+
+  //     std::cout << vectorPtr.size() << std::endl;
+
+  //     // if (vectorPtr.size() == 0)
+  //     // {
+  //     //   std::cout << "vectorPtr.size() is 0..." << std::endl;
+  //     //   remove.push_back(archetype);
+  //     // }
+  //   }
+
+  //   for (Archetype archetype : remove)
+  //   {
+  //     archetypeComponentMap.erase(archetype);
+  //   }
+
+  //   std::cout << "Actually works till here" << std::endl;
+  // }
+
   // This returns a std::vector<void*> that the user will have to cast to its
   // respective type afterwards. The types are known to be users as the order
   // of the <T> that is passed into the function.
@@ -893,7 +952,7 @@ class Registry
   template <typename... Components>
   std::vector<void*> GetComponents()
   {
-    Archetype hashCodes = {(GetHashCode<Components>())...};
+    Archetype hashCodes = SortArchetype({(GetHashCode<Components>())...});
     std::vector<void*> componentVectors = {(MakeComponentVector<Components>())...};
 
     // archetype : std::unordered_map<hashcode, void*>
@@ -934,6 +993,7 @@ class Registry
   std::vector<void*> GetComponentsWithID()
   {
     Archetype hashCodes = {(GetHashCode<Components>())...};
+    SortArchetype(hashCodes);
     std::vector<void*> componentVectors = {(MakeComponentVector<Components>())...};
 
     // For the entity IDs
@@ -978,7 +1038,7 @@ class Registry
   template <typename... Components>
   std::vector<void*> GetComponentsExactWithID()
   {
-    Archetype hashCodes = {(GetHashCode<Components>())...};
+    Archetype hashCodes = SortArchetype({(GetHashCode<Components>())...});
     std::vector<void*> componentVectors = {(MakeComponentVector<Components>())...};
 
     // For the entity IDs
@@ -1020,7 +1080,7 @@ class Registry
   template <typename... Components>
   std::vector<void*> GetComponentsExact()
   {
-    Archetype hashCodes = {(GetHashCode<Components>())...};
+    Archetype hashCodes = SortArchetype({(GetHashCode<Components>())...});
     std::vector<void*> componentVectors = {(MakeComponentVector<Components>())...};
 
     for (auto& archetypePair : archetypeComponentMap)
@@ -1074,7 +1134,7 @@ class Registry
   template <typename... Components>
   uint32_t GetEntityIDFromArchetype(uint32_t index)
   {
-    Archetype archetype = {(GetHashCode<Components>())...};
+    Archetype archetype = SortArchetype({(GetHashCode<Components>())...});
 
     for (auto e : entityComponentMap)
     {
@@ -1110,9 +1170,10 @@ class Registry
     return true;
   }
 
-  void SortArchetype(Archetype& archetype)
+  Archetype SortArchetype(Archetype archetype)
   {
     std::sort(archetype.begin(), archetype.end());
+    return archetype;
   }
 
   void RegisterSystem(System* system)
