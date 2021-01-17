@@ -15,9 +15,6 @@
 #include "input.h"
 #include "boundingBox.h"
 
-#define CREATE_ALL_COMPONENT_VECTORS_IN_ARCHETYPE(archetype, newKeyPtr) \
-  REGISTER_COMPONENT_CREATE(archetype, newKeyPtr);
-
 #define CREATE_COMPONENT_VECTOR(T, archetype, keyPtr)                                     \
   if (std::find(archetype.begin(), archetype.end(), GetHashCode<T>()) != archetype.end()) \
   {                                                                                       \
@@ -29,7 +26,8 @@
 
 // searching for it every for every component
 #define MOVE_COMPONENT(T, search, from, to, index)                                                \
-  if (std::find(search.begin(), search.end(), GetHashCode<T>()) != search.end())                  \
+  if (std::find(search.begin(), search.end(), GetHashCode<T>()) != search.end() ||                \
+      GetHashCode<T>() == GetHashCode<uint32_t>())                                                \
   {                                                                                               \
     auto& oldKeyPtr = GetArchetypeComponentMap(from);                                             \
     auto& newKeyPtr = GetArchetypeComponentMap(to);                                               \
@@ -662,7 +660,12 @@ class Registry
   {
     std::unordered_map<uint32_t, void*>& keyPtr =
         *(static_cast<std::unordered_map<uint32_t, void*>*>(archetypeComponentMap[archetype]));
-    keyPtr[GetHashCode<Component>()] = new std::vector<Component>();
+
+    // Create the archetype vector if it does not exist
+    if (keyPtr.find(GetHashCode<Component>()) == keyPtr.end())
+    {
+      keyPtr[GetHashCode<Component>()] = new std::vector<Component>();
+    }
   }
 
   template <typename... Components>
@@ -757,7 +760,9 @@ class Registry
     auto& newKeyPtr = GetArchetypeComponentMap(archetype);
 
     uint32_t newIndexMapping = 0;
-    CREATE_ALL_COMPONENT_VECTORS_IN_ARCHETYPE(archetype, newKeyPtr);
+    REGISTER_COMPONENT_CREATE(archetype, newKeyPtr);
+    InitializeArchetypeVector<uint32_t>(archetype);
+
     MOVE_ALL_COMPONENTS(oldArchetype, oldArchetype, archetype, entityIndex);
 
     // Update the entity index based on the size.
