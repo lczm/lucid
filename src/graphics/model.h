@@ -71,8 +71,9 @@ class Model
   template <class Archive>
   void serialize(Archive& archive)
   {
-    archive(              //
-        CEREAL_NVP(path)  //
+    archive(                   //
+        CEREAL_NVP(path),      //
+        CEREAL_NVP(toAnimate)  //
     );
   }
 };
