@@ -80,9 +80,6 @@ include_directories(src/serialize)
 # include_directories(src/examples/pong)
 include_directories(examples/pong)
 
-# Setup stb_image
-include_directories(lib/stb_image)
-
 # Setup glm
 include_directories(lib/glm)
 
