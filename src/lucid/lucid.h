@@ -56,7 +56,8 @@ class Lucid
   GLFWwindow* window;
 
   std::chrono::high_resolution_clock::time_point timer;
-  float dt, secondDt = 0;
+  float dt = 0;
+  float secondDt = 0;
   int frameCount = 0;
 
   std::function<void(GLFWwindow* window, int button, int action, int mods)> mouseCallback;
@@ -68,8 +69,6 @@ class Lucid
   ~Lucid();
 
   void Update();
-
-  void InitializeBuiltInSystems();
 
   void InitializeModelEntities();
   void InitializeSystems();
