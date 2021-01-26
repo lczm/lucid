@@ -28,6 +28,8 @@ set (MAIN
 # Source files
 file(GLOB_RECURSE HEADER_FILES src/*.h)
 file(GLOB_RECURSE SOURCE_FILES src/*.cc)
+file(GLOB_RECURSE HEADER_FILES_EXAMPLE examples/*.h)
+file(GLOB_RECURSE SOURCE_FILES_EXAMPLE examples/*.cc)
 
 list(FILTER SOURCE_FILES EXCLUDE REGEX "main.cc")
 file(GLOB_RECURSE TEST_SOURCE_FILES tests/*.cc)
@@ -75,7 +77,8 @@ include_directories(src/ui)
 include_directories(src/serialize)
 
 # Example directories
-include_directories(src/examples/pong)
+# include_directories(src/examples/pong)
+include_directories(examples/pong)
 
 # Setup stb_image
 include_directories(lib/stb_image)
@@ -134,6 +137,8 @@ add_executable(lucid
     ${MAIN}
     ${SOURCE_FILES}
     ${HEADER_FILES}
+    ${SOURCE_FILES_EXAMPLE}
+    ${HEADER_FILES_EXAMPLE}
     ${IMGUI_SOURCE_FILES}
     ${STB_IMAGE_HEADERS}
     ${GLAD_SOURCE_FILES}
