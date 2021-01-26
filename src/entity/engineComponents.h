@@ -2,7 +2,7 @@
 
 #include "line.h"
 #include "glm.hpp"
-#include "windowEnum.h"
+#include "commonEnum.h"
 
 #include "imgui.h"
 #include "imgui_internal.h"

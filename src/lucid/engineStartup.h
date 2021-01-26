@@ -14,6 +14,9 @@
 
 #if DEBUG
 #include "pong.h"
+#include "aiSystem.h"
+#include "playerSystem.h"
+#include "pongSystem.h"
 #endif
 
 #include "renderSystem.h"

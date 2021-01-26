@@ -10,8 +10,7 @@
 #include "renderUtils.h"
 #include "cube.h"
 #include "sphere.h"
-#include "windowEnum.h"
-#include "defaultAssetsEnum.h"
+#include "commonEnum.h"
 #include "colliders.h"
 
 #if DEBUG

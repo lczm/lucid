@@ -29,9 +29,6 @@
 
 // Demo imports
 #include "pong.h"
-#include "aiSystem.h"
-#include "playerSystem.h"
-#include "pongSystem.h"
 // Demo imports end
 
 #include "glm.hpp"
@@ -41,12 +38,6 @@
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
-
-#include "renderSystem.h"
-#include "lucidSystem.h"
-#include "audioSystem.h"
-#include "uiSystem.h"
-#include "physicsSystem.h"
 
 class Lucid
 {

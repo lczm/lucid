@@ -18,3 +18,10 @@ enum class WindowType
   GameConfiguration,
   None,
 };
+
+enum class DefaultAssetsType
+{
+  Cube,
+  Sphere,
+  Line
+};
