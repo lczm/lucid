@@ -343,6 +343,7 @@ class System
 {
  public:
   std::string tag = "";
+  uint32_t index = 0;
 
  public:
   virtual void Update(float dt, Registry* registry, Input* input) = 0;
@@ -1181,15 +1182,36 @@ class Registry
     return archetype;
   }
 
-  void RegisterSystem(System* system)
-  {
-    systems.push_back(system);
-  };
-
-  void RegisterSystem(System* system, std::string tag)
+  // Given an index, it will place it at the earliest possible spot.
+  // Inserting a system into a vector like this will cause the vector
+  // to have to reposition all the elements, but since these are pointers
+  // and there are unlikely to have many systems in a game, this performance
+  // hit is negligable.
+  void RegisterSystem(System* system, std::string tag, uint32_t index)
   {
     system->tag = tag;
-    systems.push_back(system);
+    system->index = index;
+
+    // Find a place to put this
+    if (systems.size() == 0)
+    {
+      systems.push_back(system);
+    }
+    else
+    {
+      for (size_t i = 0; i < systems.size(); i++)
+      {
+        // if (index <= systems[i]->index)
+        if (systems[i]->index <= index)
+        {
+          systems.insert(systems.begin() + i, system);
+          return;
+        }
+      }
+
+      // If not returned by the here, it belongs to the last.
+      systems.push_back(system);
+    }
   }
 
   void UpdateSystems(float dt, Input* input)
@@ -1200,12 +1222,24 @@ class Registry
     }
   }
 
-  // To update one specific system
+  // To update one specific system using the string tag
   void UpdateSystem(float dt, Input* input, std::string tag)
   {
     for (System* system : systems)
     {
       if (system->tag == tag)
+      {
+        system->Update(dt, this, input);
+      }
+    }
+  }
+
+  // To update one specific system using the index tag
+  void UpdateSystem(float dt, Input* input, uint32_t index)
+  {
+    for (System* system : systems)
+    {
+      if (system->index == index)
       {
         system->Update(dt, this, input);
       }

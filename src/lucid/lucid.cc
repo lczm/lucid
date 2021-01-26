@@ -98,7 +98,6 @@ void Lucid::Update()
     // Note that this systems update has to be ran in the order of what the original systems
     // are ran in
     registry->UpdateSystem(dt, input, "ui");
-
     registry->UpdateSystem(dt, input, "render");
   }
 
@@ -108,7 +107,7 @@ void Lucid::Update()
 void Lucid::InitializeBuiltInSystems()
 {
   // LucidSystem needs to be first, as this will be what 'calls' the other systems.
-  registry->RegisterSystem(new LucidSystem(), "lucid");
+  registry->RegisterSystem(new LucidSystem(), "lucid", 0);
 
   // TODO : Figure this out
   // UiSystem can either be before or after rendersystem.
@@ -117,21 +116,21 @@ void Lucid::InitializeBuiltInSystems()
   // renderSystem generates a frameBuffer object that the uiSystem can immediately use after
   // But I also recall that I had a specific reason for setting UiSystem to be first
   // perhaps double buffering...?
-  registry->RegisterSystem(new UiSystem(), "ui");
+  registry->RegisterSystem(new UiSystem(), "ui", 1);
 
   // Demo start -- TODO : This should be separated, need a way of prioritising systems
-  registry->RegisterSystem(new PlayerSystem(), "player");
-  registry->RegisterSystem(new AiSystem(), "ai");
+  registry->RegisterSystem(new PlayerSystem(), "player", 2);
+  registry->RegisterSystem(new AiSystem(), "ai", 3);
   // Demo end
 
-  registry->RegisterSystem(new PhysicsSystem(), "physics");
+  registry->RegisterSystem(new PhysicsSystem(), "physics", 4);
 
   // Demo start -- PongSystem will need to deal with collision for the ball
-  registry->RegisterSystem(new PongSystem(), "pong");
+  registry->RegisterSystem(new PongSystem(), "pong", 5);
   // Demo end
 
-  registry->RegisterSystem(new RenderSystem(registry), "render");
-  registry->RegisterSystem(new AudioSystem(), "audio");
+  registry->RegisterSystem(new RenderSystem(registry), "render", 5);
+  registry->RegisterSystem(new AudioSystem(), "audio", 6);
 }
 
 void Lucid::InitializeModelEntities()
