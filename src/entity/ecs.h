@@ -838,7 +838,7 @@ class Registry
 
     auto& newKeyPtr = GetArchetypeComponentMap(archetype);
 
-    CREATE_ALL_COMPONENT_VECTORS_IN_ARCHETYPE(archetype, newKeyPtr);
+    REGISTER_COMPONENT_CREATE(archetype, newKeyPtr);
 
     uint32_t newIndexMapping = 0;
     // Since this is removing, set the new archetype as the 'from' target

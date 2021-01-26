@@ -20,16 +20,12 @@
 #endif
 
 #include "renderSystem.h"
-#include "lucidSystem.h"
 #include "audioSystem.h"
 #include "uiSystem.h"
 #include "physicsSystem.h"
 
 static void InitSystems(Registry* registry)
 {
-  // LucidSystem needs to be first, as this will be what 'calls' the other systems.
-  registry->RegisterSystem(new LucidSystem(), "lucid", 0);
-
   // TODO : Figure this out
   // UiSystem can either be before or after rendersystem.
   // It does somewhat make sense that the uisystem will be after the render system
