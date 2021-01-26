@@ -716,3 +716,20 @@ TEST_F(TestsGL, SetGetResource)
   TestSetResource& get2 = registry->GetResource<TestSetResource>();
   ASSERT_EQ(get2.a, 20);
 }
+
+TEST_F(TestsGL, CreateEntityWithoutRegisteringArchetype)
+{
+  Registry* registry = new Registry();
+
+  Entity id = registry->GetAvailableEntityId();
+  registry->CreateEntity<TestAddStruct1, TestAddStruct2>(id);
+
+  if (registry->EntityHasComponent<TestAddStruct1>(id) && registry->EntityHasComponent<TestAddStruct2>(id))
+  {
+    SUCCEED();
+  }
+  else
+  {
+    FAIL();
+  }
+}

@@ -550,7 +550,7 @@ class Registry
       //           << std::endl;
 
       RegisterArchetype<Components...>();
-      return;
+      // return;
     }
 
     auto& keyPtr = GetArchetypeComponentMap(archetype);
