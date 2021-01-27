@@ -36,19 +36,19 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window)
   InitEngineComponents(registry);
   InitSystems(registry);
 
-  // InitializeModelEntities();
-  // InitializeSystems();
+  InitializeModelEntities();
+  InitializeSystems();
 
   // Please remove this in the future, for batch rendering tests only
-  // InitializeManyCubes();
+  InitializeManyCubes();
 
-  // #if DEBUG
-  //   InitializeSceneGridLines();
-  // #endif
+  #if DEBUG
+    InitializeSceneGridLines();
+  #endif
 
   // TODO : This should be abstracted out into a user system
   // Demo pong
-  // InitializeDemoPongEntities();
+  InitializeDemoPongEntities();
   InitializeDemoPongSystems();
 }
 
@@ -87,6 +87,7 @@ void Lucid::Update()
   // Get the current game state
   GameEngineState& gameEngineState = registry->GetResource<GameEngineState>();
 
+#if DEBUG
   // Only if the game state is 'playing', then update the systems.
   if (gameEngineState.gameState == GameState::PLAYING)
   {
@@ -100,6 +101,11 @@ void Lucid::Update()
     registry->UpdateSystem(dt, input, "ui");
     registry->UpdateSystem(dt, input, "render");
   }
+#endif
+
+#if RELEASE
+  registry->UpdateSystems(dt, input);
+#endif
 
   frameCount++;
 }

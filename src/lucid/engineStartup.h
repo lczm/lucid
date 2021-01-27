@@ -33,7 +33,10 @@ static void InitSystems(Registry* registry)
   // renderSystem generates a frameBuffer object that the uiSystem can immediately use after
   // But I also recall that I had a specific reason for setting UiSystem to be first
   // perhaps double buffering...?
+
+#if DEBUG
   registry->RegisterSystem(new UiSystem(), "ui", 1);
+#endif
 
   // Demo start -- TODO : This should be separated, need a way of prioritising systems
   registry->RegisterSystem(new PlayerSystem(), "player", 2);

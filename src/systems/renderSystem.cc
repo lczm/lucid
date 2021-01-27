@@ -4,7 +4,9 @@ RenderSystem::RenderSystem(Registry* registry) : defaultBoneMatrices(100, glm::m
 {
   RenderSystem::renderer = new Renderer(registry);
 
+#if DEBUG
   InitRenderBuffers();
+#endif
   InitPrimitiveBuffers(registry);
   InitSceneCameraComponent(registry);
 }
@@ -26,13 +28,17 @@ void RenderSystem::Update(float dt, Registry* registry, Input* input)
   // Start the update call, so that the draw calls are reseted properly
   renderer->ClearRendererStats();
 
+#if DEBUG
   glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+#endif
 
   glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+#if DEBUG
   SceneRender& sceneRender = registry->GetResource<SceneRender>();
   sceneRender.textureID = texture;
+#endif
 
   DevDebug& devDebug = registry->GetResource<DevDebug>();
 
@@ -50,7 +56,9 @@ void RenderSystem::Update(float dt, Registry* registry, Input* input)
   if (devDebug.drawColliders) DrawAllColldiers(dt, registry, input);
   if (devDebug.drawWireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
+#if DEBUG
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
+#endif
 }
 
 void RenderSystem::InitRenderBuffers()
