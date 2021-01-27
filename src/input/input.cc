@@ -31,18 +31,18 @@ float Input::GetMouseX()
 {
   glfwGetCursorPos(window, &x, &y);
 
-// #if DEBUG
+#if DEBUG
   if (activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera)
   {
     // When it is defined that it is in 'DEBUG' mode,
     // the coordinates needs to be offseted
     return static_cast<float>(x);
   }
-// #endif
+#endif
 
-// #if RELEASE
+#if RELEASE
   return static_cast<float>(x);
-// #endif
+#endif
 
   return static_cast<float>(x);
 }
@@ -51,17 +51,17 @@ float Input::GetMouseY()
 {
   glfwGetCursorPos(window, &x, &y);
 
-// #if DEBUG
+#if DEBUG
   if (activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera)
   {
     return std::abs(SCREEN_HEIGHT - static_cast<float>(y));
     // return y;
   }
-// #endif
+#endif
 
-// #if RELEASE
+#if RELEASE
   return std::abs(SCREEN_HEIGHT - y);
-// #endif
+#endif
 
   // OpenGL uses inverse y values compared to glfw window values
   return std::abs(SCREEN_HEIGHT - static_cast<float>(y));
@@ -71,16 +71,16 @@ float Input::GetMouseYAbsolute()
 {
   glfwGetCursorPos(window, &x, &y);
 
-// #if DEBUG
+#if DEBUG
   if (activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera)
   {
     return static_cast<float>(y);
   }
-// #endif
+#endif
 
-// #if RELEASE
+#if RELEASE
   return y;
-// #endif
+#endif
 
   // OpenGL uses inverse y values compared to glfw window values
   return static_cast<float>(y);
@@ -88,16 +88,16 @@ float Input::GetMouseYAbsolute()
 
 int Input::GetScrollState()
 {
-// #if DEBUG
+#if DEBUG
   if (activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera)
   {
     return scroll;
   }
-// #endif
+#endif
 
-// #if RELEASE
+#if RELEASE
   return scroll;
-// #endif
+#endif
 
   // Note : will never reach this, it is either DEBUG or RELEASE
   return scroll;
@@ -117,16 +117,16 @@ bool Input::IsKeyDown(int key)
   //   key -= 32;
   // }
 
-// #if DEBUG
+#if DEBUG
   if (activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera)
   {
     return keys[key];
   }
-// #endif
+#endif
 
-// #if RELEASE
+#if RELEASE
   return keys[key];
-// #endif
+#endif
 
   return false;
 }
@@ -153,7 +153,7 @@ bool Input::IsMouseLDown()
 {
   if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT))
   {
-// #if DEBUG
+#if DEBUG
     // TODO: fix debug and release being the same
     // Handle imgui windows
     // if (activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera)
@@ -161,12 +161,12 @@ bool Input::IsMouseLDown()
     //  return true;
     //}
     return true;
-// #endif
+#endif
 
-// #if RELEASE
+#if RELEASE
     // Don't have to handle imgui windows
     return true;
-// #endif
+#endif
 
     return false;
   }
@@ -177,18 +177,18 @@ bool Input::IsMouseRDown()
 {
   if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT))
   {
-// #if DEBUG
+#if DEBUG
     // Handle imgui windows
     if (activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera)
     {
       return true;
     }
-// #endif
+#endif
 
-// #if RELEASE
+#if RELEASE
     // Dont handle imgui windows
     return true;
-// #endif
+#endif
 
     return false;
   }

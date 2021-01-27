@@ -11,8 +11,8 @@ set(CMAKE_CXX_FLAGS "-Wall")
 set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 set(CMAKE_CXX_STANDARD 17)
 
-add_definitions(-DDEBUG=1)
-add_definitions(-DRELEASE=0)
+add_definitions(-DDEBUG=0)
+add_definitions(-DRELEASE=1)
 
 # This can be helpful for clangd
 # set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
