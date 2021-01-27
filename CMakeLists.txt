@@ -170,3 +170,15 @@ add_executable(tests
 # Link test executable against gtest & gtest_main
 target_link_libraries(tests gtest gtest_main glfw assimp* sndfile OpenAL32 nfd)
 add_test(tests tests)
+
+# Generic executable
+add_executable(generic
+    ${MAIN}
+    ${SOURCE_FILES}
+    ${HEADER_FILES}
+    ${SOURCE_FILES_EXAMPLE}
+    ${HEADER_FILES_EXAMPLE}
+    ${IMGUI_SOURCE_FILES}
+    ${STB_IMAGE_HEADERS}
+    ${GLAD_SOURCE_FILES}
+    ${GLM_HEADERS})
