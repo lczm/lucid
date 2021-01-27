@@ -12,12 +12,12 @@
 #include "camera.h"
 #include "shaderResource.h"
 
-#if DEBUG
+// #if DEBUG
 #include "pong.h"
 #include "aiSystem.h"
 #include "playerSystem.h"
 #include "pongSystem.h"
-#endif
+// #endif
 
 #include "renderSystem.h"
 #include "audioSystem.h"
@@ -149,7 +149,7 @@ static void InitEngineComponents(Registry* registry)
   // for the sphere and cubes to use different shaders, then simplify the shader names.
   shaderResource.sphereShader.CreateShader(PRIMITIVE_INSTANCED_SHADER, PRIMITIVE_FRAGMENT_SHADER);
 
-#if DEBUG
+// #if DEBUG
   // Entity sceneRenderID = registry->GetAvailableEntityId();
   // Entity devDebugID = registry->GetAvailableEntityId();
   // Entity widgetLayoutID = registry->GetAvailableEntityId();
@@ -164,5 +164,5 @@ static void InitEngineComponents(Registry* registry)
   registry->CreateResource<DevDebug>();
   registry->CreateResource<WidgetLayout>();
   registry->CreateResource<RendererStats>();
-#endif
+// #endif
 }

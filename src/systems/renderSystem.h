@@ -30,9 +30,9 @@ class RenderSystem : public System
  private:
   Renderer* renderer;
 
-#if DEBUG
+// #if DEBUG
   Camera* camera;
-#endif
+// #endif
 
   uint32_t fbo, rbo;
   uint32_t texture;

@@ -11,6 +11,9 @@ set(CMAKE_CXX_FLAGS "-Wall")
 set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 set(CMAKE_CXX_STANDARD 17)
 
+add_definitions(-DDEBUG=0)
+add_definitions(-DRELEASE=1)
+
 # This can be helpful for clangd
 # set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -181,4 +184,16 @@ add_executable(generic
     ${IMGUI_SOURCE_FILES}
     ${STB_IMAGE_HEADERS}
     ${GLAD_SOURCE_FILES}
-    ${GLM_HEADERS})
+    ${GLM_HEADERS}
+    ${IMGUIZMO_HEADERS})
+
+# Link the executable to glfw
+if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    target_link_libraries(generic glfw assimp sndfile OpenAL32 nfd)
+elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    if (CMAKE_BUILD_TYPE STREQUAL "Release")
+        target_link_libraries(generic glfw assimp* sndfile OpenAL32 nfd user32.lib gdi32.lib shell32.lib vcruntime.lib msvcrt.lib)
+    else()
+        target_link_libraries(generic glfw assimp* sndfile OpenAL32 nfd)
+    endif(CMAKE_BUILD_TYPE STREQUAL "Release")
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")

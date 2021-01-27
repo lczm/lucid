@@ -1,7 +1,7 @@
 #pragma once
 
-#define DEBUG true
-#define RELEASE false
+// #define DEBUG true
+// #define RELEASE false
 
 // Note : all this assumes that we are in the build dir running the binary.
 // All paths are relative to the build dir.

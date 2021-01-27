@@ -436,7 +436,7 @@ void RenderSystem::DrawAllLines(float dt, Registry* registry, Input* input)
   shaderResource.lineShader.Unbind();
 
   // Draw grid lines
-#if DEBUG
+// #if DEBUG
   shaderResource.lineShader.Bind();
   shaderResource.lineShader.SetUniformMatFloat4("projection", camera->GetProjection());
   shaderResource.lineShader.SetUniformMatFloat4("view", camera->GetView());
@@ -455,7 +455,7 @@ void RenderSystem::DrawAllLines(float dt, Registry* registry, Input* input)
   renderer->FlushBatch(primitiveBatchIds, DrawType::Line);
 
   shaderResource.lineShader.Unbind();
-#endif
+// #endif
 }
 
 void RenderSystem::DrawAllModels(float dt, Registry* registry, Input* input)

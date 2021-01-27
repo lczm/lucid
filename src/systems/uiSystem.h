@@ -13,10 +13,10 @@
 #include "commonEnum.h"
 #include "colliders.h"
 
-#if DEBUG
+// #if DEBUG
 #include "camera.h"
 #include "engineComponents.h"
-#endif
+// #endif
 
 #include "glm.hpp"
 #include "gtc/type_ptr.hpp"

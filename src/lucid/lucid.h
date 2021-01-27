@@ -17,9 +17,9 @@
 #include "engineStartup.h"
 #include "colliders.h"
 
-#if DEBUG
+// #if DEBUG
 #include "engineComponents.h"
-#endif
+// #endif
 
 #include "model.h"
 #include "line.h"
@@ -71,9 +71,9 @@ class Lucid
   void InitializeDemoPongEntities();
   void InitializeDemoPongSystems();
 
-#if DEBUG
+// #if DEBUG
   void InitializeSceneGridLines();
-#endif
+// #endif
 
   void SetMouseCallback(
       std::function<void(GLFWwindow* window, int button, int action, int mods)> fn);
