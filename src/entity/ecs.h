@@ -512,6 +512,15 @@ class Registry
     return false;
   }
 
+  bool EntityIdExists(Entity id)
+  {
+    if (entityIndexMap.find(id) == entityIndexMap.end())
+    {
+      return false;
+    }
+    return true;
+  }
+
   template <typename Component>
   void CreateDefaultComponentValue(Entity id, Archetype archetype)
   {

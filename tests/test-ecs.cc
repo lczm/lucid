@@ -759,12 +759,7 @@ TEST_F(TestsGL, DeleteEntity)
 
   registry->DeleteEntity<Deleter>(id);
 
-  if (registry->EntityHasComponent<TestAddStruct1>(id))
-  {
-    FAIL();
-  }
-
-  if (registry->EntityHasComponent<TestAddStruct2>(id))
+  if (registry->EntityIdExists(id))
   {
     FAIL();
   }
