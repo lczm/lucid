@@ -10,6 +10,11 @@
 #include "gtest/gtest.h"
 #include "engineStartup.h"
 
+// #include "cube.h"
+// #include "sphere.h"
+// #include "model.h"
+// #include "colliders.h"
+
 /*
   This is to test that the ComponentVector<T> grows for whatever type whenever a
   new entity is added.
@@ -724,11 +729,42 @@ TEST_F(TestsGL, CreateEntityWithoutRegisteringArchetype)
   Entity id = registry->GetAvailableEntityId();
   registry->CreateEntity<TestAddStruct1, TestAddStruct2>(id);
 
-  if (registry->EntityHasComponent<TestAddStruct1>(id) && registry->EntityHasComponent<TestAddStruct2>(id))
+  if (registry->EntityHasComponent<TestAddStruct1>(id) &&
+      registry->EntityHasComponent<TestAddStruct2>(id))
   {
     SUCCEED();
   }
   else
+  {
+    FAIL();
+  }
+}
+
+TEST_F(TestsGL, DeleteEntity)
+{
+  Registry* registry = new Registry();
+
+  Entity id = registry->GetAvailableEntityId();
+  registry->CreateEntity<TestAddStruct1, TestAddStruct2>(id);
+
+  if (!registry->EntityHasComponent<TestAddStruct1>(id))
+  {
+    FAIL();
+  }
+
+  if (!registry->EntityHasComponent<TestAddStruct2>(id))
+  {
+    FAIL();
+  }
+
+  registry->DeleteEntity<Deleter>(id);
+
+  if (registry->EntityHasComponent<TestAddStruct1>(id))
+  {
+    FAIL();
+  }
+
+  if (registry->EntityHasComponent<TestAddStruct2>(id))
   {
     FAIL();
   }

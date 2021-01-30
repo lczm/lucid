@@ -4,6 +4,11 @@
 #include "component.h"
 #include "engineComponents.h"
 
+// #include "cube.h"
+// #include "sphere.h"
+// #include "model.h"
+// #include "colliders.h"
+
 /*
  *  User Guide
  *  For every new component that is defined and that will be used within
@@ -22,6 +27,19 @@
   MOVE_COMPONENT(ColliderCube, search, from, to, index)   \
   MOVE_COMPONENT(ColliderSphere, search, from, to, index) \
   MOVE_COMPONENT(ColliderPolygon, search, from, to, index)
+
+#define REMOVE_ALL_COMPONENTS(keyPtr, index)      \
+  REMOVE_COMPONENT(uint32_t, keyPtr, index)       \
+  REMOVE_COMPONENT(Transform, keyPtr, index)      \
+  REMOVE_COMPONENT(RigidBody, keyPtr, index)      \
+  REMOVE_COMPONENT(SoundEffect, keyPtr, index)    \
+  REMOVE_COMPONENT(Music, keyPtr, index)          \
+  REMOVE_COMPONENT(Cube, keyPtr, index)           \
+  REMOVE_COMPONENT(Sphere, keyPtr, index)         \
+  REMOVE_COMPONENT(Model, keyPtr, index)          \
+  REMOVE_COMPONENT(ColliderCube, keyPtr, index)   \
+  REMOVE_COMPONENT(ColliderSphere, keyPtr, index) \
+  REMOVE_COMPONENT(ColliderPolygon, keyPtr, index)
 
 #define REGISTER_COMPONENT_CREATE(archetype, keyPtr)         \
   CREATE_COMPONENT_VECTOR(uint32_t, archetype, keyPtr)       \

@@ -16,6 +16,7 @@
 #include "primitiveVertex.h"
 #include "engineComponents.h"
 #include "renderUtils.h"
+#include "raySolver.h"
 #include "colliders.h"
 
 #include "gtx/string_cast.hpp"
@@ -30,9 +31,9 @@ class RenderSystem : public System
  private:
   Renderer* renderer;
 
-// #if DEBUG
+  // #if DEBUG
   Camera* camera;
-// #endif
+  // #endif
 
   uint32_t fbo, rbo;
   uint32_t texture;
