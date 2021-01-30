@@ -148,8 +148,6 @@ static glm::vec3 GetRayDirection(Registry* registry, Input* input)
   float z = 1.0f;
 #endif
 
-  // lucid::Log(x, " ", y, " ", z);
-
   // normalized device coordinates
   glm::vec3 rayNds = glm::vec3(x, y, z);
 
