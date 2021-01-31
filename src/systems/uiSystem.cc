@@ -307,6 +307,7 @@ void UiSystem::InitializeImGuiWindows(float dt, Registry* registry, Input* input
 void UiSystem::DrawHierarchy(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Hierarchy");
+  DevDebug& devDebug = registry->GetResource<DevDebug>();
 
   // WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
   // widgetLayout.leftWindowWidth = ImGui::GetWindowWidth();
@@ -324,39 +325,41 @@ void UiSystem::DrawHierarchy(float dt, Registry* registry, Input* input)
 
   // TODO : The hierarchy is not drawn this way.
 
-  std::vector<void*> cubeComponents = registry->GetComponents<Cube>();
-  auto* cubes = static_cast<ComponentVector<Cube>*>(cubeComponents[0]);
+  static Entity selected = -1;
+  int i = 1;
 
-  std::vector<void*> sphereComponents = registry->GetComponents<Sphere>();
-  auto* spheres = static_cast<ComponentVector<Sphere>*>(sphereComponents[0]);
+  registry->GetComponentsIter<Cube>()->EachWithID([&](Entity id, Cube& cube) {
+    std::string modelName = "Cube (" + std::to_string(i) + ")";
+    i++;
+    if (ImGui::Selectable(modelName.c_str(), selected == id))
+    {
+      selected = id;
+      devDebug.activeEntity = id;
+    }
+  });
 
-  std::vector<void*> modelComponents = registry->GetComponents<Model>();
-  auto* models = static_cast<ComponentVector<Model>*>(modelComponents[0]);
+  i = 1;
+  registry->GetComponentsIter<Sphere>()->EachWithID([&](Entity id, Sphere& cube) {
+    std::string modelName = "Sphere (" + std::to_string(i) + ")";
+    i++;
+    if (ImGui::Selectable(modelName.c_str(), selected == id))
+    {
+      selected = id;
+      devDebug.activeEntity = id;
+    }
+  });
 
-  // Draw the cubes
-  for (size_t i = 0; i < cubes->Size(); i++)
-  {
-    std::string modelName = "Cube : " + std::to_string(i);
-    ImGui::Text(modelName.c_str());
-  }
+  i = 1;
+  registry->GetComponentsIter<Model>()->EachWithID([&](Entity id, Model& cube) {
+    std::string modelName = "Model (" + std::to_string(i) + ")";
+    i++;
+    if (ImGui::Selectable(modelName.c_str(), selected == id))
+    {
+      selected = id;
+      devDebug.activeEntity = id;
+    }
+  });
 
-  for (size_t i = 0; i < spheres->Size(); i++)
-  {
-    std::string modelName = "Sphere : " + std::to_string(i);
-    ImGui::Text(modelName.c_str());
-  }
-
-  for (size_t i = 0; i < models->Size(); i++)
-  {
-    std::string modelName = "Model : " + std::to_string(i);
-    ImGui::Text(modelName.c_str());
-  }
-
-  delete cubes;
-  delete spheres;
-  delete models;
-
-  // ImGui::Text("This is the scene hierarchy");
   UpdateInputActiveWindow(input, WindowType::Hierarchy);
   ImGui::End();
 }
