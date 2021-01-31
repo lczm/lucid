@@ -307,7 +307,6 @@ void UiSystem::InitializeImGuiWindows(float dt, Registry* registry, Input* input
 void UiSystem::DrawHierarchy(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Hierarchy");
-  DevDebug& devDebug = registry->GetResource<DevDebug>();
 
   // TODO : This can be improved upon
   // For now just take anything that has a transform component attached to it
@@ -320,6 +319,7 @@ void UiSystem::DrawHierarchy(float dt, Registry* registry, Input* input)
 
   // TODO : The hierarchy is not drawn this way.
 
+  DevDebug& devDebug = registry->GetResource<DevDebug>();
   static Entity selected = -1;
   int i = 1;
 
@@ -722,6 +722,15 @@ void UiSystem::DrawInspectorCubeComponent(Registry* registry, DevDebug& devDebug
   {
     if (ImGui::CollapsingHeader("Color", treeNodeFlags))
     {
+      if (ImGui::BeginPopupContextItem("Cube color context menu"))
+      {
+        if (ImGui::MenuItem("Remove Component"))
+        {
+          registry->RemoveComponent<RigidBody>(devDebug.activeEntity);
+        }
+
+        ImGui::EndPopup();
+      }
       Cube& cube = registry->GetComponent<Cube>(devDebug.activeEntity);
       ImGui::ColorEdit3("Color", &(cube.color.x));
     }
@@ -736,6 +745,15 @@ void UiSystem::DrawInspectorSphereComponent(Registry* registry, DevDebug& devDeb
   {
     if (ImGui::CollapsingHeader("Color", treeNodeFlags))
     {
+      if (ImGui::BeginPopupContextItem("Sphere color context menu"))
+      {
+        if (ImGui::MenuItem("Remove Component"))
+        {
+          registry->RemoveComponent<RigidBody>(devDebug.activeEntity);
+        }
+
+        ImGui::EndPopup();
+      }
       Sphere& sphere = registry->GetComponent<Sphere>(devDebug.activeEntity);
       ImGui::ColorEdit3("Color", &(sphere.color.x));
     }
@@ -750,6 +768,16 @@ void UiSystem::DrawInspectorTransformComponent(Registry* registry, DevDebug& dev
   {
     if (ImGui::CollapsingHeader("Transform", treeNodeFlags))
     {
+      // right click to remove component
+      if (ImGui::BeginPopupContextItem("Transform context menu"))
+      {
+        if (ImGui::MenuItem("Remove Component"))
+        {
+          registry->RemoveComponent<RigidBody>(devDebug.activeEntity);
+        }
+
+        ImGui::EndPopup();
+      }
       Transform& transform = registry->GetComponent<Transform>(devDebug.activeEntity);
       ImGui::InputFloat("x position", &(transform.position.x), 0.25f, 1.0f);
       ImGui::InputFloat("y position", &(transform.position.y), 0.25f, 1.0f);
@@ -774,20 +802,9 @@ void UiSystem::DrawInspectorRigidBodyComponent(Registry* registry, DevDebug& dev
   {
     if (ImGui::CollapsingHeader("Rigid Body", treeNodeFlags))
     {
-      RigidBody& rigidBody = registry->GetComponent<RigidBody>(devDebug.activeEntity);
-      ImGui::InputFloat("x velocity", &(rigidBody.velocity.x), 0.25f, 1.0f);
-      ImGui::InputFloat("y velocity", &(rigidBody.velocity.y), 0.25f, 1.0f);
-      ImGui::InputFloat("z velocity", &(rigidBody.velocity.z), 0.25f, 1.0f);
-      ImGui::Checkbox("Apply gravity", &(rigidBody.applyGravity));
-
       // right click to remove component
       if (ImGui::BeginPopupContextItem("rigidbody context menu"))
       {
-        if (input->activeWindow != WindowType::Inspector)
-        {
-          ImGui::SetWindowFocus("Inspector");
-          input->activeWindow = WindowType::Inspector;
-        }
         if (ImGui::MenuItem("Remove Component"))
         {
           registry->RemoveComponent<RigidBody>(devDebug.activeEntity);
@@ -795,6 +812,11 @@ void UiSystem::DrawInspectorRigidBodyComponent(Registry* registry, DevDebug& dev
 
         ImGui::EndPopup();
       }
+      RigidBody& rigidBody = registry->GetComponent<RigidBody>(devDebug.activeEntity);
+      ImGui::InputFloat("x velocity", &(rigidBody.velocity.x), 0.25f, 1.0f);
+      ImGui::InputFloat("y velocity", &(rigidBody.velocity.y), 0.25f, 1.0f);
+      ImGui::InputFloat("z velocity", &(rigidBody.velocity.z), 0.25f, 1.0f);
+      ImGui::Checkbox("Apply gravity", &(rigidBody.applyGravity));
     }
     ImGui::Separator();
   }
