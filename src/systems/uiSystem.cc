@@ -911,7 +911,7 @@ void UiSystem::UpdateGizmoType(Registry* registry, Input* input)
 void UiSystem::UpdateInputActiveWindow(Input* input, WindowType windowType)
 {
   // if (ImGui::IsWindowFocused() && input->activeWindow != windowType)
-  if (input->IsMouseLDown() && ImGui::IsWindowHovered() && input->activeWindow != windowType)
+  if (ImGui::IsWindowFocused() && ImGui::IsWindowHovered() && input->activeWindow != windowType)
   {
     input->activeWindow = windowType;
   }
