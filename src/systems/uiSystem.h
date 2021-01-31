@@ -31,6 +31,7 @@
 #include "nfd.h"
 #include "uiUtils.h"
 #include "serialize.h"
+#include "systemUtils.h"
 
 namespace fs = std::filesystem;
 
