@@ -85,8 +85,7 @@ static void InitArchetypes(Registry* registry)
   registry->RegisterArchetype<Sphere, Transform>();
   registry->RegisterArchetype<Cube, Transform>();
 
-  registry->RegisterArchetype<SoundEffect, Transform>();
-  registry->RegisterArchetype<Music>();
+  registry->RegisterArchetype<Sound, Transform>();
 
   registry->RegisterArchetype<RigidBodyConfiguration>();
 
@@ -152,7 +151,7 @@ static void InitEngineComponents(Registry* registry)
   // for the sphere and cubes to use different shaders, then simplify the shader names.
   shaderResource.sphereShader.CreateShader(PRIMITIVE_INSTANCED_SHADER, PRIMITIVE_FRAGMENT_SHADER);
 
-// #if DEBUG
+  // #if DEBUG
   // Entity sceneRenderID = registry->GetAvailableEntityId();
   // Entity devDebugID = registry->GetAvailableEntityId();
   // Entity widgetLayoutID = registry->GetAvailableEntityId();
@@ -167,5 +166,5 @@ static void InitEngineComponents(Registry* registry)
   registry->CreateResource<DevDebug>();
   registry->CreateResource<WidgetLayout>();
   registry->CreateResource<RendererStats>();
-// #endif
+  // #endif
 }
