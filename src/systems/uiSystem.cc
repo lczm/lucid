@@ -309,11 +309,6 @@ void UiSystem::DrawHierarchy(float dt, Registry* registry, Input* input)
   ImGui::Begin("Hierarchy");
   DevDebug& devDebug = registry->GetResource<DevDebug>();
 
-  // WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
-  // widgetLayout.leftWindowWidth = ImGui::GetWindowWidth();
-
-  // if (devDebug.changeFocusWindow == WindowType::Hierarchy) ImGui::SetWindowFocus();
-
   // TODO : This can be improved upon
   // For now just take anything that has a transform component attached to it
 
@@ -367,14 +362,6 @@ void UiSystem::DrawHierarchy(float dt, Registry* registry, Input* input)
 void UiSystem::DrawAssets(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Assets");
-
-  // WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
-  //// if (devDebug.changeFocusWindow == WindowType::Assets) ImGui::SetWindowFocus();
-
-  // ImVec2 wsize = ImGui::GetWindowSize();
-
-  // widgetLayout.bottomWindowWidth = wsize.x;
-  // widgetLayout.bottomWindowHeight = wsize.y;
 
   UpdateInputActiveWindow(input, WindowType::Assets);
   ImGui::End();
@@ -492,12 +479,6 @@ void UiSystem::DrawGameCamera(float dt, Registry* registry, Input* input)
 
   SceneRender sceneRender = registry->GetResource<SceneRender>();
   DevDebug& devDebug = registry->GetResource<DevDebug>();
-  // WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
-
-  //// if (devDebug.changeFocusWindow == WindowType::Scene) ImGui::SetWindowFocus();
-
-  // widgetLayout.sceneWidth = wsize.x;
-  // widgetLayout.sceneHeight = wsize.y;
 
   // This should draw from sceneRender fbo that is being rendered through the gameScene camera
   // Flip V in the UV
@@ -703,13 +684,6 @@ void UiSystem::DrawToolBar(float dt, Registry* registry, Input* input)
     camera.TranslateInWorld({0.0f, 1.0f, 20.0f});
   }
 
-  // WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
-  // widgetLayout.topWindowHeight = ImGui::GetWindowWidth();
-  // widgetLayout.topWindowHeight = ImGui::GetWindowHeight();
-
-  // DevDebug& devDebug = registry->GetComponent<DevDebug>();
-  // if (devDebug.changeFocusWindow == WindowType::Animator) ImGui::SetWindowFocus();
-
   UpdateInputActiveWindow(input, WindowType::ToolBar);
   ImGui::End();
 }
@@ -878,21 +852,10 @@ void UiSystem::HandleGizmoInput(Registry* registry, Input* input)
 
 void UiSystem::UpdateSceneWindow(Registry* registry, Input* input)
 {
-  // WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
-
   if (input->IsKeyDown('7'))
   {
     drawSceneOnly = !drawSceneOnly;
     input->SetKeyOff('7');
-    if (drawSceneOnly)
-    {
-      // widgetLayout.bottomWindowHeight = 0;
-      // widgetLayout.bottomWindowWidth = 0;
-      // widgetLayout.leftWindowHeight = 0;
-      // widgetLayout.leftWindowWidth = 0;
-      // widgetLayout.rightWindowHeight = 0;
-      // widgetLayout.rightWindowWidth = 0;
-    }
   }
 }
 
@@ -910,7 +873,6 @@ void UiSystem::UpdateGizmoType(Registry* registry, Input* input)
 
 void UiSystem::UpdateInputActiveWindow(Input* input, WindowType windowType)
 {
-  // if (ImGui::IsWindowFocused() && input->activeWindow != windowType)
   if (ImGui::IsWindowFocused() && ImGui::IsWindowHovered() && input->activeWindow != windowType)
   {
     input->activeWindow = windowType;
