@@ -469,43 +469,35 @@ void RenderSystem::DrawAllLines(float dt, Registry* registry, Input* input)
 void RenderSystem::DrawAllModels(float dt, Registry* registry, Input* input)
 {
   ShaderResource shaderResource = registry->GetResource<ShaderResource>();
-
   float currentTime = static_cast<float>(glfwGetTime());
 
-  // shaderResource.modelAnimatedShader.Bind();
-  // shaderResource.modelAnimatedShader.SetUniformMatFloat4("projection", camera->GetProjection());
-  // shaderResource.modelAnimatedShader.SetUniformMatFloat4("view", camera->GetView());
-
-  shaderResource.modelShader.Bind();
-  shaderResource.modelShader.SetUniformMatFloat4("projection", camera->GetProjection());
-  shaderResource.modelShader.SetUniformMatFloat4("view", camera->GetView());
+  shaderResource.modelAnimatedShader.Bind();
+  shaderResource.modelAnimatedShader.SetUniformMatFloat4("projection", camera->GetProjection());
+  shaderResource.modelAnimatedShader.SetUniformMatFloat4("view", camera->GetView());
 
   registry->GetComponentsIter<Model, Transform>()->Each([&](Model& model, Transform& transform) {
-    // if (model.hasAnimations && model.toAnimate)
-    // {
-    //   auto time = static_cast<float>(currentTime * model.scene->mAnimations[0]->mTicksPerSecond);
-    //   // TODO : UpdateBoneMatrices should take in some form of animation string tag
-    //   // and it should be auto converted into animationId within the model itself.
-    //   model.UpdateBoneMatrices(time, 0, model.scene->mRootNode, glm::mat4(1.0f));
-    //   shaderResource.modelAnimatedShader.SetUniformMatFloat4("boneMatrices", 100,
-    //                                                          model.boneMatrices);
-    // }
-    // else
-    // {
-    //   shaderResource.modelAnimatedShader.SetUniformMatFloat4("boneMatrices", 100,
-    //                                                          defaultBoneMatrices);
-    // }
+    if (model.hasAnimations && model.toAnimate)
+    {
+      auto time = static_cast<float>(currentTime * model.scene->mAnimations[0]->mTicksPerSecond);
+      // TODO : UpdateBoneMatrices should take in some form of animation string tag
+      // and it should be auto converted into animationId within the model itself.
+      model.UpdateBoneMatrices(time, 0, model.scene->mRootNode, glm::mat4(1.0f));
+      shaderResource.modelAnimatedShader.SetUniformMatFloat4("boneMatrices", 100,
+                                                             model.boneMatrices);
+    }
+    else
+    {
+      shaderResource.modelAnimatedShader.SetUniformMatFloat4("boneMatrices", 100,
+                                                             defaultBoneMatrices);
+    }
 
     auto modelMatrix = GetModelMatrix(transform);
 
-    shaderResource.modelShader.SetUniformMatFloat4("model", modelMatrix);
-    // shaderResource.modelAnimatedShader.SetUniformMatFloat4("model", modelMatrix);
-    renderer->DrawModel(model, shaderResource.modelShader);
-    // renderer->DrawModel(model, shaderResource.modelAnimatedShader);
+    shaderResource.modelAnimatedShader.SetUniformMatFloat4("model", modelMatrix);
+    renderer->DrawModel(model, shaderResource.modelAnimatedShader);
   });
 
-  shaderResource.modelShader.Unbind();
-  // shaderResource.modelAnimatedShader.Unbind();
+  shaderResource.modelAnimatedShader.Unbind();
 }
 
 void RenderSystem::DrawAllCubes(float dt, Registry* registry, Input* input)

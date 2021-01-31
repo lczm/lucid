@@ -19,7 +19,7 @@ void main()
 {
   TexCoords = aTexCoords;
 
-  mat4 boneTransform = mat4(0.0);
+  mat4 boneTransform = mat4(1.0);
   boneTransform += boneMatrices[boneIds[0]] * weights[0];
   boneTransform += boneMatrices[boneIds[1]] * weights[1];
   boneTransform += boneMatrices[boneIds[2]] * weights[2];

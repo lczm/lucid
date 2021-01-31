@@ -4,11 +4,6 @@
 #include "component.h"
 #include "engineComponents.h"
 
-// #include "cube.h"
-// #include "sphere.h"
-// #include "model.h"
-// #include "colliders.h"
-
 /*
  *  User Guide
  *  For every new component that is defined and that will be used within
