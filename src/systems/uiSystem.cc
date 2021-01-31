@@ -161,7 +161,7 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
       if (result == NFD_OKAY)
       {
         displayDirectoryError = false;
-        strcpy(directoryPath, createProjectPath);
+        strcpy_s(directoryPath, createProjectPath);
         NFD_Quit();
       }
       else if (result == NFD_CANCEL)
@@ -187,8 +187,8 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
           folder = ("systems");
           fs::path systemPath = path / projectNameFolder / folder;
           fs::create_directory(systemPath);
-          strcpy(projectName, "");
-          strcpy(directoryPath, "");
+          strcpy_s(projectName, "");
+          strcpy_s(directoryPath, "");
           displayNameError = false;
           displayDirectoryError = false;
           ImGui::CloseCurrentPopup();
@@ -206,8 +206,8 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
     ImGui::SameLine();
     if (ImGui::Button("Cancel"))
     {
-      strcpy(projectName, "");
-      strcpy(directoryPath, "");
+      strcpy_s(projectName, "");
+      strcpy_s(directoryPath, "");
       displayNameError = false;
       displayDirectoryError = false;
       ImGui::CloseCurrentPopup();
