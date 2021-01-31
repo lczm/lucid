@@ -42,9 +42,9 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window)
   // Please remove this in the future, for batch rendering tests only
   InitializeManyCubes();
 
-  #if DEBUG
-    InitializeSceneGridLines();
-  #endif
+#if DEBUG
+  InitializeSceneGridLines();
+#endif
 
   // TODO : This should be abstracted out into a user system
   // Demo pong
@@ -112,13 +112,6 @@ void Lucid::Update()
 
 void Lucid::InitializeModelEntities()
 {
-  // {
-  //   Entity gameCameraId = registry->GetAvailableEntityId();
-  //   registry->CreateEntity<Model, Transform>(gameCameraId);
-  //   registry->AddComponentData<Model>(gameCameraId, Model(GAME_CAMERA_MODEL));
-  //   registry->GetComponent<Transform>(gameCameraId).scale *= 15.0f;
-  // }
-
   {
     Entity kingBooId = registry->GetAvailableEntityId();
     registry->CreateEntity<Model, Transform, ColliderCube>(kingBooId);
@@ -149,6 +142,18 @@ void Lucid::InitializeModelEntities()
     registry->GetComponent<Model>(cheeseCakeId).toAnimate = true;
     registry->GetComponent<Transform>(cheeseCakeId).position = {-3.0f, 0.0f, 0.0f};
     registry->GetComponent<Transform>(cheeseCakeId).scale /= 150.0f;
+  }
+
+  // In-game camera
+  {
+    Entity cameraId = registry->GetAvailableEntityId();
+    registry->CreateEntity<Model, Transform>(cameraId);
+    registry->AddComponentData<Model>(cameraId, Model(CAMERA_MODEL));
+    registry->GetComponent<Transform>(cameraId).position = {0.0f, 0.0f, 15.0f};
+    registry->GetComponent<Transform>(cameraId).scale /= 80.0f;
+    // TODO : Rotate the camera to be correct
+    // registry->GetComponent<Transform>(cameraId).rotation = RotateQuat()
+    // RotateTransform(registry->GetComponent<Transform>(cameraId), 90.0f, {1.0f, 0.0f, 0.0f});
   }
 }
 

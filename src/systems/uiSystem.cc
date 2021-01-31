@@ -114,6 +114,17 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
       {
         SerializeAllOut(registry);
       }
+
+      if (input->IsKeyDown(GLFW_KEY_F3))
+      {
+        CompileUserGame();
+      }
+
+      if (input->IsKeyDown(GLFW_KEY_F4))
+      {
+        RunUserGame();
+      }
+
       if (input->IsKeyDown(GLFW_KEY_F5))
       {
         SerializeAllOut(registry);

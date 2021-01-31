@@ -45,6 +45,13 @@
     newIndexMapping = newVectorPtr.size() - 1;                                                    \
   }
 
+#define REMOVE_COMPONENT(T, keyPtr, index)                           \
+  if (keyPtr.find(GetHashCode<T>()) != keyPtr.end())                 \
+  {                                                                  \
+    auto& vectorPtr = GetVectorFromArchetypeComponentMap<T>(keyPtr); \
+    vectorPtr.erase(vectorPtr.begin() + index);                      \
+  }
+
 #define SERIALIZE_COMPONENT_OUT(T, entity)                            \
   if (registry->EntityHasComponent<T>(entity))                        \
   {                                                                   \
@@ -458,7 +465,7 @@ class Registry
     // Get entity archetype
     if (entityComponentMap.find(id) == entityComponentMap.end())
     {
-      std::cout << "Entity id : " << id << "  has not been created" << std::endl;
+      std::cout << "(Warning) : Entity id : " << id << "  has not been created" << std::endl;
       return false;
     }
     Archetype archetype = entityComponentMap[id];
@@ -503,6 +510,15 @@ class Registry
       return true;
     }
     return false;
+  }
+
+  bool EntityIdExists(Entity id)
+  {
+    if (entityIndexMap.find(id) == entityIndexMap.end())
+    {
+      return false;
+    }
+    return true;
   }
 
   template <typename Component>
@@ -610,8 +626,34 @@ class Registry
     entityIndexMap[id] = entityVectorPtr.size() - 1;
   }
 
+  template <typename Component>
   void DeleteEntity(Entity id)
   {
+    // Get the archetype the entity belongs to
+    Archetype archetype = entityComponentMap[id];
+    // Get the entityIndex, this to remove the components later on
+    uint32_t entityIndex = entityIndexMap[id];
+
+    auto& keyPtr = GetArchetypeComponentMap(archetype);
+
+    // Remove the entity from the entityComponentMap
+    entityComponentMap.erase(id);
+
+    // Remove the entity from entityIndexMap
+    entityIndexMap.erase(id);
+
+    // Remove the entity from the archetypeComponentMap
+    REMOVE_ALL_COMPONENTS(keyPtr, entityIndex);
+
+    // Realign the other entity ids in the archetype
+    auto& idComponentVector = GetVectorFromArchetypeComponentMap<uint32_t>(keyPtr);
+    for (uint32_t& existingId : idComponentVector)
+    {
+      if (existingId > entityIndex && existingId != id)
+      {
+        entityIndexMap[existingId]--;
+      }
+    }
   }
 
   // Get all entity ids

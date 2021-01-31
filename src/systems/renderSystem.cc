@@ -19,6 +19,7 @@ RenderSystem::~RenderSystem()
 
 void RenderSystem::Update(float dt, Registry* registry, Input* input)
 {
+#if DEBUG
   // Temporary gateway for mouse picking
   HandleMousePick(dt, registry, input);
   HandleMousePan(dt, registry, input);
@@ -28,7 +29,6 @@ void RenderSystem::Update(float dt, Registry* registry, Input* input)
   // Start the update call, so that the draw calls are reseted properly
   renderer->ClearRendererStats();
 
-#if DEBUG
   glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 #endif
 
@@ -38,25 +38,27 @@ void RenderSystem::Update(float dt, Registry* registry, Input* input)
 #if DEBUG
   SceneRender& sceneRender = registry->GetResource<SceneRender>();
   sceneRender.textureID = texture;
-#endif
-
   DevDebug& devDebug = registry->GetResource<DevDebug>();
+#endif
 
   // TODO : wireframe drawing should have its own shaders
   // Draw wireframe
   // glLineWidth(3.0f);
+
+#if DEBUG
   if (devDebug.drawWireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+#endif
 
   DrawAllLines(dt, registry, input);
   DrawAllModels(dt, registry, input);
   DrawAllCubes(dt, registry, input);
   DrawAllSpheres(dt, registry, input);
-  DrawActiveEntityBoundingBox(dt, registry, input);
 
+#if DEBUG
+  DrawActiveEntityBoundingBox(dt, registry, input);
   if (devDebug.drawColliders) DrawAllColldiers(dt, registry, input);
   if (devDebug.drawWireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-#if DEBUG
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 #endif
 }
@@ -444,7 +446,7 @@ void RenderSystem::DrawAllLines(float dt, Registry* registry, Input* input)
   shaderResource.lineShader.Unbind();
 
   // Draw grid lines
-// #if DEBUG
+  // #if DEBUG
   shaderResource.lineShader.Bind();
   shaderResource.lineShader.SetUniformMatFloat4("projection", camera->GetProjection());
   shaderResource.lineShader.SetUniformMatFloat4("view", camera->GetView());
@@ -463,22 +465,17 @@ void RenderSystem::DrawAllLines(float dt, Registry* registry, Input* input)
   renderer->FlushBatch(primitiveBatchIds, DrawType::Line);
 
   shaderResource.lineShader.Unbind();
-// #endif
+  // #endif
 }
 
 void RenderSystem::DrawAllModels(float dt, Registry* registry, Input* input)
 {
   ShaderResource shaderResource = registry->GetResource<ShaderResource>();
-
   float currentTime = static_cast<float>(glfwGetTime());
 
   shaderResource.modelAnimatedShader.Bind();
   shaderResource.modelAnimatedShader.SetUniformMatFloat4("projection", camera->GetProjection());
   shaderResource.modelAnimatedShader.SetUniformMatFloat4("view", camera->GetView());
-
-  // shaderResource.modelShader.Bind();
-  // shaderResource.modelShader.SetUniformMatFloat4("projection",camera->GetProjection());
-  // shaderResource.modelShader.SetUniformMatFloat4("view",camera->GetView());
 
   registry->GetComponentsIter<Model, Transform>()->Each([&](Model& model, Transform& transform) {
     if (model.hasAnimations && model.toAnimate)
@@ -498,13 +495,10 @@ void RenderSystem::DrawAllModels(float dt, Registry* registry, Input* input)
 
     auto modelMatrix = GetModelMatrix(transform);
 
-    // shaderResource.modelShader.SetUniformMatFloat4("model", modelMatrix);
     shaderResource.modelAnimatedShader.SetUniformMatFloat4("model", modelMatrix);
-    // renderer->DrawModel(model, shaderResource.modelShader);
     renderer->DrawModel(model, shaderResource.modelAnimatedShader);
   });
 
-  // shaderResource.modelShader.Unbind();
   shaderResource.modelAnimatedShader.Unbind();
 }
 

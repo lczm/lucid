@@ -18,6 +18,6 @@ python ./bin/build_deps.py
 ### Build Lucid
 ```
 cd build
-cmake -GNinja ..
+cmake -GNinja -DDEBUG=1 -DRELEASE=0 -DCMAKE_BUILD_TYPE=Release ..
 ninja lucid
 ```

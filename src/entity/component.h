@@ -18,6 +18,10 @@
    value.
 */
 
+struct Deleter
+{
+};
+
 struct Transform
 {
   glm::vec3 position = glm::vec3(0.0f);
