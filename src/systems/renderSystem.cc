@@ -504,8 +504,8 @@ void RenderSystem::DrawAllModels(float dt, Registry* registry, Input* input)
     // renderer->DrawModel(model, shaderResource.modelAnimatedShader);
   });
 
-  // shaderResource.modelShader.Unbind();
-  shaderResource.modelAnimatedShader.Unbind();
+  shaderResource.modelShader.Unbind();
+  // shaderResource.modelAnimatedShader.Unbind();
 }
 
 void RenderSystem::DrawAllCubes(float dt, Registry* registry, Input* input)

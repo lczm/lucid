@@ -745,19 +745,20 @@ TEST_F(TestsGL, DeleteEntity)
   Registry* registry = new Registry();
 
   Entity id = registry->GetAvailableEntityId();
-  registry->CreateEntity<TestAddStruct1, TestAddStruct2>(id);
+  registry->CreateEntity<Transform>(id);
 
-  if (!registry->EntityHasComponent<TestAddStruct1>(id))
-  {
-    FAIL();
-  }
-
-  if (!registry->EntityHasComponent<TestAddStruct2>(id))
+  if (!registry->EntityHasComponent<Transform>(id))
   {
     FAIL();
   }
 
   registry->DeleteEntity<Deleter>(id);
+
+  std::vector<void*> components = registry->GetComponents<Transform>();
+  ComponentVector<Transform>* transformComponents =
+      static_cast<ComponentVector<Transform>*>(components[0]);
+
+  ASSERT_EQ(transformComponents->Size(), 0);
 
   if (registry->EntityIdExists(id))
   {
