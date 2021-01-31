@@ -78,7 +78,7 @@ class UiSystem : public System
       Registry* registry, DevDebug& devDebug,
       ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen);
   void DrawInspectorRigidBodyComponent(
-      Registry* registry, DevDebug& devDebug,
+      Registry* registry, DevDebug& devDebug, Input* input,
       ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen);
 
   void HandleGizmoInput(Registry* registry, Input* input);

@@ -395,8 +395,10 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
 
   HandleGizmoInput(registry, input);
 
-  UpdateWindowFocus(registry, WindowType::Inspector, "Inspector", input, WindowType::Scene);
-  UpdateWindowFocus(registry, WindowType::Scene, "Scene", input);
+  // UpdateWindowFocus(registry, WindowType::Inspector, "Inspector", input, WindowType::Scene);
+  // UpdateWindowFocus(registry, WindowType::Scene, "Scene", input);
+
+  UpdateWindowFocus(registry, WindowType::Inspector, "Inspector", input);
 
   UpdateInputActiveWindow(input, WindowType::Scene);
   ImGui::EndChild();
@@ -548,7 +550,7 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
   DrawInspectorCubeComponent(registry, devDebug);
   DrawInspectorSphereComponent(registry, devDebug);
   DrawInspectorTransformComponent(registry, devDebug);
-  DrawInspectorRigidBodyComponent(registry, devDebug);
+  DrawInspectorRigidBodyComponent(registry, devDebug, input);
 
   if (ImGui::CollapsingHeader("Add Component", treeNodeFlags))
   {
@@ -765,7 +767,7 @@ void UiSystem::DrawInspectorTransformComponent(Registry* registry, DevDebug& dev
   }
 }
 
-void UiSystem::DrawInspectorRigidBodyComponent(Registry* registry, DevDebug& devDebug,
+void UiSystem::DrawInspectorRigidBodyComponent(Registry* registry, DevDebug& devDebug, Input* input,
                                                ImGuiTreeNodeFlags treeNodeFlags)
 {
   if (registry->EntityHasComponent<RigidBody>(devDebug.activeEntity))
@@ -779,20 +781,20 @@ void UiSystem::DrawInspectorRigidBodyComponent(Registry* registry, DevDebug& dev
       ImGui::Checkbox("Apply gravity", &(rigidBody.applyGravity));
 
       // right click to remove component
-      // if (ImGui::BeginPopupContextItem("rigidbody context menu"))
-      // {
-      //   if (input->activeWindow != WindowType::Inspector)
-      //   {
-      //     ImGui::SetWindowFocus("Inspector");
-      //     input->activeWindow = WindowType::Inspector;
-      //   }
-      //   if (ImGui::MenuItem("Remove Component"))
-      //   {
-      //     registry->RemoveComponent<RigidBody>(devDebug.activeEntity);
-      //   }
+      if (ImGui::BeginPopupContextItem("rigidbody context menu"))
+      {
+        if (input->activeWindow != WindowType::Inspector)
+        {
+          ImGui::SetWindowFocus("Inspector");
+          input->activeWindow = WindowType::Inspector;
+        }
+        if (ImGui::MenuItem("Remove Component"))
+        {
+          registry->RemoveComponent<RigidBody>(devDebug.activeEntity);
+        }
 
-      //   ImGui::EndPopup();
-      // }
+        ImGui::EndPopup();
+      }
     }
     ImGui::Separator();
   }

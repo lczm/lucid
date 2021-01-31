@@ -120,7 +120,8 @@ bool Input::IsKeyDown(int key)
   // }
 
 #if DEBUG
-  if (activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera)
+  if (activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera ||
+      activeWindow == WindowType::Inspector)
   {
     return keys[key];
   }
