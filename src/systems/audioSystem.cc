@@ -2,50 +2,28 @@
 
 namespace AudioVariables
 {
-SoundDevice* sd = SoundDevice::Get();
-SoundEffectsPlayer sePlayer;
-}  // namespace AudioVariables
+SoundEffectsPlayer player;
+}
 
 AudioSystem::AudioSystem()
 {
-  gruntCooldown = 2;
+  sd = SoundDevice::Get();
+  seLibrary = SoundEffectsLibrary::Get();
 }
 
 AudioSystem::~AudioSystem() = default;
 
 void AudioSystem::Update(float dt, Registry* registry, Input* input)
 {
-  // std::vector<void*> seComponents = registry->GetComponents<SoundEffect, Transform>();
-  // std::vector<void*> musicComponents = registry->GetComponents<Music>();
-
-  // auto* soundEffects = static_cast<ComponentVector<SoundEffect>*>(seComponents[0]);
-  // auto* soundEffectsTransform = static_cast<ComponentVector<Transform>*>(seComponents[1]);
-  // auto* music = static_cast<ComponentVector<Music>*>(musicComponents[0]);
-
-  //// gruntcooldown just so it doesnt play a million times a second
-  // gruntCooldown += dt;
-  // if (gruntCooldown > 1) {
-  //  // Play sound effects
-  //  for (size_t i = 0; i < soundEffects->Size(); i++) {
-  //    SoundEffect& se = soundEffects->At(i);
-  //    Transform& seTransform = soundEffectsTransform->At(i);
-  //    int sound = SoundEffectsLibrary::Get()->Load(se.filePath);
-  //    AudioVariables::sePlayer.SetLooping(se.looping);
-  //    AudioVariables::sePlayer.SetPosition(seTransform.position.x, seTransform.position.y,
-  //    seTransform.position.z); AudioVariables::sePlayer.Play(sound);
-  //    // TODO: remove component once its been implemented;
-  //    gruntCooldown = 0;
-  //  }
-  //}
-
-  // Play Music
-  // for (size_t i = 0; i < music->Size(); i++) {
-  //  Music& m = music->At(i);
-  //  static MusicBuffer musicToPlay(m.filePath);
-  //  if (!musicToPlay.IsPlaying()) {
-  //    musicToPlay.Play();
-  //  } else {
-  //    musicToPlay.UpdateBufferStream();
-  //  }
-  //}
+  registry->GetComponentsIter<Sound, Transform>()->Each([&](Sound& sound, Transform& transform) {
+    if (sound.play)
+    {
+      ALuint soundBuffer = seLibrary->Load(sound.filePath);
+      AudioVariables::player.SetPosition(transform.position.x, transform.position.y,
+                                         transform.position.z);
+      AudioVariables::player.SetLooping(sound.looping);
+      AudioVariables::player.Play(soundBuffer);
+      sound.play = false;
+    }
+  });
 }

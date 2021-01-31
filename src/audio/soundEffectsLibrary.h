@@ -18,4 +18,5 @@ class SoundEffectsLibrary
 
   ALuint Load(const char* filename);
   bool UnLoad(const ALuint& bufferId);
+  std::vector<ALuint> GetSoundBuffers();
 };

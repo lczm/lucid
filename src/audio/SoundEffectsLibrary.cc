@@ -6,6 +6,11 @@ SoundEffectsLibrary* SoundEffectsLibrary::Get()
   return sndbuf;
 }
 
+std::vector<ALuint> SoundEffectsLibrary::GetSoundBuffers()
+{
+  return soundEffectBuffers;
+}
+
 ALuint SoundEffectsLibrary::Load(const char* filename)
 {
   ALenum err, format;
