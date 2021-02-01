@@ -9,6 +9,7 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 #include "ImGuizmo.h"
+#include "uiUtils.h"
 
 /*
  * This is mainly structs used to pass data around in the various systems.
@@ -108,4 +109,9 @@ struct GameEngineState
 struct RigidBodyConfiguration
 {
   float gravityRate = 0.10f;
+};
+
+struct Workspace
+{
+  Node* projectRoot = NewNode("", true);
 };

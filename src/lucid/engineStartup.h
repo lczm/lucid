@@ -136,6 +136,7 @@ static void InitEngineComponents(Registry* registry)
   registry->CreateResource<GameEngineState>();
   registry->CreateResource<RigidBodyConfiguration>();
   registry->CreateResource<ShaderResource>();
+  registry->CreateResource<Workspace>();
 
   ShaderResource& shaderResource = registry->GetResource<ShaderResource>();
 
