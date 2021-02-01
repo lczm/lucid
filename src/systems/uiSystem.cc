@@ -631,6 +631,7 @@ void UiSystem::DrawDevDebug(float dt, Registry* registry, Input* input)
 void UiSystem::DrawDefaultAssets(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Default Assets");
+  UpdateInputActiveWindow(input, WindowType::DefaultAssets);
   for (size_t n = 0; n < defaultAssets.size(); n++)
   {
     ImGui::PushID(n);
@@ -640,6 +641,7 @@ void UiSystem::DrawDefaultAssets(float dt, Registry* registry, Input* input)
     // Set buttons as drag and drop source
     if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
     {
+      input->enableInput = false;
       // Set payload to carry the index of the asset
       // but will check for it using the DefaultAssetType enum which im not sure
       // if i shouldnt be doing it
@@ -649,7 +651,6 @@ void UiSystem::DrawDefaultAssets(float dt, Registry* registry, Input* input)
     }
     ImGui::PopID();
   }
-  UpdateInputActiveWindow(input, WindowType::DefaultAssets);
   ImGui::End();
 }
 
