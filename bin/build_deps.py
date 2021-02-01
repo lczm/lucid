@@ -36,7 +36,7 @@ def move_assimp():
     file = [file for file in files if ".dll" in file][0]
 
     src = os.path.join("./bin", file)
-    dest = os.path.join(os.pardir, "build")
+    dest = os.path.join(os.pardir, os.pardir, "build")
 
     shutil.copy(src, dest)
     print("Finished copying assimp.dll")
@@ -46,7 +46,7 @@ def move_assimp():
     file = [file for file in files if ".lib" in file][0]
 
     src = os.path.join("./lib", file)
-    dest = os.path.join(os.pardir, "build")
+    dest = os.path.join(os.pardir, os.pardir, "build")
 
     shutil.copy(src, dest)
     print("Finished copying assimp.lib")

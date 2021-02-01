@@ -12,6 +12,7 @@ _deps
 
 build
 gambit
+generic-build
 
 .vscode/
 tags*
