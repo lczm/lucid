@@ -82,6 +82,7 @@ class UiSystem : public System
       Registry* registry, DevDebug& devDebug, Input* input,
       ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen);
 
+  void DisableInputWhenDragScrollbar(Registry* registry, Input* input);
   void HandleGizmoInput(Registry* registry, Input* input);
   void UpdateSceneWindow(Registry* registry, Input* input);
   void UpdateGizmoType(Registry* registry, Input* input);

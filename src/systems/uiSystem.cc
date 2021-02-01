@@ -340,6 +340,7 @@ void UiSystem::InitializeImGuiWindows(float dt, Registry* registry, Input* input
 void UiSystem::DrawHierarchy(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Hierarchy");
+  DisableInputWhenDragScrollbar(registry, input);
 
   // TODO : This can be improved upon
   // For now just take anything that has a transform component attached to it
@@ -853,6 +854,19 @@ void UiSystem::DrawInspectorRigidBodyComponent(Registry* registry, DevDebug& dev
       ImGui::Checkbox("Apply gravity", &(rigidBody.applyGravity));
     }
     ImGui::Separator();
+  }
+}
+
+void UiSystem::DisableInputWhenDragScrollbar(Registry* registry, Input* input)
+{
+  ImGuiWindow* window = ImGui::GetCurrentWindow();
+  ImGuiID active_id = ImGui::GetActiveID();
+  bool any_scrollbar_active =
+      active_id && (active_id == ImGui::GetWindowScrollbarID(window, ImGuiAxis_X) ||
+                    active_id == ImGui::GetWindowScrollbarID(window, ImGuiAxis_Y));
+  if (any_scrollbar_active)
+  {
+    input->enableInput = false;
   }
 }
 
