@@ -121,12 +121,12 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
 
       if (input->IsKeyDown(GLFW_KEY_F3))
       {
-        CompileUserGame();
+        CompileUserGame(registry);
       }
 
       if (input->IsKeyDown(GLFW_KEY_F4))
       {
-        CompileUserGame();
+        CompileUserGame(registry);
         RunUserGame();
       }
 
@@ -208,6 +208,16 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
           folder = ("systems");
           fs::path systemPath = path / projectNameFolder / folder;
           fs::create_directory(systemPath);
+
+          // Copies over engineStartup.h
+          fs::path engineStartup = "../src/lucid/engineStartup.h";
+          fs::path userEngineStartup = path / projectNameFolder;
+          fs::copy(engineStartup, userEngineStartup);
+
+          // Copies over startup.h
+          fs::path startup = "../src/lucid/startup.h";
+          fs::path userStartup = path / projectNameFolder;
+          fs::copy(startup, userStartup);
 
           strcpy_s(projectName, "");
           strcpy_s(directoryPath, "");
