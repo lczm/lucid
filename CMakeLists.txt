@@ -36,6 +36,8 @@ file(GLOB_RECURSE HEADER_FILES_EXAMPLE examples/*.h)
 file(GLOB_RECURSE SOURCE_FILES_EXAMPLE examples/*.cc)
 
 list(FILTER SOURCE_FILES EXCLUDE REGEX "main.cc")
+list(FILTER HEADER_FILES EXCLUDE REGEX "startup.h")
+list(FILTER HEADER_FILES EXCLUDE REGEX "engineStartup.h")
 file(GLOB_RECURSE TEST_SOURCE_FILES tests/*.cc)
 
 # GLM
@@ -144,7 +146,9 @@ add_executable(lucid
     ${STB_IMAGE_HEADERS}
     ${GLAD_SOURCE_FILES}
     ${GLM_HEADERS}
-    ${IMGUIZMO_HEADERS})
+    ${IMGUIZMO_HEADERS}
+    "src/lucid/startup.h"
+    "src/lucid/engineStartup.h")
 
 # Link the executable to glfw
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
