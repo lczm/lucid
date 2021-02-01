@@ -50,7 +50,7 @@ static void InitSystems(Registry* registry)
   // Demo end
 
   registry->RegisterSystem(new RenderSystem(registry), "render", 5);
-  registry->RegisterSystem(new AudioSystem(), "audio", 6);
+  // registry->RegisterSystem(new AudioSystem(), "audio", 6);
 }
 
 // TODO : This will not be needed anymore, when in the future
