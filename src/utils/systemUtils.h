@@ -4,10 +4,12 @@
 
 static void CompileUserGame()
 {
-  system("cmake -GNinja -DDEBUG=0 -DRELEASE=1 -DCMAKE_BUILD_TYPE=Release .. && ninja generic");
+  system(
+      "cd ../generic-build && cmake -GNinja -DDEBUG=0 -DRELEASE=1 -DCMAKE_BUILD_TYPE=Release .. && "
+      "ninja generic");
 }
 
 static void RunUserGame()
 {
-  system("generic");
+  system("cd../generic-build && generic");
 }
