@@ -72,6 +72,8 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
           if (result == NFD_OKAY)
           {
             projectRoot = NewNode(projectPath, true);
+            Workspace& workspace = registry->GetResource<Workspace>();
+            workspace.projectRoot = projectRoot;
             AddFilesAndDirectoriesToRoot(projectRoot);
             SortFilesAndDirectories(projectRoot);
             NFD_Quit();
