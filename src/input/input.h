@@ -14,6 +14,7 @@ class Input
   GLFWwindow* window;
   double x;
   double y;
+  bool enableInput;
 
   // All the glfw supported keys
   bool keys[350];

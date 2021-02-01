@@ -8,6 +8,7 @@ Input::Input()
 Input::Input(GLFWwindow* window)
 {
   Input::window = window;
+  enableInput = true;
 
   for (bool& key : keys)
   {
@@ -32,7 +33,7 @@ float Input::GetMouseX()
   glfwGetCursorPos(window, &x, &y);
 
 #if DEBUG
-  if (activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera)
+  if ((activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera) && enableInput)
   {
     // When it is defined that it is in 'DEBUG' mode,
     // the coordinates needs to be offseted
@@ -52,7 +53,7 @@ float Input::GetMouseY()
   glfwGetCursorPos(window, &x, &y);
 
 #if DEBUG
-  if (activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera)
+  if ((activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera) && enableInput)
   {
     return std::abs(SCREEN_HEIGHT - static_cast<float>(y));
     // return y;
@@ -72,7 +73,7 @@ float Input::GetMouseYAbsolute()
   glfwGetCursorPos(window, &x, &y);
 
 #if DEBUG
-  if (activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera)
+  if ((activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera) && enableInput)
   {
     return static_cast<float>(y);
   }
@@ -89,7 +90,7 @@ float Input::GetMouseYAbsolute()
 int Input::GetScrollState()
 {
 #if DEBUG
-  if (activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera)
+  if ((activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera) && enableInput)
   {
     return scroll;
   }
@@ -120,8 +121,9 @@ bool Input::IsKeyDown(int key)
   // }
 
 #if DEBUG
-  if (activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera ||
-      activeWindow == WindowType::Inspector)
+  if ((activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera ||
+       activeWindow == WindowType::Inspector) &&
+      enableInput)
   {
     return keys[key];
   }
@@ -159,7 +161,8 @@ bool Input::IsMouseLDown()
 #if DEBUG
     // TODO: fix debug and release being the same
     // Handle imgui windows
-    if (activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera)
+    if ((activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera) &&
+        enableInput)
     {
       return true;
     }
@@ -181,7 +184,8 @@ bool Input::IsMouseRDown()
   {
 #if DEBUG
     // Handle imgui windows
-    if (activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera)
+    if ((activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera) &&
+        enableInput)
     {
       return true;
     }

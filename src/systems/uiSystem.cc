@@ -13,6 +13,8 @@ UiSystem::~UiSystem() = default;
 
 void UiSystem::Update(float dt, Registry* registry, Input* input)
 {
+  input->enableInput = true;
+
   // Update the gizmo through input keys
   UpdateGizmoType(registry, input);
 
@@ -151,11 +153,13 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
   if (drawSelectFolderPopup == true)
   {
     ImGui::OpenPopup("Select Folder");
+    input->enableInput = false;
     drawSelectFolderPopup = false;
   }
 
   if (ImGui::BeginPopupModal("Select Folder"))
   {
+    input->enableInput = false;
     // 260 size cause thats the maximum path length in windows
     static char directoryPath[260] = "";
     static char projectName[30] = "";
@@ -845,7 +849,7 @@ void UiSystem::HandleGizmoInput(Registry* registry, Input* input)
 {
   DevDebug& devDebug = registry->GetResource<DevDebug>();
 
-  if (devDebug.activeEntity != 0)
+  if (devDebug.activeEntity != 0 && input->enableInput)
   {
     ImGuizmo::BeginFrame();
 

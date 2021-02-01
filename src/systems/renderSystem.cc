@@ -289,7 +289,7 @@ void RenderSystem::HandleKeyboardPan(float dt, Input* input)
 bool RenderSystem::HandleMousePick(float dt, Registry* registry, Input* input)
 {
   if (!input->mouseKeys[MOUSE_LEFT] ||  // If mouse is not currently on left-click
-      input->activeWindow != WindowType::Scene)
+      input->activeWindow != WindowType::Scene || !input->enableInput)
   {
     return false;
   }
