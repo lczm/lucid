@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 #include "shader.h"
 #include "ecs.h"
 #include "pong.h"

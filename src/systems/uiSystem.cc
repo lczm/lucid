@@ -192,15 +192,20 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
         // Check if user inputted a project name
         if (projectName[0] != '\0')
         {
+          // Create the assets folder
           fs::path projectNameFolder = projectName;
           fs::path folder = "assets";
           fs::path assetPath = path / projectNameFolder / folder;
           fs::create_directories(assetPath);
+
+          // Create the systems folder
           folder = ("systems");
           fs::path systemPath = path / projectNameFolder / folder;
           fs::create_directory(systemPath);
+
           strcpy_s(projectName, "");
           strcpy_s(directoryPath, "");
+
           displayNameError = false;
           displayDirectoryError = false;
           ImGui::CloseCurrentPopup();
