@@ -14,8 +14,7 @@
   MOVE_COMPONENT(uint32_t, search, from, to, index)       \
   MOVE_COMPONENT(Transform, search, from, to, index)      \
   MOVE_COMPONENT(RigidBody, search, from, to, index)      \
-  MOVE_COMPONENT(SoundEffect, search, from, to, index)    \
-  MOVE_COMPONENT(Music, search, from, to, index)          \
+  MOVE_COMPONENT(Sound, search, from, to, index)          \
   MOVE_COMPONENT(Cube, search, from, to, index)           \
   MOVE_COMPONENT(Sphere, search, from, to, index)         \
   MOVE_COMPONENT(Model, search, from, to, index)          \
@@ -40,8 +39,7 @@
   CREATE_COMPONENT_VECTOR(uint32_t, archetype, keyPtr)       \
   CREATE_COMPONENT_VECTOR(Transform, archetype, keyPtr)      \
   CREATE_COMPONENT_VECTOR(RigidBody, archetype, keyPtr)      \
-  CREATE_COMPONENT_VECTOR(SoundEffect, archetype, keyPtr)    \
-  CREATE_COMPONENT_VECTOR(Music, archetype, keyPtr)          \
+  CREATE_COMPONENT_VECTOR(Sound, archetype, keyPtr)          \
   CREATE_COMPONENT_VECTOR(Cube, archetype, keyPtr)           \
   CREATE_COMPONENT_VECTOR(Sphere, archetype, keyPtr)         \
   CREATE_COMPONENT_VECTOR(Model, archetype, keyPtr)          \

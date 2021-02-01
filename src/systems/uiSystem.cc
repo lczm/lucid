@@ -172,7 +172,7 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
       if (result == NFD_OKAY)
       {
         displayDirectoryError = false;
-        strcpy(directoryPath, createProjectPath);
+        strcpy_s(directoryPath, createProjectPath);
         NFD_Quit();
       }
       else if (result == NFD_CANCEL)
@@ -198,8 +198,8 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
           folder = ("systems");
           fs::path systemPath = path / projectNameFolder / folder;
           fs::create_directory(systemPath);
-          strcpy(projectName, "");
-          strcpy(directoryPath, "");
+          strcpy_s(projectName, "");
+          strcpy_s(directoryPath, "");
           displayNameError = false;
           displayDirectoryError = false;
           ImGui::CloseCurrentPopup();
@@ -217,8 +217,8 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
     ImGui::SameLine();
     if (ImGui::Button("Cancel"))
     {
-      strcpy(projectName, "");
-      strcpy(directoryPath, "");
+      strcpy_s(projectName, "");
+      strcpy_s(directoryPath, "");
       displayNameError = false;
       displayDirectoryError = false;
       ImGui::CloseCurrentPopup();
@@ -319,11 +319,6 @@ void UiSystem::DrawHierarchy(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Hierarchy");
 
-  // WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
-  // widgetLayout.leftWindowWidth = ImGui::GetWindowWidth();
-
-  // if (devDebug.changeFocusWindow == WindowType::Hierarchy) ImGui::SetWindowFocus();
-
   // TODO : This can be improved upon
   // For now just take anything that has a transform component attached to it
 
@@ -335,39 +330,42 @@ void UiSystem::DrawHierarchy(float dt, Registry* registry, Input* input)
 
   // TODO : The hierarchy is not drawn this way.
 
-  std::vector<void*> cubeComponents = registry->GetComponents<Cube>();
-  auto* cubes = static_cast<ComponentVector<Cube>*>(cubeComponents[0]);
+  DevDebug& devDebug = registry->GetResource<DevDebug>();
+  static Entity selected = -1;
+  int i = 1;
 
-  std::vector<void*> sphereComponents = registry->GetComponents<Sphere>();
-  auto* spheres = static_cast<ComponentVector<Sphere>*>(sphereComponents[0]);
+  registry->GetComponentsIter<Cube>()->EachWithID([&](Entity id, Cube& cube) {
+    std::string modelName = "Cube (" + std::to_string(i) + ")";
+    i++;
+    if (ImGui::Selectable(modelName.c_str(), selected == id))
+    {
+      selected = id;
+      devDebug.activeEntity = id;
+    }
+  });
 
-  std::vector<void*> modelComponents = registry->GetComponents<Model>();
-  auto* models = static_cast<ComponentVector<Model>*>(modelComponents[0]);
+  i = 1;
+  registry->GetComponentsIter<Sphere>()->EachWithID([&](Entity id, Sphere& cube) {
+    std::string modelName = "Sphere (" + std::to_string(i) + ")";
+    i++;
+    if (ImGui::Selectable(modelName.c_str(), selected == id))
+    {
+      selected = id;
+      devDebug.activeEntity = id;
+    }
+  });
 
-  // Draw the cubes
-  for (size_t i = 0; i < cubes->Size(); i++)
-  {
-    std::string modelName = "Cube : " + std::to_string(i);
-    ImGui::Text(modelName.c_str());
-  }
+  i = 1;
+  registry->GetComponentsIter<Model>()->EachWithID([&](Entity id, Model& cube) {
+    std::string modelName = "Model (" + std::to_string(i) + ")";
+    i++;
+    if (ImGui::Selectable(modelName.c_str(), selected == id))
+    {
+      selected = id;
+      devDebug.activeEntity = id;
+    }
+  });
 
-  for (size_t i = 0; i < spheres->Size(); i++)
-  {
-    std::string modelName = "Sphere : " + std::to_string(i);
-    ImGui::Text(modelName.c_str());
-  }
-
-  for (size_t i = 0; i < models->Size(); i++)
-  {
-    std::string modelName = "Model : " + std::to_string(i);
-    ImGui::Text(modelName.c_str());
-  }
-
-  delete cubes;
-  delete spheres;
-  delete models;
-
-  // ImGui::Text("This is the scene hierarchy");
   UpdateInputActiveWindow(input, WindowType::Hierarchy);
   ImGui::End();
 }
@@ -375,14 +373,6 @@ void UiSystem::DrawHierarchy(float dt, Registry* registry, Input* input)
 void UiSystem::DrawAssets(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Assets");
-
-  // WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
-  //// if (devDebug.changeFocusWindow == WindowType::Assets) ImGui::SetWindowFocus();
-
-  // ImVec2 wsize = ImGui::GetWindowSize();
-
-  // widgetLayout.bottomWindowWidth = wsize.x;
-  // widgetLayout.bottomWindowHeight = wsize.y;
 
   UpdateInputActiveWindow(input, WindowType::Assets);
   ImGui::End();
@@ -416,8 +406,10 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
 
   HandleGizmoInput(registry, input);
 
-  UpdateWindowFocus(registry, WindowType::Inspector, "Inspector", input, WindowType::Scene);
-  UpdateWindowFocus(registry, WindowType::Scene, "Scene", input);
+  // UpdateWindowFocus(registry, WindowType::Inspector, "Inspector", input, WindowType::Scene);
+  // UpdateWindowFocus(registry, WindowType::Scene, "Scene", input);
+
+  UpdateWindowFocus(registry, WindowType::Inspector, "Inspector", input);
 
   UpdateInputActiveWindow(input, WindowType::Scene);
   ImGui::EndChild();
@@ -500,12 +492,6 @@ void UiSystem::DrawGameCamera(float dt, Registry* registry, Input* input)
 
   SceneRender sceneRender = registry->GetResource<SceneRender>();
   DevDebug& devDebug = registry->GetResource<DevDebug>();
-  // WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
-
-  //// if (devDebug.changeFocusWindow == WindowType::Scene) ImGui::SetWindowFocus();
-
-  // widgetLayout.sceneWidth = wsize.x;
-  // widgetLayout.sceneHeight = wsize.y;
 
   // This should draw from sceneRender fbo that is being rendered through the gameScene camera
   // Flip V in the UV
@@ -575,7 +561,7 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
   DrawInspectorCubeComponent(registry, devDebug);
   DrawInspectorSphereComponent(registry, devDebug);
   DrawInspectorTransformComponent(registry, devDebug);
-  DrawInspectorRigidBodyComponent(registry, devDebug);
+  DrawInspectorRigidBodyComponent(registry, devDebug, input);
 
   if (ImGui::CollapsingHeader("Add Component", treeNodeFlags))
   {
@@ -711,13 +697,6 @@ void UiSystem::DrawToolBar(float dt, Registry* registry, Input* input)
     camera.TranslateInWorld({0.0f, 1.0f, 20.0f});
   }
 
-  // WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
-  // widgetLayout.topWindowHeight = ImGui::GetWindowWidth();
-  // widgetLayout.topWindowHeight = ImGui::GetWindowHeight();
-
-  // DevDebug& devDebug = registry->GetComponent<DevDebug>();
-  // if (devDebug.changeFocusWindow == WindowType::Animator) ImGui::SetWindowFocus();
-
   UpdateInputActiveWindow(input, WindowType::ToolBar);
   ImGui::End();
 }
@@ -754,6 +733,15 @@ void UiSystem::DrawInspectorCubeComponent(Registry* registry, DevDebug& devDebug
   {
     if (ImGui::CollapsingHeader("Color", treeNodeFlags))
     {
+      if (ImGui::BeginPopupContextItem("Cube color context menu"))
+      {
+        if (ImGui::MenuItem("Remove Component"))
+        {
+          registry->RemoveComponent<RigidBody>(devDebug.activeEntity);
+        }
+
+        ImGui::EndPopup();
+      }
       Cube& cube = registry->GetComponent<Cube>(devDebug.activeEntity);
       ImGui::ColorEdit3("Color", &(cube.color.x));
     }
@@ -768,6 +756,15 @@ void UiSystem::DrawInspectorSphereComponent(Registry* registry, DevDebug& devDeb
   {
     if (ImGui::CollapsingHeader("Color", treeNodeFlags))
     {
+      if (ImGui::BeginPopupContextItem("Sphere color context menu"))
+      {
+        if (ImGui::MenuItem("Remove Component"))
+        {
+          registry->RemoveComponent<RigidBody>(devDebug.activeEntity);
+        }
+
+        ImGui::EndPopup();
+      }
       Sphere& sphere = registry->GetComponent<Sphere>(devDebug.activeEntity);
       ImGui::ColorEdit3("Color", &(sphere.color.x));
     }
@@ -782,6 +779,16 @@ void UiSystem::DrawInspectorTransformComponent(Registry* registry, DevDebug& dev
   {
     if (ImGui::CollapsingHeader("Transform", treeNodeFlags))
     {
+      // right click to remove component
+      if (ImGui::BeginPopupContextItem("Transform context menu"))
+      {
+        if (ImGui::MenuItem("Remove Component"))
+        {
+          registry->RemoveComponent<RigidBody>(devDebug.activeEntity);
+        }
+
+        ImGui::EndPopup();
+      }
       Transform& transform = registry->GetComponent<Transform>(devDebug.activeEntity);
       ImGui::InputFloat("x position", &(transform.position.x), 0.25f, 1.0f);
       ImGui::InputFloat("y position", &(transform.position.y), 0.25f, 1.0f);
@@ -799,34 +806,28 @@ void UiSystem::DrawInspectorTransformComponent(Registry* registry, DevDebug& dev
   }
 }
 
-void UiSystem::DrawInspectorRigidBodyComponent(Registry* registry, DevDebug& devDebug,
+void UiSystem::DrawInspectorRigidBodyComponent(Registry* registry, DevDebug& devDebug, Input* input,
                                                ImGuiTreeNodeFlags treeNodeFlags)
 {
   if (registry->EntityHasComponent<RigidBody>(devDebug.activeEntity))
   {
     if (ImGui::CollapsingHeader("Rigid Body", treeNodeFlags))
     {
+      // right click to remove component
+      if (ImGui::BeginPopupContextItem("rigidbody context menu"))
+      {
+        if (ImGui::MenuItem("Remove Component"))
+        {
+          registry->RemoveComponent<RigidBody>(devDebug.activeEntity);
+        }
+
+        ImGui::EndPopup();
+      }
       RigidBody& rigidBody = registry->GetComponent<RigidBody>(devDebug.activeEntity);
       ImGui::InputFloat("x velocity", &(rigidBody.velocity.x), 0.25f, 1.0f);
       ImGui::InputFloat("y velocity", &(rigidBody.velocity.y), 0.25f, 1.0f);
       ImGui::InputFloat("z velocity", &(rigidBody.velocity.z), 0.25f, 1.0f);
       ImGui::Checkbox("Apply gravity", &(rigidBody.applyGravity));
-
-      // right click to remove component
-      // if (ImGui::BeginPopupContextItem("rigidbody context menu"))
-      // {
-      //   if (input->activeWindow != WindowType::Inspector)
-      //   {
-      //     ImGui::SetWindowFocus("Inspector");
-      //     input->activeWindow = WindowType::Inspector;
-      //   }
-      //   if (ImGui::MenuItem("Remove Component"))
-      //   {
-      //     registry->RemoveComponent<RigidBody>(devDebug.activeEntity);
-      //   }
-
-      //   ImGui::EndPopup();
-      // }
     }
     ImGui::Separator();
   }
@@ -886,21 +887,10 @@ void UiSystem::HandleGizmoInput(Registry* registry, Input* input)
 
 void UiSystem::UpdateSceneWindow(Registry* registry, Input* input)
 {
-  // WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
-
   if (input->IsKeyDown('7'))
   {
     drawSceneOnly = !drawSceneOnly;
     input->SetKeyOff('7');
-    if (drawSceneOnly)
-    {
-      // widgetLayout.bottomWindowHeight = 0;
-      // widgetLayout.bottomWindowWidth = 0;
-      // widgetLayout.leftWindowHeight = 0;
-      // widgetLayout.leftWindowWidth = 0;
-      // widgetLayout.rightWindowHeight = 0;
-      // widgetLayout.rightWindowWidth = 0;
-    }
   }
 }
 
@@ -918,8 +908,7 @@ void UiSystem::UpdateGizmoType(Registry* registry, Input* input)
 
 void UiSystem::UpdateInputActiveWindow(Input* input, WindowType windowType)
 {
-  // if (ImGui::IsWindowFocused() && input->activeWindow != windowType)
-  if (input->IsMouseLDown() && ImGui::IsWindowHovered() && input->activeWindow != windowType)
+  if (ImGui::IsWindowFocused() && ImGui::IsWindowHovered() && input->activeWindow != windowType)
   {
     input->activeWindow = windowType;
   }

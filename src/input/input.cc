@@ -100,7 +100,9 @@ int Input::GetScrollState()
 #endif
 
   // Note : will never reach this, it is either DEBUG or RELEASE
-  return scroll;
+  // return scroll;
+  // Jasper: It will reach here in debug if the activewindow isnt scene or gamecamera
+  return 0;
 }
 
 bool Input::IsKeyDown(int key)
@@ -118,7 +120,8 @@ bool Input::IsKeyDown(int key)
   // }
 
 #if DEBUG
-  if (activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera)
+  if (activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera ||
+      activeWindow == WindowType::Inspector)
   {
     return keys[key];
   }
@@ -156,11 +159,10 @@ bool Input::IsMouseLDown()
 #if DEBUG
     // TODO: fix debug and release being the same
     // Handle imgui windows
-    // if (activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera)
-    //{
-    //  return true;
-    //}
-    return true;
+    if (activeWindow == WindowType::Scene || activeWindow == WindowType::GameCamera)
+    {
+      return true;
+    }
 #endif
 
 #if RELEASE
