@@ -6,7 +6,7 @@
       "configurationType": "Debug",
       "buildRoot": "${projectDir}\\build",
       "installRoot": "${projectDir}\\out\\install\\${name}",
-      "cmakeCommandArgs": "CMAKE_BUILD_TYPE=RELEASE",
+      "cmakeCommandArgs": "CMAKE_BUILD_TYPE=RELEASE DEBUG=1 RELEASE=0 ROOT=.",
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
       "inheritEnvironments": [
