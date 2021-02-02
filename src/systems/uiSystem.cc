@@ -288,7 +288,8 @@ void UiSystem::PresetLayout(ImGuiID dockSpaceID)
       ImGui::DockBuilderSplitNode(dockMainID, ImGuiDir_Right, 0.2f, NULL, &dockMainID);
   ImGuiID dockBottomID =
       ImGui::DockBuilderSplitNode(dockMainID, ImGuiDir_Down, 0.3f, NULL, &dockMainID);
-  ImGuiID dockTopID = ImGui::DockBuilderSplitNode(dockMainID, ImGuiDir_Up, 0.7f, NULL, &dockMainID);
+  ImGuiID dockTopID =
+      ImGui::DockBuilderSplitNode(dockMainID, ImGuiDir_Up, 0.05f, NULL, &dockMainID);
   ImGuiID dockMiddleID =
       ImGui::DockBuilderSplitNode(dockTopID, ImGuiDir_Down, 0.95f, NULL, &dockTopID);
   ImGuiID dockBottomLeftID =
@@ -691,6 +692,7 @@ void UiSystem::DrawToolBar(float dt, Registry* registry, Input* input)
         break;
     }
 
+    DisableInputWhenDragScrollbar(registry, input);
     gizmoTypeString = "Gizmo Type: " + gizmoType;
     gizmoTypeChar = gizmoTypeString.c_str();
     ImGui::Text(gizmoTypeChar);
