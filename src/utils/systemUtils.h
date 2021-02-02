@@ -25,11 +25,11 @@ static void CompileUserGame(Registry* registry)
   {
     if (c == '\\')
     {
-      b += "/";
+      convertedRoot += "/";
     }
     else
     {
-      b += c;
+      convertedRoot += c;
     }
   }
 
