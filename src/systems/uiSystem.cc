@@ -80,7 +80,8 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
             Workspace& workspace = registry->GetResource<Workspace>();
             workspace.absoluteProjectRoot = absoluteProjectRoot;
             Node* relativeProjectRoot = NewNode(projectPath, true);
-            relativeProjectRoot->path = relativeProjectRoot->path.relative_path();
+            relativeProjectRoot->path =
+                fs::relative(workspace.absoluteProjectRoot->path, lucidBuildPath);
             workspace.relativeProjectRoot = relativeProjectRoot;
             NFD_Quit();
           }
