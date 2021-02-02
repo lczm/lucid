@@ -35,4 +35,5 @@ void AudioSystem::Update(float dt, Registry* registry, Input* input)
   Listener listener = registry->GetResource<Listener>();
   AudioVariables::sd->SetLocation(listener.x, listener.y, listener.z);
   AudioVariables::sd->SetGain(listener.gain);
+  // TODO: add feature to change orientation
 }

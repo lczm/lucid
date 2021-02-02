@@ -664,7 +664,7 @@ void UiSystem::DrawToolBar(float dt, Registry* registry, Input* input)
   float buttonWidth = 60.0f;
   float totalPadding = 16;
 
-  windowClass.DockNodeFlagsOverrideSet = ImGuiDockNodeFlags_NoTabBar;
+  windowClass.DockNodeFlagsOverrideSet = ImGuiDockNodeFlags_NoTabBar | ImGuiDockNodeFlags_NoDocking;
   ImGui::SetNextWindowClass(&windowClass);
   ImGui::Begin("ToolBar", (bool*)0, windowFlags);
   ImVec2 wSize = ImGui::GetWindowSize();
