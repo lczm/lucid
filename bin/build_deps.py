@@ -123,6 +123,7 @@ def move_libsndfile():
     dest = os.path.join(os.pardir, os.pardir, os.pardir, "build")
 
     shutil.copy(src, dest)
+    os.chdir(os.path.join(os.pardir, os.pardir))
     print("Finished copying sndfile.lib")
     return 0
 
