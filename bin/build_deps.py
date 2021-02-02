@@ -127,6 +127,47 @@ def move_libsndfile():
     return 0
 
 
+def build_freetype():
+    os.chdir("freetype2")
+
+    if not os.path.isdir("build"):
+        os.mkdir("build")
+
+    os.chdir("build")
+
+    # Run cmake on lucid/lib/freetype2/build
+    subprocess.run(["cmake", "-DBUILD_SHARED_LIBS:BOOL=true", "-GNinja", ".."])
+
+    # Run ninja
+    subprocess.run(["ninja"])
+
+    print("Finished building freetype2")
+    return 0
+
+
+def move_freetype():
+    # Copy the DLL
+    files = os.listdir('.')
+    file = [file for file in files if "freetyped.lib" in file][0]
+
+    # Because openal-soft is in the lib/openal-soft/build folder, needs to traverse up twice
+    src = os.path.join(file)
+    dest = os.path.join(os.pardir, os.pardir, os.pardir, "build")
+
+    shutil.copy(src, dest)
+    print("Finished copying freetyped.lib")
+
+    file = [file for file in files if "freetyped.dll" in file][0]
+
+    # Because openal-soft is in the lib/openal-soft/build folder, needs to traverse up twice
+    src = os.path.join(file)
+    dest = os.path.join(os.pardir, os.pardir, os.pardir, "build")
+
+    shutil.copy(src, dest)
+    print("Finished copying freetyped.dll")
+    return 0
+
+
 if __name__ == "__main__":
     move_to_lib()
 
@@ -138,3 +179,6 @@ if __name__ == "__main__":
 
     build_libsndfile()
     move_libsndfile()
+
+    build_freetype()
+    move_freetype()

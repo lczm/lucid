@@ -27,3 +27,9 @@
 	path = lib/nativefiledialog-extended
 	url = https://github.com/btzy/nativefiledialog-extended
 		ignore = dirty
+[submodule "lib/freetype"]
+	path = lib/freetype
+	url = https://github.com/freetype/freetype
+[submodule "lib/freetype2"]
+	path = lib/freetype2
+	url = https://github.com/aseprite/freetype2

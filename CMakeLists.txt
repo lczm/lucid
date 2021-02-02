@@ -121,6 +121,9 @@ include_directories(lib/nativefiledialog-extended/src/include)
 # Setup Cereal
 include_directories(lib/cereal)
 
+# Setup Cereal
+include_directories(lib/freetype2/include)
+
 # Setup glfw
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
@@ -152,12 +155,12 @@ add_executable(lucid
 
 # Link the executable to glfw
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    target_link_libraries(lucid glfw assimp sndfile OpenAL32 nfd)
+    target_link_libraries(lucid glfw assimp sndfile OpenAL32 nfd freetyped)
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     if (CMAKE_BUILD_TYPE STREQUAL "Release")
-        target_link_libraries(lucid glfw assimp* sndfile OpenAL32 nfd user32.lib gdi32.lib shell32.lib vcruntime.lib msvcrt.lib)
+        target_link_libraries(lucid glfw assimp* sndfile OpenAL32 nfd freetyped user32.lib gdi32.lib shell32.lib vcruntime.lib msvcrt.lib)
     else()
-        target_link_libraries(lucid glfw assimp* sndfile OpenAL32 nfd)
+        target_link_libraries(lucid glfw assimp* sndfile OpenAL32 nfd freetyped)
     endif(CMAKE_BUILD_TYPE STREQUAL "Release")
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
@@ -176,7 +179,7 @@ add_executable(tests
     ${IMGUIZMO_HEADERS})
 
 # Link test executable against gtest & gtest_main
-target_link_libraries(tests gtest gtest_main glfw assimp* sndfile OpenAL32 nfd)
+target_link_libraries(tests gtest gtest_main glfw assimp* sndfile OpenAL32 nfd freetyped)
 add_test(tests tests)
 
 # Generic executable
@@ -194,11 +197,11 @@ add_executable(generic
 
 # Link the executable to glfw
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    target_link_libraries(generic glfw assimp sndfile OpenAL32 nfd)
+    target_link_libraries(generic glfw assimp sndfile OpenAL32 nfd freetyped)
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     if (CMAKE_BUILD_TYPE STREQUAL "Release")
-        target_link_libraries(generic glfw assimp* sndfile OpenAL32 nfd user32.lib gdi32.lib shell32.lib vcruntime.lib msvcrt.lib)
+        target_link_libraries(generic glfw assimp* sndfile OpenAL32 nfd freetyped user32.lib gdi32.lib shell32.lib vcruntime.lib msvcrt.lib)
     else()
-        target_link_libraries(generic glfw assimp* sndfile OpenAL32 nfd)
+        target_link_libraries(generic glfw assimp* sndfile OpenAL32 nfd freetyped)
     endif(CMAKE_BUILD_TYPE STREQUAL "Release")
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
