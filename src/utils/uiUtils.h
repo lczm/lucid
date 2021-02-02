@@ -145,7 +145,9 @@ static void DrawFileTree(Node* node)
       if (isSelected)
       {
         Node* currentFile = node->child.at(i);
-        if (currentFile->path.extension() == ".gltf")
+        if (currentFile->path.extension() == ".gltf" ||
+            currentFile->path.extension() == ".fbx" ||
+            currentFile->path.extension() == ".obj")
         {
           // Filename without extension
           std::string stringCurrentFileName = currentFile->path.stem().string();
