@@ -137,6 +137,7 @@ static void InitEngineComponents(Registry* registry)
   registry->CreateResource<RigidBodyConfiguration>();
   registry->CreateResource<ShaderResource>();
   registry->CreateResource<Workspace>();
+  registry->CreateResource<Listener>();
 
   ShaderResource& shaderResource = registry->GetResource<ShaderResource>();
 

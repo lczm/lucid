@@ -3,7 +3,6 @@
 namespace AudioVariables
 {
 SoundDevice* sd = SoundDevice::Get();
-SoundEffectsPlayer player;
 }  // namespace AudioVariables
 
 AudioSystem::AudioSystem()
@@ -32,4 +31,8 @@ void AudioSystem::Update(float dt, Registry* registry, Input* input)
       sound.play = false;
     }
   });
+
+  Listener listener = registry->GetResource<Listener>();
+  AudioVariables::sd->SetLocation(listener.x, listener.y, listener.z);
+  AudioVariables::sd->SetGain(listener.gain);
 }
