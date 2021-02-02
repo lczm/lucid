@@ -33,6 +33,8 @@ static void CompileUserGame(Registry* registry)
     }
   }
 
+  std::cout << "relative path : " << convertedRoot << std::endl;
+
   std::string builder;
   builder += "cd ../generic-build && cmake -GNinja -DDEBUG=0 -DRELEASE=1 ";
   builder += "-DROOT=";

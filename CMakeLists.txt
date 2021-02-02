@@ -60,10 +60,6 @@ file(GLOB_RECURSE STARTUP_HEADERS src/startup/*.h)
 file(GLOB_RECURSE WORKSPACE_HEADER_FILES ${ROOT}/*.h)
 file(GLOB_RECURSE WORKSPACE_SOURCE_FILES ${ROOT}/*.cc)
 
-# foreach(filepath ${WORKSPACE_SOURCE_FILES})
-#     message(${filepath})
-# endforeach()
-
 list(FILTER SOURCE_FILES EXCLUDE REGEX "main.cc")
 file(GLOB_RECURSE TEST_SOURCE_FILES tests/*.cc)
 
