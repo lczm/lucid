@@ -44,6 +44,9 @@ const char HAPPY_SHARK_MODEL[] = "../assets/happy_shark_swimming/scene.gltf";
 const char CHEESE_CAKE_MODEL[] = "../assets/cheesecake/scene.gltf";
 const char CAMERA_MODEL[] = "../assets/leica/scene.gltf";
 
+// Fonts
+const char HELVETICA_FONT[] = "../assets/fonts/Helvetica.ttf";
+
 // Images
 const char AIRMAN_IMAGE[] = "../assets/images/air-man.png";
 
