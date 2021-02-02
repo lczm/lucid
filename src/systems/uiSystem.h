@@ -43,7 +43,7 @@ class UiSystem : public System
   bool drawSceneOnly = false;
   bool drawSelectFolderPopup = false;
   Node* absoluteProjectRoot = NewNode("", true);
-  fs::path lucidBuildPath = fs::current_path().parent_path() / "build";
+  fs::path lucidBuildPath = fs::current_path().parent_path();
   const std::vector<std::pair<DefaultAssetsType, std::string>> defaultAssets = {
       {DefaultAssetsType::Cube, "Cube"},
       {DefaultAssetsType::Sphere, "Sphere"},
