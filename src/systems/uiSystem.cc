@@ -586,6 +586,7 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
   DrawInspectorSphereComponent(registry, devDebug);
   DrawInspectorTransformComponent(registry, devDebug);
   DrawInspectorRigidBodyComponent(registry, devDebug, input);
+  DrawInspectorSoundComponent(registry, devDebug, input);
 
   if (ImGui::CollapsingHeader("Add Component", treeNodeFlags))
   {
@@ -854,6 +855,57 @@ void UiSystem::DrawInspectorRigidBodyComponent(Registry* registry, DevDebug& dev
       ImGui::InputFloat("y velocity", &(rigidBody.velocity.y), 0.25f, 1.0f);
       ImGui::InputFloat("z velocity", &(rigidBody.velocity.z), 0.25f, 1.0f);
       ImGui::Checkbox("Apply gravity", &(rigidBody.applyGravity));
+    }
+    ImGui::Separator();
+  }
+}
+
+void UiSystem::DrawInspectorSoundComponent(Registry* registry, DevDebug& devDebug, Input* input,
+                                           ImGuiTreeNodeFlags treeNodeFlags)
+{
+  if (registry->EntityHasComponent<Sound>(devDebug.activeEntity))
+  {
+    if (ImGui::CollapsingHeader("Sound", treeNodeFlags))
+    {
+      // right click to remove component
+      if (ImGui::BeginPopupContextItem("rigidbody context menu"))
+      {
+        if (ImGui::MenuItem("Remove Component"))
+        {
+          registry->RemoveComponent<RigidBody>(devDebug.activeEntity);
+        }
+
+        ImGui::EndPopup();
+      }
+      Sound& sound = registry->GetComponent<Sound>(devDebug.activeEntity);
+      std::string soundFilePath = sound.filePath;
+      ImGui::InputText("File Path", soundFilePath.data(), IM_ARRAYSIZE(soundFilePath.data()),
+                       ImGuiInputTextFlags_ReadOnly);
+      if (ImGui::Button("Open"))
+      {
+        NFD_Init();
+        nfdchar_t* sfPath = NULL;
+        nfdfilteritem_t filterItem[1] = {{"Sound Files", "wav"}};
+        nfdresult_t result = NFD_OpenDialog(&sfPath, filterItem, 1, NULL);
+        if (result == NFD_OKAY)
+        {
+          sound.filePath = sfPath;
+          NFD_Quit();
+        }
+        else if (result == NFD_CANCEL)
+        {
+        }
+        else
+        {
+          std::cout << "NFD Error : " << NFD_GetError() << std::endl;
+        }
+      }
+      ImGui::InputFloat("Gain", &(sound.gain), 0.25f, 1.0f);
+      ImGui::Checkbox("Looping", &(sound.looping));
+      if (ImGui::Button("Play"))
+      {
+        sound.play = true;
+      }
     }
     ImGui::Separator();
   }

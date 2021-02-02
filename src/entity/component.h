@@ -74,7 +74,7 @@ struct Sound
 {
   const char* filePath = "";
   bool looping = false;
-  int gain = 1;
+  float gain = 1;
   // Temporary solution while figuring out how to play the audio only once
   // while looping over components
   bool play = false;
