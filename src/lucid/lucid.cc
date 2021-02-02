@@ -192,11 +192,11 @@ void Lucid::InitializeDemoPongEntities()
   registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(aiPaddleID);
   registry->CreateEntity<Sphere, Transform, RigidBody, ColliderSphere>(ballID);
 
-  registry->CreateResource<PongRules>();
-  PongRules& pongRules = registry->GetResource<PongRules>();
-  pongRules.playerPaddleID = playerPaddleID;
-  pongRules.aiPaddleID = aiPaddleID;
-  pongRules.ballID = ballID;
+  // registry->CreateResource<PongRules>();
+  // PongRules& pongRules = registry->GetResource<PongRules>();
+  // pongRules.playerPaddleID = playerPaddleID;
+  // pongRules.aiPaddleID = aiPaddleID;
+  // pongRules.ballID = ballID;
 
   Transform& playerTransform = registry->GetComponent<Transform>(playerPaddleID);
   Transform& playerColliderTransform =

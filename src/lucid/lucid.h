@@ -28,7 +28,7 @@
 #include "shaderResource.h"
 
 // Demo imports
-#include "pong.h"
+// #include "pong.h"
 // Demo imports end
 
 #include "glm.hpp"
@@ -71,9 +71,9 @@ class Lucid
   void InitializeDemoPongEntities();
   void InitializeDemoPongSystems();
 
-// #if DEBUG
+  // #if DEBUG
   void InitializeSceneGridLines();
-// #endif
+  // #endif
 
   void SetMouseCallback(
       std::function<void(GLFWwindow* window, int button, int action, int mods)> fn);

@@ -30,14 +30,41 @@ set (MAIN
     src/main.cc)
 
 # Source files
-file(GLOB_RECURSE HEADER_FILES src/*.h)
-file(GLOB_RECURSE SOURCE_FILES src/*.cc)
-file(GLOB_RECURSE HEADER_FILES_EXAMPLE examples/*.h)
-file(GLOB_RECURSE SOURCE_FILES_EXAMPLE examples/*.cc)
+file(GLOB_RECURSE HEADER_FILES 
+        src/audio/*.h
+        src/constants/*.h
+        src/entity/*.h
+        src/entity/*.h
+        src/graphics/*.h
+        src/input/*.h
+        src/lucid/*.h
+        src/serialize/*.h
+        src/shaders/*.h
+        src/systems/*.h
+        src/utils/*.h)
+file(GLOB_RECURSE SOURCE_FILES 
+        src/audio/*.cc
+        src/constants/*.cc
+        src/entity/*.cc
+        src/entity/*.cc
+        src/graphics/*.cc
+        src/input/*.cc
+        src/lucid/*.cc
+        src/serialize/*.cc
+        src/shaders/*.cc
+        src/systems/*.cc
+        src/utils/*.cc)
+
+file(GLOB_RECURSE STARTUP_HEADERS src/startup/*.h)
+
+file(GLOB_RECURSE WORKSPACE_HEADER_FILES ${ROOT}/*.h)
+file(GLOB_RECURSE WORKSPACE_SOURCE_FILES ${ROOT}/*.cc)
+
+# foreach(filepath ${WORKSPACE_SOURCE_FILES})
+#     message(${filepath})
+# endforeach()
 
 list(FILTER SOURCE_FILES EXCLUDE REGEX "main.cc")
-list(FILTER HEADER_FILES EXCLUDE REGEX "startup.h")
-list(FILTER HEADER_FILES EXCLUDE REGEX "engineStartup.h")
 file(GLOB_RECURSE TEST_SOURCE_FILES tests/*.cc)
 
 # GLM
@@ -82,9 +109,25 @@ include_directories(src/systems)
 include_directories(src/ui)
 include_directories(src/serialize)
 
+# if (${ROOT} MATCHES "")
+#     include_directories(src/startup)
+# else()
+#     include_directories(${ROOT})
+#     include_directories(${ROOT}/systems)
+# endif (${ROOT} MATCHES "")
+
+include_directories(src/startup)
+include_directories(${ROOT})
+include_directories(${ROOT}/systems)
+
+# include_directories(${ROOT})
+
+# Setup generic systems
+# include_directories(${ROOT}/systems)
+
 # Example directories
 # include_directories(src/examples/pong)
-include_directories(examples/pong)
+# include_directories(examples/pong)
 
 # Setup glm
 include_directories(lib/glm)
@@ -150,8 +193,9 @@ add_executable(lucid
     ${GLAD_SOURCE_FILES}
     ${GLM_HEADERS}
     ${IMGUIZMO_HEADERS}
-    "src/lucid/startup.h"
-    "src/lucid/engineStartup.h")
+    ${STARTUP_HEADERS}
+    "src/startup/startup.h"
+    "src/startup/engineStartup.h")
 
 # Link the executable to glfw
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
@@ -187,13 +231,17 @@ add_executable(generic
     ${MAIN}
     ${SOURCE_FILES}
     ${HEADER_FILES}
-    ${SOURCE_FILES_EXAMPLE}
-    ${HEADER_FILES_EXAMPLE}
+    ${WORKSPACE_HEADER_FILES}
+    ${WORKSPACE_SOURCE_FILES}
     ${IMGUI_SOURCE_FILES}
     ${STB_IMAGE_HEADERS}
     ${GLAD_SOURCE_FILES}
     ${GLM_HEADERS}
     ${IMGUIZMO_HEADERS})
+    # ${ROOT}/startup.h
+    # ${ROOT}/engineStartup.h)
+    # "../lucid-test/startup.h"
+    # "../lucid-test/engineStartup.h")
 
 # Link the executable to glfw
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")

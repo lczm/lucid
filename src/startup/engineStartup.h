@@ -13,10 +13,10 @@
 #include "shaderResource.h"
 
 // #if DEBUG
-#include "pong.h"
-#include "aiSystem.h"
-#include "playerSystem.h"
-#include "pongSystem.h"
+// #include "pong.h"
+// #include "aiSystem.h"
+// #include "playerSystem.h"
+// #include "pongSystem.h"
 // #endif
 
 #include "renderSystem.h"
@@ -39,14 +39,16 @@ static void InitSystems(Registry* registry)
 #endif
 
   // Demo start -- TODO : This should be separated, need a way of prioritising systems
-  registry->RegisterSystem(new PlayerSystem(), "player", 2);
-  registry->RegisterSystem(new AiSystem(), "ai", 3);
+  // registry->RegisterSystem(new PlayerSystem(), "player", 2);
+  // registry->RegisterSystem(new AiSystem(), "ai", 3);
   // Demo end
+
+  std::cout << "initsystems from lucid" << std::endl;
 
   registry->RegisterSystem(new PhysicsSystem(), "physics", 4);
 
   // Demo start -- PongSystem will need to deal with collision for the ball
-  registry->RegisterSystem(new PongSystem(), "pong", 5);
+  // registry->RegisterSystem(new PongSystem(), "pong", 5);
   // Demo end
 
   registry->RegisterSystem(new RenderSystem(registry), "render", 5);
@@ -61,33 +63,32 @@ static void InitArchetypes(Registry* registry)
   // under the #if DEBUG flag are the ones that will also exist
   // in the release build of the game.
   registry->RegisterEmptyArchetype();
-  registry->RegisterArchetype<ShaderResource>();
-  registry->RegisterArchetype<PrimitiveBatchIds>();
-  registry->RegisterArchetype<Model, Transform>();
-  registry->RegisterArchetype<Model, Transform, ColliderCube>();
-  registry->RegisterArchetype<Model, Transform, ColliderPolygon>();
-  registry->RegisterArchetype<Camera>();
-  registry->RegisterArchetype<SphereVerticesIndices>();
-  registry->RegisterArchetype<Line, Transform>();
-  registry->RegisterArchetype<GameEngineState>();
-  registry->RegisterArchetype<RendererStats>();
+  // registry->RegisterArchetype<ShaderResource>();
+  // registry->RegisterArchetype<PrimitiveBatchIds>();
+  // registry->RegisterArchetype<Model, Transform>();
+  // registry->RegisterArchetype<Model, Transform, ColliderCube>();
+  // registry->RegisterArchetype<Model, Transform, ColliderPolygon>();
+  // registry->RegisterArchetype<Camera>();
+  // registry->RegisterArchetype<SphereVerticesIndices>();
+  // registry->RegisterArchetype<Line, Transform>();
+  // registry->RegisterArchetype<GameEngineState>();
+  // registry->RegisterArchetype<RendererStats>();
 
   // Register the necessary archetypes
   // Note that this should be using `ColliderCube` but it is hardcoded like this for now.
-  registry->RegisterArchetype<Cube, Transform, RigidBody>();
-  registry->RegisterArchetype<Cube, Transform, RigidBody, ColliderCube>();
-  registry->RegisterArchetype<Cube, Transform, RigidBody, ColliderSphere>();
-  registry->RegisterArchetype<Sphere, Transform, RigidBody, ColliderCube>();
-  registry->RegisterArchetype<Sphere, Transform, RigidBody, ColliderSphere>();
-  registry->RegisterArchetype<PongRules>();
+  // registry->RegisterArchetype<Cube, Transform, RigidBody>();
+  // registry->RegisterArchetype<Cube, Transform, RigidBody, ColliderCube>();
+  // registry->RegisterArchetype<Cube, Transform, RigidBody, ColliderSphere>();
+  // registry->RegisterArchetype<Sphere, Transform, RigidBody, ColliderCube>();
+  // registry->RegisterArchetype<Sphere, Transform, RigidBody, ColliderSphere>();
+  // registry->RegisterArchetype<PongRules>();
 
   // Default archetypes for gui interface
-  registry->RegisterArchetype<Sphere, Transform>();
-  registry->RegisterArchetype<Cube, Transform>();
+  // registry->RegisterArchetype<Sphere, Transform>();
+  // registry->RegisterArchetype<Cube, Transform>();
 
-  registry->RegisterArchetype<Sound, Transform>();
-
-  registry->RegisterArchetype<RigidBodyConfiguration>();
+  // registry->RegisterArchetype<Sound, Transform>();
+  // registry->RegisterArchetype<RigidBodyConfiguration>();
 
 #if DEBUG
   registry->RegisterArchetype<SceneRender>();

@@ -131,7 +131,6 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
 
       if (input->IsKeyDown(GLFW_KEY_F4))
       {
-        CompileUserGame(registry);
         RunUserGame();
       }
 

@@ -9,19 +9,40 @@
 static void CompileUserGame(Registry* registry)
 {
   Workspace& workspace = registry->GetResource<Workspace>();
-  std::string root = workspace.absoluteProjectRoot->path.string();
+  std::string root = workspace.relativeProjectRoot->path.string();
 
   // Root is empty, dont try to compile
   // TODO : Potentially give the user a warning
   // that the game is trying to compile nothing
   if (root.length() == 0)
   {
+    std::cout << "Open a workspace." << std::endl;
     return;
   }
 
-  system(
-      "cd ../generic-build && cmake -GNinja -DDEBUG=0 -DRELEASE=1 -DCMAKE_BUILD_TYPE=Release .. && "
-      "ninja generic");
+  std::string convertedRoot = "";
+  for (auto c : convertedRoot)
+  {
+    if (c == '\\')
+    {
+      b += "/";
+    }
+    else
+    {
+      b += c;
+    }
+  }
+
+  std::string builder;
+  builder += "cd ../generic-build && cmake -GNinja -DDEBUG=0 -DRELEASE=1 ";
+  builder += "-DROOT=";
+  builder += convertedRoot;
+  builder += " ";
+  builder += "-DCMAKE_BUILD_TYPE=Release .. && ";
+  builder += "ninja generic";
+
+  std::cout << builder << std::endl;
+  system(builder.c_str());
 }
 
 static void RunUserGame()
