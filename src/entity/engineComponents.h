@@ -113,7 +113,8 @@ struct RigidBodyConfiguration
 
 struct Workspace
 {
-  Node* projectRoot = NewNode("", true);
+  Node* absoluteProjectRoot = NewNode("", true);
+  Node* relativeProjectRoot = NewNode("", true);
 };
 
 struct Listener

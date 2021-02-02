@@ -7,6 +7,7 @@ UiSystem::UiSystem()
   io.IniFilename = NULL;                             // Disable imgui.ini
   io.ConfigWindowsMoveFromTitleBarOnly = true;
   (void)io;
+  Font font = Font(HELVETICA_FONT);
 }
 
 UiSystem::~UiSystem() = default;
@@ -73,11 +74,14 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
           nfdresult_t result = NFD_PickFolder(&projectPath, NULL);
           if (result == NFD_OKAY)
           {
-            projectRoot = NewNode(projectPath, true);
+            absoluteProjectRoot = NewNode(projectPath, true);
+            AddFilesAndDirectoriesToRoot(absoluteProjectRoot);
+            SortFilesAndDirectories(absoluteProjectRoot);
             Workspace& workspace = registry->GetResource<Workspace>();
-            workspace.projectRoot = projectRoot;
-            AddFilesAndDirectoriesToRoot(projectRoot);
-            SortFilesAndDirectories(projectRoot);
+            workspace.absoluteProjectRoot = absoluteProjectRoot;
+            Node* relativeProjectRoot = NewNode(projectPath, true);
+            relativeProjectRoot->path = relativeProjectRoot->path.relative_path();
+            workspace.relativeProjectRoot = relativeProjectRoot;
             NFD_Quit();
           }
           else if (result == NFD_CANCEL)
@@ -537,7 +541,7 @@ void UiSystem::DrawProject(float dt, Registry* registry, Input* input)
   UpdateInputActiveWindow(input, WindowType::Project);
 
   // Check if a folder has been selected
-  if (!fs::exists(projectRoot->path))
+  if (!fs::exists(absoluteProjectRoot->path))
   {
     ImGui::End();
     return;
@@ -546,11 +550,11 @@ void UiSystem::DrawProject(float dt, Registry* registry, Input* input)
   // Tentative button will probably change to right click menu soon
   if (ImGui::Button("Refresh"))
   {
-    projectRoot = NewNode(projectRoot->path, true);
-    AddFilesAndDirectoriesToRoot(projectRoot);
-    SortFilesAndDirectories(projectRoot);
+    absoluteProjectRoot = NewNode(absoluteProjectRoot->path, true);
+    AddFilesAndDirectoriesToRoot(absoluteProjectRoot);
+    SortFilesAndDirectories(absoluteProjectRoot);
   }
-  DrawFileTree(projectRoot);
+  DrawFileTree(absoluteProjectRoot);
 
   ImGui::End();
 }

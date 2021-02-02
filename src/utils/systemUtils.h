@@ -9,7 +9,7 @@
 static void CompileUserGame(Registry* registry)
 {
   Workspace& workspace = registry->GetResource<Workspace>();
-  std::string root = workspace.projectRoot->path.string();
+  std::string root = workspace.absoluteProjectRoot->path.string();
 
   // Root is empty, dont try to compile
   // TODO : Potentially give the user a warning

@@ -32,6 +32,7 @@
 #include "uiUtils.h"
 #include "serialize.h"
 #include "systemUtils.h"
+#include "font.h"
 
 namespace fs = std::filesystem;
 
@@ -41,7 +42,7 @@ class UiSystem : public System
   bool drawWireframe = false;
   bool drawSceneOnly = false;
   bool drawSelectFolderPopup = false;
-  Node* projectRoot = NewNode("", true);
+  Node* absoluteProjectRoot = NewNode("", true);
   const std::vector<std::pair<DefaultAssetsType, std::string>> defaultAssets = {
       {DefaultAssetsType::Cube, "Cube"},
       {DefaultAssetsType::Sphere, "Sphere"},

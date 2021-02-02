@@ -26,3 +26,5 @@ Font::Font(std::string path)
 
   Font::path = path;
 }
+
+Font::~Font() = default;
