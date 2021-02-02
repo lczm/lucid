@@ -21,7 +21,7 @@ static void CompileUserGame(Registry* registry)
   }
 
   std::string convertedRoot = "";
-  for (auto c : convertedRoot)
+  for (auto c : root)
   {
     if (c == '\\')
     {
