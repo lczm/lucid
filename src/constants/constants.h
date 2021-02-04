@@ -31,6 +31,9 @@ const char PRIMITIVE_LINE_SHADER[] = "../src/shaders/line.vert";
 const char PRIMITIVE_INSTANCED_SHADER[] = "../src/shaders/primitiveInstanced.vert";
 const char PRIMITIVE_FRAGMENT_SHADER[] = "../src/shaders/primitive.frag";
 
+const char FONT_VERTEX_SHADER[] = "../src/shaders/text.vert";
+const char FONT_FRAGMENT_SHADER[] = "../src/shaders/text.frag";
+
 // Models
 const char MICROPHONE_MODEL[] = "../assets/microphone/scene.gltf";
 const char SCIFIHELMET_MODEL[] = "../assets/helmet/ScifiHelmet.gltf";
