@@ -112,7 +112,7 @@ void Lucid::InitializeModelEntities()
   {
     Entity kingBooId = registry->GetAvailableEntityId();
     registry->CreateEntity<Model, Transform, ColliderCube, Sound>(kingBooId);
-    registry->AddComponentData<Model>(kingBooId, Model(KING_BOO_MODEL));
+    registry->AddComponentData<Model>(kingBooId, Model(KING_BOO_MODEL, registry));
     registry->GetComponent<Model>(kingBooId).toAnimate = true;
     registry->GetComponent<Transform>(kingBooId).position = {0.0f, 0.0f, 0.0f};
     registry->GetComponent<Transform>(kingBooId).scale /= 150.0f;
@@ -127,7 +127,7 @@ void Lucid::InitializeModelEntities()
   {
     Entity happySharkId = registry->GetAvailableEntityId();
     registry->CreateEntity<Model, Transform>(happySharkId);
-    registry->AddComponentData<Model>(happySharkId, Model(HAPPY_SHARK_MODEL));
+    registry->AddComponentData<Model>(happySharkId, Model(HAPPY_SHARK_MODEL, registry));
     registry->GetComponent<Model>(happySharkId).toAnimate = true;
     registry->GetComponent<Transform>(happySharkId).position = {0.0f, 10.0f, 0.0f};
     registry->GetComponent<Transform>(happySharkId).scale /= 100.0f;
@@ -136,7 +136,7 @@ void Lucid::InitializeModelEntities()
   {
     Entity cheeseCakeId = registry->GetAvailableEntityId();
     registry->CreateEntity<Model, Transform>(cheeseCakeId);
-    registry->AddComponentData<Model>(cheeseCakeId, Model(CHEESE_CAKE_MODEL));
+    registry->AddComponentData<Model>(cheeseCakeId, Model(CHEESE_CAKE_MODEL, registry));
     registry->GetComponent<Model>(cheeseCakeId).toAnimate = true;
     registry->GetComponent<Transform>(cheeseCakeId).position = {-3.0f, 0.0f, 0.0f};
     registry->GetComponent<Transform>(cheeseCakeId).scale /= 150.0f;
@@ -146,7 +146,7 @@ void Lucid::InitializeModelEntities()
   {
     Entity cameraId = registry->GetAvailableEntityId();
     registry->CreateEntity<Model, Transform>(cameraId);
-    registry->AddComponentData<Model>(cameraId, Model(CAMERA_MODEL));
+    registry->AddComponentData<Model>(cameraId, Model(CAMERA_MODEL, registry));
     registry->GetComponent<Transform>(cameraId).position = {0.0f, 0.0f, 15.0f};
     registry->GetComponent<Transform>(cameraId).scale /= 80.0f;
     // TODO : Rotate the camera to be correct

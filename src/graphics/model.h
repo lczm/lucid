@@ -8,16 +8,20 @@
 #include <assimp/postprocess.h>
 #include <cereal/types/string.hpp>
 
+#include "ecs.h"
 #include "shader.h"
 #include "mesh.h"
 #include "boundingBox.h"
 #include "renderUtils.h"
+#include "engineComponents.h"
+#include "systemUtils.h"
 
 class Model
 {
  public:
   Assimp::Importer* importer;
   const aiScene* scene;
+  Registry* registry;
 
   std::string path;
   std::string directory;
@@ -47,7 +51,7 @@ class Model
 
  public:
   Model();
-  Model(std::string path);
+  Model(std::string path, Registry* registry);
   ~Model();
 
   void Load();

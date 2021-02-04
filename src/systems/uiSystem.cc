@@ -505,7 +505,7 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
       Entity assetId = registry->GetAvailableEntityId();
       Camera& camera = registry->GetResource<Camera>();
       registry->CreateEntity<Model, Transform, ColliderPolygon>(assetId);
-      registry->AddComponentData<Model>(assetId, Model(payloadN.path.string()));
+      registry->AddComponentData<Model>(assetId, Model(payloadN.path.string(), registry));
       registry->GetComponent<Model>(assetId).toAnimate = false;
       registry->GetComponent<Transform>(assetId).position = camera.GetPositionInWorld();
       registry->GetComponent<Transform>(assetId).scale /= 150.0f;
