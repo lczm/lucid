@@ -32,15 +32,12 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window)
   ImGui_ImplOpenGL3_Init(GLSL_VERSION);
 
   // These are retrieved from engineStartup.h
-  InitArchetypes(registry);
+  // InitArchetypes(registry);
   InitEngineComponents(registry);
   InitSystems(registry);
 
   InitializeModelEntities();
   InitializeSystems();
-
-  // Please remove this in the future, for batch rendering tests only
-  InitializeManyCubes();
 
 #if DEBUG
   InitializeSceneGridLines();
@@ -48,8 +45,8 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window)
 
   // TODO : This should be abstracted out into a user system
   // Demo pong
-  InitializeDemoPongEntities();
-  InitializeDemoPongSystems();
+  // InitializeDemoPongEntities();
+  // InitializeDemoPongSystems();
 }
 
 Lucid::~Lucid()
@@ -115,7 +112,7 @@ void Lucid::InitializeModelEntities()
   {
     Entity kingBooId = registry->GetAvailableEntityId();
     registry->CreateEntity<Model, Transform, ColliderCube, Sound>(kingBooId);
-    registry->AddComponentData<Model>(kingBooId, Model(KING_BOO_MODEL));
+    registry->AddComponentData<Model>(kingBooId, Model(KING_BOO_MODEL, registry));
     registry->GetComponent<Model>(kingBooId).toAnimate = true;
     registry->GetComponent<Transform>(kingBooId).position = {0.0f, 0.0f, 0.0f};
     registry->GetComponent<Transform>(kingBooId).scale /= 150.0f;
@@ -130,7 +127,7 @@ void Lucid::InitializeModelEntities()
   {
     Entity happySharkId = registry->GetAvailableEntityId();
     registry->CreateEntity<Model, Transform>(happySharkId);
-    registry->AddComponentData<Model>(happySharkId, Model(HAPPY_SHARK_MODEL));
+    registry->AddComponentData<Model>(happySharkId, Model(HAPPY_SHARK_MODEL, registry));
     registry->GetComponent<Model>(happySharkId).toAnimate = true;
     registry->GetComponent<Transform>(happySharkId).position = {0.0f, 10.0f, 0.0f};
     registry->GetComponent<Transform>(happySharkId).scale /= 100.0f;
@@ -139,7 +136,7 @@ void Lucid::InitializeModelEntities()
   {
     Entity cheeseCakeId = registry->GetAvailableEntityId();
     registry->CreateEntity<Model, Transform>(cheeseCakeId);
-    registry->AddComponentData<Model>(cheeseCakeId, Model(CHEESE_CAKE_MODEL));
+    registry->AddComponentData<Model>(cheeseCakeId, Model(CHEESE_CAKE_MODEL, registry));
     registry->GetComponent<Model>(cheeseCakeId).toAnimate = true;
     registry->GetComponent<Transform>(cheeseCakeId).position = {-3.0f, 0.0f, 0.0f};
     registry->GetComponent<Transform>(cheeseCakeId).scale /= 150.0f;
@@ -149,7 +146,7 @@ void Lucid::InitializeModelEntities()
   {
     Entity cameraId = registry->GetAvailableEntityId();
     registry->CreateEntity<Model, Transform>(cameraId);
-    registry->AddComponentData<Model>(cameraId, Model(CAMERA_MODEL));
+    registry->AddComponentData<Model>(cameraId, Model(CAMERA_MODEL, registry));
     registry->GetComponent<Transform>(cameraId).position = {0.0f, 0.0f, 15.0f};
     registry->GetComponent<Transform>(cameraId).scale /= 80.0f;
     // TODO : Rotate the camera to be correct
@@ -162,66 +159,43 @@ void Lucid::InitializeSystems()
 {
 }
 
-void Lucid::InitializeManyCubes()
-{
-  // srand(time(NULL));
-  for (size_t i = 1; i < 0; i++)
-  {
-    Entity cubeID = registry->GetAvailableEntityId();
-    registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(cubeID);
-
-    Transform& transform = registry->GetComponent<Transform>(cubeID);
-    transform.position = {rand() % 100, rand() % 100, rand() % 100};
-
-    // normalize values for the fun of it
-    Cube& cube = registry->GetComponent<Cube>(cubeID);
-    cube.color = {0.5, 0.5, 0.5};
-  }
-}
-
 void Lucid::InitializeDemoPongEntities()
 {
-  // Cube / rectangle entities
-  Entity playerPaddleID = registry->GetAvailableEntityId();
-  Entity aiPaddleID = registry->GetAvailableEntityId();
-  // The ball that will be used to be passed around
-  Entity ballID = registry->GetAvailableEntityId();
+  // // Cube / rectangle entities
+  // Entity playerPaddleID = registry->GetAvailableEntityId();
+  // Entity aiPaddleID = registry->GetAvailableEntityId();
+  // // The ball that will be used to be passed around
+  // Entity ballID = registry->GetAvailableEntityId();
 
-  // Note to add back collidercube back to playerpaddle after addcomponent debugging
-  registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(playerPaddleID);
-  registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(aiPaddleID);
-  registry->CreateEntity<Sphere, Transform, RigidBody, ColliderSphere>(ballID);
+  // // Note to add back collidercube back to playerpaddle after addcomponent debugging
+  // registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(playerPaddleID);
+  // registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(aiPaddleID);
+  // registry->CreateEntity<Sphere, Transform, RigidBody, ColliderSphere>(ballID);
 
-  // registry->CreateResource<PongRules>();
-  // PongRules& pongRules = registry->GetResource<PongRules>();
-  // pongRules.playerPaddleID = playerPaddleID;
-  // pongRules.aiPaddleID = aiPaddleID;
-  // pongRules.ballID = ballID;
+  // Transform& playerTransform = registry->GetComponent<Transform>(playerPaddleID);
+  // Transform& playerColliderTransform =
+  //     registry->GetComponent<ColliderCube>(playerPaddleID).transform;
+  // playerColliderTransform.scale *= 1.2;
 
-  Transform& playerTransform = registry->GetComponent<Transform>(playerPaddleID);
-  Transform& playerColliderTransform =
-      registry->GetComponent<ColliderCube>(playerPaddleID).transform;
-  playerColliderTransform.scale *= 1.2;
+  // Transform& aiTransform = registry->GetComponent<Transform>(aiPaddleID);
+  // Transform& aiColliderTransform = registry->GetComponent<ColliderCube>(aiPaddleID).transform;
+  // aiColliderTransform.scale *= 1.2;
 
-  Transform& aiTransform = registry->GetComponent<Transform>(aiPaddleID);
-  Transform& aiColliderTransform = registry->GetComponent<ColliderCube>(aiPaddleID).transform;
-  aiColliderTransform.scale *= 1.2;
+  // Transform& ballTransform = registry->GetComponent<Transform>(ballID);
 
-  Transform& ballTransform = registry->GetComponent<Transform>(ballID);
+  // // TODO : registry->GetComponent<Transform> should return a reference not a pointer
+  // // Move around the transforms of each
+  // playerTransform.position = {-10.0f, 5.0f, -10.0f};
+  // ballTransform.position = {0.0f, 5.0f, -10.0f};
+  // aiTransform.position = {10.0f, 5.0f, 0.0f};
 
-  // TODO : registry->GetComponent<Transform> should return a reference not a pointer
-  // Move around the transforms of each
-  playerTransform.position = {-10.0f, 5.0f, -10.0f};
-  ballTransform.position = {0.0f, 5.0f, -10.0f};
-  aiTransform.position = {10.0f, 5.0f, 0.0f};
+  // RigidBody& ballRigidBody = registry->GetComponent<RigidBody>(ballID);
+  // ballRigidBody.velocity =
+  //     glm::normalize(playerTransform.position - ballTransform.position) * 0.020f;
 
-  RigidBody& ballRigidBody = registry->GetComponent<RigidBody>(ballID);
-  ballRigidBody.velocity =
-      glm::normalize(playerTransform.position - ballTransform.position) * 0.020f;
-
-  registry->GetComponent<RigidBody>(playerPaddleID).applyGravity = false;
-  registry->GetComponent<RigidBody>(aiPaddleID).applyGravity = false;
-  registry->GetComponent<RigidBody>(ballID).applyGravity = false;
+  // registry->GetComponent<RigidBody>(playerPaddleID).applyGravity = false;
+  // registry->GetComponent<RigidBody>(aiPaddleID).applyGravity = false;
+  // registry->GetComponent<RigidBody>(ballID).applyGravity = false;
 }
 
 void Lucid::InitializeDemoPongSystems()

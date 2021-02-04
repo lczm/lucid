@@ -6,6 +6,62 @@
 #include "ecs.h"
 #include "engineComponents.h"
 
+static std::string ConvertFsToNativePaths(std::string path)
+{
+  std::string convertedPath = "";
+  for (auto c : path)
+  {
+    if (c == '\\')
+    {
+      convertedPath += "/";
+    }
+    else
+    {
+      convertedPath += c;
+    }
+  }
+
+  return convertedPath;
+}
+
+static std::string RemoveLastObjectFromPath(std::string path, char delimiter)
+{
+  std::vector<uint32_t> indexs;
+
+  for (uint32_t i = 0; i < path.size(); i++)
+  {
+    if (path[i] == delimiter)
+    {
+      indexs.push_back(i);
+    }
+  }
+
+  if (indexs.size() == 0)
+  {
+    return path;
+  }
+
+  uint32_t count = 0;
+  std::string convertedPath = "";
+
+  for (auto c : path)
+  {
+    if (c == delimiter)
+    {
+      count++;
+
+      if (count == indexs.size())
+      {
+        return convertedPath;
+      }
+    }
+
+    convertedPath += c;
+  }
+
+  return path;
+}
+
 static void CompileUserGame(Registry* registry)
 {
   Workspace& workspace = registry->GetResource<Workspace>();
@@ -20,18 +76,7 @@ static void CompileUserGame(Registry* registry)
     return;
   }
 
-  std::string convertedRoot = "";
-  for (auto c : root)
-  {
-    if (c == '\\')
-    {
-      convertedRoot += "/";
-    }
-    else
-    {
-      convertedRoot += c;
-    }
-  }
+  std::string convertedRoot = ConvertFsToNativePaths(root);
 
   std::cout << "relative path : " << convertedRoot << std::endl;
 

@@ -26,8 +26,7 @@
   REMOVE_COMPONENT(uint32_t, keyPtr, index)       \
   REMOVE_COMPONENT(Transform, keyPtr, index)      \
   REMOVE_COMPONENT(RigidBody, keyPtr, index)      \
-  REMOVE_COMPONENT(SoundEffect, keyPtr, index)    \
-  REMOVE_COMPONENT(Music, keyPtr, index)          \
+  REMOVE_COMPONENT(Sound, keyPtr, index)          \
   REMOVE_COMPONENT(Cube, keyPtr, index)           \
   REMOVE_COMPONENT(Sphere, keyPtr, index)         \
   REMOVE_COMPONENT(Model, keyPtr, index)          \

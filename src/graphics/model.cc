@@ -4,9 +4,10 @@ Model::Model() : boneMatrices(100)
 {
 }
 
-Model::Model(std::string path) : boneMatrices(100)
+Model::Model(std::string path, Registry* registry) : boneMatrices(100)
 {
   Model::path = path;
+  Model::registry = registry;
 
   importer = new Assimp::Importer();
   scene = importer->ReadFile(
@@ -312,10 +313,24 @@ uint32_t Model::TextureFromFile(const char* path, const std::string& directory, 
   std::string filename = std::string(path);
   filename = directory + '/' + filename;
 
+  Workspace& workspace = registry->GetResource<Workspace>();
+
+  if (workspace.relativeProjectRoot->path != "")
+  {
+    std::string directoryWithoutGltf = RemoveLastObjectFromPath(directory, '\\');
+    std::string filenameWithoutGltf = directoryWithoutGltf + '/' + std::string(path);
+
+    fs::path relative = workspace.relativeProjectRoot->path;
+    fs::path relativeFile = relative / fs::path(filenameWithoutGltf);
+
+    filename = ConvertFsToNativePaths(relativeFile.string());
+  }
+
   uint32_t textureID;
   glGenTextures(1, &textureID);
 
   int width, height, nrComponents;
+  // unsigned char* data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
   unsigned char* data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
 
   if (data)
@@ -341,7 +356,10 @@ uint32_t Model::TextureFromFile(const char* path, const std::string& directory, 
   }
   else
   {
-    std::cout << "(Model::TextureFromFile) : Texture failed to load at path: " << path << std::endl;
+    std::cout << "(Model::TextureFromFile) : Texture failed to load at path: " << filename
+              << std::endl;
+    // std::cout << "(Model::TextureFromFile) : Texture failed to load at path:::: "
+    //           << relativeFileString << std::endl;
     stbi_image_free(data);
   }
 
