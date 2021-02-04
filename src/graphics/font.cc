@@ -27,7 +27,7 @@ Font::Font(std::string path)
 
   if (charSizeError)
   {
-    std::cout << "Freetype Error: Could not set character size" std << endl;
+    std::cout << "Freetype Error: Could not set character size" << std::endl;
   }
 
   std::cout << "Freetype: Font loaded" << std::endl;
