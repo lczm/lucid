@@ -64,9 +64,6 @@ class Lucid
   void InitializeModelEntities();
   void InitializeSystems();
 
-  // For batch rendering demo
-  void InitializeManyCubes();
-
   // Demo pong game
   void InitializeDemoPongEntities();
   void InitializeDemoPongSystems();

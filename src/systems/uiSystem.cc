@@ -69,29 +69,7 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
       {
         if (ImGui::MenuItem("Open Project"))
         {
-          NFD_Init();
-          nfdchar_t* projectPath = NULL;
-          nfdresult_t result = NFD_PickFolder(&projectPath, NULL);
-          if (result == NFD_OKAY)
-          {
-            absoluteProjectRoot = NewNode(projectPath, true);
-            AddFilesAndDirectoriesToRoot(absoluteProjectRoot);
-            SortFilesAndDirectories(absoluteProjectRoot);
-            Workspace& workspace = registry->GetResource<Workspace>();
-            workspace.absoluteProjectRoot = absoluteProjectRoot;
-            Node* relativeProjectRoot = NewNode(projectPath, true);
-            relativeProjectRoot->path =
-                fs::relative(workspace.absoluteProjectRoot->path, lucidBuildPath);
-            workspace.relativeProjectRoot = relativeProjectRoot;
-            NFD_Quit();
-          }
-          else if (result == NFD_CANCEL)
-          {
-          }
-          else
-          {
-            std::cout << "NFD Error : " << NFD_GetError() << std::endl;
-          }
+          OpenProject(registry, input);
         }
         if (ImGui::MenuItem("Create Project"))
         {
@@ -121,11 +99,41 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
 
       if (ImGui::MenuItem("Build"))
       {
-        SerializeAllOut(registry);
+        SerializeAllOut(registry, "test.json");
+      }
+
+      if (input->IsKeyDown(GLFW_KEY_F1))
+      {
+        OpenProject(registry, input);
+
+        Workspace& workspace = registry->GetResource<Workspace>();
+        fs::path workspaceRoot = workspace.relativeProjectRoot->path;
+
+        if (fs::exists(workspaceRoot / "data.json"))
+        {
+          std::cout << "data.json exists in workspace, importing that" << std::endl;
+          SerializeAllIn(registry, "data.json");
+        }
       }
 
       if (input->IsKeyDown(GLFW_KEY_F3))
       {
+        Workspace& workspace = registry->GetResource<Workspace>();
+        fs::path workspaceRoot = workspace.relativeProjectRoot->path;
+        std::cout << "Workspace root " << workspaceRoot << std::endl;
+
+        SerializeAllOut(registry, "data.json");
+
+        // If it exists, then remove it as fs::copy will error out
+        // copying to a file that already exists.
+        if (fs::exists("../generic-build/data.json"))
+        {
+          fs::remove("../generic-build/data.json");
+        }
+
+        // Move data to generic-build
+        fs::copy("data.json", "../generic-build");
+
         CompileUserGame(registry);
       }
 
@@ -136,12 +144,12 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
 
       if (input->IsKeyDown(GLFW_KEY_F5))
       {
-        SerializeAllOut(registry);
+        SerializeAllOut(registry, "data.json");
       }
 
       if (input->IsKeyDown(GLFW_KEY_F6))
       {
-        SerializeAllIn(registry);
+        SerializeAllIn(registry, "data.json");
       }
 
       if (input->IsKeyDown(GLFW_KEY_DELETE))
@@ -1032,5 +1040,31 @@ void UiSystem::UpdateWindowFocus(Registry* registry, WindowType windowType, std:
     ImGui::SetWindowFocus(charFocusWindow);
     input->activeWindow = windowType;
     devDebug.changeFocusWindow = changeFocusWindow;
+  }
+}
+
+void UiSystem::OpenProject(Registry* registry, Input* input)
+{
+  NFD_Init();
+  nfdchar_t* projectPath = NULL;
+  nfdresult_t result = NFD_PickFolder(&projectPath, NULL);
+  if (result == NFD_OKAY)
+  {
+    absoluteProjectRoot = NewNode(projectPath, true);
+    AddFilesAndDirectoriesToRoot(absoluteProjectRoot);
+    SortFilesAndDirectories(absoluteProjectRoot);
+    Workspace& workspace = registry->GetResource<Workspace>();
+    workspace.absoluteProjectRoot = absoluteProjectRoot;
+    Node* relativeProjectRoot = NewNode(projectPath, true);
+    relativeProjectRoot->path = fs::relative(workspace.absoluteProjectRoot->path, lucidBuildPath);
+    workspace.relativeProjectRoot = relativeProjectRoot;
+    NFD_Quit();
+  }
+  else if (result == NFD_CANCEL)
+  {
+  }
+  else
+  {
+    std::cout << "NFD Error : " << NFD_GetError() << std::endl;
   }
 }

@@ -19,8 +19,6 @@
 // #include "pongSystem.h"
 // #endif
 
-#include "testSystem.h"
-
 #include "renderSystem.h"
 #include "audioSystem.h"
 #include "uiSystem.h"
@@ -45,9 +43,7 @@ static void InitSystems(Registry* registry)
   // registry->RegisterSystem(new AiSystem(), "ai", 3);
   // Demo end
 
-
-  std::cout << "initsystems from lucid-test" << std::endl;
-  registry->RegisterSystem(new TestSystem(), "test", 2);
+  std::cout << "initsystems from lucid" << std::endl;
 
   registry->RegisterSystem(new PhysicsSystem(), "physics", 4);
 

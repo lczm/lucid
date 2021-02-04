@@ -94,4 +94,5 @@ class UiSystem : public System
   void UpdateInputActiveWindow(Input* input, WindowType windowType);
   void UpdateWindowFocus(Registry* registry, WindowType windowType, std::string focusWindow,
                          Input* input, WindowType changeFocusWindow = WindowType::None);
+  void OpenProject(Registry* registry, Input* input);
 };

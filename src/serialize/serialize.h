@@ -10,9 +10,9 @@
 #include "glm.hpp"
 #include "gtx/string_cast.hpp"
 
-static void SerializeAllOut(Registry* registry)
+static void SerializeAllOut(Registry* registry, std::string filename)
 {
-  std::ofstream os("test.json");
+  std::ofstream os(filename);
   std::vector<Entity> entities = registry->GetAllEntityIds();
 
   {
@@ -37,9 +37,9 @@ static void SerializeAllOut(Registry* registry)
   }
 }
 
-static void SerializeAllIn(Registry* registry)
+static void SerializeAllIn(Registry* registry, std::string filename)
 {
-  std::ifstream is("test.json");
+  std::ifstream is(filename);
 
   std::cout << "Test serialize in" << std::endl;
 
