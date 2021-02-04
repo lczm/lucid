@@ -65,6 +65,7 @@
     if (registry->GetTypeName<Model>() == currentComponent)         \
     {                                                               \
       Model m;                                                      \
+      m.registry = registry;                                        \
       archive(cereal::make_nvp(registry->GetTypeName<Model>(), m)); \
       m.Load();                                                     \
       registry->AddComponent<Model>(entity);                        \
@@ -656,6 +657,19 @@ class Registry
     }
   }
 
+  template <typename Component>
+  void DeleteAllEntities()
+  {
+    entityComponentMap.clear();
+    entityIndexMap.clear();
+    // std::vector<Entity> entities = GetAllEntityIds();
+    // for (Entity entity : entities)
+    // {
+    //   std::cout << "Deleting : " << entity << std::endl;
+    //   DeleteEntity<Deleter>(entity);
+    // }
+  }
+
   // Get all entity ids
   std::vector<Entity> GetAllEntityIds()
   {
@@ -1168,6 +1182,10 @@ class Registry
   template <typename Resource>
   void CreateResource()
   {
+    if (resourceMap[GetHashCode<Resource>()])
+    {
+      delete resourceMap[GetHashCode<Resource>()];
+    }
     resourceMap[GetHashCode<Resource>()] = new Resource();
   }
 

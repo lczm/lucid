@@ -34,6 +34,11 @@ static void SerializeAllOut(Registry* registry, std::string filename)
 
       archive.finishNode();
     }
+
+    // for (auto pair : registry->resourceMap)
+    // {
+    //   archive()
+    // }
   }
 }
 

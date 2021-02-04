@@ -107,32 +107,44 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
         OpenProject(registry, input);
 
         Workspace& workspace = registry->GetResource<Workspace>();
-        fs::path workspaceRoot = workspace.relativeProjectRoot->path;
+        // Remember to go up one path because it the program is ran in lucid/build
+        // and relativeProjectRoot assumes we start in lucid
+        fs::path workspaceRoot = ".." / workspace.relativeProjectRoot->path;
+
+        // registry->DeleteAllEntities<Deleter>();
 
         if (fs::exists(workspaceRoot / "data.json"))
         {
           std::cout << "data.json exists in workspace, importing that" << std::endl;
-          SerializeAllIn(registry, "data.json");
+          SerializeAllIn(registry, (workspaceRoot / "data.json").string());
         }
       }
 
       if (input->IsKeyDown(GLFW_KEY_F3))
       {
         Workspace& workspace = registry->GetResource<Workspace>();
-        fs::path workspaceRoot = workspace.relativeProjectRoot->path;
-        std::cout << "Workspace root " << workspaceRoot << std::endl;
+        // fs::path workspaceRoot = workspace.relativeProjectRoot->path;
+        std::string workspaceRoot = "../" + workspace.relativeProjectRoot->path.string();
 
         SerializeAllOut(registry, "data.json");
 
+        // Add a ../ as this is ran from build, and the relative path is from lucid root.
+        std::string workspaceRootData = workspaceRoot + "/data.json";
+        std::string workspaceRootDataConverted = ConvertFsToNativePaths(workspaceRootData);
+
+        std::cout << "workspace" << workspaceRoot << std::endl;
+        std::cout << "workspace root data : " << workspaceRootDataConverted << std::endl;
+
         // If it exists, then remove it as fs::copy will error out
         // copying to a file that already exists.
-        if (fs::exists("../generic-build/data.json"))
+        // if (fs::exists("../generic-build/data.json"))
+        if (fs::exists(workspaceRootDataConverted))
         {
-          fs::remove("../generic-build/data.json");
+          fs::remove(workspaceRootDataConverted);
         }
 
         // Move data to generic-build
-        fs::copy("data.json", "../generic-build");
+        fs::copy("data.json", workspaceRoot);
 
         CompileUserGame(registry);
       }
