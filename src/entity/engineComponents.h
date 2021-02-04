@@ -26,7 +26,7 @@ struct DevDebug
   // fps is updated per frame
   uint32_t fps = 0;
   uint32_t rayID = 0;
-  uint32_t activeEntity = 0;
+  uint32_t activeEntity = NONE_ACTIVE_ENTITY;
 
   bool onGizmo = false;
   WindowType changeFocusWindow = WindowType::None;

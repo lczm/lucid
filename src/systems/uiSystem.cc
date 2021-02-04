@@ -144,6 +144,18 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
         SerializeAllIn(registry);
       }
 
+      if (input->IsKeyDown(GLFW_KEY_DELETE))
+      {
+        DevDebug& devDebug = registry->GetResource<DevDebug>();
+        if (devDebug.activeEntity != NONE_ACTIVE_ENTITY)
+        {
+          // Delete the active entity
+          registry->DeleteEntity<Deleter>(devDebug.activeEntity);
+          // Reset it back to where there is no active entity.
+          devDebug.activeEntity = NONE_ACTIVE_ENTITY;
+        }
+      }
+
       // TODO : Draw frametime
       // Draw FPS
       DevDebug& devDebug = registry->GetResource<DevDebug>();

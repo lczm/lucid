@@ -59,3 +59,6 @@ const float PI = static_cast<float>(3.14159265359);
 
 // Pong demo
 const float PADDLE_MOVE_SPEED = 0.05f;
+
+// Default activeEntity, which is also nothing.
+const uint32_t NONE_ACTIVE_ENTITY = 0;
