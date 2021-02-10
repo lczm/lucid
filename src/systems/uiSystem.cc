@@ -113,11 +113,12 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
 
         // registry->DeleteAllEntities<Deleter>();
 
-        if (fs::exists(workspaceRoot / "data.json"))
-        {
-          std::cout << "data.json exists in workspace, importing that" << std::endl;
-          SerializeAllIn(registry, (workspaceRoot / "data.json").string());
-        }
+        // TODO : This will break stuff
+        // if (fs::exists(workspaceRoot / "data.json"))
+        // {
+        //   std::cout << "data.json exists in workspace, importing that" << std::endl;
+        //   SerializeAllIn(registry, (workspaceRoot / "data.json").string());
+        // }
       }
 
       if (input->IsKeyDown(GLFW_KEY_F3))
