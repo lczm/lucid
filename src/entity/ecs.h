@@ -302,6 +302,34 @@ class ComponentVectorContainer
     delete this;
   }
 
+  template <typename Func>
+  void EachExact(Func function)
+  {
+    std::vector<void*> componentVectors = registry->GetComponentsExact<Components...>();
+
+    std::vector<uint32_t> hashCodes = {(registry->GetHashCode<Components>())...};
+    for (size_t i = 0; i < hashCodes.size(); i++)
+    {
+      componentIndex[hashCodes[i]] = i;
+    }
+    // componentIndex[hashCodes.size() + 1] = registry->GetHashCode<uint32_t>();
+    componentIndex[registry->GetHashCode<uint32_t>()] = hashCodes.size();
+
+    uint32_t maxSize = GetSize<Components...>(componentVectors);
+
+    //  For each of the components
+    for (size_t i = 0; i < maxSize; i++)
+    {
+      // Make a tuple consisting of the component data
+      // this has to be forward_as_tuple and not make_tuple as GetComponentData returns a reference
+      auto tuple = std::forward_as_tuple(GetComponentData<Components>(componentVectors, i)...);
+
+      std::apply(function, tuple);
+    }
+
+    delete this;
+  }
+
   template <typename Component>
   Component& GetComponentData(std::vector<void*>& componentVectorPtr, uint32_t index)
   {
