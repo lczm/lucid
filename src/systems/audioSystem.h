@@ -11,6 +11,7 @@ class AudioSystem : public System
  private:
   SoundEffectsLibrary* seLibrary;
   std::map<ALuint, SoundEffectsPlayer*> bufferMap;
+  SoundDevice* sd;
 
  public:
   AudioSystem();
