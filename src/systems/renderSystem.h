@@ -11,18 +11,18 @@
 #include "shaderResource.h"
 #include "shapes.h"
 #include "camera.h"
-#include "primitiveVertex.h"
 #include "engineComponents.h"
 #include "renderUtils.h"
 #include "raySolver.h"
 #include "colliders.h"
 
+#if DEBUG
 #include "gtx/string_cast.hpp"
-
 #include "imgui.h"
 #include "imgui_internal.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
+#endif
 
 class RenderSystem : public System
 {

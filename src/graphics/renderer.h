@@ -9,7 +9,6 @@
 #include "model.h"
 #include "shapes.h"
 #include "boundingBox.h"
-#include "primitiveVertex.h"
 #include "renderUtils.h"
 #include "engineComponents.h"
 
