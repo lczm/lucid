@@ -8,8 +8,7 @@
 #include "utils.h"
 #include "renderer.h"
 #include "renderUtils.h"
-#include "cube.h"
-#include "sphere.h"
+#include "shapes.h"
 #include "commonEnum.h"
 #include "colliders.h"
 

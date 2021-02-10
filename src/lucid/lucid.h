@@ -22,9 +22,7 @@
 // #endif
 
 #include "model.h"
-#include "line.h"
-#include "cube.h"
-#include "sphere.h"
+#include "shapes.h"
 #include "shaderResource.h"
 
 // Demo imports

@@ -224,7 +224,7 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 void Model::UpdateBoneMatrices(float dt, uint32_t animationId, aiNode* node, glm::mat4 transform)
 {
   auto animation = scene->mAnimations[animationId];
-  dt = fmod(dt, scene->mAnimations[animationId]->mDuration);
+  dt = static_cast<float>(fmod(dt, scene->mAnimations[animationId]->mDuration));
 
   std::string nodeName = node->mName.C_Str();
   glm::mat4 currentTransform = glm::mat4(1.0f);

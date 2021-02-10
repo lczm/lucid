@@ -2,8 +2,7 @@
 
 #include "shader.h"
 #include "ecs.h"
-#include "cube.h"
-#include "sphere.h"
+#include "shapes.h"
 #include "model.h"
 #include "colliders.h"
 #include "engineComponents.h"
