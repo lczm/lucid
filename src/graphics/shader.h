@@ -64,3 +64,16 @@ class Shader
   void SetUniformMatFloat4(const std::string& name, glm::mat4 mat);
   void SetUniformMatFloat4(const std::string& name, uint32_t count, std::vector<glm::mat4> mats);
 };
+
+struct ShaderResource
+{
+  Shader modelShader;
+  Shader modelAnimatedShader;
+
+  // Generic primitive shader
+  Shader primitiveShader;
+
+  Shader lineShader;
+  Shader cubeShader;
+  Shader sphereShader;
+};

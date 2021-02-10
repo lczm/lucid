@@ -22,7 +22,6 @@
 
 #include "model.h"
 #include "shapes.h"
-#include "shaderResource.h"
 
 // Demo imports
 // #include "pong.h"
