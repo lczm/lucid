@@ -7,11 +7,8 @@
 #include "shader.h"
 #include "ecs.h"
 #include "model.h"
-#include "cube.h"
-#include "line.h"
-#include "sphere.h"
+#include "shapes.h"
 #include "boundingBox.h"
-#include "primitiveVertex.h"
 #include "renderUtils.h"
 #include "engineComponents.h"
 

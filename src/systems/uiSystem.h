@@ -3,14 +3,12 @@
 #include <vector>
 #include <iostream>
 
+#include "constants.h"
 #include "shader.h"
 #include "ecs.h"
-#include "utils.h"
 #include "renderer.h"
 #include "renderUtils.h"
-#include "cube.h"
-#include "sphere.h"
-#include "commonEnum.h"
+#include "shapes.h"
 #include "colliders.h"
 
 // #if DEBUG

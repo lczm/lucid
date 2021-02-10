@@ -1,8 +1,8 @@
 #pragma once
 
-#include "line.h"
+#include "constants.h"
+#include "shapes.h"
 #include "glm.hpp"
-#include "commonEnum.h"
 
 #include "imgui.h"
 #include "imgui_internal.h"
@@ -119,8 +119,8 @@ struct Workspace
 
 struct Listener
 {
-  int x = 0;
-  int y = 0;
-  int z = 0;
-  int gain = 1;
+  float x = 0;
+  float y = 0;
+  float z = 0;
+  float gain = 1;
 };

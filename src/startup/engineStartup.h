@@ -4,10 +4,9 @@
 #include "component.h"
 #include "engineComponents.h"
 
-#include "cube.h"
 #include "model.h"
 #include "shader.h"
-#include "sphere.h"
+#include "shapes.h"
 #include "colliders.h"
 #include "camera.h"
 #include "shaderResource.h"

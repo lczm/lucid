@@ -12,7 +12,6 @@
 #include "ecs.h"
 #include "input.h"
 #include "constants.h"
-#include "utils.h"
 #include "startup.h"
 #include "engineStartup.h"
 #include "colliders.h"
@@ -22,9 +21,7 @@
 // #endif
 
 #include "model.h"
-#include "line.h"
-#include "cube.h"
-#include "sphere.h"
+#include "shapes.h"
 #include "shaderResource.h"
 
 // Demo imports

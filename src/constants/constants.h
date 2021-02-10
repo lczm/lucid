@@ -65,3 +65,32 @@ const float PADDLE_MOVE_SPEED = 0.05f;
 
 // Default activeEntity, which is also nothing.
 const uint32_t NONE_ACTIVE_ENTITY = 0;
+
+// UI usage
+#if DEBUG
+enum class WindowType
+{
+  Hierarchy,
+  Project,
+  Console,
+  Animation,
+  Animator,
+  Inspector,
+  Services,
+  Assets,
+  Scene,
+  GameCamera,
+  ToolBar,
+  DevDebug,
+  DefaultAssets,
+  GameConfiguration,
+  None,
+};
+
+enum class DefaultAssetsType
+{
+  Cube,
+  Sphere,
+  Line
+};
+#endif
