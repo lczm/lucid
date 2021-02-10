@@ -1,5 +1,7 @@
 #pragma once
 
+#include <unordered_map>
+
 #include "ecs.h"
 #include "constants.h"
 #include "soundDevice.h"
@@ -10,7 +12,7 @@ class AudioSystem : public System
 {
  private:
   SoundEffectsLibrary* seLibrary;
-  std::map<ALuint, SoundEffectsPlayer*> bufferMap;
+  std::unordered_map<ALuint, SoundEffectsPlayer*> bufferMap;
 
  public:
   AudioSystem();

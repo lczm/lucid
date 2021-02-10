@@ -12,7 +12,6 @@
 #include "ecs.h"
 #include "input.h"
 #include "constants.h"
-#include "utils.h"
 #include "startup.h"
 #include "engineStartup.h"
 #include "colliders.h"

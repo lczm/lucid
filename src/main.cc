@@ -10,7 +10,6 @@
 #include "errors.h"
 #include "ecs.h"
 #include "input.h"
-#include "utils.h"
 #include <GLFW/glfw3.h>
 
 static void ErrorCallback(int error, const char* description)

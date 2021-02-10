@@ -1,8 +1,8 @@
 #pragma once
 
+#include "constants.h"
 #include "shapes.h"
 #include "glm.hpp"
-#include "commonEnum.h"
 
 #include "imgui.h"
 #include "imgui_internal.h"

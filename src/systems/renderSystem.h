@@ -6,7 +6,6 @@
 
 #include "shader.h"
 #include "ecs.h"
-#include "utils.h"
 #include "renderer.h"
 #include "shaderResource.h"
 #include "shapes.h"

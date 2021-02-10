@@ -3,8 +3,6 @@
 #include <iostream>
 
 #include "constants.h"
-#include "commonEnum.h"
-
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
 
