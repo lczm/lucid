@@ -13,6 +13,7 @@ class AudioSystem : public System
  private:
   SoundEffectsLibrary* seLibrary;
   std::unordered_map<ALuint, SoundEffectsPlayer*> bufferMap;
+  SoundDevice* sd;
 
  public:
   AudioSystem();
