@@ -7,12 +7,11 @@
 #include "shader.h"
 #include "ecs.h"
 #include "renderer.h"
-#include "shaderResource.h"
 #include "shapes.h"
 #include "camera.h"
 #include "engineComponents.h"
 #include "renderUtils.h"
-#include "raySolver.h"
+#include "ray.h"
 #include "colliders.h"
 
 #if DEBUG

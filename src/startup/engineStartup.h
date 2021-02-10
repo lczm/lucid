@@ -9,7 +9,6 @@
 #include "shapes.h"
 #include "colliders.h"
 #include "camera.h"
-#include "shaderResource.h"
 
 // #if DEBUG
 // #include "pong.h"

@@ -7,7 +7,6 @@
 
 #include "lucid.h"
 #include "constants.h"
-#include "errors.h"
 #include "ecs.h"
 #include "input.h"
 #include <GLFW/glfw3.h>
@@ -23,6 +22,16 @@ static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, i
   {
     glfwSetWindowShouldClose(window, GLFW_TRUE);
   }
+}
+
+static bool GlCheckError()
+{
+  while (GLenum error = glGetError())
+  {
+    std::cout << "GL Error : " << std::hex << error << std::endl;
+    return true;
+  }
+  return false;
 }
 
 void MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
@@ -137,7 +146,8 @@ int main(void)
 
     // Clear all errors, so that when we check for errors, the
     // errors are not checking the previous iteration
-    GlClearError();
+    while (glGetError() != GL_NO_ERROR)
+      ;
 
     lucid->Update();
 
