@@ -915,28 +915,28 @@ void UiSystem::DrawInspectorSoundComponent(Registry* registry, DevDebug& devDebu
         ImGui::EndPopup();
       }
       Sound& sound = registry->GetComponent<Sound>(devDebug.activeEntity);
-      std::string soundFilePath = sound.filePath;
-      ImGui::InputText("File Path", soundFilePath.data(), IM_ARRAYSIZE(soundFilePath.data()),
-                       ImGuiInputTextFlags_ReadOnly);
-      if (ImGui::Button("Open"))
-      {
-        NFD_Init();
-        nfdchar_t* sfPath = NULL;
-        nfdfilteritem_t filterItem[1] = {{"Sound Files", "wav"}};
-        nfdresult_t result = NFD_OpenDialog(&sfPath, filterItem, 1, NULL);
-        if (result == NFD_OKAY)
-        {
-          sound.filePath = sfPath;
-          NFD_Quit();
-        }
-        else if (result == NFD_CANCEL)
-        {
-        }
-        else
-        {
-          std::cout << "NFD Error : " << NFD_GetError() << std::endl;
-        }
-      }
+      // std::string soundFilePath = sound.filePath;
+      // ImGui::InputText("File Path", soundFilePath.data(), IM_ARRAYSIZE(soundFilePath.data()),
+      //                 ImGuiInputTextFlags_ReadOnly);
+      // if (ImGui::Button("Open"))
+      //{
+      //  NFD_Init();
+      //  nfdchar_t* sfPath = NULL;
+      //  nfdfilteritem_t filterItem[1] = {{"Sound Files", "wav"}};
+      //  nfdresult_t result = NFD_OpenDialog(&sfPath, filterItem, 1, NULL);
+      //  if (result == NFD_OKAY)
+      //  {
+      //    sound.filePath = sfPath;
+      //    NFD_Quit();
+      //  }
+      //  else if (result == NFD_CANCEL)
+      //  {
+      //  }
+      //  else
+      //  {
+      //    std::cout << "NFD Error : " << NFD_GetError() << std::endl;
+      //  }
+      //}
       ImGui::InputFloat("Gain", &(sound.gain), 0.25f, 1.0f);
       ImGui::Checkbox("Looping", &(sound.looping));
       if (ImGui::Button("Play"))

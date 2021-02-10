@@ -31,6 +31,7 @@
 #include "serialize.h"
 #include "systemUtils.h"
 #include "font.h"
+#include "sound.h"
 
 namespace fs = std::filesystem;
 

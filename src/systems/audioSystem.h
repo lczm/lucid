@@ -3,6 +3,7 @@
 #include <unordered_map>
 
 #include "ecs.h"
+#include "sound.h"
 #include "constants.h"
 #include "soundDevice.h"
 #include "soundEffectsLibrary.h"
@@ -11,7 +12,7 @@
 class AudioSystem : public System
 {
  private:
-  SoundEffectsLibrary* seLibrary;
+  // SoundEffectsLibrary* seLibrary;
   std::unordered_map<ALuint, SoundEffectsPlayer*> bufferMap;
   SoundDevice* sd;
 
