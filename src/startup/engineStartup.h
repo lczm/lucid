@@ -130,13 +130,24 @@ static void InitEngineComponents(Registry* registry)
   // Entity rigidBodyConfigurationID = registry->GetAvailableEntityId();
   // registry->CreateEntity<RigidBodyConfiguration>(rigidBodyConfigurationID);
 
-  registry->CreateResource<PrimitiveBatchIds>();
-  registry->CreateResource<SphereVerticesIndices>();
-  registry->CreateResource<GameEngineState>();
+  // Editor resources are for the engine devs to use
+  registry->CreateEditorResource<PrimitiveBatchIds>();
+  registry->CreateEditorResource<SphereVerticesIndices>();
+  registry->CreateEditorResource<Workspace>();
+  registry->CreateEditorResource<Listener>();
+  registry->CreateEditorResource<SceneRender>();
+  registry->CreateEditorResource<DevDebug>();
+  registry->CreateEditorResource<WidgetLayout>();
+  registry->CreateEditorResource<RendererStats>();
+  registry->CreateEditorResource<GameEngineState>();
+  // Scene Camera
+  registry->CreateEditorResource<Camera>();
+
+  // Resources are for the users to use
   registry->CreateResource<RigidBodyConfiguration>();
   registry->CreateResource<ShaderResource>();
-  registry->CreateResource<Workspace>();
-  registry->CreateResource<Listener>();
+  // Game Camera
+  registry->CreateResource<Camera>();
 
   ShaderResource& shaderResource = registry->GetResource<ShaderResource>();
 
@@ -162,10 +173,5 @@ static void InitEngineComponents(Registry* registry)
   // registry->CreateEntity<DevDebug>(devDebugID);
   // registry->CreateEntity<WidgetLayout>(widgetLayoutID);
   // registry->CreateEntity<RendererStats>(rendererStatsID);
-
-  registry->CreateResource<SceneRender>();
-  registry->CreateResource<DevDebug>();
-  registry->CreateResource<WidgetLayout>();
-  registry->CreateResource<RendererStats>();
   // #endif
 }

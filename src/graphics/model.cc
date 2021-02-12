@@ -313,7 +313,7 @@ uint32_t Model::TextureFromFile(const char* path, const std::string& directory, 
   std::string filename = std::string(path);
   filename = directory + '/' + filename;
 
-  Workspace& workspace = registry->GetResource<Workspace>();
+  Workspace& workspace = registry->GetEditorResource<Workspace>();
 
   if (workspace.relativeProjectRoot->path != "")
   {

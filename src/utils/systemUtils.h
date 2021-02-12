@@ -64,7 +64,7 @@ static std::string RemoveLastObjectFromPath(std::string path, char delimiter)
 
 static void CompileUserGame(Registry* registry)
 {
-  Workspace& workspace = registry->GetResource<Workspace>();
+  Workspace& workspace = registry->GetEditorResource<Workspace>();
   std::string root = workspace.relativeProjectRoot->path.string();
 
   // Root is empty, dont try to compile

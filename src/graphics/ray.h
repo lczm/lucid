@@ -7,7 +7,7 @@
 static glm::vec3 GetRayDirection(Registry* registry, Input* input)
 {
 #if DEBUG
-  WidgetLayout& widgetLayout = registry->GetResource<WidgetLayout>();
+  WidgetLayout& widgetLayout = registry->GetEditorResource<WidgetLayout>();
   float mouseX = static_cast<float>(input->GetMouseX() - widgetLayout.leftWindowWidth);
   float mouseY = static_cast<float>(input->GetMouseYAbsolute() - widgetLayout.menuBarHeight -
                                     widgetLayout.topWindowHeight);
@@ -37,7 +37,13 @@ static glm::vec3 GetRayDirection(Registry* registry, Input* input)
   // homogeneous clip coordinates
   glm::vec4 rayClip = glm::vec4(rayNds.x, rayNds.y, -1.0f, 1.0f);
 
+#if DEBUG
+  Camera& camera = registry->GetEditorResource<Camera>();
+#endif
+
+#if RELEASE
   Camera& camera = registry->GetResource<Camera>();
+#endif
 
   // convert to eye/camera coordinates
   glm::vec4 rayEye = glm::inverse(camera.GetProjection()) * rayClip;

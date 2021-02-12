@@ -106,7 +106,7 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
       {
         OpenProject(registry, input);
 
-        Workspace& workspace = registry->GetResource<Workspace>();
+        Workspace& workspace = registry->GetEditorResource<Workspace>();
         // Remember to go up one path because it the program is ran in lucid/build
         // and relativeProjectRoot assumes we start in lucid
         fs::path workspaceRoot = ".." / workspace.relativeProjectRoot->path;
@@ -123,7 +123,7 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
 
       if (input->IsKeyDown(GLFW_KEY_F3))
       {
-        Workspace& workspace = registry->GetResource<Workspace>();
+        Workspace& workspace = registry->GetEditorResource<Workspace>();
         // fs::path workspaceRoot = workspace.relativeProjectRoot->path;
         std::string workspaceRoot = "../" + workspace.relativeProjectRoot->path.string();
 
@@ -167,7 +167,7 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
 
       if (input->IsKeyDown(GLFW_KEY_DELETE))
       {
-        DevDebug& devDebug = registry->GetResource<DevDebug>();
+        DevDebug& devDebug = registry->GetEditorResource<DevDebug>();
         if (devDebug.activeEntity != NONE_ACTIVE_ENTITY)
         {
           // Delete the active entity
@@ -179,7 +179,7 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
 
       // TODO : Draw frametime
       // Draw FPS
-      DevDebug& devDebug = registry->GetResource<DevDebug>();
+      DevDebug& devDebug = registry->GetEditorResource<DevDebug>();
       std::string fpsCount = "FPS : " + std::to_string(devDebug.fps);
       ImGui::Text(fpsCount.c_str());
 
@@ -391,7 +391,7 @@ void UiSystem::DrawHierarchy(float dt, Registry* registry, Input* input)
 
   // TODO : The hierarchy is not drawn this way.
 
-  DevDebug& devDebug = registry->GetResource<DevDebug>();
+  DevDebug& devDebug = registry->GetEditorResource<DevDebug>();
   static Entity selected = -1;
   int i = 1;
 
@@ -452,9 +452,9 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
   // Get the size of the current imgui window to draw in
   ImVec2 wsize = ImGui::GetWindowSize();
 
-  SceneRender sceneRender = registry->GetResource<SceneRender>();
-  DevDebug& devDebug = registry->GetResource<DevDebug>();
-  WidgetLayout& widgetLayout = registry->GetResource<WidgetLayout>();
+  SceneRender sceneRender = registry->GetEditorResource<SceneRender>();
+  DevDebug& devDebug = registry->GetEditorResource<DevDebug>();
+  WidgetLayout& widgetLayout = registry->GetEditorResource<WidgetLayout>();
 
   //// if (devDebug.changeFocusWindow == WindowType::Scene) ImGui::SetWindowFocus();
 
@@ -490,7 +490,7 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
         {
           Entity cubeID = registry->GetAvailableEntityId();
           registry->CreateEntity<Cube, Transform>(cubeID);
-          Camera& camera = registry->GetResource<Camera>();
+          Camera& camera = registry->GetEditorResource<Camera>();
           registry->GetComponent<Transform>(cubeID).position = camera.GetPositionInWorld();
         }
         break;
@@ -498,7 +498,7 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
         {
           Entity sphereID = registry->GetAvailableEntityId();
           registry->CreateEntity<Sphere, Transform>(sphereID);
-          Camera& camera = registry->GetResource<Camera>();
+          Camera& camera = registry->GetEditorResource<Camera>();
           registry->GetComponent<Transform>(sphereID).position = camera.GetPositionInWorld();
         }
         break;
@@ -516,7 +516,7 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
       Node payloadN = *(const Node*)payload->Data;
       // placeholders to confirm that dragging and dropping models works
       Entity assetId = registry->GetAvailableEntityId();
-      Camera& camera = registry->GetResource<Camera>();
+      Camera& camera = registry->GetEditorResource<Camera>();
       registry->CreateEntity<Model, Transform, ColliderPolygon>(assetId);
       registry->AddComponentData<Model>(assetId, Model(payloadN.path.string(), registry));
       registry->GetComponent<Model>(assetId).toAnimate = false;
@@ -551,8 +551,8 @@ void UiSystem::DrawGameCamera(float dt, Registry* registry, Input* input)
   // Get the size of the current imgui window to draw in
   ImVec2 wsize = ImGui::GetWindowSize();
 
-  SceneRender sceneRender = registry->GetResource<SceneRender>();
-  DevDebug& devDebug = registry->GetResource<DevDebug>();
+  SceneRender sceneRender = registry->GetEditorResource<SceneRender>();
+  DevDebug& devDebug = registry->GetEditorResource<DevDebug>();
 
   // This should draw from sceneRender fbo that is being rendered through the gameScene camera
   // Flip V in the UV
@@ -608,7 +608,7 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Inspector");
 
-  DevDebug& devDebug = registry->GetResource<DevDebug>();
+  DevDebug& devDebug = registry->GetEditorResource<DevDebug>();
   ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen;
   static std::string currentItem = "";
 
@@ -645,9 +645,9 @@ void UiSystem::DrawDevDebug(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("DevDebug");
 
-  DevDebug& devDebug = registry->GetResource<DevDebug>();
+  DevDebug& devDebug = registry->GetEditorResource<DevDebug>();
   // WidgetLayout& widgetLayout = registry->GetComponent<WidgetLayout>();
-  RendererStats& rendererStats = registry->GetResource<RendererStats>();
+  RendererStats& rendererStats = registry->GetEditorResource<RendererStats>();
 
   // widgetLayout.rightWindowWidth = ImGui::GetWindowWidth();
   // if (devDebug.changeFocusWindow == WindowType::DevDebug) ImGui::SetWindowFocus();
@@ -698,7 +698,7 @@ void UiSystem::DrawToolBar(float dt, Registry* registry, Input* input)
 {
   ImGuiWindowClass windowClass;
   ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse;
-  DevDebug& devDebug = registry->GetResource<DevDebug>();
+  DevDebug& devDebug = registry->GetEditorResource<DevDebug>();
   float buttonWidth = 60.0f;
   float totalPadding = 16;
 
@@ -707,7 +707,7 @@ void UiSystem::DrawToolBar(float dt, Registry* registry, Input* input)
   ImGui::Begin("ToolBar", (bool*)0, windowFlags);
   ImVec2 wSize = ImGui::GetWindowSize();
 
-  GameEngineState& gameEngineState = registry->GetResource<GameEngineState>();
+  GameEngineState& gameEngineState = registry->GetEditorResource<GameEngineState>();
 
   if (devDebug.activeEntity != 0)
   {
@@ -755,7 +755,7 @@ void UiSystem::DrawToolBar(float dt, Registry* registry, Input* input)
   ImGui::SameLine(ImGui::GetWindowContentRegionMax().x - 60);
   if (ImGui::Button("Reset", ImVec2(buttonWidth, 0.0f)))
   {
-    Camera& camera = registry->GetResource<Camera>();
+    Camera& camera = registry->GetEditorResource<Camera>();
     camera.transform.position = glm::vec3(0.0f, 0.0f, 0.0f);
     camera.transform.rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
     camera.TranslateInWorld({0.0f, 1.0f, 20.0f});
@@ -963,7 +963,7 @@ void UiSystem::DisableInputWhenDragScrollbar(Registry* registry, Input* input)
 
 void UiSystem::HandleGizmoInput(Registry* registry, Input* input)
 {
-  DevDebug& devDebug = registry->GetResource<DevDebug>();
+  DevDebug& devDebug = registry->GetEditorResource<DevDebug>();
 
   if (devDebug.activeEntity != 0 && input->enableInput)
   {
@@ -981,7 +981,7 @@ void UiSystem::HandleGizmoInput(Registry* registry, Input* input)
 
     // TODO Create a utility method to compute this
     auto modelMatrix = GetModelMatrix(transform);
-    Camera& camera = registry->GetResource<Camera>();
+    Camera& camera = registry->GetEditorResource<Camera>();
     ImGuizmo::Manipulate(glm::value_ptr(camera.GetView()), glm::value_ptr(camera.GetProjection()),
                          devDebug.gizmoOperation, ImGuizmo::LOCAL, glm::value_ptr(modelMatrix));
 
@@ -1024,7 +1024,7 @@ void UiSystem::UpdateSceneWindow(Registry* registry, Input* input)
 
 void UiSystem::UpdateGizmoType(Registry* registry, Input* input)
 {
-  DevDebug& devDebug = registry->GetResource<DevDebug>();
+  DevDebug& devDebug = registry->GetEditorResource<DevDebug>();
 
   if (input->IsKeyDown('1'))
     devDebug.gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
@@ -1045,7 +1045,7 @@ void UiSystem::UpdateInputActiveWindow(Input* input, WindowType windowType)
 void UiSystem::UpdateWindowFocus(Registry* registry, WindowType windowType, std::string focusWindow,
                                  Input* input, WindowType changeFocusWindow)
 {
-  DevDebug& devDebug = registry->GetResource<DevDebug>();
+  DevDebug& devDebug = registry->GetEditorResource<DevDebug>();
 
   if (devDebug.changeFocusWindow == windowType)
   {
@@ -1066,7 +1066,7 @@ void UiSystem::OpenProject(Registry* registry, Input* input)
     absoluteProjectRoot = NewNode(projectPath, true);
     AddFilesAndDirectoriesToRoot(absoluteProjectRoot);
     SortFilesAndDirectories(absoluteProjectRoot);
-    Workspace& workspace = registry->GetResource<Workspace>();
+    Workspace& workspace = registry->GetEditorResource<Workspace>();
     workspace.absoluteProjectRoot = absoluteProjectRoot;
     Node* relativeProjectRoot = NewNode(projectPath, true);
     relativeProjectRoot->path = fs::relative(workspace.absoluteProjectRoot->path, lucidBuildPath);

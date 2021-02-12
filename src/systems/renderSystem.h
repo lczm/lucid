@@ -28,7 +28,7 @@ class RenderSystem : public System
   Renderer* renderer;
 
   // #if DEBUG
-  Camera* camera;
+  Camera* sceneCamera;
   // #endif
 
   uint32_t fbo, rbo;

@@ -10,7 +10,7 @@ AudioSystem::~AudioSystem() = default;
 
 void AudioSystem::Update(float dt, Registry* registry, Input* input)
 {
-  Listener listener = registry->GetResource<Listener>();
+  Listener listener = registry->GetEditorResource<Listener>();
 
   sd->SetLocation(listener.x, listener.y, listener.z);
   // TODO: add feature to change orientation

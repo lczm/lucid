@@ -422,6 +422,7 @@ class Registry
   // Store single use structs (i.e. resources)
   // mapping : GetHashCode<T> : void* (T)
   std::unordered_map<uint32_t, void*> resourceMap;
+  std::unordered_map<uint32_t, void*> editorResourceMap;
 
  public:
   Registry()
@@ -1218,9 +1219,25 @@ class Registry
   }
 
   template <typename Resource>
+  void CreateEditorResource()
+  {
+    if (editorResourceMap[GetHashCode<Resource>()])
+    {
+      delete editorResourceMap[GetHashCode<Resource>()];
+    }
+    editorResourceMap[GetHashCode<Resource>()] = new Resource();
+  }
+
+  template <typename Resource>
   Resource& GetResource()
   {
     return *(static_cast<Resource*>(resourceMap[GetHashCode<Resource>()]));
+  }
+
+  template <typename Resource>
+  Resource& GetEditorResource()
+  {
+    return *(static_cast<Resource*>(editorResourceMap[GetHashCode<Resource>()]));
   }
 
   // Given an archetype and the index that the user wants,
