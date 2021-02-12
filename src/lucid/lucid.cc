@@ -47,6 +47,11 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window)
   // Demo pong
   // InitializeDemoPongEntities();
   // InitializeDemoPongSystems();
+
+  // Move scene camera
+  registry->GetEditorResource<Camera>().TranslateInWorld({0.0f, 1.0f, 20.0f});
+  // Move game camera
+  registry->GetResource<Camera>().TranslateInWorld({0.0f, 1.0f, 5.0f});
 }
 
 Lucid::~Lucid()

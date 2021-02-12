@@ -27,9 +27,7 @@ class RenderSystem : public System
  private:
   Renderer* renderer;
 
-  // #if DEBUG
-  Camera* sceneCamera;
-  // #endif
+  Camera* camera;
 
   uint32_t fbo, rbo;
   uint32_t texture;
@@ -44,7 +42,6 @@ class RenderSystem : public System
   void Update(float dt, Registry* registry, Input* input);
 
   void InitRenderBuffers();
-  void InitSceneCameraComponent(Registry* registry);
   void InitPrimitiveBuffers(Registry* registry);
 
   void HandleMousePan(float dt, Registry* registry, Input* input);

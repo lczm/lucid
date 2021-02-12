@@ -8,7 +8,6 @@ RenderSystem::RenderSystem(Registry* registry) : defaultBoneMatrices(100, glm::m
   InitRenderBuffers();
 #endif
   InitPrimitiveBuffers(registry);
-  InitSceneCameraComponent(registry);
 }
 
 RenderSystem::~RenderSystem()
@@ -19,6 +18,8 @@ RenderSystem::~RenderSystem()
 
 void RenderSystem::Update(float dt, Registry* registry, Input* input)
 {
+  camera = GetActiveCameraPtr(registry);
+
 #if DEBUG
   // Temporary gateway for mouse picking
   HandleMousePick(dt, registry, input);
@@ -40,14 +41,6 @@ void RenderSystem::Update(float dt, Registry* registry, Input* input)
   sceneRender.textureID = texture;
   DevDebug& devDebug = registry->GetEditorResource<DevDebug>();
 
-  if (devDebug.activeCamera == CameraType::Game)
-  {
-    std::cout << "Game Camera" << std::endl;
-  }
-  else
-  {
-    std::cout << "Scene Camera" << std::endl;
-  }
 #endif
 
   // TODO : wireframe drawing should have its own shaders
@@ -100,12 +93,6 @@ void RenderSystem::InitRenderBuffers()
   glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-
-void RenderSystem::InitSceneCameraComponent(Registry* registry)
-{
-  sceneCamera = &registry->GetEditorResource<Camera>();
-  sceneCamera->TranslateInWorld({0.0f, 1.0f, 20.0f});
 }
 
 void RenderSystem::InitPrimitiveBuffers(Registry* registry)
@@ -232,10 +219,10 @@ void RenderSystem::HandleMousePan(float dt, Registry* registry, Input* input)
 
     // These are simple movements that can just be translated on the spot
     // Handle the x-axis movement
-    sceneCamera->Translate(glm::vec3((offsetX * dt), 0.0f, 0.0f));
+    camera->Translate(glm::vec3((offsetX * dt), 0.0f, 0.0f));
 
     // Handle the y-axis movement
-    sceneCamera->Translate(glm::vec3(0.0f, offsetY * dt, 0.0f));
+    camera->Translate(glm::vec3(0.0f, offsetY * dt, 0.0f));
 
     input->lastX = input->GetMouseX();
     input->lastY = input->GetMouseY();
@@ -253,7 +240,7 @@ void RenderSystem::HandleMousePan(float dt, Registry* registry, Input* input)
     input->lastY = input->GetMouseY();
 
     // camera->UpdateCameraVector(offsetX, offsetY);
-    sceneCamera->PanCamera(dt, offsetX, offsetY);
+    camera->PanCamera(dt, offsetX, offsetY);
     return;
   }
 
@@ -265,13 +252,13 @@ void RenderSystem::HandleMouseScroll(float dt, Input* input)
   // Scroll up
   if (input->GetScrollState() == 1)
   {
-    sceneCamera->Translate(glm::vec3(0.0f, 0.0f, SCROLL_SPEED * dt));
+    camera->Translate(glm::vec3(0.0f, 0.0f, SCROLL_SPEED * dt));
   }
 
   // Scroll down
   if (input->GetScrollState() == -1)
   {
-    sceneCamera->Translate(glm::vec3(0.0f, 0.0f, -(SCROLL_SPEED * dt)));
+    camera->Translate(glm::vec3(0.0f, 0.0f, -(SCROLL_SPEED * dt)));
   }
 
   // Reset the scroll variable once done
@@ -281,18 +268,18 @@ void RenderSystem::HandleMouseScroll(float dt, Input* input)
 
 void RenderSystem::HandleKeyboardPan(float dt, Input* input)
 {
-  if (input->IsKeyDown('W')) sceneCamera->Translate(glm::vec3(0.0f, 0.0f, CAMERA_SPEED * dt));
-  if (input->IsKeyDown('S')) sceneCamera->Translate(glm::vec3(0.0f, 0.0f, -(CAMERA_SPEED * dt)));
-  if (input->IsKeyDown('A')) sceneCamera->Translate(glm::vec3(CAMERA_SPEED * dt, 0.0f, 0.0f));
-  if (input->IsKeyDown('D')) sceneCamera->Translate(glm::vec3(-(CAMERA_SPEED * dt), 0.0f, 0.0f));
+  if (input->IsKeyDown('W')) camera->Translate(glm::vec3(0.0f, 0.0f, CAMERA_SPEED * dt));
+  if (input->IsKeyDown('S')) camera->Translate(glm::vec3(0.0f, 0.0f, -(CAMERA_SPEED * dt)));
+  if (input->IsKeyDown('A')) camera->Translate(glm::vec3(CAMERA_SPEED * dt, 0.0f, 0.0f));
+  if (input->IsKeyDown('D')) camera->Translate(glm::vec3(-(CAMERA_SPEED * dt), 0.0f, 0.0f));
 
   // Temporary : TODO : make this more usable; this can use modifier keys to be more accessible / do
   // more things
   const float PAN_SPEED = 5.0f;
-  if (input->IsKeyDown(GLFW_KEY_LEFT)) sceneCamera->PanCamera(dt, -PAN_SPEED, 0);
-  if (input->IsKeyDown(GLFW_KEY_RIGHT)) sceneCamera->PanCamera(dt, PAN_SPEED, 0);
-  if (input->IsKeyDown(GLFW_KEY_UP)) sceneCamera->PanCamera(dt, 0, PAN_SPEED);
-  if (input->IsKeyDown(GLFW_KEY_DOWN)) sceneCamera->PanCamera(dt, 0, -PAN_SPEED);
+  if (input->IsKeyDown(GLFW_KEY_LEFT)) camera->PanCamera(dt, -PAN_SPEED, 0);
+  if (input->IsKeyDown(GLFW_KEY_RIGHT)) camera->PanCamera(dt, PAN_SPEED, 0);
+  if (input->IsKeyDown(GLFW_KEY_UP)) camera->PanCamera(dt, 0, PAN_SPEED);
+  if (input->IsKeyDown(GLFW_KEY_DOWN)) camera->PanCamera(dt, 0, -PAN_SPEED);
 }
 
 bool RenderSystem::HandleMousePick(float dt, Registry* registry, Input* input)
@@ -377,7 +364,7 @@ bool RenderSystem::HandleMousePick(float dt, Registry* registry, Input* input)
       });
 
   // Calculate the distance between the ray origin and the bounding box?
-  auto origin = sceneCamera->GetPositionInWorld();
+  auto origin = camera->GetPositionInWorld();
 
   std::vector<float> lengths;
   std::vector<uint32_t> lengthIndexs;
@@ -436,8 +423,8 @@ void RenderSystem::DrawAllLines(float dt, Registry* registry, Input* input)
   ShaderResource shaderResource = registry->GetResource<ShaderResource>();
 
   shaderResource.lineShader.Bind();
-  shaderResource.lineShader.SetUniformMatFloat4("projection", sceneCamera->GetProjection());
-  shaderResource.lineShader.SetUniformMatFloat4("view", sceneCamera->GetView());
+  shaderResource.lineShader.SetUniformMatFloat4("projection", camera->GetProjection());
+  shaderResource.lineShader.SetUniformMatFloat4("view", camera->GetView());
 
   renderer->StartBatch();
 
@@ -457,8 +444,8 @@ void RenderSystem::DrawAllLines(float dt, Registry* registry, Input* input)
   // Draw grid lines
   // #if DEBUG
   shaderResource.lineShader.Bind();
-  shaderResource.lineShader.SetUniformMatFloat4("projection", sceneCamera->GetProjection());
-  shaderResource.lineShader.SetUniformMatFloat4("view", sceneCamera->GetView());
+  shaderResource.lineShader.SetUniformMatFloat4("projection", camera->GetProjection());
+  shaderResource.lineShader.SetUniformMatFloat4("view", camera->GetView());
 
   renderer->StartBatch();
 
@@ -483,9 +470,8 @@ void RenderSystem::DrawAllModels(float dt, Registry* registry, Input* input)
   float currentTime = static_cast<float>(glfwGetTime());
 
   shaderResource.modelAnimatedShader.Bind();
-  shaderResource.modelAnimatedShader.SetUniformMatFloat4("projection",
-                                                         sceneCamera->GetProjection());
-  shaderResource.modelAnimatedShader.SetUniformMatFloat4("view", sceneCamera->GetView());
+  shaderResource.modelAnimatedShader.SetUniformMatFloat4("projection", camera->GetProjection());
+  shaderResource.modelAnimatedShader.SetUniformMatFloat4("view", camera->GetView());
 
   registry->GetComponentsIter<Model, Transform>()->Each([&](Model& model, Transform& transform) {
     if (model.hasAnimations && model.toAnimate)
@@ -517,8 +503,8 @@ void RenderSystem::DrawAllCubes(float dt, Registry* registry, Input* input)
   ShaderResource shaderResource = registry->GetResource<ShaderResource>();
 
   shaderResource.cubeShader.Bind();
-  shaderResource.cubeShader.SetUniformMatFloat4("projection", sceneCamera->GetProjection());
-  shaderResource.cubeShader.SetUniformMatFloat4("view", sceneCamera->GetView());
+  shaderResource.cubeShader.SetUniformMatFloat4("projection", camera->GetProjection());
+  shaderResource.cubeShader.SetUniformMatFloat4("view", camera->GetView());
 
   renderer->StartBatch();
 
@@ -538,8 +524,8 @@ void RenderSystem::DrawAllSpheres(float dt, Registry* registry, Input* input)
   ShaderResource shaderResource = registry->GetResource<ShaderResource>();
 
   shaderResource.sphereShader.Bind();
-  shaderResource.sphereShader.SetUniformMatFloat4("projection", sceneCamera->GetProjection());
-  shaderResource.sphereShader.SetUniformMatFloat4("view", sceneCamera->GetView());
+  shaderResource.sphereShader.SetUniformMatFloat4("projection", camera->GetProjection());
+  shaderResource.sphereShader.SetUniformMatFloat4("view", camera->GetView());
 
   renderer->StartBatch();
 
@@ -559,8 +545,8 @@ void RenderSystem::DrawAllColldiers(float dt, Registry* registry, Input* input)
   ShaderResource shaderResource = registry->GetResource<ShaderResource>();
 
   shaderResource.cubeShader.Bind();
-  shaderResource.cubeShader.SetUniformMatFloat4("projection", sceneCamera->GetProjection());
-  shaderResource.cubeShader.SetUniformMatFloat4("view", sceneCamera->GetView());
+  shaderResource.cubeShader.SetUniformMatFloat4("projection", camera->GetProjection());
+  shaderResource.cubeShader.SetUniformMatFloat4("view", camera->GetView());
 
   glLineWidth(5.0f);
   glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -618,8 +604,8 @@ void RenderSystem::DrawActiveEntityBoundingBox(float dt, Registry* registry, Inp
 
     ShaderResource& shaderResource = registry->GetResource<ShaderResource>();
     shaderResource.lineShader.Bind();
-    shaderResource.cubeShader.SetUniformMatFloat4("projection", sceneCamera->GetProjection());
-    shaderResource.cubeShader.SetUniformMatFloat4("view", sceneCamera->GetView());
+    shaderResource.cubeShader.SetUniformMatFloat4("projection", camera->GetProjection());
+    shaderResource.cubeShader.SetUniformMatFloat4("view", camera->GetView());
 
     glLineWidth(3.0f);
     renderer->StartBatch();
@@ -649,8 +635,8 @@ void RenderSystem::DrawActiveEntityBoundingBox(float dt, Registry* registry, Inp
 
     ShaderResource& shaderResource = registry->GetResource<ShaderResource>();
     shaderResource.lineShader.Bind();
-    shaderResource.cubeShader.SetUniformMatFloat4("projection", sceneCamera->GetProjection());
-    shaderResource.cubeShader.SetUniformMatFloat4("view", sceneCamera->GetView());
+    shaderResource.cubeShader.SetUniformMatFloat4("projection", camera->GetProjection());
+    shaderResource.cubeShader.SetUniformMatFloat4("view", camera->GetView());
 
     glLineWidth(3.0f);
     renderer->StartBatch();

@@ -556,8 +556,8 @@ void UiSystem::DrawGameCamera(float dt, Registry* registry, Input* input)
 
   // This should draw from sceneRender fbo that is being rendered through the gameScene camera
   // Flip V in the UV
-  // ImGui::Image((ImTextureID)sceneRender.textureID, wsize, ImVec2(0, 1), ImVec2(1, 0),
-  //              ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
+  ImGui::Image((ImTextureID)sceneRender.textureID, wsize, ImVec2(0, 1), ImVec2(1, 0),
+               ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
 
   ImGui::EndChild();
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 #include "ecs.h"
 #include "input.h"
 #include "component.h"
@@ -234,4 +236,38 @@ static std::vector<glm::vec4> ConvertFloatToVecVertices(std::vector<float> verti
   }
 
   return newVertices;
+}
+
+static Camera* GetActiveCameraPtr(Registry* registry)
+{
+  if (registry->GetEditorResource<DevDebug>().activeCamera == CameraType::Scene)
+  {
+    return &(registry->GetEditorResource<Camera>());
+  }
+  else if (registry->GetEditorResource<DevDebug>().activeCamera == CameraType::Game)
+  {
+    return &(registry->GetResource<Camera>());
+  }
+  else
+  {
+    std::cout << "Attempted to GetActiveCameraPtr that does not exist" << std::endl;
+    exit(0);
+  }
+}
+
+static Camera& GetActiveCameraRef(Registry* registry)
+{
+  if (registry->GetEditorResource<DevDebug>().activeCamera == CameraType::Scene)
+  {
+    return registry->GetEditorResource<Camera>();
+  }
+  else if (registry->GetEditorResource<DevDebug>().activeCamera == CameraType::Game)
+  {
+    return registry->GetResource<Camera>();
+  }
+  else
+  {
+    std::cout << "Attempted to GetActiveCameraRef that does not exist" << std::endl;
+    exit(0);
+  }
 }
