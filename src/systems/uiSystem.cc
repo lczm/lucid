@@ -472,7 +472,6 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
 
   UpdateWindowFocus(registry, WindowType::Inspector, "Inspector", input);
 
-  UpdateInputActiveWindow(registry, input, WindowType::Scene);
   ImGui::EndChild();
 
   // Drag n drop from default assets
@@ -535,6 +534,7 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
   widgetLayout.bottomWindowHeight = SCREEN_HEIGHT - (scenePos.y + sceneWindowSize.y);
   widgetLayout.rightWindowWidth = SCREEN_WIDTH - (scenePos.x + sceneWindowSize.x);
 
+  UpdateInputActiveWindow(registry, input, WindowType::Scene);
   ImGui::End();
 }
 
@@ -1036,9 +1036,19 @@ void UiSystem::UpdateGizmoType(Registry* registry, Input* input)
 
 void UiSystem::UpdateInputActiveWindow(Registry* registry, Input* input, WindowType windowType)
 {
-  if (ImGui::IsWindowFocused() && ImGui::IsWindowHovered() && input->activeWindow != windowType)
+  DevDebug& devDebug = registry->GetEditorResource<DevDebug>();
+
+  if (ImGui::IsWindowFocused() && input->activeWindow != windowType)
   {
     input->activeWindow = windowType;
+    if (input->activeWindow == WindowType::Scene)
+    {
+      devDebug.activeCamera = CameraType::Scene;
+    }
+    if (input->activeWindow == WindowType::GameCamera)
+    {
+      devDebug.activeCamera = CameraType::Game;
+    }
   }
 }
 
