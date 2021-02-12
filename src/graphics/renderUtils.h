@@ -271,3 +271,9 @@ static Camera& GetActiveCameraRef(Registry* registry)
     exit(0);
   }
 }
+
+static Transform TranslateInWorld(Transform transform, const glm::vec3 vec)
+{
+  transform.position += -vec * transform.rotation;
+  return transform;
+}
