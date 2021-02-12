@@ -76,6 +76,7 @@ struct PrimitiveBatchIds
   uint32_t cubeVAO, cubeVBO, cubeEBO = 0;
 };
 
+// Represents the lines that are in the debug
 struct GridLine
 {
   Line line;

@@ -15,17 +15,22 @@ Camera::~Camera() = default;
 
 glm::vec3 Camera::GetPosition()
 {
-  return position;
+  return transform.position;
+  // return position;
 }
 
 glm::vec3 Camera::GetPositionInWorld()
 {
-  return {-position.x, -position.y, -position.z};
+  return {-transform.position.x,  //
+          -transform.position.y,  //
+          -transform.position.z};
+  // return {-position.x, -position.y, -position.z};
 }
 
-glm::quat Camera::GetOrientation()
+glm::quat Camera::GetRotation()
 {
-  return orientation;
+  return transform.rotation;
+  // return orientation;
 }
 
 glm::mat4 Camera::GetProjection()
@@ -35,27 +40,27 @@ glm::mat4 Camera::GetProjection()
 
 glm::mat4 Camera::GetView()
 {
-  return glm::translate(glm::mat4_cast(orientation), position);
+  return glm::translate(glm::mat4_cast(transform.rotation), transform.position);
 }
 
 void Camera::Translate(const glm::vec3 vec)
 {
-  position += vec * orientation;
+  transform.position += vec * transform.rotation;
 }
 
 void Camera::TranslateInWorld(const glm::vec3 vec)
 {
-  position += -vec * orientation;
+  transform.position += -vec * transform.rotation;
 }
 
 void Camera::Rotate(const float angle, const glm::vec3 axis)
 {
-  orientation *= glm::angleAxis(angle, axis * orientation);
+  transform.rotation *= glm::angleAxis(angle, axis * transform.rotation);
 }
 
 void Camera::Rotate(const float angle, const float x, const float y, const float z)
 {
-  orientation *= glm::angleAxis(angle, glm::vec3(x, y, z) * orientation);
+  transform.rotation *= glm::angleAxis(angle, glm::vec3(x, y, z) * transform.rotation);
 }
 
 // x-axis

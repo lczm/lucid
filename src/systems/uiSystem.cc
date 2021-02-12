@@ -756,8 +756,8 @@ void UiSystem::DrawToolBar(float dt, Registry* registry, Input* input)
   if (ImGui::Button("Reset", ImVec2(buttonWidth, 0.0f)))
   {
     Camera& camera = registry->GetResource<Camera>();
-    camera.position = glm::vec3(0.0f, 0.0f, 0.0f);
-    camera.orientation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+    camera.transform.position = glm::vec3(0.0f, 0.0f, 0.0f);
+    camera.transform.rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
     camera.TranslateInWorld({0.0f, 1.0f, 20.0f});
   }
 

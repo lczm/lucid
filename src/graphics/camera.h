@@ -3,6 +3,8 @@
 #include <iostream>
 
 #include "constants.h"
+#include "component.h"
+
 #include "glm.hpp"
 #include "gtx/string_cast.hpp"
 #include "gtc/matrix_transform.hpp"
@@ -10,12 +12,15 @@
 class Camera
 {
  public:
-  glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
-  glm::quat orientation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+  // For the position and orientation/rotation
+  // Scale is not used here
+  Transform transform;
+
   glm::mat4 projection = glm::mat4(1.0f);
 
   float lastX = 0;
   float lastY = 0;
+
   float yaw = 0;
   float pitch = 0;
   float roll = 0;
@@ -29,7 +34,7 @@ class Camera
   glm::vec3 GetPosition();
   glm::vec3 GetPositionInWorld();
 
-  glm::quat GetOrientation();
+  glm::quat GetRotation();
   glm::mat4 GetProjection();
   glm::mat4 GetView();
 
