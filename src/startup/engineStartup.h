@@ -123,8 +123,7 @@ static void InitEngineComponents(Registry* registry)
   registry->GetEditorResource<Model>().registry = registry;
   registry->GetEditorResource<Model>().path = CAMERA_MODEL;
   registry->GetEditorResource<Model>().Load();
-  registry->GetResource<Camera>().transform =
-      TranslateInWorld(registry->GetResource<Camera>().transform, glm::vec3(0.0f, 1.0f, 5.0f));
+  registry->GetResource<Camera>().transform.position += glm::vec3(0.0f, 1.0f, 5.0f);
   registry->GetResource<Camera>().transform.scale /= 80.0f;
 
   ShaderResource& shaderResource = registry->GetResource<ShaderResource>();
