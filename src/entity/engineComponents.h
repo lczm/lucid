@@ -37,8 +37,10 @@ struct DevDebug
 struct RendererStats
 {
   uint32_t calls;
-  uint32_t vertices;
-  uint32_t indices;
+  // Originally uint32_t, but these numbers can very easily get
+  // really large
+  long long vertices;
+  long long indices;
 };
 
 struct WidgetLayout
