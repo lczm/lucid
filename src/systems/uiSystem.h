@@ -91,7 +91,7 @@ class UiSystem : public System
   void HandleGizmoInput(Registry* registry, Input* input);
   void UpdateSceneWindow(Registry* registry, Input* input);
   void UpdateGizmoType(Registry* registry, Input* input);
-  void UpdateInputActiveWindow(Input* input, WindowType windowType);
+  void UpdateInputActiveWindow(Registry* registry, Input* input, WindowType windowType);
   void UpdateWindowFocus(Registry* registry, WindowType windowType, std::string focusWindow,
                          Input* input, WindowType changeFocusWindow = WindowType::None);
   void OpenProject(Registry* registry, Input* input);

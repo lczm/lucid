@@ -18,6 +18,15 @@
  * is where the structs are stored.
  */
 
+// Default activeEntity, which is also nothing.
+const uint32_t NONE_ACTIVE_ENTITY = 0;
+
+enum class CameraType
+{
+  Scene,
+  Game,
+};
+
 struct DevDebug
 {
   bool drawWireframe = false;
@@ -27,6 +36,7 @@ struct DevDebug
   uint32_t fps = 0;
   uint32_t rayID = 0;
   uint32_t activeEntity = NONE_ACTIVE_ENTITY;
+  CameraType activeCamera = CameraType::Scene;
 
   bool onGizmo = false;
   WindowType changeFocusWindow = WindowType::None;

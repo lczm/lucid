@@ -346,7 +346,7 @@ void UiSystem::PresetLayout(ImGuiID dockSpaceID)
 
   // Windows in the middle
   ImGui::DockBuilderDockWindow("Game Camera", dockMiddleID);
-  ImGui::DockBuilderDockWindow("Scene", dockMiddleID);
+  ImGui::DockBuilderDockWindow("Scene Camera", dockMiddleID);
 
   // Windows on the top
   ImGui::DockBuilderDockWindow("ToolBar", dockTopID);
@@ -357,7 +357,7 @@ void UiSystem::PresetLayout(ImGuiID dockSpaceID)
   ImGui::DockBuilderFinish(dockSpaceID);
 
   // Set initial window focus
-  ImGui::SetWindowFocus("Scene");
+  ImGui::SetWindowFocus("Scene Camera");
 }
 
 void UiSystem::InitializeImGuiWindows(float dt, Registry* registry, Input* input)
@@ -427,7 +427,7 @@ void UiSystem::DrawHierarchy(float dt, Registry* registry, Input* input)
     }
   });
 
-  UpdateInputActiveWindow(input, WindowType::Hierarchy);
+  UpdateInputActiveWindow(registry, input, WindowType::Hierarchy);
   ImGui::End();
 }
 
@@ -435,7 +435,7 @@ void UiSystem::DrawAssets(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Assets");
 
-  UpdateInputActiveWindow(input, WindowType::Assets);
+  UpdateInputActiveWindow(registry, input, WindowType::Assets);
   ImGui::End();
 }
 
@@ -443,7 +443,7 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
 {
   // Set no padding, as for the scene, there isn't really a need for padding
   ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-  ImGui::Begin("Scene");
+  ImGui::Begin("Scene Camera");
   // Pop it so that it applies to the entire window here.
   ImGui::PopStyleVar();
 
@@ -472,7 +472,7 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
 
   UpdateWindowFocus(registry, WindowType::Inspector, "Inspector", input);
 
-  UpdateInputActiveWindow(input, WindowType::Scene);
+  UpdateInputActiveWindow(registry, input, WindowType::Scene);
   ImGui::EndChild();
 
   // Drag n drop from default assets
@@ -561,7 +561,7 @@ void UiSystem::DrawGameCamera(float dt, Registry* registry, Input* input)
 
   ImGui::EndChild();
 
-  UpdateInputActiveWindow(input, WindowType::GameCamera);
+  UpdateInputActiveWindow(registry, input, WindowType::GameCamera);
   ImGui::End();
 }
 
@@ -571,7 +571,7 @@ void UiSystem::DrawProject(float dt, Registry* registry, Input* input)
   // DevDebug& devDebug = registry->GetComponent<DevDebug>();
   // if (devDebug.changeFocusWindow == WindowType::Scene) ImGui::SetWindowFocus();
 
-  UpdateInputActiveWindow(input, WindowType::Project);
+  UpdateInputActiveWindow(registry, input, WindowType::Project);
 
   // Check if a folder has been selected
   if (!fs::exists(absoluteProjectRoot->path))
@@ -600,7 +600,7 @@ void UiSystem::DrawConsole(float dt, Registry* registry, Input* input)
   // if (devDebug.changeFocusWindow == WindowType::Console) ImGui::SetWindowFocus();
 
   ImGui::Text("This is the console");
-  UpdateInputActiveWindow(input, WindowType::Console);
+  UpdateInputActiveWindow(registry, input, WindowType::Console);
   ImGui::End();
 }
 
@@ -612,7 +612,7 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
   ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen;
   static std::string currentItem = "";
 
-  UpdateInputActiveWindow(input, WindowType::Inspector);
+  UpdateInputActiveWindow(registry, input, WindowType::Inspector);
   if (devDebug.activeEntity == 0)
   {
     ImGui::End();
@@ -664,7 +664,7 @@ void UiSystem::DrawDevDebug(float dt, Registry* registry, Input* input)
   std::string indicesPerFrame = "Indices per frame : " + std::to_string(rendererStats.indices);
   ImGui::Text(indicesPerFrame.c_str());
 
-  UpdateInputActiveWindow(input, WindowType::DevDebug);
+  UpdateInputActiveWindow(registry, input, WindowType::DevDebug);
   ImGui::End();
 }
 
@@ -690,7 +690,7 @@ void UiSystem::DrawDefaultAssets(float dt, Registry* registry, Input* input)
     }
     ImGui::PopID();
   }
-  UpdateInputActiveWindow(input, WindowType::DefaultAssets);
+  UpdateInputActiveWindow(registry, input, WindowType::DefaultAssets);
   ImGui::End();
 }
 
@@ -761,7 +761,7 @@ void UiSystem::DrawToolBar(float dt, Registry* registry, Input* input)
     camera.TranslateInWorld({0.0f, 1.0f, 20.0f});
   }
 
-  UpdateInputActiveWindow(input, WindowType::ToolBar);
+  UpdateInputActiveWindow(registry, input, WindowType::ToolBar);
   ImGui::End();
 }
 
@@ -771,7 +771,7 @@ void UiSystem::DrawGameConfiguration(float dt, Registry* registry, Input* input)
   // if (devDebug.changeFocusWindow == WindowType::Assets) ImGui::SetWindowFocus();
 
   ImGui::Text("This is the game configuration");
-  UpdateInputActiveWindow(input, WindowType::GameConfiguration);
+  UpdateInputActiveWindow(registry, input, WindowType::GameConfiguration);
   ImGui::End();
 }
 
@@ -1034,7 +1034,7 @@ void UiSystem::UpdateGizmoType(Registry* registry, Input* input)
     devDebug.gizmoOperation = ImGuizmo::OPERATION::SCALE;
 }
 
-void UiSystem::UpdateInputActiveWindow(Input* input, WindowType windowType)
+void UiSystem::UpdateInputActiveWindow(Registry* registry, Input* input, WindowType windowType)
 {
   if (ImGui::IsWindowFocused() && ImGui::IsWindowHovered() && input->activeWindow != windowType)
   {

@@ -39,6 +39,15 @@ void RenderSystem::Update(float dt, Registry* registry, Input* input)
   SceneRender& sceneRender = registry->GetEditorResource<SceneRender>();
   sceneRender.textureID = texture;
   DevDebug& devDebug = registry->GetEditorResource<DevDebug>();
+
+  if (devDebug.activeCamera == CameraType::Game)
+  {
+    std::cout << "Game Camera" << std::endl;
+  }
+  else
+  {
+    std::cout << "Scene Camera" << std::endl;
+  }
 #endif
 
   // TODO : wireframe drawing should have its own shaders
