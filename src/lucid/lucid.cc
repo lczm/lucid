@@ -68,9 +68,12 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window)
   // Create game camera
   Entity gameCameraId = registry->GetAvailableEntityId();
   // Game camera requires a model for the user to 'move'
-  registry->CreateEntity<Model, Transform, Camera>(gameCameraId);
-  registry->AddComponentData<Model>(gameCameraId, Model(CAMERA_MODEL, registry));
-  registry->GetComponent<Transform>(gameCameraId).position = {0.0f, 1.0f, 15.0f};
+  // registry->CreateEntity<Model, Transform, Camera>(gameCameraId);
+  // registry->AddComponentData<Model>(gameCameraId, Model(CAMERA_MODEL, registry));
+  // registry->GetComponent<Transform>(gameCameraId).position = {0.0f, 1.0f, 15.0f};
+
+  registry->CreateEntity<Transform, Camera>(gameCameraId);
+  registry->GetComponent<Transform>(gameCameraId).position = {0.0f, -1.0f, -15.0f};
 
   // registry->GetComponent<Transform>(gameCameraId).rotation =
   //     RotateQuatY(registry->GetComponent<Transform>(gameCameraId).rotation, glm::radians(90.0f));
