@@ -56,7 +56,6 @@ class RenderSystem : public System
   void DrawAllCubes(float dt, Registry* registry, Input* input);
   void DrawAllSpheres(float dt, Registry* registry, Input* input);
   void DrawAllColldiers(float dt, Registry* registry, Input* input);
-  void DrawInGameCamera(float dt, Registry* registry, Input* input);
   void DrawActiveEntityBoundingBox(float dt, Registry* registry, Input* input);
 
  public:

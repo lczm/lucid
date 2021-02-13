@@ -58,7 +58,6 @@ void RenderSystem::Update(float dt, Registry* registry, Input* input)
   DrawAllSpheres(dt, registry, input);
 
 #if DEBUG
-  DrawInGameCamera(dt, registry, input);
   DrawActiveEntityBoundingBox(dt, registry, input);
   if (devDebug.drawColliders) DrawAllColldiers(dt, registry, input);
   if (devDebug.drawWireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -222,11 +221,11 @@ void RenderSystem::HandleMousePan(float dt, Registry* registry, Input* input)
     // These are simple movements that can just be translated on the spot
     // Handle the x-axis movement
     // camCamera->Translate(glm::vec3((offsetX * dt), 0.0f, 0.0f));
-    camTransform = Translate(camTransform, glm::vec3((offsetX * dt), 0.0f, 0.0f));
+    Translate(camTransform, glm::vec3((offsetX * dt), 0.0f, 0.0f));
 
     // Handle the y-axis movement
     // camCamera->Translate(glm::vec3(0.0f, offsetY * dt, 0.0f));
-    camTransform = Translate(camTransform, glm::vec3(0.0f, offsetY * dt, 0.0f));
+    Translate(camTransform, glm::vec3(0.0f, offsetY * dt, 0.0f));
 
     input->lastX = input->GetMouseX();
     input->lastY = input->GetMouseY();
@@ -258,14 +257,14 @@ void RenderSystem::HandleMouseScroll(float dt, Input* input)
   if (input->GetScrollState() == 1)
   {
     // camCamera->Translate(glm::vec3(0.0f, 0.0f, SCROLL_SPEED * dt));
-    camTransform = Translate(camTransform, glm::vec3(0.0f, 0.0f, SCROLL_SPEED * dt));
+    Translate(camTransform, glm::vec3(0.0f, 0.0f, SCROLL_SPEED * dt));
   }
 
   // Scroll down
   if (input->GetScrollState() == -1)
   {
     // camCamera->Translate(glm::vec3(0.0f, 0.0f, -(SCROLL_SPEED * dt)));
-    camTransform = Translate(camTransform, glm::vec3(0.0f, 0.0f, -(SCROLL_SPEED * dt)));
+    Translate(camTransform, glm::vec3(0.0f, 0.0f, -(SCROLL_SPEED * dt)));
   }
 
   // Reset the scroll variable once done
@@ -280,14 +279,10 @@ void RenderSystem::HandleKeyboardPan(float dt, Input* input)
   // if (input->IsKeyDown('A')) camCamera->Translate(glm::vec3(CAMERA_SPEED * dt, 0.0f, 0.0f));
   // if (input->IsKeyDown('D')) camCamera->Translate(glm::vec3(-(CAMERA_SPEED * dt), 0.0f, 0.0f));
 
-  if (input->IsKeyDown('W'))
-    camTransform = Translate(camTransform, glm::vec3(0.0f, 0.0f, CAMERA_SPEED * dt));
-  if (input->IsKeyDown('S'))
-    camTransform = Translate(camTransform, glm::vec3(0.0f, 0.0f, -(CAMERA_SPEED * dt)));
-  if (input->IsKeyDown('A'))
-    camTransform = Translate(camTransform, glm::vec3(CAMERA_SPEED * dt, 0.0f, 0.0f));
-  if (input->IsKeyDown('D'))
-    camTransform = Translate(camTransform, glm::vec3(-(CAMERA_SPEED * dt), 0.0f, 0.0f));
+  if (input->IsKeyDown('W')) Translate(camTransform, glm::vec3(0.0f, 0.0f, CAMERA_SPEED * dt));
+  if (input->IsKeyDown('S')) Translate(camTransform, glm::vec3(0.0f, 0.0f, -(CAMERA_SPEED * dt)));
+  if (input->IsKeyDown('A')) Translate(camTransform, glm::vec3(CAMERA_SPEED * dt, 0.0f, 0.0f));
+  if (input->IsKeyDown('D')) Translate(camTransform, glm::vec3(-(CAMERA_SPEED * dt), 0.0f, 0.0f));
 
   // Temporary : TODO : make this more usable; this can use modifier keys to be more accessible / do
   // more things
@@ -607,34 +602,6 @@ void RenderSystem::DrawAllColldiers(float dt, Registry* registry, Input* input)
   glLineWidth(1.0f);
 
   shaderResource.cubeShader.Unbind();
-}
-
-void RenderSystem::DrawInGameCamera(float dt, Registry* registry, Input* input)
-{
-  // Model is an editor resource as it only exists in the game
-  // Model& model = registry->GetEditorResource<Model>();
-  Model& model =
-      registry->GetComponent<Model>(registry->GetEditorResource<DevDebug>().gameCameraId);
-  // Camera is a user resource as it is what the user uses to move around the game.
-  // Will need the transform from this camera component
-  // Camera& gameCamera = registry->GetResource<Camera>();
-
-  // Bind the appropriate shaders
-  ShaderResource shaderResource = registry->GetResource<ShaderResource>();
-  shaderResource.modelAnimatedShader.Bind();
-  shaderResource.modelAnimatedShader.SetUniformMatFloat4("projection", camCamera->GetProjection());
-  // shaderResource.modelAnimatedShader.SetUniformMatFloat4("view", camCamera->GetView());
-  shaderResource.modelAnimatedShader.SetUniformMatFloat4("view", GetView(camTransform));
-
-  // Set the default bone matrices, which means that it is not animated
-  shaderResource.modelAnimatedShader.SetUniformMatFloat4("boneMatrices", 100, defaultBoneMatrices);
-
-  // Set the model matrix
-  auto modelMatrix = GetModelMatrix(*(camTransform));
-  shaderResource.modelAnimatedShader.SetUniformMatFloat4("model", modelMatrix);
-  renderer->DrawModel(model, shaderResource.modelAnimatedShader);
-
-  shaderResource.modelAnimatedShader.Unbind();
 }
 
 void RenderSystem::DrawActiveEntityBoundingBox(float dt, Registry* registry, Input* input)
