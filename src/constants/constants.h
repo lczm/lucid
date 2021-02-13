@@ -49,7 +49,8 @@ const char SHIBA_INU_MODEL[] = "../assets/animated_dog_shiba_inu_gltf/scene.gltf
 const char KING_BOO_MODEL[] = "../assets/king_boo_idle_animation/scene.gltf";
 const char HAPPY_SHARK_MODEL[] = "../assets/happy_shark_swimming/scene.gltf";
 const char CHEESE_CAKE_MODEL[] = "../assets/cheesecake/scene.gltf";
-const char CAMERA_MODEL[] = "../assets/leica/scene.gltf";
+// const char CAMERA_MODEL[] = "../assets/leica/scene.gltf";
+const char CAMERA_MODEL[] = "../assets/vhs_camera/scene.gltf";
 
 // Fonts
 const char HELVETICA_FONT[] = "../assets/fonts/Helvetica.ttf";
