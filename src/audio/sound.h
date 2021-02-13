@@ -8,12 +8,11 @@ class Sound
 {
  public:
   ALuint soundBuffer;
-  bool looping;
-  bool play;
-  float gain;
+  bool looping = false;
+  bool play = false;
+  float gain = 1.0f;
 
  private:
-  SoundDevice* sd;
   SoundEffectsLibrary* seLibrary;
   SoundEffectsPlayer* player;
   std::string path;
