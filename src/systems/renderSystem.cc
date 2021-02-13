@@ -366,7 +366,8 @@ bool RenderSystem::HandleMousePick(float dt, Registry* registry, Input* input)
       });
 
   // Calculate the distance between the ray origin and the bounding box?
-  auto origin = camCamera->GetPositionInWorld();
+  // auto origin = camCamera->GetPositionInWorld();
+  auto origin = GetPositionInWorld(camTransform);
 
   std::vector<float> lengths;
   std::vector<uint32_t> lengthIndexs;

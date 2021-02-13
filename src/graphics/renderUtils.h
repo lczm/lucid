@@ -284,6 +284,11 @@ static inline glm::vec3 GetPositionInWorld(const Transform transform)
   return -transform.position;
 }
 
+static inline glm::vec3 GetPositionInWorld(const Transform* transform)
+{
+  return -transform->position;
+}
+
 static inline glm::quat GetRotation(const Transform transform)
 {
   return transform.rotation;
