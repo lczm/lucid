@@ -49,14 +49,25 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window)
   // InitializeDemoPongSystems();
 
   // Move scene camera
-  registry->GetEditorResource<Camera>().TranslateInWorld({0.0f, 1.0f, 20.0f});
+  // registry->GetEditorResource<Camera>().TranslateInWorld({0.0f, 1.0f, 20.0f});
 
   // Move game camera
   // registry->GetResource<Camera>().TranslateInWorld({0.0f, 1.0f, 5.0f});
 
   DevDebug& devDebug = registry->GetEditorResource<DevDebug>();
+
+  // Create scene camera
+  Entity sceneCameraId = registry->GetAvailableEntityId();
+  // Scene
+  registry->CreateEntity<Transform, Camera>(sceneCameraId);
+  // Set where the camera is in the scene. (Behind origin point by a little bit)
+  registry->GetComponent<Transform>(sceneCameraId).position = {0.0f, -1.0f, -20.0f};
+  // Add scene camera id to devDebug
+  devDebug.sceneCameraId = sceneCameraId;
+
   // Create game camera
   Entity gameCameraId = registry->GetAvailableEntityId();
+  // Game camera requires a model for the user to 'move'
   registry->CreateEntity<Model, Transform, Camera>(gameCameraId);
   registry->AddComponentData<Model>(gameCameraId, Model(CAMERA_MODEL, registry));
   registry->GetComponent<Transform>(gameCameraId).position = {0.75f, 1.0f, 15.0f};
@@ -68,8 +79,8 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window)
       RotateQuatX(registry->GetComponent<Transform>(gameCameraId).rotation, glm::radians(-90.0f));
 
   registry->GetComponent<Transform>(gameCameraId).scale /= 80.0f;
-  // Add it to devDebug
-  devDebug.gameCamera = gameCameraId;
+  // Add game camera id to devDebug
+  devDebug.gameCameraId = gameCameraId;
 }
 
 Lucid::~Lucid()

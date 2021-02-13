@@ -37,13 +37,7 @@ static glm::vec3 GetRayDirection(Registry* registry, Input* input)
   // homogeneous clip coordinates
   glm::vec4 rayClip = glm::vec4(rayNds.x, rayNds.y, -1.0f, 1.0f);
 
-#if DEBUG
-  Camera& camera = registry->GetEditorResource<Camera>();
-#endif
-
-#if RELEASE
-  Camera& camera = registry->GetResource<Camera>();
-#endif
+  Camera& camera = GetActiveCameraRef(registry);
 
   // convert to eye/camera coordinates
   glm::vec4 rayEye = glm::inverse(camera.GetProjection()) * rayClip;

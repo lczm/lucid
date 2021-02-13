@@ -38,8 +38,8 @@ struct DevDebug
   uint32_t activeEntity = NONE_ACTIVE_ENTITY;
   CameraType activeCamera = CameraType::Scene;
 
-  uint32_t sceneCamera = NONE_ACTIVE_ENTITY;
-  uint32_t gameCamera = NONE_ACTIVE_ENTITY;
+  uint32_t sceneCameraId = NONE_ACTIVE_ENTITY;
+  uint32_t gameCameraId = NONE_ACTIVE_ENTITY;
 
   bool onGizmo = false;
   WindowType changeFocusWindow = WindowType::None;

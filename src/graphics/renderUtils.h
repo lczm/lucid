@@ -238,64 +238,10 @@ static std::vector<glm::vec4> ConvertFloatToVecVertices(std::vector<float> verti
   return newVertices;
 }
 
-static Camera* GetActiveCameraPtr(Registry* registry)
-{
-  if (registry->GetEditorResource<DevDebug>().activeCamera == CameraType::Scene)
-  {
-    return &(registry->GetEditorResource<Camera>());
-  }
-  else if (registry->GetEditorResource<DevDebug>().activeCamera == CameraType::Game)
-  {
-    return &(registry->GetResource<Camera>());
-  }
-  else
-  {
-    std::cout << "Attempted to GetActiveCameraPtr that does not exist" << std::endl;
-    exit(0);
-  }
-}
-
-static Camera& GetActiveCameraRef(Registry* registry)
-{
-  if (registry->GetEditorResource<DevDebug>().activeCamera == CameraType::Scene)
-  {
-    return registry->GetEditorResource<Camera>();
-  }
-  else if (registry->GetEditorResource<DevDebug>().activeCamera == CameraType::Game)
-  {
-    return registry->GetResource<Camera>();
-  }
-  else
-  {
-    std::cout << "Attempted to GetActiveCameraRef that does not exist" << std::endl;
-    exit(0);
-  }
-}
-
 static inline Transform TranslateInWorld(Transform transform, const glm::vec3 vec)
 {
   transform.position += vec;
   return transform;
-}
-
-static inline glm::vec3 GetPosition(const Transform transform)
-{
-  return transform.position;
-}
-
-static inline glm::vec3 GetPositionInWorld(const Transform transform)
-{
-  return -transform.position;
-}
-
-static inline glm::quat GetRotation(const Transform transform)
-{
-  return transform.rotation;
-}
-
-static inline glm::mat4 GetView(const Transform transform)
-{
-  return glm::translate(glm::mat4_cast(transform.rotation), transform.position);
 }
 
 /*
@@ -326,4 +272,131 @@ static inline glm::quat RotateQuatY(glm::quat quat, float angle)
 static inline glm::quat RotateQuatZ(glm::quat quat, float angle)
 {
   return quat *= glm::angleAxis(angle, glm::vec3(0.0f, 0.0f, 1.0f));
+}
+
+static inline glm::vec3 GetPosition(const Transform transform)
+{
+  return transform.position;
+}
+
+static inline glm::vec3 GetPositionInWorld(const Transform transform)
+{
+  return -transform.position;
+}
+
+static inline glm::vec3 GetPositionInWorld(const Transform* transform)
+{
+  return -transform->position;
+}
+
+static inline glm::quat GetRotation(const Transform transform)
+{
+  return transform.rotation;
+}
+
+static inline glm::vec3 GetScale(const Transform transform)
+{
+  return transform.scale;
+}
+
+// Get projection of camera
+static inline glm::mat4 GetProjection(const Camera camera)
+{
+  return camera.projection;
+}
+
+// Get projection of camera, takes camera by pointer
+static inline glm::mat4 GetProjection(const Camera* camera)
+{
+  return camera->projection;
+}
+
+// Get view of camera, using it's transform component
+static inline glm::mat4 GetView(const Transform transform)
+{
+  return glm::translate(glm::mat4_cast(transform.rotation), transform.position);
+}
+
+// Get view of camera, using it's transform component, takes transform by pointer
+static inline glm::mat4 GetView(const Transform* transform)
+{
+  return glm::translate(glm::mat4_cast(transform->rotation), transform->position);
+}
+
+static inline Camera* GetActiveCameraPtr(Registry* registry)
+{
+  DevDebug& devDebug = registry->GetEditorResource<DevDebug>();
+
+  if (devDebug.activeCamera == CameraType::Scene)
+  {
+    return &(registry->GetComponent<Camera>(devDebug.sceneCameraId));
+  }
+  else if (devDebug.activeCamera == CameraType::Game)
+  {
+    return &(registry->GetComponent<Camera>(devDebug.gameCameraId));
+  }
+  else
+  {
+    std::cout << "Attempted to GetActiveCameraPtr a component that does not exist" << std::endl;
+    exit(0);
+  }
+}
+
+static inline Camera& GetActiveCameraRef(Registry* registry)
+{
+  DevDebug& devDebug = registry->GetEditorResource<DevDebug>();
+
+  if (devDebug.activeCamera == CameraType::Scene)
+  {
+    return registry->GetComponent<Camera>(devDebug.sceneCameraId);
+  }
+  else if (devDebug.activeCamera == CameraType::Game)
+  {
+    return registry->GetComponent<Camera>(devDebug.gameCameraId);
+  }
+  else
+  {
+    std::cout << "Attempted to GetActiveCameraRef a component that does not exist" << std::endl;
+    exit(0);
+  }
+}
+
+// Gets the camera transofmr as a pointer
+static inline Transform* GetActiveTransformPtr(Registry* registry)
+{
+  DevDebug& devDebug = registry->GetEditorResource<DevDebug>();
+
+  if (devDebug.activeCamera == CameraType::Scene)
+  {
+    return &(registry->GetComponent<Transform>(devDebug.sceneCameraId));
+  }
+  else if (devDebug.activeCamera == CameraType::Game)
+  {
+    return &(registry->GetComponent<Transform>(devDebug.gameCameraId));
+  }
+  else
+  {
+    std::cout << "Attempted to GetActiveTransformPtr a component that does not exist" << std::endl;
+    exit(0);
+  }
+}
+
+// Gets the camera transform as a reference
+static inline Transform& GetActiveTransformRef(Registry* registry)
+{
+  DevDebug& devDebug = registry->GetEditorResource<DevDebug>();
+
+  if (devDebug.activeCamera == CameraType::Scene)
+  {
+    return registry->GetComponent<Transform>(devDebug.sceneCameraId);
+  }
+  else if (devDebug.activeCamera == CameraType::Game)
+  {
+    return registry->GetComponent<Transform>(devDebug.gameCameraId);
+  }
+  else
+  {
+    std::cout << "Attempted to GetActiveTransformRef a component that does not exist" << std::endl;
+    exit(0);
+  }
 }

@@ -505,7 +505,8 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
         {
           Entity cubeID = registry->GetAvailableEntityId();
           registry->CreateEntity<Cube, Transform>(cubeID);
-          Camera& camera = registry->GetEditorResource<Camera>();
+          // Camera& camera = registry->GetEditorResource<Camera>();
+          Camera& camera = GetActiveCameraRef(registry);
           registry->GetComponent<Transform>(cubeID).position = camera.GetPositionInWorld();
         }
         break;
@@ -513,7 +514,8 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
         {
           Entity sphereID = registry->GetAvailableEntityId();
           registry->CreateEntity<Sphere, Transform>(sphereID);
-          Camera& camera = registry->GetEditorResource<Camera>();
+          // Camera& camera = registry->GetEditorResource<Camera>();
+          Camera& camera = GetActiveCameraRef(registry);
           registry->GetComponent<Transform>(sphereID).position = camera.GetPositionInWorld();
         }
         break;
@@ -531,7 +533,8 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
       Node payloadN = *(const Node*)payload->Data;
       // placeholders to confirm that dragging and dropping models works
       Entity assetId = registry->GetAvailableEntityId();
-      Camera& camera = registry->GetEditorResource<Camera>();
+      // Camera& camera = registry->GetEditorResource<Camera>();
+      Camera& camera = GetActiveCameraRef(registry);
       registry->CreateEntity<Model, Transform, ColliderPolygon>(assetId);
       registry->AddComponentData<Model>(assetId, Model(payloadN.path.string(), registry));
       registry->GetComponent<Model>(assetId).toAnimate = false;
@@ -791,7 +794,8 @@ void UiSystem::DrawToolBar(float dt, Registry* registry, Input* input)
   ImGui::SameLine(ImGui::GetWindowContentRegionMax().x - 60);
   if (ImGui::Button("Reset", ImVec2(buttonWidth, 0.0f)))
   {
-    Camera& camera = registry->GetEditorResource<Camera>();
+    // Camera& camera = registry->GetEditorResource<Camera>();
+    Camera& camera = GetActiveCameraRef(registry);
     camera.transform.position = glm::vec3(0.0f, 0.0f, 0.0f);
     camera.transform.rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
     camera.TranslateInWorld({0.0f, 1.0f, 20.0f});
@@ -1017,7 +1021,8 @@ void UiSystem::HandleGizmoInput(Registry* registry, Input* input)
 
     // TODO Create a utility method to compute this
     auto modelMatrix = GetModelMatrix(transform);
-    Camera& camera = registry->GetEditorResource<Camera>();
+    // Camera& camera = registry->GetEditorResource<Camera>();
+    Camera& camera = GetActiveCameraRef(registry);
     ImGuizmo::Manipulate(glm::value_ptr(camera.GetView()), glm::value_ptr(camera.GetProjection()),
                          devDebug.gizmoOperation, ImGuizmo::LOCAL, glm::value_ptr(modelMatrix));
 
