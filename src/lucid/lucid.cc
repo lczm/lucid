@@ -60,7 +60,8 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window)
   Entity sceneCameraId = registry->GetAvailableEntityId();
   // Scene
   registry->CreateEntity<Transform, Camera>(sceneCameraId);
-  registry->GetComponent<Transform>(sceneCameraId).position = {0.0f, 1.0f, 20.0f};
+  // Set where the camera is in the scene. (Behind origin point by a little bit)
+  registry->GetComponent<Transform>(sceneCameraId).position = {0.0f, -1.0f, -20.0f};
   // Add scene camera id to devDebug
   devDebug.sceneCameraId = sceneCameraId;
 

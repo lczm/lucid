@@ -294,14 +294,28 @@ static inline glm::vec3 GetScale(const Transform transform)
   return transform.scale;
 }
 
+// Get projection of camera
 static inline glm::mat4 GetProjection(const Camera camera)
 {
   return camera.projection;
 }
 
+// Get projection of camera, takes camera by pointer
+static inline glm::mat4 GetProjection(const Camera* camera)
+{
+  return camera->projection;
+}
+
+// Get view of camera, using it's transform component
 static inline glm::mat4 GetView(const Transform transform)
 {
   return glm::translate(glm::mat4_cast(transform.rotation), transform.position);
+}
+
+// Get view of camera, using it's transform component, takes transform by pointer
+static inline glm::mat4 GetView(const Transform* transform)
+{
+  return glm::translate(glm::mat4_cast(transform->rotation), transform->position);
 }
 
 static inline Camera* GetActiveCameraPtr(Registry* registry)

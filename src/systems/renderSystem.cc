@@ -426,7 +426,8 @@ void RenderSystem::DrawAllLines(float dt, Registry* registry, Input* input)
 
   shaderResource.lineShader.Bind();
   shaderResource.lineShader.SetUniformMatFloat4("projection", camCamera->GetProjection());
-  shaderResource.lineShader.SetUniformMatFloat4("view", camCamera->GetView());
+  // shaderResource.lineShader.SetUniformMatFloat4("view", camCamera->GetView());
+  shaderResource.lineShader.SetUniformMatFloat4("view", GetView(camTransform));
 
   renderer->StartBatch();
 
@@ -447,7 +448,8 @@ void RenderSystem::DrawAllLines(float dt, Registry* registry, Input* input)
   // #if DEBUG
   shaderResource.lineShader.Bind();
   shaderResource.lineShader.SetUniformMatFloat4("projection", camCamera->GetProjection());
-  shaderResource.lineShader.SetUniformMatFloat4("view", camCamera->GetView());
+  // shaderResource.lineShader.SetUniformMatFloat4("view", camCamera->GetView());
+  shaderResource.lineShader.SetUniformMatFloat4("view", GetView(camTransform));
 
   renderer->StartBatch();
 
@@ -473,7 +475,8 @@ void RenderSystem::DrawAllModels(float dt, Registry* registry, Input* input)
 
   shaderResource.modelAnimatedShader.Bind();
   shaderResource.modelAnimatedShader.SetUniformMatFloat4("projection", camCamera->GetProjection());
-  shaderResource.modelAnimatedShader.SetUniformMatFloat4("view", camCamera->GetView());
+  // shaderResource.modelAnimatedShader.SetUniformMatFloat4("view", camCamera->GetView());
+  shaderResource.modelAnimatedShader.SetUniformMatFloat4("view", GetView(camTransform));
 
   registry->GetComponentsIter<Model, Transform>()->Each([&](Model& model, Transform& transform) {
     if (model.hasAnimations && model.toAnimate)
@@ -506,7 +509,8 @@ void RenderSystem::DrawAllCubes(float dt, Registry* registry, Input* input)
 
   shaderResource.cubeShader.Bind();
   shaderResource.cubeShader.SetUniformMatFloat4("projection", camCamera->GetProjection());
-  shaderResource.cubeShader.SetUniformMatFloat4("view", camCamera->GetView());
+  // shaderResource.cubeShader.SetUniformMatFloat4("view", camCamera->GetView());
+  shaderResource.cubeShader.SetUniformMatFloat4("view", GetView(camTransform));
 
   renderer->StartBatch();
 
@@ -527,7 +531,8 @@ void RenderSystem::DrawAllSpheres(float dt, Registry* registry, Input* input)
 
   shaderResource.sphereShader.Bind();
   shaderResource.sphereShader.SetUniformMatFloat4("projection", camCamera->GetProjection());
-  shaderResource.sphereShader.SetUniformMatFloat4("view", camCamera->GetView());
+  // shaderResource.sphereShader.SetUniformMatFloat4("view", camCamera->GetView());
+  shaderResource.sphereShader.SetUniformMatFloat4("view", GetView(camTransform));
 
   renderer->StartBatch();
 
@@ -548,7 +553,8 @@ void RenderSystem::DrawAllColldiers(float dt, Registry* registry, Input* input)
 
   shaderResource.cubeShader.Bind();
   shaderResource.cubeShader.SetUniformMatFloat4("projection", camCamera->GetProjection());
-  shaderResource.cubeShader.SetUniformMatFloat4("view", camCamera->GetView());
+  // shaderResource.cubeShader.SetUniformMatFloat4("view", camCamera->GetView());
+  shaderResource.cubeShader.SetUniformMatFloat4("view", GetView(camTransform));
 
   glLineWidth(5.0f);
   glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -596,7 +602,8 @@ void RenderSystem::DrawInGameCamera(float dt, Registry* registry, Input* input)
   ShaderResource shaderResource = registry->GetResource<ShaderResource>();
   shaderResource.modelAnimatedShader.Bind();
   shaderResource.modelAnimatedShader.SetUniformMatFloat4("projection", camCamera->GetProjection());
-  shaderResource.modelAnimatedShader.SetUniformMatFloat4("view", camCamera->GetView());
+  // shaderResource.modelAnimatedShader.SetUniformMatFloat4("view", camCamera->GetView());
+  shaderResource.modelAnimatedShader.SetUniformMatFloat4("view", GetView(camTransform));
 
   // Set the default bone matrices, which means that it is not animated
   shaderResource.modelAnimatedShader.SetUniformMatFloat4("boneMatrices", 100, defaultBoneMatrices);
@@ -634,7 +641,8 @@ void RenderSystem::DrawActiveEntityBoundingBox(float dt, Registry* registry, Inp
     ShaderResource& shaderResource = registry->GetResource<ShaderResource>();
     shaderResource.lineShader.Bind();
     shaderResource.cubeShader.SetUniformMatFloat4("projection", camCamera->GetProjection());
-    shaderResource.cubeShader.SetUniformMatFloat4("view", camCamera->GetView());
+    // shaderResource.cubeShader.SetUniformMatFloat4("view", camCamera->GetView());
+    shaderResource.cubeShader.SetUniformMatFloat4("view", GetView(camTransform));
 
     glLineWidth(3.0f);
     renderer->StartBatch();
@@ -665,7 +673,8 @@ void RenderSystem::DrawActiveEntityBoundingBox(float dt, Registry* registry, Inp
     ShaderResource& shaderResource = registry->GetResource<ShaderResource>();
     shaderResource.lineShader.Bind();
     shaderResource.cubeShader.SetUniformMatFloat4("projection", camCamera->GetProjection());
-    shaderResource.cubeShader.SetUniformMatFloat4("view", camCamera->GetView());
+    // shaderResource.cubeShader.SetUniformMatFloat4("view", camCamera->GetView());
+    shaderResource.cubeShader.SetUniformMatFloat4("view", GetView(camTransform));
 
     glLineWidth(3.0f);
     renderer->StartBatch();
