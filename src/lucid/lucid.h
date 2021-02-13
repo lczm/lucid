@@ -58,7 +58,7 @@ class Lucid
   void Update();
 
   void InitializeModelEntities();
-  void InitializeSystems();
+  void InitializeEngineComponents();
 
   // Demo pong game
   void InitializeDemoPongEntities();
