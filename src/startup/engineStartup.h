@@ -108,16 +108,17 @@ static void InitEngineComponents(Registry* registry)
   registry->CreateEditorResource<WidgetLayout>();
   registry->CreateEditorResource<RendererStats>();
   registry->CreateEditorResource<GameEngineState>();
+
   // Scene Camera
-  registry->CreateEditorResource<Camera>();
+  // registry->CreateEditorResource<Camera>();
   // In Game Camera Model
-  registry->CreateEditorResource<Model>();
+  // registry->CreateEditorResource<Model>();
 
   // Resources are for the users to use
   registry->CreateResource<RigidBodyConfiguration>();
   registry->CreateResource<ShaderResource>();
   // Game Camera
-  registry->CreateResource<Camera>();
+  // registry->CreateResource<Camera>();
 
   ShaderResource& shaderResource = registry->GetResource<ShaderResource>();
 

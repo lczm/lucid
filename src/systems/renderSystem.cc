@@ -18,7 +18,8 @@ RenderSystem::~RenderSystem()
 
 void RenderSystem::Update(float dt, Registry* registry, Input* input)
 {
-  camera = GetActiveCameraPtr(registry);
+  camCamera = GetActiveCameraPtr(registry);
+  camTransform = GetActiveTransformPtr(registry);
 
 #if DEBUG
   // Temporary gateway for mouse picking
@@ -220,10 +221,10 @@ void RenderSystem::HandleMousePan(float dt, Registry* registry, Input* input)
 
     // These are simple movements that can just be translated on the spot
     // Handle the x-axis movement
-    camera->Translate(glm::vec3((offsetX * dt), 0.0f, 0.0f));
+    camCamera->Translate(glm::vec3((offsetX * dt), 0.0f, 0.0f));
 
     // Handle the y-axis movement
-    camera->Translate(glm::vec3(0.0f, offsetY * dt, 0.0f));
+    camCamera->Translate(glm::vec3(0.0f, offsetY * dt, 0.0f));
 
     input->lastX = input->GetMouseX();
     input->lastY = input->GetMouseY();
@@ -241,7 +242,7 @@ void RenderSystem::HandleMousePan(float dt, Registry* registry, Input* input)
     input->lastY = input->GetMouseY();
 
     // camera->UpdateCameraVector(offsetX, offsetY);
-    camera->PanCamera(dt, offsetX, offsetY);
+    camCamera->PanCamera(dt, offsetX, offsetY);
     return;
   }
 
@@ -253,13 +254,13 @@ void RenderSystem::HandleMouseScroll(float dt, Input* input)
   // Scroll up
   if (input->GetScrollState() == 1)
   {
-    camera->Translate(glm::vec3(0.0f, 0.0f, SCROLL_SPEED * dt));
+    camCamera->Translate(glm::vec3(0.0f, 0.0f, SCROLL_SPEED * dt));
   }
 
   // Scroll down
   if (input->GetScrollState() == -1)
   {
-    camera->Translate(glm::vec3(0.0f, 0.0f, -(SCROLL_SPEED * dt)));
+    camCamera->Translate(glm::vec3(0.0f, 0.0f, -(SCROLL_SPEED * dt)));
   }
 
   // Reset the scroll variable once done
@@ -269,18 +270,18 @@ void RenderSystem::HandleMouseScroll(float dt, Input* input)
 
 void RenderSystem::HandleKeyboardPan(float dt, Input* input)
 {
-  if (input->IsKeyDown('W')) camera->Translate(glm::vec3(0.0f, 0.0f, CAMERA_SPEED * dt));
-  if (input->IsKeyDown('S')) camera->Translate(glm::vec3(0.0f, 0.0f, -(CAMERA_SPEED * dt)));
-  if (input->IsKeyDown('A')) camera->Translate(glm::vec3(CAMERA_SPEED * dt, 0.0f, 0.0f));
-  if (input->IsKeyDown('D')) camera->Translate(glm::vec3(-(CAMERA_SPEED * dt), 0.0f, 0.0f));
+  if (input->IsKeyDown('W')) camCamera->Translate(glm::vec3(0.0f, 0.0f, CAMERA_SPEED * dt));
+  if (input->IsKeyDown('S')) camCamera->Translate(glm::vec3(0.0f, 0.0f, -(CAMERA_SPEED * dt)));
+  if (input->IsKeyDown('A')) camCamera->Translate(glm::vec3(CAMERA_SPEED * dt, 0.0f, 0.0f));
+  if (input->IsKeyDown('D')) camCamera->Translate(glm::vec3(-(CAMERA_SPEED * dt), 0.0f, 0.0f));
 
   // Temporary : TODO : make this more usable; this can use modifier keys to be more accessible / do
   // more things
   const float PAN_SPEED = 5.0f;
-  if (input->IsKeyDown(GLFW_KEY_LEFT)) camera->PanCamera(dt, -PAN_SPEED, 0);
-  if (input->IsKeyDown(GLFW_KEY_RIGHT)) camera->PanCamera(dt, PAN_SPEED, 0);
-  if (input->IsKeyDown(GLFW_KEY_UP)) camera->PanCamera(dt, 0, PAN_SPEED);
-  if (input->IsKeyDown(GLFW_KEY_DOWN)) camera->PanCamera(dt, 0, -PAN_SPEED);
+  if (input->IsKeyDown(GLFW_KEY_LEFT)) camCamera->PanCamera(dt, -PAN_SPEED, 0);
+  if (input->IsKeyDown(GLFW_KEY_RIGHT)) camCamera->PanCamera(dt, PAN_SPEED, 0);
+  if (input->IsKeyDown(GLFW_KEY_UP)) camCamera->PanCamera(dt, 0, PAN_SPEED);
+  if (input->IsKeyDown(GLFW_KEY_DOWN)) camCamera->PanCamera(dt, 0, -PAN_SPEED);
 }
 
 bool RenderSystem::HandleMousePick(float dt, Registry* registry, Input* input)
@@ -365,7 +366,7 @@ bool RenderSystem::HandleMousePick(float dt, Registry* registry, Input* input)
       });
 
   // Calculate the distance between the ray origin and the bounding box?
-  auto origin = camera->GetPositionInWorld();
+  auto origin = camCamera->GetPositionInWorld();
 
   std::vector<float> lengths;
   std::vector<uint32_t> lengthIndexs;
@@ -424,8 +425,8 @@ void RenderSystem::DrawAllLines(float dt, Registry* registry, Input* input)
   ShaderResource shaderResource = registry->GetResource<ShaderResource>();
 
   shaderResource.lineShader.Bind();
-  shaderResource.lineShader.SetUniformMatFloat4("projection", camera->GetProjection());
-  shaderResource.lineShader.SetUniformMatFloat4("view", camera->GetView());
+  shaderResource.lineShader.SetUniformMatFloat4("projection", camCamera->GetProjection());
+  shaderResource.lineShader.SetUniformMatFloat4("view", camCamera->GetView());
 
   renderer->StartBatch();
 
@@ -445,8 +446,8 @@ void RenderSystem::DrawAllLines(float dt, Registry* registry, Input* input)
   // Draw grid lines
   // #if DEBUG
   shaderResource.lineShader.Bind();
-  shaderResource.lineShader.SetUniformMatFloat4("projection", camera->GetProjection());
-  shaderResource.lineShader.SetUniformMatFloat4("view", camera->GetView());
+  shaderResource.lineShader.SetUniformMatFloat4("projection", camCamera->GetProjection());
+  shaderResource.lineShader.SetUniformMatFloat4("view", camCamera->GetView());
 
   renderer->StartBatch();
 
@@ -471,8 +472,8 @@ void RenderSystem::DrawAllModels(float dt, Registry* registry, Input* input)
   float currentTime = static_cast<float>(glfwGetTime());
 
   shaderResource.modelAnimatedShader.Bind();
-  shaderResource.modelAnimatedShader.SetUniformMatFloat4("projection", camera->GetProjection());
-  shaderResource.modelAnimatedShader.SetUniformMatFloat4("view", camera->GetView());
+  shaderResource.modelAnimatedShader.SetUniformMatFloat4("projection", camCamera->GetProjection());
+  shaderResource.modelAnimatedShader.SetUniformMatFloat4("view", camCamera->GetView());
 
   registry->GetComponentsIter<Model, Transform>()->Each([&](Model& model, Transform& transform) {
     if (model.hasAnimations && model.toAnimate)
@@ -504,8 +505,8 @@ void RenderSystem::DrawAllCubes(float dt, Registry* registry, Input* input)
   ShaderResource shaderResource = registry->GetResource<ShaderResource>();
 
   shaderResource.cubeShader.Bind();
-  shaderResource.cubeShader.SetUniformMatFloat4("projection", camera->GetProjection());
-  shaderResource.cubeShader.SetUniformMatFloat4("view", camera->GetView());
+  shaderResource.cubeShader.SetUniformMatFloat4("projection", camCamera->GetProjection());
+  shaderResource.cubeShader.SetUniformMatFloat4("view", camCamera->GetView());
 
   renderer->StartBatch();
 
@@ -525,8 +526,8 @@ void RenderSystem::DrawAllSpheres(float dt, Registry* registry, Input* input)
   ShaderResource shaderResource = registry->GetResource<ShaderResource>();
 
   shaderResource.sphereShader.Bind();
-  shaderResource.sphereShader.SetUniformMatFloat4("projection", camera->GetProjection());
-  shaderResource.sphereShader.SetUniformMatFloat4("view", camera->GetView());
+  shaderResource.sphereShader.SetUniformMatFloat4("projection", camCamera->GetProjection());
+  shaderResource.sphereShader.SetUniformMatFloat4("view", camCamera->GetView());
 
   renderer->StartBatch();
 
@@ -546,8 +547,8 @@ void RenderSystem::DrawAllColldiers(float dt, Registry* registry, Input* input)
   ShaderResource shaderResource = registry->GetResource<ShaderResource>();
 
   shaderResource.cubeShader.Bind();
-  shaderResource.cubeShader.SetUniformMatFloat4("projection", camera->GetProjection());
-  shaderResource.cubeShader.SetUniformMatFloat4("view", camera->GetView());
+  shaderResource.cubeShader.SetUniformMatFloat4("projection", camCamera->GetProjection());
+  shaderResource.cubeShader.SetUniformMatFloat4("view", camCamera->GetView());
 
   glLineWidth(5.0f);
   glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -584,22 +585,24 @@ void RenderSystem::DrawAllColldiers(float dt, Registry* registry, Input* input)
 void RenderSystem::DrawInGameCamera(float dt, Registry* registry, Input* input)
 {
   // Model is an editor resource as it only exists in the game
-  Model& model = registry->GetEditorResource<Model>();
+  // Model& model = registry->GetEditorResource<Model>();
+  Model& model =
+      registry->GetComponent<Model>(registry->GetEditorResource<DevDebug>().gameCameraId);
   // Camera is a user resource as it is what the user uses to move around the game.
   // Will need the transform from this camera component
-  Camera& gameCamera = registry->GetResource<Camera>();
+  // Camera& gameCamera = registry->GetResource<Camera>();
 
   // Bind the appropriate shaders
   ShaderResource shaderResource = registry->GetResource<ShaderResource>();
   shaderResource.modelAnimatedShader.Bind();
-  shaderResource.modelAnimatedShader.SetUniformMatFloat4("projection", camera->GetProjection());
-  shaderResource.modelAnimatedShader.SetUniformMatFloat4("view", camera->GetView());
+  shaderResource.modelAnimatedShader.SetUniformMatFloat4("projection", camCamera->GetProjection());
+  shaderResource.modelAnimatedShader.SetUniformMatFloat4("view", camCamera->GetView());
 
   // Set the default bone matrices, which means that it is not animated
   shaderResource.modelAnimatedShader.SetUniformMatFloat4("boneMatrices", 100, defaultBoneMatrices);
 
   // Set the model matrix
-  auto modelMatrix = GetModelMatrix(gameCamera.transform);
+  auto modelMatrix = GetModelMatrix(*(camTransform));
   shaderResource.modelAnimatedShader.SetUniformMatFloat4("model", modelMatrix);
   renderer->DrawModel(model, shaderResource.modelAnimatedShader);
 
@@ -630,8 +633,8 @@ void RenderSystem::DrawActiveEntityBoundingBox(float dt, Registry* registry, Inp
 
     ShaderResource& shaderResource = registry->GetResource<ShaderResource>();
     shaderResource.lineShader.Bind();
-    shaderResource.cubeShader.SetUniformMatFloat4("projection", camera->GetProjection());
-    shaderResource.cubeShader.SetUniformMatFloat4("view", camera->GetView());
+    shaderResource.cubeShader.SetUniformMatFloat4("projection", camCamera->GetProjection());
+    shaderResource.cubeShader.SetUniformMatFloat4("view", camCamera->GetView());
 
     glLineWidth(3.0f);
     renderer->StartBatch();
@@ -661,8 +664,8 @@ void RenderSystem::DrawActiveEntityBoundingBox(float dt, Registry* registry, Inp
 
     ShaderResource& shaderResource = registry->GetResource<ShaderResource>();
     shaderResource.lineShader.Bind();
-    shaderResource.cubeShader.SetUniformMatFloat4("projection", camera->GetProjection());
-    shaderResource.cubeShader.SetUniformMatFloat4("view", camera->GetView());
+    shaderResource.cubeShader.SetUniformMatFloat4("projection", camCamera->GetProjection());
+    shaderResource.cubeShader.SetUniformMatFloat4("view", camCamera->GetView());
 
     glLineWidth(3.0f);
     renderer->StartBatch();

@@ -27,7 +27,9 @@ class RenderSystem : public System
  private:
   Renderer* renderer;
 
-  Camera* camera;
+  // These represent the active 'camera' components
+  Transform* camTransform;
+  Camera* camCamera;
 
   uint32_t fbo, rbo;
   uint32_t texture;
