@@ -53,6 +53,16 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window)
 
   // Move game camera
   // registry->GetResource<Camera>().TranslateInWorld({0.0f, 1.0f, 5.0f});
+
+  DevDebug& devDebug = registry->GetEditorResource<DevDebug>();
+  // Create game camera
+  Entity gameCameraId = registry->GetAvailableEntityId();
+  registry->CreateEntity<Model, Transform, Camera>(gameCameraId);
+  registry->AddComponentData<Model>(gameCameraId, Model(CAMERA_MODEL, registry));
+  registry->GetComponent<Transform>(gameCameraId).position = {0.0f, 1.0f, 15.0f};
+  registry->GetComponent<Transform>(gameCameraId).scale /= 80.0f;
+  // Add it to devDebug
+  devDebug.gameCamera = gameCameraId;
 }
 
 Lucid::~Lucid()

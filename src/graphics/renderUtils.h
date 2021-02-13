@@ -277,3 +277,23 @@ static Transform TranslateInWorld(Transform transform, const glm::vec3 vec)
   transform.position += vec;
   return transform;
 }
+
+static glm::vec3 GetPosition(const Transform transform)
+{
+  return transform.position;
+}
+
+static glm::vec3 GetPositionInWorld(const Transform transform)
+{
+  return -transform.position;
+}
+
+static glm::quat GetRotation(const Transform transform)
+{
+  return transform.rotation;
+}
+
+static glm::mat4 GetView(const Transform transform)
+{
+  return glm::translate(glm::mat4_cast(transform.rotation), transform.position);
+}

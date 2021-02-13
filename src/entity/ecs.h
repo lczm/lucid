@@ -1006,36 +1006,6 @@ class Registry
     componentIndex++;
   }
 
-  // void RemoveEmptyArchetypes()
-  // {
-  //   std::vector<Archetype> remove;
-  //   // For every archetype
-  //   for (auto& archetypePair : archetypeComponentMap)
-  //   {
-  //     // Get the uint32_t index
-  //     Archetype archetype = archetypePair.first;
-
-  //     auto& keyPtr = GetArchetypeComponentMap(archetype);
-  //     auto& vectorPtr =
-  //         GetVectorFromArchetypeComponentMap<uint32_t>(keyPtr, GetHashCode<uint32_t>());
-
-  //     std::cout << vectorPtr.size() << std::endl;
-
-  //     // if (vectorPtr.size() == 0)
-  //     // {
-  //     //   std::cout << "vectorPtr.size() is 0..." << std::endl;
-  //     //   remove.push_back(archetype);
-  //     // }
-  //   }
-
-  //   for (Archetype archetype : remove)
-  //   {
-  //     archetypeComponentMap.erase(archetype);
-  //   }
-
-  //   std::cout << "Actually works till here" << std::endl;
-  // }
-
   // This returns a std::vector<void*> that the user will have to cast to its
   // respective type afterwards. The types are known to be users as the order
   // of the <T> that is passed into the function.

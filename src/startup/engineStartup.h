@@ -119,13 +119,6 @@ static void InitEngineComponents(Registry* registry)
   // Game Camera
   registry->CreateResource<Camera>();
 
-  // Setup the In-Game camera
-  registry->GetEditorResource<Model>().registry = registry;
-  registry->GetEditorResource<Model>().path = CAMERA_MODEL;
-  registry->GetEditorResource<Model>().Load();
-  registry->GetResource<Camera>().transform.position += glm::vec3(0.0f, 1.0f, 5.0f);
-  registry->GetResource<Camera>().transform.scale /= 80.0f;
-
   ShaderResource& shaderResource = registry->GetResource<ShaderResource>();
 
   shaderResource.modelShader.CreateShader(MODEL_VERTEX_SHADER, MODEL_FRAGMENT_SHADER);
