@@ -37,17 +37,20 @@ static glm::vec3 GetRayDirection(Registry* registry, Input* input)
   // homogeneous clip coordinates
   glm::vec4 rayClip = glm::vec4(rayNds.x, rayNds.y, -1.0f, 1.0f);
 
-  Camera& camera = GetActiveCameraRef(registry);
+  Camera* camera = GetActiveCameraPtr(registry);
+  Transform* transform = GetActiveTransformPtr(registry);
 
   // convert to eye/camera coordinates
-  glm::vec4 rayEye = glm::inverse(camera.GetProjection()) * rayClip;
+  // glm::vec4 rayEye = glm::inverse(camera.GetProjection()) * rayClip;
+  glm::vec4 rayEye = glm::inverse(GetProjection(camera)) * rayClip;
 
   // unproject the x, z part
   rayEye = glm::vec4(rayEye.x, rayEye.y, -1.0f, 0.0f);
 
   // 4d world coordinates
   // normalize the vector as well
-  glm::vec3 rayWorld = glm::vec3(glm::normalize(glm::inverse(camera.GetView()) * rayEye));
+  // glm::vec3 rayWorld = glm::vec3(glm::normalize(glm::inverse(camera.GetView()) * rayEye));
+  glm::vec3 rayWorld = glm::vec3(glm::normalize(glm::inverse(GetView(transform)) * rayEye));
 
   // Note : Do this for visibility, to visualize the ray,
   // the scale of the ray does not affect what it is used for.

@@ -1,5 +1,9 @@
 #pragma once
 
+#include "glm.hpp"
+#include "gtx/string_cast.hpp"
+#include "gtc/matrix_transform.hpp"
+
 // #define DEBUG true
 // #define RELEASE false
 
@@ -59,6 +63,7 @@ const char PIANO_MUSIC[] = "../assets/audio/piano.wav";
 
 // Pseudo standard values that will not change
 const float PI = static_cast<float>(3.14159265359);
+constexpr float twoPi = glm::two_pi<float>();
 
 // Pong demo
 const float PADDLE_MOVE_SPEED = 0.05f;

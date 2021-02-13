@@ -221,10 +221,12 @@ void RenderSystem::HandleMousePan(float dt, Registry* registry, Input* input)
 
     // These are simple movements that can just be translated on the spot
     // Handle the x-axis movement
-    camCamera->Translate(glm::vec3((offsetX * dt), 0.0f, 0.0f));
+    // camCamera->Translate(glm::vec3((offsetX * dt), 0.0f, 0.0f));
+    camTransform = Translate(camTransform, glm::vec3((offsetX * dt), 0.0f, 0.0f));
 
     // Handle the y-axis movement
-    camCamera->Translate(glm::vec3(0.0f, offsetY * dt, 0.0f));
+    // camCamera->Translate(glm::vec3(0.0f, offsetY * dt, 0.0f));
+    camTransform = Translate(camTransform, glm::vec3(0.0f, offsetY * dt, 0.0f));
 
     input->lastX = input->GetMouseX();
     input->lastY = input->GetMouseY();
@@ -242,7 +244,8 @@ void RenderSystem::HandleMousePan(float dt, Registry* registry, Input* input)
     input->lastY = input->GetMouseY();
 
     // camera->UpdateCameraVector(offsetX, offsetY);
-    camCamera->PanCamera(dt, offsetX, offsetY);
+    // camCamera->PanCamera(dt, offsetX, offsetY, camTransform);
+    PanCamera(dt, camCamera, camTransform, offsetX, offsetY);
     return;
   }
 
@@ -254,13 +257,15 @@ void RenderSystem::HandleMouseScroll(float dt, Input* input)
   // Scroll up
   if (input->GetScrollState() == 1)
   {
-    camCamera->Translate(glm::vec3(0.0f, 0.0f, SCROLL_SPEED * dt));
+    // camCamera->Translate(glm::vec3(0.0f, 0.0f, SCROLL_SPEED * dt));
+    camTransform = Translate(camTransform, glm::vec3(0.0f, 0.0f, SCROLL_SPEED * dt));
   }
 
   // Scroll down
   if (input->GetScrollState() == -1)
   {
-    camCamera->Translate(glm::vec3(0.0f, 0.0f, -(SCROLL_SPEED * dt)));
+    // camCamera->Translate(glm::vec3(0.0f, 0.0f, -(SCROLL_SPEED * dt)));
+    camTransform = Translate(camTransform, glm::vec3(0.0f, 0.0f, -(SCROLL_SPEED * dt)));
   }
 
   // Reset the scroll variable once done
@@ -270,18 +275,32 @@ void RenderSystem::HandleMouseScroll(float dt, Input* input)
 
 void RenderSystem::HandleKeyboardPan(float dt, Input* input)
 {
-  if (input->IsKeyDown('W')) camCamera->Translate(glm::vec3(0.0f, 0.0f, CAMERA_SPEED * dt));
-  if (input->IsKeyDown('S')) camCamera->Translate(glm::vec3(0.0f, 0.0f, -(CAMERA_SPEED * dt)));
-  if (input->IsKeyDown('A')) camCamera->Translate(glm::vec3(CAMERA_SPEED * dt, 0.0f, 0.0f));
-  if (input->IsKeyDown('D')) camCamera->Translate(glm::vec3(-(CAMERA_SPEED * dt), 0.0f, 0.0f));
+  // if (input->IsKeyDown('W')) camCamera->Translate(glm::vec3(0.0f, 0.0f, CAMERA_SPEED * dt));
+  // if (input->IsKeyDown('S')) camCamera->Translate(glm::vec3(0.0f, 0.0f, -(CAMERA_SPEED * dt)));
+  // if (input->IsKeyDown('A')) camCamera->Translate(glm::vec3(CAMERA_SPEED * dt, 0.0f, 0.0f));
+  // if (input->IsKeyDown('D')) camCamera->Translate(glm::vec3(-(CAMERA_SPEED * dt), 0.0f, 0.0f));
+
+  if (input->IsKeyDown('W'))
+    camTransform = Translate(camTransform, glm::vec3(0.0f, 0.0f, CAMERA_SPEED * dt));
+  if (input->IsKeyDown('S'))
+    camTransform = Translate(camTransform, glm::vec3(0.0f, 0.0f, -(CAMERA_SPEED * dt)));
+  if (input->IsKeyDown('A'))
+    camTransform = Translate(camTransform, glm::vec3(CAMERA_SPEED * dt, 0.0f, 0.0f));
+  if (input->IsKeyDown('D'))
+    camTransform = Translate(camTransform, glm::vec3(-(CAMERA_SPEED * dt), 0.0f, 0.0f));
 
   // Temporary : TODO : make this more usable; this can use modifier keys to be more accessible / do
   // more things
   const float PAN_SPEED = 5.0f;
-  if (input->IsKeyDown(GLFW_KEY_LEFT)) camCamera->PanCamera(dt, -PAN_SPEED, 0);
-  if (input->IsKeyDown(GLFW_KEY_RIGHT)) camCamera->PanCamera(dt, PAN_SPEED, 0);
-  if (input->IsKeyDown(GLFW_KEY_UP)) camCamera->PanCamera(dt, 0, PAN_SPEED);
-  if (input->IsKeyDown(GLFW_KEY_DOWN)) camCamera->PanCamera(dt, 0, -PAN_SPEED);
+  // if (input->IsKeyDown(GLFW_KEY_LEFT)) camCamera->PanCamera(dt, -PAN_SPEED, 0, camTransform);
+  // if (input->IsKeyDown(GLFW_KEY_RIGHT)) camCamera->PanCamera(dt, PAN_SPEED, 0, camTransform);
+  // if (input->IsKeyDown(GLFW_KEY_UP)) camCamera->PanCamera(dt, 0, PAN_SPEED, camTransform);
+  // if (input->IsKeyDown(GLFW_KEY_DOWN)) camCamera->PanCamera(dt, 0, -PAN_SPEED, camTransform);
+
+  if (input->IsKeyDown(GLFW_KEY_LEFT)) PanCamera(dt, camCamera, camTransform, -PAN_SPEED, 0);
+  if (input->IsKeyDown(GLFW_KEY_RIGHT)) PanCamera(dt, camCamera, camTransform, PAN_SPEED, 0);
+  if (input->IsKeyDown(GLFW_KEY_UP)) PanCamera(dt, camCamera, camTransform, 0, PAN_SPEED);
+  if (input->IsKeyDown(GLFW_KEY_DOWN)) PanCamera(dt, camCamera, camTransform, 0, -PAN_SPEED);
 }
 
 bool RenderSystem::HandleMousePick(float dt, Registry* registry, Input* input)

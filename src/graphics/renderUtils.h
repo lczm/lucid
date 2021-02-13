@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#include "constants.h"
 #include "ecs.h"
 #include "input.h"
 #include "component.h"
@@ -238,10 +239,26 @@ static std::vector<glm::vec4> ConvertFloatToVecVertices(std::vector<float> verti
   return newVertices;
 }
 
-static inline Transform TranslateInWorld(Transform transform, const glm::vec3 vec)
+static inline Transform Translate(Transform transform, const glm::vec3 vec)
 {
   transform.position += vec;
   return transform;
+}
+
+static inline Transform* Translate(Transform* transform, const glm::vec3 vec)
+{
+  transform->position += vec;
+  return transform;
+}
+
+static inline void TranslateInWorld(Transform& transform, const glm::vec3 vec)
+{
+  transform.position += -vec;
+}
+
+static inline void TranslateInWorld(Transform* transform, const glm::vec3 vec)
+{
+  transform->position += -vec;
 }
 
 /*
@@ -399,4 +416,54 @@ static inline Transform& GetActiveTransformRef(Registry* registry)
     std::cout << "Attempted to GetActiveTransformRef a component that does not exist" << std::endl;
     exit(0);
   }
+}
+
+static void PanCamera(float dt, Camera* camera, Transform* transform, float offsetX, float offsetY)
+{
+  const float damp = 0.00005f;
+
+  offsetX *= CAMERA_SENSITIVITY * dt;
+  // This is always negative so that 'moving' the camera downwards feels natural
+  // As when it is 'right -clicked', it is in the opposite direction
+  offsetY *= -(CAMERA_SENSITIVITY * dt);
+
+  camera->yaw += offsetX;
+  camera->pitch += offsetY;
+
+  if (camera->pitch > twoPi)
+  {
+    camera->pitch -= twoPi;
+  }
+  else if (camera->pitch < -twoPi)
+  {
+    camera->pitch += twoPi;
+  }
+
+  if (camera->yaw > twoPi)
+  {
+    camera->yaw -= twoPi;
+  }
+  else if (camera->yaw < -twoPi)
+  {
+    camera->yaw += twoPi;
+  }
+
+  if (camera->pitch != 0.0f)
+  {
+    transform->rotation = RotateQuatX(transform->rotation, camera->pitch);
+  }
+
+  if (camera->yaw != 0.0f)
+  {
+    transform->rotation = RotateQuatY(transform->rotation, camera->yaw);
+  }
+
+  if (camera->roll != 0.0f)
+  {
+    transform->rotation = RotateQuatZ(transform->rotation, camera->roll);
+  }
+
+  camera->pitch *= damp;
+  camera->yaw *= damp;
+  camera->roll *= damp;
 }
