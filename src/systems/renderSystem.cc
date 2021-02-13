@@ -58,7 +58,6 @@ void RenderSystem::Update(float dt, Registry* registry, Input* input)
   DrawAllSpheres(dt, registry, input);
 
 #if DEBUG
-  DrawInGameCamera(dt, registry, input);
   DrawActiveEntityBoundingBox(dt, registry, input);
   if (devDebug.drawColliders) DrawAllColldiers(dt, registry, input);
   if (devDebug.drawWireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -603,34 +602,6 @@ void RenderSystem::DrawAllColldiers(float dt, Registry* registry, Input* input)
   glLineWidth(1.0f);
 
   shaderResource.cubeShader.Unbind();
-}
-
-void RenderSystem::DrawInGameCamera(float dt, Registry* registry, Input* input)
-{
-  // Model is an editor resource as it only exists in the game
-  // Model& model = registry->GetEditorResource<Model>();
-  Model& model =
-      registry->GetComponent<Model>(registry->GetEditorResource<DevDebug>().gameCameraId);
-  // Camera is a user resource as it is what the user uses to move around the game.
-  // Will need the transform from this camera component
-  // Camera& gameCamera = registry->GetResource<Camera>();
-
-  // Bind the appropriate shaders
-  ShaderResource shaderResource = registry->GetResource<ShaderResource>();
-  shaderResource.modelAnimatedShader.Bind();
-  shaderResource.modelAnimatedShader.SetUniformMatFloat4("projection", camCamera->GetProjection());
-  // shaderResource.modelAnimatedShader.SetUniformMatFloat4("view", camCamera->GetView());
-  shaderResource.modelAnimatedShader.SetUniformMatFloat4("view", GetView(camTransform));
-
-  // Set the default bone matrices, which means that it is not animated
-  shaderResource.modelAnimatedShader.SetUniformMatFloat4("boneMatrices", 100, defaultBoneMatrices);
-
-  // Set the model matrix
-  auto modelMatrix = GetModelMatrix(*(camTransform));
-  shaderResource.modelAnimatedShader.SetUniformMatFloat4("model", modelMatrix);
-  renderer->DrawModel(model, shaderResource.modelAnimatedShader);
-
-  shaderResource.modelAnimatedShader.Unbind();
 }
 
 void RenderSystem::DrawActiveEntityBoundingBox(float dt, Registry* registry, Input* input)
