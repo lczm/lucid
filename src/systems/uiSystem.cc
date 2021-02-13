@@ -472,6 +472,7 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
 
   UpdateWindowFocus(registry, WindowType::Inspector, "Inspector", input);
 
+  UpdateInputActiveWindow(registry, input, WindowType::Scene);
   ImGui::EndChild();
 
   // Drag n drop from default assets
