@@ -222,11 +222,11 @@ void RenderSystem::HandleMousePan(float dt, Registry* registry, Input* input)
     // These are simple movements that can just be translated on the spot
     // Handle the x-axis movement
     // camCamera->Translate(glm::vec3((offsetX * dt), 0.0f, 0.0f));
-    camTransform = Translate(camTransform, glm::vec3((offsetX * dt), 0.0f, 0.0f));
+    Translate(camTransform, glm::vec3((offsetX * dt), 0.0f, 0.0f));
 
     // Handle the y-axis movement
     // camCamera->Translate(glm::vec3(0.0f, offsetY * dt, 0.0f));
-    camTransform = Translate(camTransform, glm::vec3(0.0f, offsetY * dt, 0.0f));
+    Translate(camTransform, glm::vec3(0.0f, offsetY * dt, 0.0f));
 
     input->lastX = input->GetMouseX();
     input->lastY = input->GetMouseY();
@@ -258,14 +258,14 @@ void RenderSystem::HandleMouseScroll(float dt, Input* input)
   if (input->GetScrollState() == 1)
   {
     // camCamera->Translate(glm::vec3(0.0f, 0.0f, SCROLL_SPEED * dt));
-    camTransform = Translate(camTransform, glm::vec3(0.0f, 0.0f, SCROLL_SPEED * dt));
+    Translate(camTransform, glm::vec3(0.0f, 0.0f, SCROLL_SPEED * dt));
   }
 
   // Scroll down
   if (input->GetScrollState() == -1)
   {
     // camCamera->Translate(glm::vec3(0.0f, 0.0f, -(SCROLL_SPEED * dt)));
-    camTransform = Translate(camTransform, glm::vec3(0.0f, 0.0f, -(SCROLL_SPEED * dt)));
+    Translate(camTransform, glm::vec3(0.0f, 0.0f, -(SCROLL_SPEED * dt)));
   }
 
   // Reset the scroll variable once done
@@ -280,14 +280,10 @@ void RenderSystem::HandleKeyboardPan(float dt, Input* input)
   // if (input->IsKeyDown('A')) camCamera->Translate(glm::vec3(CAMERA_SPEED * dt, 0.0f, 0.0f));
   // if (input->IsKeyDown('D')) camCamera->Translate(glm::vec3(-(CAMERA_SPEED * dt), 0.0f, 0.0f));
 
-  if (input->IsKeyDown('W'))
-    camTransform = Translate(camTransform, glm::vec3(0.0f, 0.0f, CAMERA_SPEED * dt));
-  if (input->IsKeyDown('S'))
-    camTransform = Translate(camTransform, glm::vec3(0.0f, 0.0f, -(CAMERA_SPEED * dt)));
-  if (input->IsKeyDown('A'))
-    camTransform = Translate(camTransform, glm::vec3(CAMERA_SPEED * dt, 0.0f, 0.0f));
-  if (input->IsKeyDown('D'))
-    camTransform = Translate(camTransform, glm::vec3(-(CAMERA_SPEED * dt), 0.0f, 0.0f));
+  if (input->IsKeyDown('W')) Translate(camTransform, glm::vec3(0.0f, 0.0f, CAMERA_SPEED * dt));
+  if (input->IsKeyDown('S')) Translate(camTransform, glm::vec3(0.0f, 0.0f, -(CAMERA_SPEED * dt)));
+  if (input->IsKeyDown('A')) Translate(camTransform, glm::vec3(CAMERA_SPEED * dt, 0.0f, 0.0f));
+  if (input->IsKeyDown('D')) Translate(camTransform, glm::vec3(-(CAMERA_SPEED * dt), 0.0f, 0.0f));
 
   // Temporary : TODO : make this more usable; this can use modifier keys to be more accessible / do
   // more things

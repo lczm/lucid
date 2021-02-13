@@ -239,26 +239,24 @@ static std::vector<glm::vec4> ConvertFloatToVecVertices(std::vector<float> verti
   return newVertices;
 }
 
-static inline Transform Translate(Transform transform, const glm::vec3 vec)
+static inline void Translate(Transform& transform, const glm::vec3 vec)
 {
-  transform.position += vec;
-  return transform;
+  transform.position += vec * transform.rotation;
 }
 
-static inline Transform* Translate(Transform* transform, const glm::vec3 vec)
+static inline void Translate(Transform* transform, const glm::vec3 vec)
 {
-  transform->position += vec;
-  return transform;
+  transform->position += vec * transform->rotation;
 }
 
 static inline void TranslateInWorld(Transform& transform, const glm::vec3 vec)
 {
-  transform.position += -vec;
+  transform.position += -vec * transform.rotation;
 }
 
 static inline void TranslateInWorld(Transform* transform, const glm::vec3 vec)
 {
-  transform->position += -vec;
+  transform->position += -vec * transform->rotation;
 }
 
 /*
