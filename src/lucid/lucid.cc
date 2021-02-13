@@ -31,17 +31,19 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window)
   ImGui_ImplGlfw_InitForOpenGL(window, true);
   ImGui_ImplOpenGL3_Init(GLSL_VERSION);
 
-  // These are retrieved from engineStartup.h
-  // InitArchetypes(registry);
-  InitEngineComponents(registry);
+  // Engine startup
+  InitializeEngineComponents();
+
+  // System startup, retrieved from startup.h
   InitSystems(registry);
 
   InitializeModelEntities();
-  InitializeSystems();
 
 #if DEBUG
   InitializeSceneGridLines();
 #endif
+
+  registry->RegisterEmptyArchetype();
 
   // TODO : This should be abstracted out into a user system
   // Demo pong
@@ -68,9 +70,12 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window)
   // Create game camera
   Entity gameCameraId = registry->GetAvailableEntityId();
   // Game camera requires a model for the user to 'move'
-  registry->CreateEntity<Model, Transform, Camera>(gameCameraId);
-  registry->AddComponentData<Model>(gameCameraId, Model(CAMERA_MODEL, registry));
-  registry->GetComponent<Transform>(gameCameraId).position = {0.0f, 1.0f, 15.0f};
+  // registry->CreateEntity<Model, Transform, Camera>(gameCameraId);
+  // registry->AddComponentData<Model>(gameCameraId, Model(CAMERA_MODEL, registry));
+  // registry->GetComponent<Transform>(gameCameraId).position = {0.0f, 1.0f, 15.0f};
+
+  registry->CreateEntity<Transform, Camera>(gameCameraId);
+  registry->GetComponent<Transform>(gameCameraId).position = {0.0f, -1.0f, -15.0f};
 
   // registry->GetComponent<Transform>(gameCameraId).rotation =
   //     RotateQuatY(registry->GetComponent<Transform>(gameCameraId).rotation, glm::radians(90.0f));
@@ -190,8 +195,43 @@ void Lucid::InitializeModelEntities()
   // }
 }
 
-void Lucid::InitializeSystems()
+void Lucid::InitializeEngineComponents()
 {
+  // Editor resources are for the engine devs to use
+  registry->CreateEditorResource<PrimitiveBatchIds>();
+  registry->CreateEditorResource<SphereVerticesIndices>();
+  registry->CreateEditorResource<Workspace>();
+  registry->CreateEditorResource<Listener>();
+  registry->CreateEditorResource<SceneRender>();
+  registry->CreateEditorResource<DevDebug>();
+  registry->CreateEditorResource<WidgetLayout>();
+  registry->CreateEditorResource<RendererStats>();
+  registry->CreateEditorResource<GameEngineState>();
+
+  // Scene Camera
+  // registry->CreateEditorResource<Camera>();
+  // In Game Camera Model
+  // registry->CreateEditorResource<Model>();
+
+  // Resources are for the users to use
+  registry->CreateResource<RigidBodyConfiguration>();
+  registry->CreateResource<ShaderResource>();
+  // Game Camera
+  // registry->CreateResource<Camera>();
+
+  ShaderResource& shaderResource = registry->GetResource<ShaderResource>();
+
+  shaderResource.modelShader.CreateShader(MODEL_VERTEX_SHADER, MODEL_FRAGMENT_SHADER);
+  shaderResource.modelAnimatedShader.CreateShader(MODEL_ANIMATED_VERTEX_SHADER,
+                                                  MODEL_FRAGMENT_SHADER);
+
+  shaderResource.primitiveShader.CreateShader(PRIMITIVE_VERTEX_SHADER, PRIMITIVE_FRAGMENT_SHADER);
+  shaderResource.lineShader.CreateShader(PRIMITIVE_LINE_SHADER, PRIMITIVE_FRAGMENT_SHADER);
+
+  shaderResource.cubeShader.CreateShader(PRIMITIVE_INSTANCED_SHADER, PRIMITIVE_FRAGMENT_SHADER);
+  // Note : using the primitive cube shader for now? If there turns out to not be a need
+  // for the sphere and cubes to use different shaders, then simplify the shader names.
+  shaderResource.sphereShader.CreateShader(PRIMITIVE_INSTANCED_SHADER, PRIMITIVE_FRAGMENT_SHADER);
 }
 
 void Lucid::InitializeDemoPongEntities()

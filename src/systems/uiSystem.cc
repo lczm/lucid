@@ -257,12 +257,12 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
           fs::create_directory(systemPath);
 
           // Copies over engineStartup.h
-          fs::path engineStartup = "../src/startup/engineStartup.h";
+          fs::path engineStartup = "../src/copy/engineStartup.h";
           fs::path userEngineStartup = path / projectNameFolder;
           fs::copy(engineStartup, userEngineStartup);
 
           // Copies over startup.h
-          fs::path startup = "../src/startup/startup.h";
+          fs::path startup = "../src/copy/startup.h";
           fs::path userStartup = path / projectNameFolder;
           fs::copy(startup, userStartup);
 
