@@ -59,7 +59,14 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window)
   Entity gameCameraId = registry->GetAvailableEntityId();
   registry->CreateEntity<Model, Transform, Camera>(gameCameraId);
   registry->AddComponentData<Model>(gameCameraId, Model(CAMERA_MODEL, registry));
-  registry->GetComponent<Transform>(gameCameraId).position = {0.0f, 1.0f, 15.0f};
+  registry->GetComponent<Transform>(gameCameraId).position = {0.75f, 1.0f, 15.0f};
+
+  registry->GetComponent<Transform>(gameCameraId).rotation =
+      RotateQuatY(registry->GetComponent<Transform>(gameCameraId).rotation, glm::radians(90.0f));
+
+  registry->GetComponent<Transform>(gameCameraId).rotation =
+      RotateQuatX(registry->GetComponent<Transform>(gameCameraId).rotation, glm::radians(-90.0f));
+
   registry->GetComponent<Transform>(gameCameraId).scale /= 80.0f;
   // Add it to devDebug
   devDebug.gameCamera = gameCameraId;

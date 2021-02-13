@@ -272,28 +272,58 @@ static Camera& GetActiveCameraRef(Registry* registry)
   }
 }
 
-static Transform TranslateInWorld(Transform transform, const glm::vec3 vec)
+static inline Transform TranslateInWorld(Transform transform, const glm::vec3 vec)
 {
   transform.position += vec;
   return transform;
 }
 
-static glm::vec3 GetPosition(const Transform transform)
+static inline glm::vec3 GetPosition(const Transform transform)
 {
   return transform.position;
 }
 
-static glm::vec3 GetPositionInWorld(const Transform transform)
+static inline glm::vec3 GetPositionInWorld(const Transform transform)
 {
   return -transform.position;
 }
 
-static glm::quat GetRotation(const Transform transform)
+static inline glm::quat GetRotation(const Transform transform)
 {
   return transform.rotation;
 }
 
-static glm::mat4 GetView(const Transform transform)
+static inline glm::mat4 GetView(const Transform transform)
 {
   return glm::translate(glm::mat4_cast(transform.rotation), transform.position);
+}
+
+/*
+ * Quat rotation utilities
+ * These are inlined because they should not really require any
+ * function call overheads.
+ */
+
+// Angles in radians, use glm::radians to convert degree to radians
+static inline glm::quat RotateQuat(glm::quat quat, float angle, glm::vec3 axis)
+{
+  return quat *= glm::angleAxis(angle, axis);
+}
+
+// Angles in radians, use glm::radians to convert degree to radians
+static inline glm::quat RotateQuatX(glm::quat quat, float angle)
+{
+  return quat *= glm::angleAxis(angle, glm::vec3(1.0f, 0.0f, 0.0f));
+}
+
+// Angles in radians, use glm::radians to convert degree to radians
+static inline glm::quat RotateQuatY(glm::quat quat, float angle)
+{
+  return quat *= glm::angleAxis(angle, glm::vec3(0.0f, 1.0f, 0.0f));
+}
+
+// Angles in radians, use glm::radians to convert degree to radians
+static inline glm::quat RotateQuatZ(glm::quat quat, float angle)
+{
+  return quat *= glm::angleAxis(angle, glm::vec3(0.0f, 0.0f, 1.0f));
 }
