@@ -378,8 +378,13 @@ void UiSystem::InitializeImGuiWindows(float dt, Registry* registry, Input* input
 void UiSystem::DrawHierarchy(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Hierarchy");
-  DisableInputWhenDragScrollbar(registry, input);
 
+  if (ImGui::IsItemHovered())
+  {
+    ImGui::SetTooltip("View and manage your scene objects here!");
+  }
+
+  DisableInputWhenDragScrollbar(registry, input);
   // TODO : This can be improved upon
   // For now just take anything that has a transform component attached to it
 
@@ -435,6 +440,11 @@ void UiSystem::DrawAssets(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Assets");
 
+  if (ImGui::IsItemHovered())
+  {
+    ImGui::SetTooltip("Drag and drop your assets into the scene!");
+  }
+
   UpdateInputActiveWindow(registry, input, WindowType::Assets);
   ImGui::End();
 }
@@ -446,6 +456,11 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
   ImGui::Begin("Scene Camera");
   // Pop it so that it applies to the entire window here.
   ImGui::PopStyleVar();
+
+  if (ImGui::IsItemHovered())
+  {
+    ImGui::SetTooltip("Organize your objects here!");
+  }
 
   ImGui::BeginChild("SceneRender");
 
@@ -547,6 +562,11 @@ void UiSystem::DrawGameCamera(float dt, Registry* registry, Input* input)
   // Pop it so that it applies to the entire window here.
   ImGui::PopStyleVar();
 
+  if (ImGui::IsItemHovered())
+  {
+    ImGui::SetTooltip("View your players perspective in the game here!");
+  }
+
   ImGui::BeginChild("SceneRender");
 
   // Get the size of the current imgui window to draw in
@@ -569,6 +589,11 @@ void UiSystem::DrawGameCamera(float dt, Registry* registry, Input* input)
 void UiSystem::DrawProject(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Project");
+
+  if (ImGui::IsItemHovered())
+  {
+    ImGui::SetTooltip("Check out your project files here!");
+  }
   // DevDebug& devDebug = registry->GetComponent<DevDebug>();
   // if (devDebug.changeFocusWindow == WindowType::Scene) ImGui::SetWindowFocus();
 
@@ -607,6 +632,11 @@ void UiSystem::DrawConsole(float dt, Registry* registry, Input* input)
 void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Inspector");
+
+  if (ImGui::IsItemHovered())
+  {
+    ImGui::SetTooltip("Change the attributes of your scene objects here!");
+  }
 
   DevDebug& devDebug = registry->GetEditorResource<DevDebug>();
   ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen;
@@ -671,6 +701,12 @@ void UiSystem::DrawDevDebug(float dt, Registry* registry, Input* input)
 void UiSystem::DrawDefaultAssets(float dt, Registry* registry, Input* input)
 {
   ImGui::Begin("Default Assets");
+
+  if (ImGui::IsItemHovered())
+  {
+    ImGui::SetTooltip("Drag and drop shapes into the scene here!");
+  }
+
   for (size_t n = 0; n < defaultAssets.size(); n++)
   {
     ImGui::PushID(n);
