@@ -571,8 +571,6 @@ void UiSystem::DrawProject(float dt, Registry* registry, Input* input)
   // DevDebug& devDebug = registry->GetComponent<DevDebug>();
   // if (devDebug.changeFocusWindow == WindowType::Scene) ImGui::SetWindowFocus();
 
-  UpdateInputActiveWindow(registry, input, WindowType::Project);
-
   // Check if a folder has been selected
   if (!fs::exists(absoluteProjectRoot->path))
   {
@@ -589,6 +587,7 @@ void UiSystem::DrawProject(float dt, Registry* registry, Input* input)
   }
   DrawFileTree(absoluteProjectRoot);
 
+  UpdateInputActiveWindow(registry, input, WindowType::Project);
   ImGui::End();
 }
 
@@ -612,7 +611,6 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
   ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen;
   static std::string currentItem = "";
 
-  UpdateInputActiveWindow(registry, input, WindowType::Inspector);
   if (devDebug.activeEntity == 0)
   {
     ImGui::End();
@@ -638,6 +636,7 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
     ImGui::Separator();
   }
 
+  UpdateInputActiveWindow(registry, input, WindowType::Inspector);
   ImGui::End();
 }
 
