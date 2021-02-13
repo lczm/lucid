@@ -147,13 +147,13 @@ void Lucid::InitializeModelEntities()
     // Entity kingBooId = registry->GetAvailableEntityId();
     // registry->CreateEntity<Model, Transform, ColliderCube, Sound>(kingBooId);
     // registry->AddComponentData<Model>(kingBooId, Model(KING_BOO_MODEL, registry));
-    // registry->AddComponentData<Sound>(kingBooId, Sound(GRUNT_SOUND));
+    // registry->AddComponentData<Sound>(kingBooId, Sound(PIANO_MUSIC));
     // registry->GetComponent<Model>(kingBooId).toAnimate = true;
     // registry->GetComponent<Transform>(kingBooId).position = {0.0f, 0.0f, 0.0f};
     // registry->GetComponent<Transform>(kingBooId).scale /= 150.0f;
 
     // registry->GetComponent<ColliderPolygon>(kingBooId).SetVertices(
-    //     registry->GetComponent<Model>(kingBooId).vertices);
+    //    registry->GetComponent<Model>(kingBooId).vertices);
     // registry->GetComponent<ColliderCube>(kingBooId).SetVertices(
     //     GetBoundingBoxVertices(registry->GetComponent<Model>(kingBooId).boundingBox));
   }
