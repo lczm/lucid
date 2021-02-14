@@ -6,6 +6,9 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window)
   Lucid::input = input;
   Lucid::window = window;
 
+  // Seed a random seed
+  srand(time(nullptr));
+
   timer = std::chrono::high_resolution_clock::now();
 
   // Target this window for user pointer for GLFW, this is so that

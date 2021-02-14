@@ -9,6 +9,7 @@
 #include "audioSystem.h"
 #include "physicsSystem.h"
 #include "fpsSystem.h"
+#include "rules.h"
 
 // Initialize all your systems here
 // This gets ran at startup
@@ -27,4 +28,5 @@ static void InitSystems(Registry* registry)
 // This gets ran at startup.
 static void InitUserEntities(Registry* registry)
 {
+  registry->CreateResource<FpsRules>();
 }

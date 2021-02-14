@@ -37,7 +37,6 @@ void FpsSystem::Update(float dt, Registry* registry, Input* input)
   if (input->IsMouseLDown())
   {
     glm::vec3 rayDirection = GetRayDirection(registry, input, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
-    // rayDirection /= 10.0f;
 
     std::cout << glm::to_string(rayDirection) << std::endl;
 
@@ -49,4 +48,9 @@ void FpsSystem::Update(float dt, Registry* registry, Input* input)
     registry->GetComponent<RigidBody>(bulletId).velocity = rayDirection;
     registry->GetComponent<RigidBody>(bulletId).applyGravity = false;
   }
+
+  // FpsRules fpsRules = registry->GetResource<FpsRules>();
+  // if (fpsRules.enemyCount < fpsRules.maxEnemyCount)
+  // {
+  // }
 }

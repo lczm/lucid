@@ -2,9 +2,12 @@
 
 #include "ecs.h"
 #include "ray.h"
+#include "colliders.h"
 #include "renderUtils.h"
 #include "gtc/matrix_transform.hpp"
 #include <iostream>
+
+#include "rules.h"
 
 class FpsSystem : public System
 {

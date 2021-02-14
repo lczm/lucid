@@ -7,6 +7,8 @@
 #include <string>
 #include <typeinfo>
 #include <vector>
+#include <stdlib.h>
+#include <time.h>
 
 #include "shader.h"
 #include "ecs.h"
