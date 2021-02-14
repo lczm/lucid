@@ -102,7 +102,13 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window)
   // std::cout << "Trying to serialize in workspaceRootDataConverted END" << std::endl;
 
   // SerializeAllIn(registry, workspaceRootDataConverted);
-  SerializeAllIn(registry, "data.json");
+
+  if (fs::exists("data.json"))
+  {
+    std::cout << "Attempting to serialize in" << std::endl;
+    SerializeAllIn(registry, "data.json");
+    std::cout << "Finished attempting to serialize in" << std::endl;
+  }
 #endif
 }
 
