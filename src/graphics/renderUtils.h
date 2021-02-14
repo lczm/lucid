@@ -342,6 +342,7 @@ static inline Camera* GetActiveCameraPtr(Registry* registry)
 {
   DevDebug& devDebug = registry->GetEditorResource<DevDebug>();
 
+#if DEBUG
   if (devDebug.activeCamera == CameraType::Scene)
   {
     return &(registry->GetComponent<Camera>(devDebug.sceneCameraId));
@@ -355,12 +356,18 @@ static inline Camera* GetActiveCameraPtr(Registry* registry)
     std::cout << "Attempted to GetActiveCameraPtr a component that does not exist" << std::endl;
     exit(0);
   }
+#endif
+
+#if RELEASE
+  return &(registry->GetComponent<Camera>(devDebug.gameCameraId));
+#endif
 }
 
 static inline Camera& GetActiveCameraRef(Registry* registry)
 {
   DevDebug& devDebug = registry->GetEditorResource<DevDebug>();
 
+#if DEBUG
   if (devDebug.activeCamera == CameraType::Scene)
   {
     return registry->GetComponent<Camera>(devDebug.sceneCameraId);
@@ -374,6 +381,11 @@ static inline Camera& GetActiveCameraRef(Registry* registry)
     std::cout << "Attempted to GetActiveCameraRef a component that does not exist" << std::endl;
     exit(0);
   }
+#endif
+
+#if RELEASE
+  return registry->GetComponent<Camera>(devDebug.gameCameraId);
+#endif
 }
 
 // Gets the camera transofmr as a pointer
@@ -381,6 +393,7 @@ static inline Transform* GetActiveTransformPtr(Registry* registry)
 {
   DevDebug& devDebug = registry->GetEditorResource<DevDebug>();
 
+#if DEBUG
   if (devDebug.activeCamera == CameraType::Scene)
   {
     return &(registry->GetComponent<Transform>(devDebug.sceneCameraId));
@@ -394,6 +407,11 @@ static inline Transform* GetActiveTransformPtr(Registry* registry)
     std::cout << "Attempted to GetActiveTransformPtr a component that does not exist" << std::endl;
     exit(0);
   }
+#endif
+
+#if RELEASE
+  return &(registry->GetComponent<Transform>(devDebug.gameCameraId));
+#endif
 }
 
 // Gets the camera transform as a reference
@@ -401,6 +419,7 @@ static inline Transform& GetActiveTransformRef(Registry* registry)
 {
   DevDebug& devDebug = registry->GetEditorResource<DevDebug>();
 
+#if DEBUG
   if (devDebug.activeCamera == CameraType::Scene)
   {
     return registry->GetComponent<Transform>(devDebug.sceneCameraId);
@@ -414,6 +433,11 @@ static inline Transform& GetActiveTransformRef(Registry* registry)
     std::cout << "Attempted to GetActiveTransformRef a component that does not exist" << std::endl;
     exit(0);
   }
+#endif
+
+#if RELEASE
+  return registry->GetComponent<Transform>(devDebug.gameCameraId);
+#endif
 }
 
 static void PanCamera(float dt, Camera* camera, Transform* transform, float offsetX, float offsetY)

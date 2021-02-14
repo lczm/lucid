@@ -44,3 +44,7 @@ static void InitSystems(Registry* registry)
   registry->RegisterSystem(new RenderSystem(registry), "render", 5);
   registry->RegisterSystem(new AudioSystem(), "audio", 6);
 }
+
+static void InitUserEntities(Registry* registry)
+{
+}

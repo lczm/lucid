@@ -22,6 +22,19 @@ static void SerializeAllOut(Registry* registry, std::string filename)
     // For every entity
     for (Entity entity : entities)
     {
+      // Skip the debug entities
+      // TODO : EntityHasComponents not exactly working
+      // if (registry->EntityHasComponents<Camera, GridLine>(entity))
+
+      // Skip the gridline entities
+      if (registry->EntityHasComponent<GridLine>(entity))
+      {
+        continue;
+      }
+
+      // If it is the scene camera, skip it
+      // DevDebug& devDebug = registry->GetEditorResource<DevDebug>();
+
       // When compiled with -O2 (Release), if using
       // `oarchive.setNextName(std::to_string(entity).c_str());`
       // this will bug out for whatever reason, I think its an MSVC
@@ -34,19 +47,12 @@ static void SerializeAllOut(Registry* registry, std::string filename)
 
       archive.finishNode();
     }
-
-    // for (auto pair : registry->resourceMap)
-    // {
-    //   archive()
-    // }
   }
 }
 
 static void SerializeAllIn(Registry* registry, std::string filename)
 {
   std::ifstream is(filename);
-
-  std::cout << "Test serialize in" << std::endl;
 
   {
     cereal::JSONInputArchive archive(is);
@@ -57,13 +63,14 @@ static void SerializeAllIn(Registry* registry, std::string filename)
       if (archive.getNodeName() == nullptr)
       {
         cont = false;
-        std::cout << "broke" << std::endl;
+        // std::cout << "broke" << std::endl;
         break;
       }
 
       // Get the entity id and create the entiy
       std::string nodeName = archive.getNodeName();
       Entity entity = std::stoul(nodeName, nullptr, 0);
+
       registry->CreateEntity(entity);
 
       std::cout << "Entity : " << entity << std::endl;
@@ -85,38 +92,67 @@ static void SerializeAllIn(Registry* registry, std::string filename)
       archive.finishNode();
     }
   }
+}
 
-  auto ids = registry->GetAllEntityIds();
-  for (auto id : ids)
+// This serializes all the data as above; SerializeAllIn
+// But also takes into account the camera entities
+static void SerializeAllIn(Registry* registry, std::string filename, std::vector<Entity> cameraIds)
+{
+  std::ifstream is(filename);
+
+  // Should only add twice throughout, scene + game cameras
+  uint32_t cameraCount = 0;
+
   {
-    std::cout << id << std::endl;
+    cereal::JSONInputArchive archive(is);
+
+    bool cont = true;
+    while (cont)
+    {
+      if (archive.getNodeName() == nullptr)
+      {
+        cont = false;
+        // std::cout << "broke" << std::endl;
+        break;
+      }
+
+      // Get the entity id and create the entiy
+      std::string nodeName = archive.getNodeName();
+      Entity entity = std::stoul(nodeName, nullptr, 0);
+
+      registry->CreateEntity(entity);
+
+      std::cout << "Entity : " << entity << std::endl;
+
+      archive.startNode();
+
+      // std::cout << "got to after start node" << std::endl;
+      // std::cout << std::string(archive.getNodeName()) << std::endl;
+
+      // While the entity still has component that can be serialized in
+      while (archive.getNodeName() != nullptr)
+      {
+        std::string currentComponent = archive.getNodeName();
+        // std::cout << "CurrentComponent : " << currentComponent << std::endl;
+
+        SERIALIZE_ALL_COMPONENTS_IN(entity);
+      }
+
+      if (cameraCount != 2)
+      {
+        if (registry->EntityHasComponent<Camera>(entity))
+        {
+          registry->AddComponentData<Camera>(cameraIds[cameraCount],
+                                             registry->GetComponent<Camera>(entity));
+          registry->AddComponentData<Transform>(cameraIds[cameraCount],
+                                                registry->GetComponent<Transform>(entity));
+
+          cameraCount++;
+
+          registry->DeleteEntity<Deleter>(entity);
+        }
+      }
+      archive.finishNode();
+    }
   }
-
-  std::vector<void*> components = registry->GetComponents<Cube, Transform>();
-  auto* cubes = static_cast<ComponentVector<Cube>*>(components[0]);
-  auto* transforms = static_cast<ComponentVector<Transform>*>(components[1]);
-
-  std::cout << cubes->Size() << std::endl;
-  std::cout << transforms->Size() << std::endl;
-
-  std::vector<void*> cs = registry->GetComponents<Transform, Cube>();
-  auto* t = static_cast<ComponentVector<Transform>*>(cs[0]);
-  auto* c = static_cast<ComponentVector<Cube>*>(cs[1]);
-
-  std::cout << t->Size() << std::endl;
-  std::cout << c->Size() << std::endl;
-
-  int i = 0;
-  registry->GetComponentsIter<Cube, Transform>()->Each([&](Cube& cube, Transform& transform) {
-    std::cout << i << std::endl;
-    i++;
-  });
-
-  // registry->GetComponentsIter<Transform, Cube>()->EachWithID(
-  //     [&](Entity id, Transform& transform, Cube& cube) { std::cout << id << std::endl; });
-
-  // registry->PrintRegisteredArchetypes();
-  // std::cout << "---" << std::endl;
-  // registry->RemoveEmptyArchetypes();
-  // registry->PrintRegisteredArchetypes();
 }

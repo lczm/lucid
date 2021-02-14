@@ -67,11 +67,24 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
     {
       if (ImGui::BeginMenu("File"))
       {
-        if (ImGui::MenuItem("Open Project"))
+        if (ImGui::MenuItem("Open Project (F1)"))
         {
           OpenProject(registry, input);
+          Workspace& workspace = registry->GetEditorResource<Workspace>();
+          // Remember to go up one path because it the program is ran in lucid/build
+          // and relativeProjectRoot assumes we start in lucid
+          fs::path workspaceRoot = ".." / workspace.relativeProjectRoot->path;
+
+          // registry->DeleteAllEntities<Deleter>();
+
+          // TODO : This will break stuff
+          if (fs::exists(workspaceRoot / "data.json"))
+          {
+            std::cout << "data.json exists in workspace, importing that" << std::endl;
+            SerializeAllIn(registry, (workspaceRoot / "data.json").string());
+          }
         }
-        if (ImGui::MenuItem("Create Project"))
+        if (ImGui::MenuItem("Create Project (F2)"))
         {
           drawSelectFolderPopup = true;
         }
@@ -87,30 +100,63 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
       {
         ImGui::Text("WASD - Move the camera");
         ImGui::Text("Arrow Left/Right/Up/Down - Rotate Left/Right/Up/Down");
-        ImGui::Text("J/L - [Demo] pong player movement");
         ImGui::Text("Mouse left - Pan Camera / [Debug] Shoot rays");
         ImGui::Text("Mouse right - Rotate Camera");
 
         ImGui::Text("1 : Translate Gizmo");
         ImGui::Text("2 : Rotation Gizmo");
         ImGui::Text("3 : Scale Gizmo");
+
+        ImGui::Text("F1 : Open Project");
+        ImGui::Text("F2 : Create Project");
+        ImGui::Text("F3 : Build Debug and Run");
+        ImGui::Text("F4 : Build Release and Run");
+
         ImGui::EndMenu();
       }
 
       if (ImGui::BeginMenu("Build"))
       {
-        if (ImGui::MenuItem("Build Debug and Run"))
+        if (ImGui::MenuItem("Build Debug and Run (F3)"))
         {
+          Workspace& workspace = registry->GetEditorResource<Workspace>();
+          // fs::path workspaceRoot = workspace.relativeProjectRoot->path;
+          std::string workspaceRoot = "../" + workspace.relativeProjectRoot->path.string();
+
+          SerializeAllOut(registry, "data.json");
+
+          // Add a ../ as this is ran from build, and the relative path is from lucid root.
+          std::string workspaceRootData = workspaceRoot + "/data.json";
+          std::string workspaceRootDataConverted = ConvertFsToNativePaths(workspaceRootData);
+
+          // Move data to generic-build
+          CopyDataJson(workspaceRootDataConverted, workspaceRoot);
+          CopyDataJson("../generic-build/data.json");
+
+          CompileUserGameDebug(registry);
+          RunUserGame();
         }
-        if (ImGui::MenuItem("Build Release and Run"))
+        if (ImGui::MenuItem("Build Release and Run (F4)"))
         {
+          Workspace& workspace = registry->GetEditorResource<Workspace>();
+          // fs::path workspaceRoot = workspace.relativeProjectRoot->path;
+          std::string workspaceRoot = "../" + workspace.relativeProjectRoot->path.string();
+
+          SerializeAllOut(registry, "data.json");
+
+          // Add a ../ as this is ran from build, and the relative path is from lucid root.
+          std::string workspaceRootData = workspaceRoot + "/data.json";
+          std::string workspaceRootDataConverted = ConvertFsToNativePaths(workspaceRootData);
+
+          // Move data to generic-build
+          CopyDataJson(workspaceRootDataConverted, workspaceRoot);
+          CopyDataJson("../generic-build/data.json");
+
+          CompileUserGameRelease(registry);
+          RunUserGame();
         }
         ImGui::EndMenu();
       }
-      // if (ImGui::MenuItem("Build"))
-      //{
-      //  SerializeAllOut(registry, "test.json");
-      //}
 
       if (input->IsKeyDown(GLFW_KEY_F1))
       {
@@ -124,11 +170,16 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
         // registry->DeleteAllEntities<Deleter>();
 
         // TODO : This will break stuff
-        // if (fs::exists(workspaceRoot / "data.json"))
-        // {
-        //   std::cout << "data.json exists in workspace, importing that" << std::endl;
-        //   SerializeAllIn(registry, (workspaceRoot / "data.json").string());
-        // }
+        if (fs::exists(workspaceRoot / "data.json"))
+        {
+          std::cout << "data.json exists in workspace, importing that" << std::endl;
+          SerializeAllIn(registry, (workspaceRoot / "data.json").string());
+        }
+      }
+
+      if (input->IsKeyDown(GLFW_KEY_F2))
+      {
+        drawSelectFolderPopup = true;
       }
 
       if (input->IsKeyDown(GLFW_KEY_F3))
@@ -143,36 +194,32 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
         std::string workspaceRootData = workspaceRoot + "/data.json";
         std::string workspaceRootDataConverted = ConvertFsToNativePaths(workspaceRootData);
 
-        std::cout << "workspace" << workspaceRoot << std::endl;
-        std::cout << "workspace root data : " << workspaceRootDataConverted << std::endl;
-
-        // If it exists, then remove it as fs::copy will error out
-        // copying to a file that already exists.
-        // if (fs::exists("../generic-build/data.json"))
-        if (fs::exists(workspaceRootDataConverted))
-        {
-          fs::remove(workspaceRootDataConverted);
-        }
-
         // Move data to generic-build
-        fs::copy("data.json", workspaceRoot);
+        CopyDataJson(workspaceRootDataConverted, workspaceRoot);
+        CopyDataJson("../generic-build/data.json");
 
-        CompileUserGame(registry);
+        CompileUserGameDebug(registry);
+        RunUserGame();
       }
 
       if (input->IsKeyDown(GLFW_KEY_F4))
       {
-        RunUserGame();
-      }
+        Workspace& workspace = registry->GetEditorResource<Workspace>();
+        // fs::path workspaceRoot = workspace.relativeProjectRoot->path;
+        std::string workspaceRoot = "../" + workspace.relativeProjectRoot->path.string();
 
-      if (input->IsKeyDown(GLFW_KEY_F5))
-      {
         SerializeAllOut(registry, "data.json");
-      }
 
-      if (input->IsKeyDown(GLFW_KEY_F6))
-      {
-        SerializeAllIn(registry, "data.json");
+        // Add a ../ as this is ran from build, and the relative path is from lucid root.
+        std::string workspaceRootData = workspaceRoot + "/data.json";
+        std::string workspaceRootDataConverted = ConvertFsToNativePaths(workspaceRootData);
+
+        // Move data to generic-build
+        CopyDataJson(workspaceRootDataConverted, workspaceRoot);
+        CopyDataJson("../generic-build/data.json");
+
+        CompileUserGameRelease(registry);
+        RunUserGame();
       }
 
       if (input->IsKeyDown(GLFW_KEY_DELETE))
@@ -411,7 +458,7 @@ void UiSystem::DrawHierarchy(float dt, Registry* registry, Input* input)
   int i = 1;
 
   registry->GetComponentsIter<Cube>()->EachWithID([&](Entity id, Cube& cube) {
-    std::string modelName = "Cube (" + std::to_string(i) + ")";
+    std::string modelName = "Cube (" + std::to_string(i) + ")" + " [" + std::to_string(id) + "]";
     i++;
     if (ImGui::Selectable(modelName.c_str(), selected == id))
     {
@@ -422,7 +469,7 @@ void UiSystem::DrawHierarchy(float dt, Registry* registry, Input* input)
 
   i = 1;
   registry->GetComponentsIter<Sphere>()->EachWithID([&](Entity id, Sphere& cube) {
-    std::string modelName = "Sphere (" + std::to_string(i) + ")";
+    std::string modelName = "Sphere (" + std::to_string(i) + ")" + " [" + std::to_string(id) + "]";
     i++;
     if (ImGui::Selectable(modelName.c_str(), selected == id))
     {
@@ -433,7 +480,7 @@ void UiSystem::DrawHierarchy(float dt, Registry* registry, Input* input)
 
   i = 1;
   registry->GetComponentsIter<Model>()->EachWithID([&](Entity id, Model& cube) {
-    std::string modelName = "Model (" + std::to_string(i) + ")";
+    std::string modelName = "Model (" + std::to_string(i) + ")" + " [" + std::to_string(id) + "]";
     i++;
     if (ImGui::Selectable(modelName.c_str(), selected == id))
     {
@@ -555,7 +602,8 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
       registry->GetComponent<Model>(assetId).toAnimate = false;
       // registry->GetComponent<Transform>(assetId).position = camera.GetPositionInWorld();
       registry->GetComponent<Transform>(assetId).position = GetPositionInWorld(transform);
-      registry->GetComponent<Transform>(assetId).scale /= 150.0f;
+      // Jasper can u stop copying code without thinking
+      // registry->GetComponent<Transform>(assetId).scale /= 150.0f;
     }
     ImGui::EndDragDropTarget();
   }

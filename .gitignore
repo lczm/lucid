@@ -40,3 +40,13 @@ assets/nara
 assets/nier
 assets/pikachu
 assets/ship
+
+# serialized json files data.json
+data.json
+
+# lucid-test folders
+examples/lucid-test1
+examples/lucid-test2
+examples/lucid-test3
+examples/lucid-test4
+examples/lucid-test5

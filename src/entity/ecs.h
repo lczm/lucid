@@ -621,13 +621,20 @@ class Registry
   void CreateEntity(Entity id)
   {
     // If the id that is passed in is generated from being serialized
-    // if (std::find(availablePool.begin(), availablePool.end(), id) != availablePool.end())
-    // {
-    //   auto index = std::find(availablePool.begin(), availablePool.end(), id);
+    if (std::find(availablePool.begin(), availablePool.end(), id) != availablePool.end())
+    {
+      auto index = std::find(availablePool.begin(), availablePool.end(), id);
 
-    //   // Remove from available pool and add to unavailable pool
-    //   availablePool.erase(index);
-    //   unavailablePool.push_back(id);
+      // Remove from available pool and add to unavailable pool
+      availablePool.erase(index);
+      unavailablePool.push_back(id);
+    }
+
+    // If it already exists
+    // if (entityIndexMap.find(id) != entityIndexMap.end())
+    // {
+    //   std::cout << "Warning : entity already exists" << std::endl;
+    //   return;
     // }
 
     Archetype archetype = {};
@@ -684,6 +691,20 @@ class Registry
         entityIndexMap[existingId]--;
       }
     }
+
+    // If the id exists in the unavailablePool
+    auto unavailablePoolIndex = std::find(unavailablePool.begin(), unavailablePool.end(), id);
+    if (unavailablePoolIndex != unavailablePool.end())
+    {
+      unavailablePool.erase(unavailablePoolIndex);
+    }
+
+    // If it does not exist in availablePool, add it back in
+    auto availablePoolIndex = std::find(availablePool.begin(), availablePool.end(), id);
+    if (availablePoolIndex == availablePool.end())
+    {
+      availablePool.push_back(id);
+    }
   }
 
   template <typename Component>
@@ -694,7 +715,7 @@ class Registry
     // std::vector<Entity> entities = GetAllEntityIds();
     // for (Entity entity : entities)
     // {
-    //   std::cout << "Deleting : " << entity << std::endl;
+    //   // std::cout << "Deleting : " << entity << std::endl;
     //   DeleteEntity<Deleter>(entity);
     // }
   }
@@ -818,6 +839,11 @@ class Registry
   template <typename Component>
   void AddComponent(Entity entity)
   {
+    if (EntityHasComponent<Component>(entity))
+    {
+      return;
+    }
+
     // Convert the component
     uint32_t componentHashCode = GetHashCode<Component>();
 
