@@ -720,6 +720,7 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
   DrawInspectorTransformComponent(registry, devDebug);
   DrawInspectorRigidBodyComponent(registry, devDebug, input);
   DrawInspectorSoundComponent(registry, devDebug, input);
+  DrawInspectorModelComponent(registry, devDebug, input);
 
   if (ImGui::CollapsingHeader("Add Component", treeNodeFlags))
   {
@@ -972,6 +973,30 @@ void UiSystem::DrawInspectorTransformComponent(Registry* registry, DevDebug& dev
       ImGui::InputFloat("x scale", &(transform.scale.x), 0.25f, 1.0f);
       ImGui::InputFloat("y scale", &(transform.scale.y), 0.25f, 1.0f);
       ImGui::InputFloat("z scale", &(transform.scale.z), 0.25f, 1.0f);
+    }
+    ImGui::Separator();
+  }
+}
+
+void UiSystem::DrawInspectorModelComponent(Registry* registry, DevDebug& devDebug, Input* input,
+                                           ImGuiTreeNodeFlags treeNodeFlags)
+{
+  if (registry->EntityHasComponent<Model>(devDebug.activeEntity))
+  {
+    if (ImGui::CollapsingHeader("Model", treeNodeFlags))
+    {
+      // right click to remove component
+      if (ImGui::BeginPopupContextItem("Model context menu"))
+      {
+        if (ImGui::MenuItem("Remove Component"))
+        {
+          registry->RemoveComponent<Model>(devDebug.activeEntity);
+        }
+
+        ImGui::EndPopup();
+      }
+      Model& model = registry->GetComponent<Model>(devDebug.activeEntity);
+      ImGui::Checkbox("Animate", &model.toAnimate);
     }
     ImGui::Separator();
   }

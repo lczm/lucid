@@ -73,5 +73,4 @@
   SERIALIZE_COMPONENT_IN(Camera, entity)
 
 // TODO : Jasper
-// SERIALIZE_COMPONENT(SoundEffect, entity)\
-// SERIALIZE_COMPONENT(Music, entity)          \
+// SERIALIZE_COMPONENT(Sound, entity)\
