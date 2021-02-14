@@ -47,7 +47,6 @@ class UiSystem : public System
       {DefaultAssetsType::Cube, "Cube"},
       {DefaultAssetsType::Sphere, "Sphere"},
       {DefaultAssetsType::Line, "Line"}};
-  Font font = Font(HELVETICA_FONT);
 
  public:
   UiSystem();

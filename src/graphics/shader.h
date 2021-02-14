@@ -76,4 +76,5 @@ struct ShaderResource
   Shader lineShader;
   Shader cubeShader;
   Shader sphereShader;
+  Shader fontShader;
 };

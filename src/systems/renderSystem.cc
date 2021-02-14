@@ -611,6 +611,20 @@ void RenderSystem::DrawAllColldiers(float dt, Registry* registry, Input* input)
   shaderResource.cubeShader.Unbind();
 }
 
+void RenderSystem::DrawAllFonts(float dt, Registry* registry, Input* input)
+{
+  ShaderResource shaderResource = registry->GetResource<ShaderResource>();
+  shaderResource.fontShader.Bind();
+  shaderResource.fontShader.SetUniformMatFloat4("projection", camCamera->GetProjection());
+
+  registry->GetComponentsIter<Transform, Font>()->Each([&](Transform& transform, Font& font) {
+    shaderResource.fontShader.SetUniformFloat3("textColor", font.color.x, font.color.y,
+                                               font.color.z);
+    font.DrawText(transform.position.x, transform.position.y);
+  });
+  shaderResource.fontShader.Unbind();
+}
+
 void RenderSystem::DrawActiveEntityBoundingBox(float dt, Registry* registry, Input* input)
 {
   DevDebug& devDebug = registry->GetEditorResource<DevDebug>();
