@@ -67,11 +67,24 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
     {
       if (ImGui::BeginMenu("File"))
       {
-        if (ImGui::MenuItem("Open Project"))
+        if (ImGui::MenuItem("Open Project (F1)"))
         {
           OpenProject(registry, input);
+          Workspace& workspace = registry->GetEditorResource<Workspace>();
+          // Remember to go up one path because it the program is ran in lucid/build
+          // and relativeProjectRoot assumes we start in lucid
+          fs::path workspaceRoot = ".." / workspace.relativeProjectRoot->path;
+
+          // registry->DeleteAllEntities<Deleter>();
+
+          // TODO : This will break stuff
+          if (fs::exists(workspaceRoot / "data.json"))
+          {
+            std::cout << "data.json exists in workspace, importing that" << std::endl;
+            SerializeAllIn(registry, (workspaceRoot / "data.json").string());
+          }
         }
-        if (ImGui::MenuItem("Create Project"))
+        if (ImGui::MenuItem("Create Project (F2)"))
         {
           drawSelectFolderPopup = true;
         }
@@ -87,13 +100,18 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
       {
         ImGui::Text("WASD - Move the camera");
         ImGui::Text("Arrow Left/Right/Up/Down - Rotate Left/Right/Up/Down");
-        ImGui::Text("J/L - [Demo] pong player movement");
         ImGui::Text("Mouse left - Pan Camera / [Debug] Shoot rays");
         ImGui::Text("Mouse right - Rotate Camera");
 
         ImGui::Text("1 : Translate Gizmo");
         ImGui::Text("2 : Rotation Gizmo");
         ImGui::Text("3 : Scale Gizmo");
+
+        ImGui::Text("F1 : Open Project");
+        ImGui::Text("F2 : Create Project");
+        ImGui::Text("F3 : Build Debug and Run");
+        ImGui::Text("F4 : Build Release and Run");
+
         ImGui::EndMenu();
       }
 
@@ -161,6 +179,11 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
           std::cout << "data.json exists in workspace, importing that" << std::endl;
           SerializeAllIn(registry, (workspaceRoot / "data.json").string());
         }
+      }
+
+      if (input->IsKeyDown(GLFW_KEY_F2))
+      {
+        drawSelectFolderPopup = true;
       }
 
       if (input->IsKeyDown(GLFW_KEY_F3))
