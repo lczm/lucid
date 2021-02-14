@@ -16,6 +16,7 @@
 #include <assimp/scene.h>
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
+#include <GLFW/glfw3.h>
 
 enum class DrawType
 {
@@ -485,7 +486,35 @@ static void PanCamera(float dt, Camera* camera, Transform* transform, float offs
     transform->rotation = RotateQuatZ(transform->rotation, camera->roll);
   }
 
-  camera->pitch *= damp;
-  camera->yaw *= damp;
-  camera->roll *= damp;
+  // camera->pitch *= damp;
+  // camera->yaw *= damp;
+  // camera->roll *= damp;
+
+  camera->pitch *= 0;
+  camera->yaw *= 0;
+  camera->roll *= 0;
+}
+
+static void EnableCursor(Registry* registry)
+{
+  DevDebug devDebug = registry->GetEditorResource<DevDebug>();
+  glfwSetInputMode(devDebug.window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+}
+
+static void HideCursor(Registry* registry)
+{
+  DevDebug devDebug = registry->GetEditorResource<DevDebug>();
+  glfwSetInputMode(devDebug.window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+}
+
+static void DisableCursor(Registry* registry)
+{
+  DevDebug devDebug = registry->GetEditorResource<DevDebug>();
+  glfwSetInputMode(devDebug.window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+}
+
+static void SetMousePosition(Registry* registry, float x, float y)
+{
+  DevDebug devDebug = registry->GetEditorResource<DevDebug>();
+  glfwSetCursorPos(devDebug.window, static_cast<double>(x), static_cast<double>(y));
 }
