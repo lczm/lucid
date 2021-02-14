@@ -44,9 +44,6 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window)
   // System startup, retrieved from startup.h
   InitSystems(registry);
 
-  // Init User Entities
-  InitUserEntities(registry);
-
 #if DEBUG
   InitializeSceneGridLines();
 #endif
@@ -105,6 +102,9 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window)
     std::cout << "Finished attempting to serialize in" << std::endl;
   }
 #endif
+
+  // Init User Entities
+  InitUserEntities(registry);
 }
 
 Lucid::~Lucid()
