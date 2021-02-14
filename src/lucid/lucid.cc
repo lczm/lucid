@@ -199,6 +199,8 @@ void Lucid::InitializeEngineComponents()
   // Note : using the primitive cube shader for now? If there turns out to not be a need
   // for the sphere and cubes to use different shaders, then simplify the shader names.
   shaderResource.sphereShader.CreateShader(PRIMITIVE_INSTANCED_SHADER, PRIMITIVE_FRAGMENT_SHADER);
+
+  shaderResource.fontShader.CreateShader(FONT_VERTEX_SHADER, FONT_FRAGMENT_SHADER);
 }
 
 void Lucid::InitializeDemoPongEntities()

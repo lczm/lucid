@@ -7,7 +7,6 @@ UiSystem::UiSystem()
   io.IniFilename = NULL;                             // Disable imgui.ini
   io.ConfigWindowsMoveFromTitleBarOnly = true;
   (void)io;
-  Font font = Font(HELVETICA_FONT);
 }
 
 UiSystem::~UiSystem() = default;

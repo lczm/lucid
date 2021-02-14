@@ -13,6 +13,7 @@
 #include "renderUtils.h"
 #include "ray.h"
 #include "colliders.h"
+#include "font.h"
 
 #if DEBUG
 #include "gtx/string_cast.hpp"
@@ -57,6 +58,7 @@ class RenderSystem : public System
   void DrawAllSpheres(float dt, Registry* registry, Input* input);
   void DrawAllColldiers(float dt, Registry* registry, Input* input);
   void DrawActiveEntityBoundingBox(float dt, Registry* registry, Input* input);
+  void DrawAllFonts(float dt, Registry* registry, Input* input);
 
  public:
   // TODO : Typedef glm::vec3 to a ray as it feels overly verbose to declare
