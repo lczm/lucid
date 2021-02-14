@@ -17,6 +17,8 @@ void FpsSystem::Update(float dt, Registry* registry, Input* input)
   const float SPEED = 20.0f;
   const float VELOCITY = 1.0f;
 
+  registry->GetComponent<Font>(fpsRules.fontId).text = "Score : " + std::to_string(fpsRules.score);
+
   // Move player around
   if (input->IsKeyDown('W')) Translate(transform, glm::vec3(0.0f, 0.0f, SPEED * dt));
   if (input->IsKeyDown('S')) Translate(transform, glm::vec3(0.0f, 0.0f, -(SPEED * dt)));

@@ -59,7 +59,9 @@ Font::Font(std::string path, std::string text, float scale, glm::vec3 color)
   FT_Done_FreeType(library);
 }
 
-Font::~Font() = default;
+Font::~Font()
+{
+}
 
 void Font::SetPixelSize(FT_F26Dot6 charHeight, FT_F26Dot6 charWidth)
 {

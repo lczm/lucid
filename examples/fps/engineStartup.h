@@ -36,4 +36,7 @@ static void InitUserEntities(Registry* registry)
   fpsRules.fontId = fontId;
   registry->CreateEntity<Sound>(soundId);
   registry->AddComponentData<Sound>(soundId, Sound(GRUNT_SOUND));
+  registry->CreateEntity<Font, Transform>(fontId);
+  registry->AddComponentData<Font>(fontId, Font(HELVETICA_FONT, "", 1));
+  registry->GetComponent<Transform>(fpsRules.fontId).position = glm::vec3(10, 10, 0);
 }

@@ -56,6 +56,7 @@ void RenderSystem::Update(float dt, Registry* registry, Input* input)
   DrawAllModels(dt, registry, input);
   DrawAllCubes(dt, registry, input);
   DrawAllSpheres(dt, registry, input);
+  DrawAllFonts(dt, registry, input);
 
 #if DEBUG
   DrawActiveEntityBoundingBox(dt, registry, input);
@@ -614,8 +615,10 @@ void RenderSystem::DrawAllColldiers(float dt, Registry* registry, Input* input)
 void RenderSystem::DrawAllFonts(float dt, Registry* registry, Input* input)
 {
   ShaderResource shaderResource = registry->GetResource<ShaderResource>();
+  glm::mat4 projection =
+      glm::ortho(0.0f, static_cast<float>(SCREEN_WIDTH), 0.0f, static_cast<float>(SCREEN_HEIGHT));
   shaderResource.fontShader.Bind();
-  shaderResource.fontShader.SetUniformMatFloat4("projection", camCamera->GetProjection());
+  shaderResource.fontShader.SetUniformMatFloat4("projection", projection);
 
   registry->GetComponentsIter<Transform, Font>()->Each([&](Transform& transform, Font& font) {
     shaderResource.fontShader.SetUniformFloat3("textColor", font.color.x, font.color.y,

@@ -7,6 +7,7 @@
 #include "gtc/matrix_transform.hpp"
 #include <iostream>
 #include "sound.h"
+#include "font.h"
 
 #include "rules.h"
 
