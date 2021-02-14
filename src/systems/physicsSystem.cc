@@ -11,7 +11,7 @@ PhysicsSystem::~PhysicsSystem()
 void PhysicsSystem::Update(float dt, Registry* registry, Input* input)
 {
   // Note to uncomment this in the future
-  // UpdateAllRigidbodies(dt, registry, input);
+  UpdateAllRigidbodies(dt, registry, input);
   UpdateCollisions(dt, registry, input);
 }
 

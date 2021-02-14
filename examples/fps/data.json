@@ -1,9 +1,9 @@
 {
     "407": {
         "struct Transform": {
-            "position.x": 1.0526559352874756,
-            "position.y": 5.484330654144287,
-            "position.z": 7.941194534301758,
+            "position.x": 0.0,
+            "position.y": 1.284985065460205,
+            "position.z": -2.384185791015625e-7,
             "rotation.w": 1.0,
             "rotation.x": 0.0,
             "rotation.y": 0.0,
@@ -14,7 +14,7 @@
         },
         "class Model": {
             "path": "D:\\lucid\\examples\\fps\\assets\\ugandan_knuckles\\scene.gltf",
-            "toAnimate": false
+            "toAnimate": true
         },
         "class ColliderPolygon": {
             "transform.position.x": 0.0,
@@ -34,9 +34,9 @@
     },
     "405": {
         "struct Transform": {
-            "position.x": -0.9846518039703369,
+            "position.x": 2.2914233207702638,
             "position.y": -5.56726598739624,
-            "position.z": -22.430103302001954,
+            "position.z": -17.020803451538087,
             "rotation.w": 1.0,
             "rotation.x": 0.0,
             "rotation.y": 0.0,
@@ -71,16 +71,16 @@
     },
     "409": {
         "struct Transform": {
-            "position.x": -3.6343650817871095,
-            "position.y": 7.042155742645264,
-            "position.z": 15.327203750610352,
-            "rotation.w": 0.693149209022522,
-            "rotation.x": 0.720794141292572,
+            "position.x": -0.5757491588592529,
+            "position.y": 14.359350204467774,
+            "position.z": -35.4520378112793,
+            "rotation.w": 0.6931490898132324,
+            "rotation.x": 0.7207942008972168,
             "rotation.y": 0.0,
             "rotation.z": 0.0,
-            "scale.x": 0.009999999776482582,
-            "scale.y": 0.01000000536441803,
-            "scale.z": 0.01000000536441803
+            "scale.x": 0.03429999575018883,
+            "scale.y": 0.03430001810193062,
+            "scale.z": 0.03430001810193062
         },
         "class Model": {
             "path": "D:\\lucid\\examples\\fps\\assets\\guardian_zelda_botw_fan-art\\scene.gltf",
@@ -104,13 +104,13 @@
     },
     "404": {
         "struct Transform": {
-            "position.x": 0.8728225827217102,
-            "position.y": -7.164469242095947,
-            "position.z": -25.21197509765625,
-            "rotation.w": 0.9968566298484802,
-            "rotation.x": 0.0,
-            "rotation.y": 0.0792284607887268,
-            "rotation.z": 0.0,
+            "position.x": -0.1698305457830429,
+            "position.y": -9.65751838684082,
+            "position.z": -25.268552780151368,
+            "rotation.w": 0.999575674533844,
+            "rotation.x": 0.021265223622322084,
+            "rotation.y": -0.012234685011208058,
+            "rotation.z": 0.01563141494989395,
             "scale.x": 1.0,
             "scale.y": 1.0,
             "scale.z": 1.0
@@ -134,23 +134,23 @@
             "projection.col3.w": 0.0,
             "lastX": 0.0,
             "lastY": 0.0,
-            "yaw": 0.0000012384070942061954,
-            "pitch": 0.0,
+            "yaw": -0.0,
+            "pitch": -0.0,
             "roll": 0.0
         }
     },
     "406": {
         "struct Transform": {
-            "position.x": 1.3489618301391602,
-            "position.y": 4.4883928298950199,
-            "position.z": 19.887392044067384,
+            "position.x": -19.322702407836915,
+            "position.y": 2.189484119415283,
+            "position.z": -37.87851333618164,
             "rotation.w": 1.0,
             "rotation.x": 0.0,
             "rotation.y": 0.0,
             "rotation.z": 0.0,
-            "scale.x": 0.009999999776482582,
-            "scale.y": 0.009999999776482582,
-            "scale.z": 0.009999999776482582
+            "scale.x": 0.09309998154640198,
+            "scale.y": 0.09309998154640198,
+            "scale.z": 0.09309998154640198
         },
         "class Model": {
             "path": "D:\\lucid\\examples\\fps\\assets\\zelda_-_breath_of_the_wild\\scene.gltf",
@@ -174,16 +174,16 @@
     },
     "408": {
         "struct Transform": {
-            "position.x": -0.25064903497695925,
-            "position.y": 4.412455081939697,
-            "position.z": 20.081573486328126,
+            "position.x": 20.224363327026368,
+            "position.y": 3.5005812644958498,
+            "position.z": -23.078109741210939,
             "rotation.w": 1.0,
             "rotation.x": 0.0,
             "rotation.y": 0.0,
             "rotation.z": 0.0,
-            "scale.x": 0.009999999776482582,
-            "scale.y": 0.009999999776482582,
-            "scale.z": 0.009999999776482582
+            "scale.x": 0.06769999861717224,
+            "scale.y": 0.06769999861717224,
+            "scale.z": 0.06769999861717224
         },
         "class Model": {
             "path": "D:\\lucid\\examples\\fps\\assets\\link_-_breath_of_the_wild\\scene.gltf",
@@ -203,6 +203,25 @@
             "color.r": 0.0,
             "color.g": 0.0,
             "color.b": 0.0
+        }
+    },
+    "410": {
+        "struct Transform": {
+            "position.x": 0.0,
+            "position.y": 0.0,
+            "position.z": 0.014116287231445313,
+            "rotation.w": 1.0,
+            "rotation.x": 0.0,
+            "rotation.y": 0.0,
+            "rotation.z": 0.0,
+            "scale.x": 30.0,
+            "scale.y": 1.0,
+            "scale.z": 30.0
+        },
+        "class Cube": {
+            "color.r": 0.43209344148635867,
+            "color.g": 0.5307919979095459,
+            "color.b": 0.5441176891326904
         }
     }
 }
