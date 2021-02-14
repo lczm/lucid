@@ -106,7 +106,7 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window)
   if (fs::exists("data.json"))
   {
     std::cout << "Attempting to serialize in" << std::endl;
-    SerializeAllIn(registry, "data.json");
+    SerializeAllIn(registry, "data.json", {gameCameraId, sceneCameraId});
     std::cout << "Finished attempting to serialize in" << std::endl;
   }
 #endif
