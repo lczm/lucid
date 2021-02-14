@@ -87,6 +87,23 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window)
   // registry->GetComponent<Transform>(gameCameraId).scale /= 80.0f;
   // Add game camera id to devDebug
   devDebug.gameCameraId = gameCameraId;
+
+// Upon initializing the engine, serialize everything in.
+// This can only be ran when it is ran through -DRELEASE=1
+// Because this is going to assume that "data.json" exists.
+#if RELEASE
+  // Workspace& workspace = registry->GetEditorResource<Workspace>();
+  // std::string workspaceRoot = "../" + workspace.relativeProjectRoot->path.string();
+  // std::string workspaceRootData = workspaceRoot + "/data.json";
+  // std::string workspaceRootDataConverted = ConvertFsToNativePaths(workspaceRootData);
+
+  // std::cout << "Trying to serialize in workspaceRootDataConverted" << std::endl;
+  // std::cout << workspaceRootDataConverted << std::endl;
+  // std::cout << "Trying to serialize in workspaceRootDataConverted END" << std::endl;
+
+  // SerializeAllIn(registry, workspaceRootDataConverted);
+  SerializeAllIn(registry, "data.json");
+#endif
 }
 
 Lucid::~Lucid()

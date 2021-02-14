@@ -143,21 +143,10 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
         std::string workspaceRootData = workspaceRoot + "/data.json";
         std::string workspaceRootDataConverted = ConvertFsToNativePaths(workspaceRootData);
 
-        std::cout << "workspace" << workspaceRoot << std::endl;
-        std::cout << "workspace root data : " << workspaceRootDataConverted << std::endl;
-
-        // If it exists, then remove it as fs::copy will error out
-        // copying to a file that already exists.
-        // if (fs::exists("../generic-build/data.json"))
-        if (fs::exists(workspaceRootDataConverted))
-        {
-          fs::remove(workspaceRootDataConverted);
-        }
-
         // Move data to generic-build
-        fs::copy("data.json", workspaceRoot);
-
-        CompileUserGame(registry);
+        CopyDataJson(workspaceRoot, workspaceRootDataConverted);
+        // CopyDataJson("../generic-build", workspaceRootDataConverted);
+        CompileUserGameRelease(registry);
       }
 
       if (input->IsKeyDown(GLFW_KEY_F4))

@@ -6,6 +6,8 @@
 #include "ecs.h"
 #include "engineComponents.h"
 
+namespace fs = std::filesystem;
+
 static std::string ConvertFsToNativePaths(std::string path)
 {
   std::string convertedPath = "";
@@ -62,7 +64,37 @@ static std::string RemoveLastObjectFromPath(std::string path, char delimiter)
   return path;
 }
 
-static void CompileUserGame(Registry* registry)
+static void CompileUserGameDebug(Registry* registry)
+{
+  Workspace& workspace = registry->GetEditorResource<Workspace>();
+  std::string root = workspace.relativeProjectRoot->path.string();
+
+  // Root is empty, dont try to compile
+  // TODO : Potentially give the user a warning
+  // that the game is trying to compile nothing
+  if (root.length() == 0)
+  {
+    std::cout << "Open a workspace." << std::endl;
+    return;
+  }
+
+  std::string convertedRoot = ConvertFsToNativePaths(root);
+
+  std::cout << "relative path : " << convertedRoot << std::endl;
+
+  std::string builder;
+  builder += "cd ../generic-build && cmake -GNinja -DDEBUG=0 -DRELEASE=1 ";
+  builder += "-DROOT=";
+  builder += convertedRoot;
+  builder += " ";
+  builder += "-DCMAKE_BUILD_TYPE=Debug .. && ";
+  builder += "ninja generic";
+
+  std::cout << builder << std::endl;
+  system(builder.c_str());
+}
+
+static void CompileUserGameRelease(Registry* registry)
 {
   Workspace& workspace = registry->GetEditorResource<Workspace>();
   std::string root = workspace.relativeProjectRoot->path.string();
@@ -94,5 +126,32 @@ static void CompileUserGame(Registry* registry)
 
 static void RunUserGame()
 {
-  system("cd../generic-build && generic");
+  system("cd ../generic-build && generic");
+}
+
+static void CopyDataBinary(std::string workspaceRoot, std::string workspacePathFile)
+{
+  // If it exists, then remove it as fs::copy will error out
+  // copying to a file that already exists.
+  // if (fs::exists("../generic-build/data.json"))
+  if (fs::exists(workspacePathFile))
+  {
+    fs::remove(workspacePathFile);
+  }
+
+  // TODO : Binary data name standardise
+  fs::copy("data", workspaceRoot);
+}
+
+static void CopyDataJson(std::string workspaceRoot, std::string workspacePathFile)
+{
+  // If it exists, then remove it as fs::copy will error out
+  // copying to a file that already exists.
+  // if (fs::exists("../generic-build/data.json"))
+  if (fs::exists(workspacePathFile))
+  {
+    fs::remove(workspacePathFile);
+  }
+
+  fs::copy("data.json", workspaceRoot);
 }
