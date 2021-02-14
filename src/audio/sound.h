@@ -25,4 +25,16 @@ class Sound
   void SetPosition(float x, float y, float z);
   void SetLooping(bool loop);
   void SetFilePath(std::string path);
+
+  template <class Archive>
+  void serialize(Archive& archive)
+  {
+    archive(                      //
+        CEREAL_NVP(path),         //
+        CEREAL_NVP(soundBuffer),  //
+        CEREAL_NVP(looping),      //
+        CEREAL_NVP(play),         //
+        CEREAL_NVP(gain)          //
+    );
+  }
 };
