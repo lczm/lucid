@@ -99,11 +99,43 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
 
       if (ImGui::BeginMenu("Build"))
       {
-        if (ImGui::MenuItem("Build Debug and Run"))
+        if (ImGui::MenuItem("Build Debug and Run (F3)"))
         {
+          Workspace& workspace = registry->GetEditorResource<Workspace>();
+          // fs::path workspaceRoot = workspace.relativeProjectRoot->path;
+          std::string workspaceRoot = "../" + workspace.relativeProjectRoot->path.string();
+
+          SerializeAllOut(registry, "data.json");
+
+          // Add a ../ as this is ran from build, and the relative path is from lucid root.
+          std::string workspaceRootData = workspaceRoot + "/data.json";
+          std::string workspaceRootDataConverted = ConvertFsToNativePaths(workspaceRootData);
+
+          // Move data to generic-build
+          CopyDataJson(workspaceRootDataConverted, workspaceRoot);
+          CopyDataJson("../generic-build/data.json");
+
+          CompileUserGameDebug(registry);
+          RunUserGame();
         }
-        if (ImGui::MenuItem("Build Release and Run"))
+        if (ImGui::MenuItem("Build Release and Run (F4)"))
         {
+          Workspace& workspace = registry->GetEditorResource<Workspace>();
+          // fs::path workspaceRoot = workspace.relativeProjectRoot->path;
+          std::string workspaceRoot = "../" + workspace.relativeProjectRoot->path.string();
+
+          SerializeAllOut(registry, "data.json");
+
+          // Add a ../ as this is ran from build, and the relative path is from lucid root.
+          std::string workspaceRootData = workspaceRoot + "/data.json";
+          std::string workspaceRootDataConverted = ConvertFsToNativePaths(workspaceRootData);
+
+          // Move data to generic-build
+          CopyDataJson(workspaceRootDataConverted, workspaceRoot);
+          CopyDataJson("../generic-build/data.json");
+
+          CompileUserGameRelease(registry);
+          RunUserGame();
         }
         ImGui::EndMenu();
       }
@@ -147,22 +179,28 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
         CopyDataJson(workspaceRootDataConverted, workspaceRoot);
         CopyDataJson("../generic-build/data.json");
 
-        CompileUserGameRelease(registry);
+        CompileUserGameDebug(registry);
+        RunUserGame();
       }
 
       if (input->IsKeyDown(GLFW_KEY_F4))
       {
-        RunUserGame();
-      }
+        Workspace& workspace = registry->GetEditorResource<Workspace>();
+        // fs::path workspaceRoot = workspace.relativeProjectRoot->path;
+        std::string workspaceRoot = "../" + workspace.relativeProjectRoot->path.string();
 
-      if (input->IsKeyDown(GLFW_KEY_F5))
-      {
         SerializeAllOut(registry, "data.json");
-      }
 
-      if (input->IsKeyDown(GLFW_KEY_F6))
-      {
-        SerializeAllIn(registry, "data.json");
+        // Add a ../ as this is ran from build, and the relative path is from lucid root.
+        std::string workspaceRootData = workspaceRoot + "/data.json";
+        std::string workspaceRootDataConverted = ConvertFsToNativePaths(workspaceRootData);
+
+        // Move data to generic-build
+        CopyDataJson(workspaceRootDataConverted, workspaceRoot);
+        CopyDataJson("../generic-build/data.json");
+
+        CompileUserGameRelease(registry);
+        RunUserGame();
       }
 
       if (input->IsKeyDown(GLFW_KEY_DELETE))
