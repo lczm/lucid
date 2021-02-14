@@ -34,9 +34,9 @@
     },
     "405": {
         "struct Transform": {
-            "position.x": 0.0,
-            "position.y": -1.0,
-            "position.z": -50.61057662963867,
+            "position.x": -0.9846518039703369,
+            "position.y": -5.56726598739624,
+            "position.z": -22.430103302001954,
             "rotation.w": 1.0,
             "rotation.x": 0.0,
             "rotation.y": 0.0,
@@ -104,9 +104,9 @@
     },
     "404": {
         "struct Transform": {
-            "position.x": 3.4136884212493898,
-            "position.y": -7.595614433288574,
-            "position.z": -29.409832000732423,
+            "position.x": 2.2057626247406008,
+            "position.y": -6.755094528198242,
+            "position.z": -24.998750686645509,
             "rotation.w": 0.9968566298484802,
             "rotation.x": 0.0,
             "rotation.y": 0.0792284607887268,

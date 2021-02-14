@@ -3,6 +3,9 @@
 #include "ecs.h"
 #include "input.h"
 #include "glm.hpp"
+#include "camera.h"
+#include "component.h"
+#include "renderUtils.h"
 
 static glm::vec3 GetRayDirection(Registry* registry, Input* input)
 {
