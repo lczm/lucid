@@ -50,3 +50,5 @@ examples/lucid-test2
 examples/lucid-test3
 examples/lucid-test4
 examples/lucid-test5
+
+!examples/fps/data.json
