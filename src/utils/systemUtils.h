@@ -143,7 +143,7 @@ static void CopyDataBinary(std::string workspaceRoot, std::string workspacePathF
   fs::copy("data", workspaceRoot);
 }
 
-static void CopyDataJson(std::string workspaceRoot, std::string workspacePathFile)
+static void CopyDataJson(std::string workspacePathFile, std::string workspaceRoot)
 {
   // If it exists, then remove it as fs::copy will error out
   // copying to a file that already exists.
@@ -154,4 +154,14 @@ static void CopyDataJson(std::string workspaceRoot, std::string workspacePathFil
   }
 
   fs::copy("data.json", workspaceRoot);
+}
+
+static void CopyDataJson(std::string destination)
+{
+  if (fs::exists(destination))
+  {
+    fs::remove(destination);
+  }
+
+  fs::copy("data.json", destination);
 }

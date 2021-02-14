@@ -144,8 +144,9 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
         std::string workspaceRootDataConverted = ConvertFsToNativePaths(workspaceRootData);
 
         // Move data to generic-build
-        CopyDataJson(workspaceRoot, workspaceRootDataConverted);
-        // CopyDataJson("../generic-build", workspaceRootDataConverted);
+        CopyDataJson(workspaceRootDataConverted, workspaceRoot);
+        CopyDataJson("../generic-build/data.json");
+
         CompileUserGameRelease(registry);
       }
 
