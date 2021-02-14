@@ -86,6 +86,9 @@ class UiSystem : public System
   void DrawInspectorSoundComponent(
       Registry* registry, DevDebug& devDebug, Input* input,
       ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen);
+  void DrawInspectorModelComponent(
+      Registry* registry, DevDebug& devDebug, Input* input,
+      ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen);
 
   void DisableInputWhenDragScrollbar(Registry* registry, Input* input);
   void HandleGizmoInput(Registry* registry, Input* input);
