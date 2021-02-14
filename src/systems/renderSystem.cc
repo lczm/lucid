@@ -300,6 +300,14 @@ void RenderSystem::HandleKeyboardPan(float dt, Input* input)
 
 bool RenderSystem::HandleMousePick(float dt, Registry* registry, Input* input)
 {
+  DevDebug& devDebug = registry->GetEditorResource<DevDebug>();
+
+  // Dont allow for mouse picking when in game camera
+  if (devDebug.activeCamera == CameraType::Game)
+  {
+    return false;
+  }
+
   if (!input->mouseKeys[MOUSE_LEFT] ||  // If mouse is not currently on left-click
       (input->activeWindow != WindowType::Scene && input->activeWindow != WindowType::GameCamera) ||
       !input->enableInput)
@@ -310,7 +318,6 @@ bool RenderSystem::HandleMousePick(float dt, Registry* registry, Input* input)
   // Turn this off for this frame so that it doesn't generate hundreds of rays
   input->mouseKeys[MOUSE_LEFT] = false;
 
-  DevDebug& devDebug = registry->GetEditorResource<DevDebug>();
   glm::vec3 rayDirection = GetRayDirection(registry, input);
 
   std::vector<Entity> entityIds;
