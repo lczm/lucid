@@ -621,14 +621,14 @@ class Registry
   void CreateEntity(Entity id)
   {
     // If the id that is passed in is generated from being serialized
-    // if (std::find(availablePool.begin(), availablePool.end(), id) != availablePool.end())
-    // {
-    //   auto index = std::find(availablePool.begin(), availablePool.end(), id);
+    if (std::find(availablePool.begin(), availablePool.end(), id) != availablePool.end())
+    {
+      auto index = std::find(availablePool.begin(), availablePool.end(), id);
 
-    //   // Remove from available pool and add to unavailable pool
-    //   availablePool.erase(index);
-    //   unavailablePool.push_back(id);
-    // }
+      // Remove from available pool and add to unavailable pool
+      availablePool.erase(index);
+      unavailablePool.push_back(id);
+    }
 
     // If it already exists
     // if (entityIndexMap.find(id) != entityIndexMap.end())

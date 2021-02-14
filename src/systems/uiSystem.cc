@@ -401,7 +401,7 @@ void UiSystem::DrawHierarchy(float dt, Registry* registry, Input* input)
   int i = 1;
 
   registry->GetComponentsIter<Cube>()->EachWithID([&](Entity id, Cube& cube) {
-    std::string modelName = "Cube (" + std::to_string(i) + ")";
+    std::string modelName = "Cube (" + std::to_string(i) + ")" + " [" + std::to_string(id) + "]";
     i++;
     if (ImGui::Selectable(modelName.c_str(), selected == id))
     {
@@ -412,7 +412,7 @@ void UiSystem::DrawHierarchy(float dt, Registry* registry, Input* input)
 
   i = 1;
   registry->GetComponentsIter<Sphere>()->EachWithID([&](Entity id, Sphere& cube) {
-    std::string modelName = "Sphere (" + std::to_string(i) + ")";
+    std::string modelName = "Sphere (" + std::to_string(i) + ")" + " [" + std::to_string(id) + "]";
     i++;
     if (ImGui::Selectable(modelName.c_str(), selected == id))
     {
@@ -423,7 +423,7 @@ void UiSystem::DrawHierarchy(float dt, Registry* registry, Input* input)
 
   i = 1;
   registry->GetComponentsIter<Model>()->EachWithID([&](Entity id, Model& cube) {
-    std::string modelName = "Model (" + std::to_string(i) + ")";
+    std::string modelName = "Model (" + std::to_string(i) + ")" + " [" + std::to_string(id) + "]";
     i++;
     if (ImGui::Selectable(modelName.c_str(), selected == id))
     {
