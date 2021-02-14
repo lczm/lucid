@@ -157,10 +157,6 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
         }
         ImGui::EndMenu();
       }
-      // if (ImGui::MenuItem("Build"))
-      //{
-      //  SerializeAllOut(registry, "test.json");
-      //}
 
       if (input->IsKeyDown(GLFW_KEY_F1))
       {
