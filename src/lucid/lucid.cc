@@ -34,6 +34,10 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window)
   // Engine startup
   InitializeEngineComponents();
 
+  // Store glfw window pointer here
+  DevDebug& devDebug = registry->GetEditorResource<DevDebug>();
+  devDebug.window = window;
+
   // System startup, retrieved from startup.h
   InitSystems(registry);
 
@@ -56,8 +60,6 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window)
 
   // Move game camera
   // registry->GetResource<Camera>().TranslateInWorld({0.0f, 1.0f, 5.0f});
-
-  DevDebug& devDebug = registry->GetEditorResource<DevDebug>();
 
   // Create scene camera
   Entity sceneCameraId = registry->GetAvailableEntityId();

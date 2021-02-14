@@ -315,15 +315,18 @@ uint32_t Model::TextureFromFile(const char* path, const std::string& directory, 
 
   Workspace& workspace = registry->GetEditorResource<Workspace>();
 
+  std::string directoryWithoutGltf = RemoveLastObjectFromPath(directory, '\\');
+  std::string filenameWithoutGltf = directoryWithoutGltf + '/' + std::string(path);
+
   if (workspace.relativeProjectRoot->path != "")
   {
-    std::string directoryWithoutGltf = RemoveLastObjectFromPath(directory, '\\');
-    std::string filenameWithoutGltf = directoryWithoutGltf + '/' + std::string(path);
-
     fs::path relative = workspace.relativeProjectRoot->path;
     fs::path relativeFile = relative / fs::path(filenameWithoutGltf);
-
     filename = ConvertFsToNativePaths(relativeFile.string());
+  }
+  else
+  {
+    filename = ConvertFsToNativePaths(filenameWithoutGltf);
   }
 
   uint32_t textureID;

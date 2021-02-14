@@ -10,6 +10,7 @@
 #include "imgui_impl_opengl3.h"
 #include "ImGuizmo.h"
 #include "uiUtils.h"
+#include <GLFW/glfw3.h>
 
 /*
  * This is mainly structs used to pass data around in the various systems.
@@ -44,6 +45,8 @@ struct DevDebug
   bool onGizmo = false;
   WindowType changeFocusWindow = WindowType::None;
   ImGuizmo::OPERATION gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
+
+  GLFWwindow* window = nullptr;
 };
 
 // These values are updated on a per frame basis
