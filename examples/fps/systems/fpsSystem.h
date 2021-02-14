@@ -6,6 +6,7 @@
 #include "renderUtils.h"
 #include "gtc/matrix_transform.hpp"
 #include <iostream>
+#include "sound.h"
 
 #include "rules.h"
 

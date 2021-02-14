@@ -12,6 +12,7 @@ void FpsSystem::Update(float dt, Registry* registry, Input* input)
 {
   Camera* camera = GetActiveCameraPtr(registry);
   Transform* transform = GetActiveTransformPtr(registry);
+  FpsRules fpsRules = registry->GetResource<FpsRules>();
 
   const float SPEED = 20.0f;
   const float VELOCITY = 1.0f;
@@ -47,6 +48,7 @@ void FpsSystem::Update(float dt, Registry* registry, Input* input)
     registry->GetComponent<Transform>(bulletId).position = GetPositionInWorld(transform);
     registry->GetComponent<RigidBody>(bulletId).velocity = rayDirection;
     registry->GetComponent<RigidBody>(bulletId).applyGravity = false;
+    registry->GetComponent<Sound>(fpsRules.soundId).play = true;
   }
 
   // FpsRules fpsRules = registry->GetResource<FpsRules>();

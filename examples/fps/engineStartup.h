@@ -29,4 +29,11 @@ static void InitSystems(Registry* registry)
 static void InitUserEntities(Registry* registry)
 {
   registry->CreateResource<FpsRules>();
+  FpsRules& fpsRules = registry->GetResource<FpsRules>();
+  Entity soundId = registry->GetAvailableEntityId();
+  Entity fontId = registry->GetAvailableEntityId();
+  fpsRules.soundId = soundId;
+  fpsRules.fontId = fontId;
+  registry->CreateEntity<Sound>(soundId);
+  registry->AddComponentData<Sound>(soundId, Sound(GRUNT_SOUND));
 }
