@@ -15,6 +15,7 @@
 #include "startup.h"
 #include "engineStartup.h"
 #include "colliders.h"
+#include "serialize.h"
 
 // #if DEBUG
 #include "engineComponents.h"
@@ -57,7 +58,6 @@ class Lucid
 
   void Update();
 
-  void InitializeModelEntities();
   void InitializeEngineComponents();
 
   // Demo pong game

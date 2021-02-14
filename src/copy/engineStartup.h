@@ -6,16 +6,19 @@
 
 #include "renderSystem.h"
 #include "audioSystem.h"
-#include "uiSystem.h"
 #include "physicsSystem.h"
 
+// Initialize all your systems here
+// This gets ran at startup
 static void InitSystems(Registry* registry)
 {
-#if DEBUG
-  registry->RegisterSystem(new UiSystem(), "ui", 1);
-#endif
-
   registry->RegisterSystem(new PhysicsSystem(), "physics", 4);
   registry->RegisterSystem(new RenderSystem(registry), "render", 5);
   registry->RegisterSystem(new AudioSystem(), "audio", 6);
+}
+
+// Initialize all your entities here.
+// This gets ran at startup.
+static void InitUserEntities(Registry* registry)
+{
 }

@@ -602,7 +602,8 @@ void UiSystem::DrawScene(float dt, Registry* registry, Input* input)
       registry->GetComponent<Model>(assetId).toAnimate = false;
       // registry->GetComponent<Transform>(assetId).position = camera.GetPositionInWorld();
       registry->GetComponent<Transform>(assetId).position = GetPositionInWorld(transform);
-      registry->GetComponent<Transform>(assetId).scale /= 150.0f;
+      // Jasper can u stop copying code without thinking
+      // registry->GetComponent<Transform>(assetId).scale /= 150.0f;
     }
     ImGui::EndDragDropTarget();
   }
