@@ -13,6 +13,9 @@
 
 class FpsSystem : public System
 {
+ private:
+  int numEnemies = 10;
+
  public:
   FpsSystem();
   ~FpsSystem();

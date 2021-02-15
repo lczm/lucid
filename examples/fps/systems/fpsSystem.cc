@@ -47,13 +47,27 @@ void FpsSystem::Update(float dt, Registry* registry, Input* input)
     // std::cout << glm::to_string(rayDirection) << std::endl;
 
     Entity bulletId = registry->GetAvailableEntityId();
-    registry->CreateEntity<Sphere, Transform, RigidBody>(bulletId);
+    registry->CreateEntity<Sphere, Transform, RigidBody, ColliderSphere>(bulletId);
 
     // Set correct component values
     registry->GetComponent<Transform>(bulletId).position = GetPositionInWorld(transform);
     registry->GetComponent<RigidBody>(bulletId).velocity = rayDirection;
     registry->GetComponent<RigidBody>(bulletId).applyGravity = false;
     registry->GetComponent<Sound>(fpsRules.soundId).play = true;
+  }
+
+  std::vector<Entity> toDelete;
+  registry->GetComponentsIter<Model, Transform, RigidBody, Enemy, ColliderCube>()->EachWithID(
+      [&](Entity id, Model& model, Transform& transform, RigidBody& rigidBody, Enemy& enemy,
+          ColliderCube& colliderCube) {
+        if (colliderCube.collided)
+        {
+          toDelete.push_back(id);
+        }
+      });
+  for (size_t i = 0; i < toDelete.size(); i++)
+  {
+    registry->DeleteEntity<Deleter>(toDelete[i]);
   }
 
   // FpsRules fpsRules = registry->GetResource<FpsRules>();
