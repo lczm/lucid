@@ -34,15 +34,12 @@ void FpsSystem::Update(float dt, Registry* registry, Input* input)
     input->lastX = input->GetMouseX();
     input->lastY = input->GetMouseY();
 
-    std::cout << offsetX << " " << offsetY << std::endl;
     PanCamera(dt, camera, transform, offsetX, offsetY);
   }
 
   if (input->IsMouseLDown())
   {
     glm::vec3 rayDirection = GetRayDirection(registry, input, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
-
-    std::cout << glm::to_string(rayDirection) << std::endl;
 
     Entity bulletId = registry->GetAvailableEntityId();
     registry->CreateEntity<Sphere, Transform, RigidBody>(bulletId);

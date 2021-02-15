@@ -495,13 +495,13 @@ static void PanCamera(float dt, Camera* camera, Transform* transform, float offs
     transform->rotation = RotateQuatZ(transform->rotation, camera->roll);
   }
 
-  camera->pitch *= damp;
-  camera->yaw *= damp;
-  camera->roll *= damp;
+  // camera->pitch *= damp;
+  // camera->yaw *= damp;
+  // camera->roll *= damp;
 
-  // camera->pitch *= 0;
-  // camera->yaw *= 0;
-  // camera->roll *= 0;
+  camera->pitch *= 0;
+  camera->yaw *= 0;
+  camera->roll *= 0;
 }
 
 static void EnableCursor(Registry* registry)

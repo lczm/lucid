@@ -1,19 +1,19 @@
 #include <vector>
 #include <iostream>
 
-#include "lucid.h"
-#include "component.h"
-#include "gtest/gtest.h"
-#include "constants.h"
-#include "errors.h"
-#include "ecs.h"
-#include "input.h"
-#include "utils.h"
-#include "engineStartup.h"
+// #include "lucid.h"
+// #include "component.h"
+// #include "gtest/gtest.h"
+// #include "constants.h"
+// #include "errors.h"
+// #include "ecs.h"
+// #include "input.h"
+// #include "utils.h"
+// #include "engineStartup.h"
 
-#include "renderSystem.h"
-#include "physicsSystem.h"
-#include "test-utils.h"
+// #include "renderSystem.h"
+// #include "physicsSystem.h"
+// #include "test-utils.h"
 
 /*
 TEST_F(TestsGL, BoxBoxColliding)
