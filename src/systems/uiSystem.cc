@@ -944,6 +944,7 @@ void UiSystem::DrawInspectorCubeComponent(Registry* registry, DevDebug& devDebug
         if (ImGui::MenuItem("Remove Component"))
         {
           registry->RemoveComponent<Cube>(devDebug.activeEntity);
+          ImGui::EndPopup();
           return;
         }
 
@@ -968,6 +969,7 @@ void UiSystem::DrawInspectorSphereComponent(Registry* registry, DevDebug& devDeb
         if (ImGui::MenuItem("Remove Component"))
         {
           registry->RemoveComponent<Sphere>(devDebug.activeEntity);
+          ImGui::EndPopup();
           return;
         }
 
@@ -993,6 +995,7 @@ void UiSystem::DrawInspectorTransformComponent(Registry* registry, DevDebug& dev
         if (ImGui::MenuItem("Remove Component"))
         {
           registry->RemoveComponent<Transform>(devDebug.activeEntity);
+          ImGui::EndPopup();
           return;
         }
 
@@ -1028,6 +1031,7 @@ void UiSystem::DrawInspectorModelComponent(Registry* registry, DevDebug& devDebu
         if (ImGui::MenuItem("Remove Component"))
         {
           registry->RemoveComponent<Model>(devDebug.activeEntity);
+          ImGui::EndPopup();
           return;
         }
 
@@ -1053,10 +1057,11 @@ void UiSystem::DrawInspectorRigidBodyComponent(Registry* registry, DevDebug& dev
         if (ImGui::MenuItem("Remove Component"))
         {
           registry->RemoveComponent<RigidBody>(devDebug.activeEntity);
+          ImGui::EndPopup();
+          return;
         }
 
         ImGui::EndPopup();
-        return;
       }
       RigidBody& rigidBody = registry->GetComponent<RigidBody>(devDebug.activeEntity);
       ImGui::InputFloat("x velocity", &(rigidBody.velocity.x), 0.25f, 1.0f);
@@ -1081,6 +1086,7 @@ void UiSystem::DrawInspectorSoundComponent(Registry* registry, DevDebug& devDebu
         if (ImGui::MenuItem("Remove Component"))
         {
           registry->RemoveComponent<Sound>(devDebug.activeEntity);
+          ImGui::EndPopup();
           return;
         }
 
