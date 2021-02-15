@@ -705,7 +705,6 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
   }
 
   DevDebug& devDebug = registry->GetEditorResource<DevDebug>();
-  ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen;
 
   if (devDebug.activeEntity == 0)
   {
@@ -719,7 +718,14 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
   DrawInspectorRigidBodyComponent(registry, devDebug, input);
   DrawInspectorSoundComponent(registry, devDebug, input);
   DrawInspectorModelComponent(registry, devDebug, input);
+  DrawInspectorAddComponent();
 
+  UpdateInputActiveWindow(registry, input, WindowType::Inspector);
+  ImGui::End();
+}
+
+void UiSystem::DrawInspectorAddComponent(ImGuiTreeNodeFlags treeNodeFlags)
+{
   static int currentItemIndex = 0;
   std::string currentItem = addComponentItems[currentItemIndex];
   if (ImGui::CollapsingHeader("Add Component", treeNodeFlags))
@@ -740,9 +746,6 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
     }
     ImGui::Separator();
   }
-
-  UpdateInputActiveWindow(registry, input, WindowType::Inspector);
-  ImGui::End();
 }
 
 void UiSystem::DrawDevDebug(float dt, Registry* registry, Input* input)
