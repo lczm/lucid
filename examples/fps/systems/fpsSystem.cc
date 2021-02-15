@@ -25,6 +25,9 @@ void FpsSystem::Update(float dt, Registry* registry, Input* input)
   if (input->IsKeyDown('A')) Translate(transform, glm::vec3(SPEED * dt, 0.0f, 0.0f));
   if (input->IsKeyDown('D')) Translate(transform, glm::vec3(-(SPEED * dt), 0.0f, 0.0f));
 
+  // Always reset it to 1.0f
+  transform->position.y = 1.0f;
+
   // Move mouse around the cursor
   if (input->lastX != input->GetMouseX() || input->lastY != input->GetMouseY())
   {
