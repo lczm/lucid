@@ -739,6 +739,9 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
   DrawInspectorRigidBodyComponent(registry, devDebug, input);
   DrawInspectorSoundComponent(registry, devDebug, input);
   DrawInspectorModelComponent(registry, devDebug, input);
+  DrawInspectorColliderCubeComponent(registry, devDebug, input);
+  DrawInspectorColliderSphereComponent(registry, devDebug, input);
+  DrawInspectorColliderPolygonComponent(registry, devDebug, input);
   DrawInspectorAddComponent(registry);
 
   UpdateInputActiveWindow(registry, input, WindowType::Inspector);
@@ -1039,6 +1042,116 @@ void UiSystem::DrawInspectorModelComponent(Registry* registry, DevDebug& devDebu
       }
       Model& model = registry->GetComponent<Model>(devDebug.activeEntity);
       ImGui::Checkbox("Animate", &model.toAnimate);
+    }
+    ImGui::Separator();
+  }
+}
+
+void UiSystem::DrawInspectorColliderCubeComponent(Registry* registry, DevDebug& devDebug,
+                                                  Input* input, ImGuiTreeNodeFlags treeNodeFlags)
+{
+  if (registry->EntityHasComponent<ColliderCube>(devDebug.activeEntity))
+  {
+    if (ImGui::CollapsingHeader("ColliderCube", treeNodeFlags))
+    {
+      // right click to remove component
+      if (ImGui::BeginPopupContextItem("ColliderCube context menu"))
+      {
+        if (ImGui::MenuItem("Remove Component"))
+        {
+          registry->RemoveComponent<ColliderCube>(devDebug.activeEntity);
+          ImGui::EndPopup();
+          return;
+        }
+
+        ImGui::EndPopup();
+      }
+      Transform& transform = registry->GetComponent<ColliderCube>(devDebug.activeEntity).transform;
+      ImGui::InputFloat("x position", &(transform.position.x), 0.25f, 1.0f);
+      ImGui::InputFloat("y position", &(transform.position.y), 0.25f, 1.0f);
+      ImGui::InputFloat("z position", &(transform.position.z), 0.25f, 1.0f);
+
+      ImGui::InputFloat("x rotation", &(transform.rotation.x), 0.25f, 1.0f);
+      ImGui::InputFloat("y rotation", &(transform.rotation.y), 0.25f, 1.0f);
+      ImGui::InputFloat("z rotation", &(transform.rotation.z), 0.25f, 1.0f);
+
+      ImGui::InputFloat("x scale", &(transform.scale.x), 0.25f, 1.0f);
+      ImGui::InputFloat("y scale", &(transform.scale.y), 0.25f, 1.0f);
+      ImGui::InputFloat("z scale", &(transform.scale.z), 0.25f, 1.0f);
+    }
+    ImGui::Separator();
+  }
+}
+
+void UiSystem::DrawInspectorColliderSphereComponent(Registry* registry, DevDebug& devDebug,
+                                                    Input* input, ImGuiTreeNodeFlags treeNodeFlags)
+{
+  if (registry->EntityHasComponent<ColliderSphere>(devDebug.activeEntity))
+  {
+    if (ImGui::CollapsingHeader("ColliderSphere", treeNodeFlags))
+    {
+      // right click to remove component
+      if (ImGui::BeginPopupContextItem("ColliderSphere context menu"))
+      {
+        if (ImGui::MenuItem("Remove Component"))
+        {
+          registry->RemoveComponent<ColliderSphere>(devDebug.activeEntity);
+          ImGui::EndPopup();
+          return;
+        }
+
+        ImGui::EndPopup();
+      }
+      Transform& transform =
+          registry->GetComponent<ColliderSphere>(devDebug.activeEntity).transform;
+      ImGui::InputFloat("x position", &(transform.position.x), 0.25f, 1.0f);
+      ImGui::InputFloat("y position", &(transform.position.y), 0.25f, 1.0f);
+      ImGui::InputFloat("z position", &(transform.position.z), 0.25f, 1.0f);
+
+      ImGui::InputFloat("x rotation", &(transform.rotation.x), 0.25f, 1.0f);
+      ImGui::InputFloat("y rotation", &(transform.rotation.y), 0.25f, 1.0f);
+      ImGui::InputFloat("z rotation", &(transform.rotation.z), 0.25f, 1.0f);
+
+      ImGui::InputFloat("x scale", &(transform.scale.x), 0.25f, 1.0f);
+      ImGui::InputFloat("y scale", &(transform.scale.y), 0.25f, 1.0f);
+      ImGui::InputFloat("z scale", &(transform.scale.z), 0.25f, 1.0f);
+    }
+    ImGui::Separator();
+  }
+}
+
+void UiSystem::DrawInspectorColliderPolygonComponent(Registry* registry, DevDebug& devDebug,
+                                                     Input* input, ImGuiTreeNodeFlags treeNodeFlags)
+{
+  if (registry->EntityHasComponent<ColliderPolygon>(devDebug.activeEntity))
+  {
+    if (ImGui::CollapsingHeader("ColliderPolygon", treeNodeFlags))
+    {
+      // right click to remove component
+      if (ImGui::BeginPopupContextItem("ColliderPolygon context menu"))
+      {
+        if (ImGui::MenuItem("Remove Component"))
+        {
+          registry->RemoveComponent<ColliderPolygon>(devDebug.activeEntity);
+          ImGui::EndPopup();
+          return;
+        }
+
+        ImGui::EndPopup();
+      }
+      Transform& transform =
+          registry->GetComponent<ColliderPolygon>(devDebug.activeEntity).transform;
+      ImGui::InputFloat("x position", &(transform.position.x), 0.25f, 1.0f);
+      ImGui::InputFloat("y position", &(transform.position.y), 0.25f, 1.0f);
+      ImGui::InputFloat("z position", &(transform.position.z), 0.25f, 1.0f);
+
+      ImGui::InputFloat("x rotation", &(transform.rotation.x), 0.25f, 1.0f);
+      ImGui::InputFloat("y rotation", &(transform.rotation.y), 0.25f, 1.0f);
+      ImGui::InputFloat("z rotation", &(transform.rotation.z), 0.25f, 1.0f);
+
+      ImGui::InputFloat("x scale", &(transform.scale.x), 0.25f, 1.0f);
+      ImGui::InputFloat("y scale", &(transform.scale.y), 0.25f, 1.0f);
+      ImGui::InputFloat("z scale", &(transform.scale.z), 0.25f, 1.0f);
     }
     ImGui::Separator();
   }

@@ -87,6 +87,15 @@ class UiSystem : public System
   void DrawInspectorModelComponent(
       Registry* registry, DevDebug& devDebug, Input* input,
       ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen);
+  void DrawInspectorColliderCubeComponent(
+      Registry* registry, DevDebug& devDebug, Input* input,
+      ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen);
+  void DrawInspectorColliderSphereComponent(
+      Registry* registry, DevDebug& devDebug, Input* input,
+      ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen);
+  void DrawInspectorColliderPolygonComponent(
+      Registry* registry, DevDebug& devDebug, Input* input,
+      ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen);
   void DrawInspectorAddComponent(Registry* registry,
                                  ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen);
 

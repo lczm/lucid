@@ -926,6 +926,7 @@ class Registry
   template <typename Component>
   void AddComponent(Entity entity, std::string name)
   {
+    std::cout << name << std::endl;
     ADD_ALL_COMPONENTS(entity, name);
   }
 
