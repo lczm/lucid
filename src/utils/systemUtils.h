@@ -90,6 +90,12 @@ static void CompileUserGameDebug(Registry* registry)
   builder += "-DCMAKE_BUILD_TYPE=Debug .. && ";
   builder += "ninja generic";
 
+  if (fs::exists("../generic-build/generic.exe"))
+  {
+    std::cout << "removing generic.exe" << std::endl;
+    fs::remove("generic.exe");
+  }
+
   std::cout << builder << std::endl;
   system(builder.c_str());
 }
@@ -119,6 +125,12 @@ static void CompileUserGameRelease(Registry* registry)
   builder += " ";
   builder += "-DCMAKE_BUILD_TYPE=Release .. && ";
   builder += "ninja generic";
+
+  if (fs::exists("../generic-build/generic.exe"))
+  {
+    std::cout << "removing generic.exe" << std::endl;
+    fs::remove("generic.exe");
+  }
 
   std::cout << builder << std::endl;
   system(builder.c_str());
