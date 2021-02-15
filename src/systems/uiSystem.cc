@@ -943,7 +943,7 @@ void UiSystem::DrawInspectorCubeComponent(Registry* registry, DevDebug& devDebug
       {
         if (ImGui::MenuItem("Remove Component"))
         {
-          registry->RemoveComponent<RigidBody>(devDebug.activeEntity);
+          registry->RemoveComponent<Cube>(devDebug.activeEntity);
         }
 
         ImGui::EndPopup();
@@ -966,7 +966,7 @@ void UiSystem::DrawInspectorSphereComponent(Registry* registry, DevDebug& devDeb
       {
         if (ImGui::MenuItem("Remove Component"))
         {
-          registry->RemoveComponent<RigidBody>(devDebug.activeEntity);
+          registry->RemoveComponent<Sphere>(devDebug.activeEntity);
         }
 
         ImGui::EndPopup();
@@ -990,7 +990,7 @@ void UiSystem::DrawInspectorTransformComponent(Registry* registry, DevDebug& dev
       {
         if (ImGui::MenuItem("Remove Component"))
         {
-          registry->RemoveComponent<RigidBody>(devDebug.activeEntity);
+          registry->RemoveComponent<Transform>(devDebug.activeEntity);
         }
 
         ImGui::EndPopup();
@@ -1075,7 +1075,7 @@ void UiSystem::DrawInspectorSoundComponent(Registry* registry, DevDebug& devDebu
       {
         if (ImGui::MenuItem("Remove Component"))
         {
-          registry->RemoveComponent<RigidBody>(devDebug.activeEntity);
+          registry->RemoveComponent<Sound>(devDebug.activeEntity);
         }
 
         ImGui::EndPopup();
