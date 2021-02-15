@@ -26,7 +26,7 @@ class Font
 
  public:
   float scale;
-  glm::vec3 color;
+  glm::vec3 color = {255, 255, 255};
   std::string text;
 
  public:
@@ -39,6 +39,20 @@ class Font
   void DrawText(float x, float y);
   void SetColor(glm::vec3 color);
   void SetScale(float scale);
+  template <class Archive>
+  void serialize(Archive& archive)
+  {
+    archive(                                   //
+        CEREAL_NVP(path),                      //
+        CEREAL_NVP(scale),                     //
+        CEREAL_NVP(VAO),                       //
+        CEREAL_NVP(VBO),                       //
+        CEREAL_NVP(text),                      //
+        cereal::make_nvp("color.x", color.x),  //
+        cereal::make_nvp("color.y", color.y),  //
+        cereal::make_nvp("color.z", color.z)   //
+    );
+  }
 
  private:
   void LoadCharacters();
