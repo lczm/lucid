@@ -3,6 +3,8 @@
 #include "ecs.h"
 #include "component.h"
 #include "engineComponents.h"
+#include "sound.h"
+#include "font.h"
 
 /*
  *  User Guide
