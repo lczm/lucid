@@ -18,6 +18,10 @@
    value.
 */
 
+struct Adder
+{
+};
+
 struct Deleter
 {
 };

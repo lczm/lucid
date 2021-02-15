@@ -82,6 +82,19 @@
     }                                                               \
   }
 
+#define ADD_COMPONENT(T, entity, name)                  \
+  if (GetTypeName<T>().find(name) != std::string::npos) \
+  {                                                     \
+    AddComponent<T>(entity);                            \
+  }
+
+// #define REMOVE_COMPONENT(T, entity, name)            \
+//   std::string typeName = registry->GetTypeName<T>(); \
+//   if (typeName.find(name) != std::string::npos)      \
+//   {                                                  \
+//     registry->RemoveComponent<T>(entity);            \
+//   }
+
 /*
    This header file will define all that is needed for the ecs structure to
    perform. Mostly consists of typedefs as well as constants that can be changed
@@ -908,6 +921,12 @@ class Registry
     //   archetypeComponentMap.erase(oldArchetype);
     // }
     // RemoveEmptyArchetypes();
+  }
+
+  template <typename Component>
+  void AddComponent(Entity entity, std::string name)
+  {
+    ADD_ALL_COMPONENTS(entity, name);
   }
 
   // Likewise for RemoveComponent, it is very similar to AddComponent
