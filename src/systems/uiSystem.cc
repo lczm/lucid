@@ -1053,10 +1053,10 @@ void UiSystem::DrawInspectorRigidBodyComponent(Registry* registry, DevDebug& dev
         if (ImGui::MenuItem("Remove Component"))
         {
           registry->RemoveComponent<RigidBody>(devDebug.activeEntity);
-          return;
         }
 
         ImGui::EndPopup();
+        return;
       }
       RigidBody& rigidBody = registry->GetComponent<RigidBody>(devDebug.activeEntity);
       ImGui::InputFloat("x velocity", &(rigidBody.velocity.x), 0.25f, 1.0f);

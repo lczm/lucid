@@ -947,6 +947,9 @@ class Registry
 
     auto& keyPtr = GetArchetypeComponentMap(archetype);
 
+    auto& componentVector = GetVectorFromArchetypeComponentMap<Component>(keyPtr);
+    componentVector.erase(componentVector.begin() + entityIndex);
+
     // Update the archetype hashcode
     uint32_t archetypeIndex = 0;
     for (size_t i = 0; i < archetype.size(); i++)
@@ -977,7 +980,6 @@ class Registry
     // Since this is removing, set the new archetype as the 'from' target
     // and set the older archetype as the 'to' target
     MOVE_ALL_COMPONENTS(archetype, oldArchetype, archetype, entityIndex);
-    REMOVE_ALL_COMPONENTS(newKeyPtr, entityIndex);
 
     entityIndexMap[entity] = newIndexMapping;
 
