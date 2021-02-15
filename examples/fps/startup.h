@@ -71,6 +71,17 @@
   SERIALIZE_COMPONENT_IN(ColliderPolygon, entity) \
   SERIALIZE_COMPONENT_IN(Camera, entity)
 
+#define ADD_ALL_COMPONENTS(entity, name)       \
+  ADD_COMPONENT(Transform, entity, name)       \
+  ADD_COMPONENT(RigidBody, entity, name)       \
+  ADD_COMPONENT(Cube, entity, name)            \
+  ADD_COMPONENT(Sphere, entity, name)          \
+  ADD_COMPONENT(Model, entity, name)           \
+  ADD_COMPONENT(ColliderCube, entity, name)    \
+  ADD_COMPONENT(ColliderSphere, entity, name)  \
+  ADD_COMPONENT(ColliderPolygon, entity, name) \
+  ADD_COMPONENT(Camera, entity, name)
+
 // TODO : Jasper
 // SERIALIZE_COMPONENT(SoundEffect, entity)\
 // SERIALIZE_COMPONENT(Music, entity)          \

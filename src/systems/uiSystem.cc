@@ -110,6 +110,7 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
         ImGui::Text("F2 : Create Project");
         ImGui::Text("F3 : Build Debug and Run");
         ImGui::Text("F4 : Build Release and Run");
+        ImGui::Text("F5 : Save");
 
         ImGui::EndMenu();
       }
@@ -153,6 +154,22 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
 
           CompileUserGameRelease(registry);
           RunUserGame();
+        }
+        if (ImGui::MenuItem("Save (F5)"))
+        {
+          Workspace& workspace = registry->GetEditorResource<Workspace>();
+          // fs::path workspaceRoot = workspace.relativeProjectRoot->path;
+          std::string workspaceRoot = "../" + workspace.relativeProjectRoot->path.string();
+
+          SerializeAllOut(registry, "data.json");
+
+          // Add a ../ as this is ran from build, and the relative path is from lucid root.
+          std::string workspaceRootData = workspaceRoot + "/data.json";
+          std::string workspaceRootDataConverted = ConvertFsToNativePaths(workspaceRootData);
+
+          // Move data to generic-build
+          CopyDataJson(workspaceRootDataConverted, workspaceRoot);
+          CopyDataJson("../generic-build/data.json");
         }
         ImGui::EndMenu();
       }
@@ -219,6 +236,23 @@ void UiSystem::InitializeGUI(float dt, Registry* registry, Input* input)
 
         CompileUserGameRelease(registry);
         RunUserGame();
+      }
+
+      if (input->IsKeyDown(GLFW_KEY_F5))
+      {
+        Workspace& workspace = registry->GetEditorResource<Workspace>();
+        // fs::path workspaceRoot = workspace.relativeProjectRoot->path;
+        std::string workspaceRoot = "../" + workspace.relativeProjectRoot->path.string();
+
+        SerializeAllOut(registry, "data.json");
+
+        // Add a ../ as this is ran from build, and the relative path is from lucid root.
+        std::string workspaceRootData = workspaceRoot + "/data.json";
+        std::string workspaceRootDataConverted = ConvertFsToNativePaths(workspaceRootData);
+
+        // Move data to generic-build
+        CopyDataJson(workspaceRootDataConverted, workspaceRoot);
+        CopyDataJson("../generic-build/data.json");
       }
 
       if (input->IsKeyDown(GLFW_KEY_DELETE))
