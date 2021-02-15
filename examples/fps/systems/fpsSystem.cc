@@ -34,6 +34,7 @@ void FpsSystem::Update(float dt, Registry* registry, Input* input)
     input->lastX = input->GetMouseX();
     input->lastY = input->GetMouseY();
 
+    std::cout << offsetX << " " << offsetY << std::endl;
     PanCamera(dt, camera, transform, offsetX, offsetY);
   }
 

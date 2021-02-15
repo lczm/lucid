@@ -104,7 +104,7 @@ Lucid::Lucid(Registry* registry, Input* input, GLFWwindow* window)
 #endif
 
   // Init User Entities
-  InitUserEntities(registry);
+  InitUserEntities(registry, input);
 }
 
 Lucid::~Lucid()

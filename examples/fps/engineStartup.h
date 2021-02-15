@@ -26,7 +26,7 @@ static void InitSystems(Registry* registry)
 
 // Initialize all your entities here.
 // This gets ran at startup.
-static void InitUserEntities(Registry* registry)
+static void InitUserEntities(Registry* registry, Input* input)
 {
   registry->CreateResource<FpsRules>();
   FpsRules& fpsRules = registry->GetResource<FpsRules>();
@@ -39,4 +39,7 @@ static void InitUserEntities(Registry* registry)
   registry->CreateEntity<Font, Transform>(fontId);
   registry->AddComponentData<Font>(fontId, Font(HELVETICA_FONT, "", 1));
   registry->GetComponent<Transform>(fpsRules.fontId).position = glm::vec3(10, 10, 0);
+
+  input->lastX = input->GetMouseX();
+  input->lastY = input->GetMouseY();
 }

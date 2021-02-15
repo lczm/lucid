@@ -19,6 +19,6 @@ static void InitSystems(Registry* registry)
 
 // Initialize all your entities here.
 // This gets ran at startup.
-static void InitUserEntities(Registry* registry)
+static void InitUserEntities(Registry* registry, Input* input)
 {
 }
