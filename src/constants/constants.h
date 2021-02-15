@@ -17,7 +17,7 @@ const int MOUSE_MIDDLE = 2;
 
 const float CAMERA_SPEED = 15.0f;
 const float SCROLL_SPEED = 50.0f;
-const float CAMERA_SENSITIVITY = 0.15f;
+const float CAMERA_SENSITIVITY = 0.25f;
 
 // Screen values, can deal with resizing some other day
 const int SCREEN_WIDTH = 1440;

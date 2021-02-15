@@ -275,19 +275,19 @@ static inline glm::quat RotateQuat(glm::quat quat, float angle, glm::vec3 axis)
 // Angles in radians, use glm::radians to convert degree to radians
 static inline glm::quat RotateQuatX(glm::quat quat, float angle)
 {
-  return quat *= glm::angleAxis(angle, glm::vec3(1.0f, 0.0f, 0.0f));
+  return quat *= glm::angleAxis(angle, glm::vec3(1.0f, 0.0f, 0.0f) * quat);
 }
 
 // Angles in radians, use glm::radians to convert degree to radians
 static inline glm::quat RotateQuatY(glm::quat quat, float angle)
 {
-  return quat *= glm::angleAxis(angle, glm::vec3(0.0f, 1.0f, 0.0f));
+  return quat *= glm::angleAxis(angle, glm::vec3(0.0f, 1.0f, 0.0f) * quat);
 }
 
 // Angles in radians, use glm::radians to convert degree to radians
 static inline glm::quat RotateQuatZ(glm::quat quat, float angle)
 {
-  return quat *= glm::angleAxis(angle, glm::vec3(0.0f, 0.0f, 1.0f));
+  return quat *= glm::angleAxis(angle, glm::vec3(0.0f, 0.0f, 1.0f) * quat);
 }
 
 static inline glm::vec3 GetPosition(const Transform transform)
@@ -471,6 +471,15 @@ static void PanCamera(float dt, Camera* camera, Transform* transform, float offs
     camera->yaw += twoPi;
   }
 
+  if (camera->roll > twoPi)
+  {
+    camera->roll -= twoPi;
+  }
+  else if (camera->roll < -twoPi)
+  {
+    camera->roll += twoPi;
+  }
+
   if (camera->pitch != 0.0f)
   {
     transform->rotation = RotateQuatX(transform->rotation, camera->pitch);
@@ -486,13 +495,13 @@ static void PanCamera(float dt, Camera* camera, Transform* transform, float offs
     transform->rotation = RotateQuatZ(transform->rotation, camera->roll);
   }
 
-  // camera->pitch *= damp;
-  // camera->yaw *= damp;
-  // camera->roll *= damp;
+  camera->pitch *= damp;
+  camera->yaw *= damp;
+  camera->roll *= damp;
 
-  camera->pitch *= 0;
-  camera->yaw *= 0;
-  camera->roll *= 0;
+  // camera->pitch *= 0;
+  // camera->yaw *= 0;
+  // camera->roll *= 0;
 }
 
 static void EnableCursor(Registry* registry)
