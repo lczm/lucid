@@ -47,6 +47,9 @@ class UiSystem : public System
       {DefaultAssetsType::Cube, "Cube"},
       {DefaultAssetsType::Sphere, "Sphere"},
       {DefaultAssetsType::Line, "Line"}};
+  std::vector<std::string> addComponentItems = {"Model",          "Transform",      "RigidBody",
+                                                "Sound",          "Font",           "ColliderCube",
+                                                "ColliderSphere", "ColliderPolygon"};
 
  public:
   UiSystem();

@@ -706,7 +706,6 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
 
   DevDebug& devDebug = registry->GetEditorResource<DevDebug>();
   ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen;
-  static std::string currentItem = "";
 
   if (devDebug.activeEntity == 0)
   {
@@ -721,10 +720,18 @@ void UiSystem::DrawInspector(float dt, Registry* registry, Input* input)
   DrawInspectorSoundComponent(registry, devDebug, input);
   DrawInspectorModelComponent(registry, devDebug, input);
 
+  static int currentItemIndex = 0;
+  std::string currentItem = addComponentItems[currentItemIndex];
   if (ImGui::CollapsingHeader("Add Component", treeNodeFlags))
   {
     if (ImGui::BeginCombo("##Add Component", currentItem.c_str()))
     {
+      for (size_t i = 0; i < addComponentItems.size(); i++)
+      {
+        const bool isSelected = (currentItemIndex == i);
+        if (ImGui::Selectable(addComponentItems[i].c_str(), isSelected)) currentItemIndex = i;
+        if (isSelected) ImGui::SetItemDefaultFocus();
+      }
       ImGui::EndCombo();
     }
     ImGui::SameLine(0);
