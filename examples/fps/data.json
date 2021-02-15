@@ -76,21 +76,6 @@
         "class Model": {
             "path": "D:\\lucid\\examples\\fps\\assets\\guardian_zelda_botw_fan-art\\scene.gltf",
             "toAnimate": false
-        },
-        "class ColliderPolygon": {
-            "transform.position.x": 0.0,
-            "transform.position.y": 0.0,
-            "transform.position.z": 0.0,
-            "transform.rotation.w": 1.0,
-            "transform.rotation.x": 0.0,
-            "transform.rotation.y": 0.0,
-            "transform.rotation.z": 0.0,
-            "transform.scale.x": 1.0,
-            "transform.scale.y": 1.0,
-            "transform.scale.z": 1.0,
-            "color.r": 0.0,
-            "color.g": 0.0,
-            "color.b": 0.0
         }
     },
     "404": {
@@ -146,21 +131,6 @@
         "class Model": {
             "path": "D:\\lucid\\examples\\fps\\assets\\zelda_-_breath_of_the_wild\\scene.gltf",
             "toAnimate": false
-        },
-        "class ColliderPolygon": {
-            "transform.position.x": 0.0,
-            "transform.position.y": 0.0,
-            "transform.position.z": 0.0,
-            "transform.rotation.w": 1.0,
-            "transform.rotation.x": 0.0,
-            "transform.rotation.y": 0.0,
-            "transform.rotation.z": 0.0,
-            "transform.scale.x": 1.0,
-            "transform.scale.y": 1.0,
-            "transform.scale.z": 1.0,
-            "color.r": 0.0,
-            "color.g": 0.0,
-            "color.b": 0.0
         }
     },
     "408": {
@@ -179,21 +149,6 @@
         "class Model": {
             "path": "D:\\lucid\\examples\\fps\\assets\\link_-_breath_of_the_wild\\scene.gltf",
             "toAnimate": false
-        },
-        "class ColliderPolygon": {
-            "transform.position.x": 0.0,
-            "transform.position.y": 0.0,
-            "transform.position.z": 0.0,
-            "transform.rotation.w": 1.0,
-            "transform.rotation.x": 0.0,
-            "transform.rotation.y": 0.0,
-            "transform.rotation.z": 0.0,
-            "transform.scale.x": 1.0,
-            "transform.scale.y": 1.0,
-            "transform.scale.z": 1.0,
-            "color.r": 0.0,
-            "color.g": 0.0,
-            "color.b": 0.0
         }
     }
 }
