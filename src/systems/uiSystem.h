@@ -11,10 +11,9 @@
 #include "shapes.h"
 #include "colliders.h"
 
-// #if DEBUG
 #include "camera.h"
+#include "startup.h"
 #include "engineComponents.h"
-// #endif
 
 #include "glm.hpp"
 #include "gtc/type_ptr.hpp"
@@ -91,7 +90,8 @@ class UiSystem : public System
   void DrawInspectorModelComponent(
       Registry* registry, DevDebug& devDebug, Input* input,
       ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen);
-  void DrawInspectorAddComponent(ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen);
+  void DrawInspectorAddComponent(Registry* registry,
+                                 ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen);
 
   void DisableInputWhenDragScrollbar(Registry* registry, Input* input);
   void HandleGizmoInput(Registry* registry, Input* input);
