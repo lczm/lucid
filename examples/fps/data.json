@@ -12,6 +12,12 @@
             "scale.y": 0.009999999776482582,
             "scale.z": 0.009999999776482582
         },
+        "struct RigidBody": {
+            "applyGravity": true,
+            "velocity.x": 0.0,
+            "velocity.y": 0.0,
+            "velocity.z": 0.0
+        },
         "class Model": {
             "path": "D:\\lucid\\examples\\fps\\assets\\ugandan_knuckles\\scene.gltf",
             "toAnimate": true
@@ -34,9 +40,9 @@
     },
     "405": {
         "struct Transform": {
-            "position.x": 2.2914233207702638,
-            "position.y": -5.56726598739624,
-            "position.z": -17.020803451538087,
+            "position.x": 0.0403178408741951,
+            "position.y": -6.83741569519043,
+            "position.z": -14.203335762023926,
             "rotation.w": 1.0,
             "rotation.x": 0.0,
             "rotation.y": 0.0,
@@ -104,13 +110,13 @@
     },
     "404": {
         "struct Transform": {
-            "position.x": 8.791610717773438,
-            "position.y": -22.984426498413087,
-            "position.z": -86.44376373291016,
-            "rotation.w": 0.999575674533844,
-            "rotation.x": 0.021265223622322084,
-            "rotation.y": -0.012234685011208058,
-            "rotation.z": 0.01563141494989395,
+            "position.x": 18.67618179321289,
+            "position.y": -13.142314910888672,
+            "position.z": -29.29605484008789,
+            "rotation.w": 0.9636263847351074,
+            "rotation.x": 0.06417300552129746,
+            "rotation.y": 0.25928881764411929,
+            "rotation.z": -0.00855106208473444,
             "scale.x": 1.0,
             "scale.y": 1.0,
             "scale.z": 1.0
@@ -134,8 +140,8 @@
             "projection.col3.w": 0.0,
             "lastX": 0.0,
             "lastY": 0.0,
-            "yaw": -0.0,
-            "pitch": -0.0,
+            "yaw": 0.0,
+            "pitch": 0.0,
             "roll": 0.0
         }
     },

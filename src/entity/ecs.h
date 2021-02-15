@@ -940,7 +940,7 @@ class Registry
 
     // Get the entity's current archetype
     Archetype oldArchetype = entityComponentMap[entity];
-    Archetype& archetype = entityComponentMap[entity];
+    Archetype archetype = entityComponentMap[entity];
 
     // Get entityIndex before modifying it later down the line
     uint32_t entityIndex = entityIndexMap[entity];
@@ -958,22 +958,26 @@ class Registry
       }
     }
     archetype.erase(archetype.begin() + archetypeIndex);
-    // SortArchetype(archetype);
+    archetype = SortArchetype(archetype);
+    entityComponentMap[entity] = archetype;
 
     // If the archetype does not yet exist
     if (archetypeComponentMap.find(archetype) == archetypeComponentMap.end())
     {
-      archetypeComponentMap[archetype] = new std::unordered_map<uint32_t, void*>();
+      // archetypeComponentMap[archetype] = new std::unordered_map<uint32_t, void*>();
+      RegisterArchetype(archetype);
     }
 
     auto& newKeyPtr = GetArchetypeComponentMap(archetype);
 
-    REGISTER_COMPONENT_CREATE(archetype, newKeyPtr);
-
     uint32_t newIndexMapping = 0;
+    REGISTER_COMPONENT_CREATE(archetype, newKeyPtr);
+    InitializeArchetypeVector<uint32_t>(archetype);
+
     // Since this is removing, set the new archetype as the 'from' target
     // and set the older archetype as the 'to' target
     MOVE_ALL_COMPONENTS(archetype, oldArchetype, archetype, entityIndex);
+    REMOVE_ALL_COMPONENTS(newKeyPtr, entityIndex);
 
     entityIndexMap[entity] = newIndexMapping;
 
