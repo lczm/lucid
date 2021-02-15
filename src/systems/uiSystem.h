@@ -43,9 +43,7 @@ class UiSystem : public System
   Node* absoluteProjectRoot = NewNode("", true);
   fs::path lucidBuildPath = fs::current_path().parent_path();
   const std::vector<std::pair<DefaultAssetsType, std::string>> defaultAssets = {
-      {DefaultAssetsType::Cube, "Cube"},
-      {DefaultAssetsType::Sphere, "Sphere"},
-      {DefaultAssetsType::Line, "Line"}};
+      {DefaultAssetsType::Cube, "Cube"}, {DefaultAssetsType::Sphere, "Sphere"}};
   std::vector<std::string> addComponentItems = {"Model",          "Transform",      "RigidBody",
                                                 "Sound",          "Font",           "ColliderCube",
                                                 "ColliderSphere", "ColliderPolygon"};
@@ -65,7 +63,6 @@ class UiSystem : public System
   void DrawScene(float dt, Registry* registry, Input* input);
   void DrawGameCamera(float dt, Registry* registry, Input* input);
   void DrawProject(float dt, Registry* registry, Input* input);
-  void DrawConsole(float dt, Registry* registry, Input* input);
   void DrawInspector(float dt, Registry* registry, Input* input);
   void DrawDevDebug(float dt, Registry* registry, Input* input);
   void DrawToolBar(float dt, Registry* registry, Input* input);

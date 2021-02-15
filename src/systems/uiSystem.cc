@@ -457,7 +457,6 @@ void UiSystem::InitializeImGuiWindows(float dt, Registry* registry, Input* input
   DrawGameConfiguration(dt, registry, input);
   DrawScene(dt, registry, input);
   DrawProject(dt, registry, input);
-  DrawConsole(dt, registry, input);
   DrawInspector(dt, registry, input);
   DrawDevDebug(dt, registry, input);
   DrawToolBar(dt, registry, input);
@@ -714,18 +713,6 @@ void UiSystem::DrawProject(float dt, Registry* registry, Input* input)
   DrawFileTree(absoluteProjectRoot);
 
   UpdateInputActiveWindow(registry, input, WindowType::Project);
-  ImGui::End();
-}
-
-void UiSystem::DrawConsole(float dt, Registry* registry, Input* input)
-{
-  ImGui::Begin("Console");
-
-  // DevDebug& devDebug = registry->GetComponent<DevDebug>();
-  // if (devDebug.changeFocusWindow == WindowType::Console) ImGui::SetWindowFocus();
-
-  ImGui::Text("This is the console");
-  UpdateInputActiveWindow(registry, input, WindowType::Console);
   ImGui::End();
 }
 
