@@ -4,6 +4,8 @@
 #include "component.h"
 #include "engineComponents.h"
 #include "camera.h"
+#include "sound.h"
+#include "font.h"
 
 /*
  *  User Guide
@@ -22,6 +24,8 @@
   MOVE_COMPONENT(ColliderCube, search, from, to, index)    \
   MOVE_COMPONENT(ColliderSphere, search, from, to, index)  \
   MOVE_COMPONENT(ColliderPolygon, search, from, to, index) \
+  MOVE_COMPONENT(Sound, search, from, to, index)           \
+  MOVE_COMPONENT(Font, search, from, to, index)            \
   MOVE_COMPONENT(Camera, search, from, to, index)
 
 #define REMOVE_ALL_COMPONENTS(keyPtr, index)       \
@@ -35,6 +39,8 @@
   REMOVE_COMPONENT(ColliderCube, keyPtr, index)    \
   REMOVE_COMPONENT(ColliderSphere, keyPtr, index)  \
   REMOVE_COMPONENT(ColliderPolygon, keyPtr, index) \
+  REMOVE_COMPONENT(Sound, keyPtr, index)           \
+  REMOVE_COMPONENT(Font, keyPtr, index)            \
   REMOVE_COMPONENT(Camera, keyPtr, index)
 
 #define REGISTER_COMPONENT_CREATE(archetype, keyPtr)          \
@@ -48,6 +54,8 @@
   CREATE_COMPONENT_VECTOR(ColliderCube, archetype, keyPtr)    \
   CREATE_COMPONENT_VECTOR(ColliderSphere, archetype, keyPtr)  \
   CREATE_COMPONENT_VECTOR(ColliderPolygon, archetype, keyPtr) \
+  CREATE_COMPONENT_VECTOR(Sound, archetype, keyPtr)           \
+  CREATE_COMPONENT_VECTOR(Font, archetype, keyPtr)            \
   CREATE_COMPONENT_VECTOR(Camera, archetype, keyPtr)
 
 #define SERIALIZE_ALL_COMPONENTS_OUT(entity)       \
@@ -59,6 +67,8 @@
   SERIALIZE_COMPONENT_OUT(ColliderCube, entity)    \
   SERIALIZE_COMPONENT_OUT(ColliderSphere, entity)  \
   SERIALIZE_COMPONENT_OUT(ColliderPolygon, entity) \
+  SERIALIZE_COMPONENT_OUT(Sound, entity)           \
+  SERIALIZE_COMPONENT_OUT(Font, entity)            \
   SERIALIZE_COMPONENT_OUT(Camera, entity)
 
 #define SERIALIZE_ALL_COMPONENTS_IN(entity)       \
@@ -70,7 +80,6 @@
   SERIALIZE_COMPONENT_IN(ColliderCube, entity)    \
   SERIALIZE_COMPONENT_IN(ColliderSphere, entity)  \
   SERIALIZE_COMPONENT_IN(ColliderPolygon, entity) \
+  SERIALIZE_COMPONENT_IN(Sound, entity)           \
+  SERIALIZE_COMPONENT_IN(Font, entity)            \
   SERIALIZE_COMPONENT_IN(Camera, entity)
-
-// TODO : Jasper
-// SERIALIZE_COMPONENT(Sound, entity)\
