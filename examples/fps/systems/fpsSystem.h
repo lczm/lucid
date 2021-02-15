@@ -8,8 +8,8 @@
 #include <iostream>
 #include "sound.h"
 #include "font.h"
-
 #include "rules.h"
+#include "model.h"
 
 class FpsSystem : public System
 {

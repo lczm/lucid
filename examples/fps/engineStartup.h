@@ -46,11 +46,11 @@ static void InitUserEntities(Registry* registry, Input* input)
   for (size_t i = 0; i < 10; i++)
   {
     Entity enemyId = registry->GetAvailableEntityId();
-    registry->CreateEntity<Model, Transform, RigidBody, Enemy, ColliderCube>(enemyId);
+    registry->CreateEntity<Model, Transform, RigidBody, Enemy>(enemyId);
     registry->AddComponentData<Model>(
         enemyId, Model("../examples/fps/assets/ugandan_knuckles/scene.gltf", registry));
     registry->GetComponent<RigidBody>(enemyId).applyGravity = false;
-    registry->GetComponent<Transform>(enemyId).position.x += 5 * i;
+    registry->GetComponent<Transform>(enemyId).position.x += 10 * i;
     registry->GetComponent<Transform>(enemyId).position.z = 8;
     registry->GetComponent<Transform>(enemyId).scale = glm::vec3(0.01);
     fpsRules.ugandanIds.push_back(enemyId);

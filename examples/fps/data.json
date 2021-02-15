@@ -1,7 +1,7 @@
 {
     "407": {
         "struct Transform": {
-            "position.x": 0.0,
+            "position.x": -9.542430877685547,
             "position.y": 1.284985065460205,
             "position.z": -2.384185791015625e-7,
             "rotation.w": 1.0,
@@ -13,7 +13,7 @@
             "scale.z": 0.009999999776482582
         },
         "struct RigidBody": {
-            "applyGravity": true,
+            "applyGravity": false,
             "velocity.x": 0.0,
             "velocity.y": 0.0,
             "velocity.z": 0.0
@@ -21,6 +21,21 @@
         "class Model": {
             "path": "D:\\lucid\\examples\\fps\\assets\\ugandan_knuckles\\scene.gltf",
             "toAnimate": true
+        },
+        "class ColliderCube": {
+            "transform.position.x": 0.0,
+            "transform.position.y": 0.0,
+            "transform.position.z": 0.0,
+            "transform.rotation.w": 1.0,
+            "transform.rotation.x": 0.0,
+            "transform.rotation.y": 0.0,
+            "transform.rotation.z": 0.0,
+            "transform.scale.x": 1.0,
+            "transform.scale.y": 1.0,
+            "transform.scale.z": 1.0,
+            "color.r": 0.0,
+            "color.g": 0.0,
+            "color.b": 0.0
         }
     },
     "405": {
@@ -80,9 +95,9 @@
     },
     "404": {
         "struct Transform": {
-            "position.x": 18.67618179321289,
-            "position.y": -13.142314910888672,
-            "position.z": -29.29605484008789,
+            "position.x": 21.264297485351564,
+            "position.y": -11.665948867797852,
+            "position.z": -38.78874969482422,
             "rotation.w": 0.9636263847351074,
             "rotation.x": 0.06417300552129746,
             "rotation.y": 0.25928881764411929,

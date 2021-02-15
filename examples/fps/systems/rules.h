@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include "ecs.h"
+#include <cereal/types/string.hpp>
 
 struct FpsRules
 {
@@ -10,7 +10,7 @@ struct FpsRules
 
   uint32_t fontId = 0;
   uint32_t soundId = 0;
-  std::vector<Entity> ugandanIds;
+  std::vector<uint32_t> ugandanIds;
 };
 
 struct Enemy

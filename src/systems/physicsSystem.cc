@@ -68,6 +68,8 @@ void PhysicsSystem::UpdateCollisions(float dt, Registry* registry, Input* input)
         if (collided)
         {
           std::cout << "(Cube - Cube) : Collided!" << std::endl;
+          tccColliderCubeComponents->At(i).collided = true;
+          tccColliderCubeComponents->At(j).collided = true;
         }
       }
 
@@ -80,6 +82,8 @@ void PhysicsSystem::UpdateCollisions(float dt, Registry* registry, Input* input)
         if (collided)
         {
           std::cout << "(Cube - Sphere) : Collided!" << std::endl;
+          tccColliderCubeComponents->At(i).collided = true;
+          tcsColliderSphereComponents->At(i).collided = true;
         }
       }
 
@@ -92,6 +96,8 @@ void PhysicsSystem::UpdateCollisions(float dt, Registry* registry, Input* input)
         if (collided)
         {
           std::cout << "(Cube - Polygon) : Collided!" << std::endl;
+          tccColliderCubeComponents->At(i).collided = true;
+          tcpColliderPolygonComponents->At(i).collided = true;
         }
       }
     }
@@ -109,6 +115,8 @@ void PhysicsSystem::UpdateCollisions(float dt, Registry* registry, Input* input)
         if (collided)
         {
           std::cout << "(Cube - Sphere) : Collided!" << std::endl;
+          tcsColliderSphereComponents->At(i).collided = true;
+          tccColliderCubeComponents->At(j).collided = true;
         }
       }
 
@@ -123,6 +131,8 @@ void PhysicsSystem::UpdateCollisions(float dt, Registry* registry, Input* input)
         if (collided)
         {
           std::cout << "(Sphere - Sphere) : Collided!" << std::endl;
+          tcsColliderSphereComponents->At(i).collided = true;
+          tcsColliderSphereComponents->At(j).collided = true;
         }
       }
 
@@ -135,6 +145,8 @@ void PhysicsSystem::UpdateCollisions(float dt, Registry* registry, Input* input)
         if (collided)
         {
           std::cout << "(Sphere - Polygon) : Collided!" << std::endl;
+          tcsColliderSphereComponents->At(i).collided = true;
+          tcpColliderPolygonComponents->At(j).collided = true;
         }
       }
     }
@@ -152,6 +164,8 @@ void PhysicsSystem::UpdateCollisions(float dt, Registry* registry, Input* input)
         if (collided)
         {
           std::cout << "(Cube - Polygon) : Collided!" << std::endl;
+          tcpColliderPolygonComponents->At(i).collided = true;
+          tccColliderCubeComponents->At(j).collided = true;
         }
       }
 
@@ -164,6 +178,8 @@ void PhysicsSystem::UpdateCollisions(float dt, Registry* registry, Input* input)
         if (collided)
         {
           std::cout << "(Sphere - Polygon) : Collided!" << std::endl;
+          tcpColliderPolygonComponents->At(i).collided = true;
+          tcsColliderSphereComponents->At(j).collided = true;
         }
       }
 
@@ -178,6 +194,8 @@ void PhysicsSystem::UpdateCollisions(float dt, Registry* registry, Input* input)
         if (collided)
         {
           std::cout << "(Polygon- Polygon) : Collided!" << std::endl;
+          tcpColliderPolygonComponents->At(i).collided = true;
+          tcpColliderPolygonComponents->At(j).collided = true;
         }
       }
     }
