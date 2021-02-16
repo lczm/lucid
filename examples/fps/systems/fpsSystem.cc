@@ -59,19 +59,23 @@ void FpsSystem::Update(float dt, Registry* registry, Input* input)
   }
 
   std::vector<Entity> toDelete;
-  registry->GetComponentsIter<Model, Transform, RigidBody, Enemy, ColliderCube>()->EachWithID(
-      [&](Entity id, Model& model, Transform& enemyTransform, RigidBody& rigidBody, Enemy& enemy,
-          ColliderCube& colliderCube) {
+  registry->GetComponentsIter<Model, Transform, RigidBody, Enemy>()->EachWithID(
+      [&](Entity id, Model& model, Transform& enemyTransform, RigidBody& rigidBody, Enemy& enemy) {
         float length = glm::length(-transform->position - enemyTransform.position);
-        if (colliderCube.collided)
+        // if (colliderCube.collided)
+        // {
+        //   fpsRules.score += 1;
+        //   toDelete.push_back(id);
+        // }
+        if (length < 10)
         {
           fpsRules.score += 1;
           toDelete.push_back(id);
         }
-        else if (length < 10)
+        else
         {
-          fpsRules.score += 1;
-          toDelete.push_back(id);
+          rigidBody.velocity =
+              glm::normalize(transform->position - enemyTransform.position) * 0.05f;
         }
       });
 
