@@ -75,7 +75,7 @@ void FpsSystem::Update(float dt, Registry* registry, Input* input)
         else
         {
           rigidBody.velocity =
-              glm::normalize(transform->position - enemyTransform.position) * 0.05f;
+              glm::normalize(transform->position - enemyTransform.position) * 0.10f;
         }
       });
 
