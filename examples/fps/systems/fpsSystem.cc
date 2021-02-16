@@ -65,6 +65,7 @@ void FpsSystem::Update(float dt, Registry* registry, Input* input)
         float length = glm::length(-transform->position - enemyTransform.position);
         if (colliderCube.collided)
         {
+          fpsRules.score += 1;
           toDelete.push_back(id);
         }
         else if (length < 10)
