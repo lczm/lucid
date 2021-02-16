@@ -98,17 +98,21 @@ static glm::mat4 GetModelMatrix(glm::mat4 matrixModel, const Transform transform
 
 static glm::mat4 GetModelMatrix(Transform transformA, Transform transformB)
 {
+  // return GetModelMatrix(transformA);
   glm::mat4 matrixModel = glm::mat4(1.0f);
 
   // Transform A
   matrixModel = glm::translate(matrixModel, transformA.position);
   matrixModel = glm::scale(matrixModel, transformA.scale);
   matrixModel *= glm::mat4_cast(transformA.rotation);
+  // return matrixModelA;
 
   // Transform B
   matrixModel = glm::translate(matrixModel, transformB.position);
   matrixModel = glm::scale(matrixModel, transformB.scale);
   matrixModel *= glm::mat4_cast(transformB.rotation);
+
+  // glm::mat4 matrixModel = matrixModelA + matrixModelB;
 
   return matrixModel;
 }

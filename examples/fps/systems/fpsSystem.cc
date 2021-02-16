@@ -49,7 +49,7 @@ void FpsSystem::Update(float dt, Registry* registry, Input* input)
     // std::cout << glm::to_string(rayDirection) << std::endl;
 
     Entity bulletId = registry->GetAvailableEntityId();
-    registry->CreateEntity<Sphere, Transform, RigidBody, ColliderCube>(bulletId);
+    registry->CreateEntity<Cube, Transform, RigidBody, ColliderCube>(bulletId);
 
     // Set correct component values
     registry->GetComponent<Transform>(bulletId).position = GetPositionInWorld(transform);
@@ -59,14 +59,15 @@ void FpsSystem::Update(float dt, Registry* registry, Input* input)
   }
 
   std::vector<Entity> toDelete;
-  registry->GetComponentsIter<Model, Transform, RigidBody, Enemy>()->EachWithID(
-      [&](Entity id, Model& model, Transform& enemyTransform, RigidBody& rigidBody, Enemy& enemy) {
+  registry->GetComponentsIter<Model, Transform, RigidBody, Enemy, ColliderCube>()->EachWithID(
+      [&](Entity id, Model& model, Transform& enemyTransform, RigidBody& rigidBody, Enemy& enemy,
+          ColliderCube& colliderCube) {
         float length = glm::length(-transform->position - enemyTransform.position);
-        // if (colliderCube.collided)
-        // {
-        //   toDelete.push_back(id);
-        // }
-        if (length < 10)
+        if (colliderCube.collided)
+        {
+          toDelete.push_back(id);
+        }
+        else if (length < 10)
         {
           fpsRules.score += 1;
           toDelete.push_back(id);
@@ -79,10 +80,10 @@ void FpsSystem::Update(float dt, Registry* registry, Input* input)
   }
 
   std::vector<Entity> bulletDelete;
-  registry->GetComponentsIter<Sphere, Transform, RigidBody, ColliderCube>()->EachWithID(
-      [&](Entity id, Sphere& sphere, Transform& bulletTransform, RigidBody& rigidBody,
+  registry->GetComponentsIter<Cube, Transform, RigidBody, ColliderCube>()->EachWithID(
+      [&](Entity id, Cube& sphere, Transform& bulletTransform, RigidBody& rigidBody,
           ColliderCube& colliderCube) {
-        if (glm::length(transform->position - bulletTransform.position) > 100)
+        if (glm::length(-transform->position - bulletTransform.position) > 100)
         {
           bulletDelete.push_back(id);
         }

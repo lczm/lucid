@@ -10,6 +10,7 @@
 #include "physicsSystem.h"
 #include "fpsSystem.h"
 #include "rules.h"
+#include "colliders.h"
 
 // Initialize all your systems here
 // This gets ran at startup
@@ -43,14 +44,14 @@ static void InitUserEntities(Registry* registry, Input* input)
   input->lastX = input->GetMouseX();
   input->lastY = input->GetMouseY();
 
-  for (size_t i = 0; i < 10; i++)
+  for (size_t i = 0; i < 1; i++)
   {
     Entity enemyId = registry->GetAvailableEntityId();
-    registry->CreateEntity<Model, Transform, RigidBody, Enemy>(enemyId);
+    registry->CreateEntity<Model, Transform, RigidBody, Enemy, ColliderCube>(enemyId);
     registry->AddComponentData<Model>(
         enemyId, Model("../examples/fps/assets/ugandan_knuckles/scene.gltf", registry));
     registry->GetComponent<RigidBody>(enemyId).applyGravity = false;
-    registry->GetComponent<Transform>(enemyId).position.x += 10 * i;
+    registry->GetComponent<Transform>(enemyId).position.x += 50;
     registry->GetComponent<Transform>(enemyId).position.z = 8;
     registry->GetComponent<Transform>(enemyId).scale = glm::vec3(0.01);
     fpsRules.ugandanIds.push_back(enemyId);
