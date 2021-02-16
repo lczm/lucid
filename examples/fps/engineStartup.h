@@ -50,6 +50,7 @@ static void InitUserEntities(Registry* registry, Input* input)
     registry->CreateEntity<Model, Transform, RigidBody, Enemy>(enemyId);
     registry->AddComponentData<Model>(
         enemyId, Model("../examples/fps/assets/ugandan_knuckles/scene.gltf", registry));
+    registry->GetComponent<Model>(enemyId).toAnimate = true;
     registry->GetComponent<RigidBody>(enemyId).applyGravity = false;
     registry->GetComponent<Transform>(enemyId).position.x += 50;
     registry->GetComponent<Transform>(enemyId).position.z = 8;
