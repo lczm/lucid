@@ -3,7 +3,7 @@
 ## Building Lucid
 Run the following commands with a shell that has access to `ninja` and your preferred compiler.
 
-![Lucid](https://github.com/lczm/lucid/blob/bin/image.png)
+![Lucid](https://github.com/lczm/lucid/blob/main/bin/image.png)
 
 ### Clone
 ```
